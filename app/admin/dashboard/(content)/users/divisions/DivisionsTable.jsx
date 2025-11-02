@@ -152,15 +152,15 @@ export default function DivisionsTable({ data }) {
                     </TableCell>
 
                     <TableCell>
-                              <div className="flex items-center gap-3">
-          <div className="bg-slate-200 p-2 rounded-full">
-            <Building2 className="h-5 w-5 text-slate-600" strokeWidth={1} />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-600">{division.name}</p>
-            <p className="text-xs text-slate-400">{division.location}</p>
-          </div>
-        </div>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-slate-200 p-2 rounded-full">
+                          <Building2 className="h-5 w-5 text-slate-600" strokeWidth={1} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-slate-600">{division.name}</p>
+                          <p className="text-xs text-slate-400">{division.location}</p>
+                        </div>
+                      </div>
                     </TableCell>
 
                     <TableCell>
@@ -218,7 +218,6 @@ export default function DivisionsTable({ data }) {
         </div>
       </div>
 
-      {/* Dialog konfirmasi */}
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="max-w-[500px]">
           <DialogHeader>
