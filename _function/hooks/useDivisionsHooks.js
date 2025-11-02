@@ -1,34 +1,54 @@
-"use client"
+"use client";
 
-import useSWR from "swr"
-import { useState, useMemo } from "react"
-import { handleDivisions } from "../handlers/handleDivisions"
+import useSWR from "swr";
+import { useState, useMemo } from "react";
+import { useHandleDivisions } from "../handlers/useHandleDivisions";
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export function useDivisionsHooks(initialData) {
-  const { data, mutate } = useSWR("/api/divisions", fetcher, { fallbackData: initialData })
+  const { data: swrResult, mutate } = useSWR("/api/divisions", fetcher, {
+    fallbackData: { data: initialData, total: initialData.length },
+  });
 
-  const [search, setSearch] = useState("")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [selectedIds, setSelectedIds] = useState([])
+  const listData = swrResult?.data ?? initialData ?? [];
+
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const filteredData = useMemo(() => {
-    return initialData.filter((division) => {
-      const matchSearch = division.name.toLowerCase().includes(search.toLowerCase())
-      const matchType = typeFilter === "all" || division.type === typeFilter
-      const matchStatus = statusFilter === "all" || division.status === statusFilter
-      return matchSearch && matchType && matchStatus
-    })
-  }, [initialData, search, typeFilter, statusFilter])
+    const q = (search || "").toString().toLowerCase();
+    return listData.filter((division) => {
+      const name = (division.name || "").toString().toLowerCase();
+      const matchSearch = !q || name.includes(q);
+      const matchType = typeFilter === "all" || division.type === typeFilter;
+      const matchStatus = statusFilter === "all" || division.status === statusFilter;
+      return matchSearch && matchType && matchStatus;
+    });
+  }, [listData, search, typeFilter, statusFilter]);
 
-  const divisionActions = handleDivisions({
+  const handlers = useHandleDivisions({
     filteredData,
     selectedIds,
     setSelectedIds,
     mutate,
-  })
+  });
+
+  const {
+    toggleSelect,
+    toggleSelectAll,
+    handleDeleteSelected,
+    handleDeleteAll,
+    handleExportPDF: maybeHandleExportPDF,
+    onEdit,
+    onDelete,
+    onToggleStatus,
+    onBulkUpdate,
+  } = handlers;
+
+  const handleExportPDF = maybeHandleExportPDF || handlers.onExportPDF || handlers.onExport || (() => {});
 
   return {
     mutate,
@@ -40,6 +60,15 @@ export function useDivisionsHooks(initialData) {
     setStatusFilter,
     filteredData,
     selectedIds,
-    ...divisionActions,
-  }
+
+    toggleSelect,
+    toggleSelectAll,
+    handleDeleteSelected,
+    handleDeleteAll,
+    handleExportPDF,
+    onEdit,
+    onDelete,
+    onToggleStatus,
+    onBulkUpdate,
+  };
 }

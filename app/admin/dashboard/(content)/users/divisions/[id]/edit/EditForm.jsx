@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
@@ -11,66 +11,25 @@ import { Loader } from "lucide-react";
 import ContentForm from "@/_components/content/ContentForm";
 import { ContentInformation } from "@/_components/content/ContentInformation";
 
-import { apiFetchData } from "@/_function/helpers/fetch";
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
-import { capitalize, minutesToTime, timeToMinutes } from "@/_function/globalFunction";
+import { minutesToTime, capitalize } from "@/_function/globalFunction";
+
+import { updateDivision } from "@/_components/server/divisionAction";
 
 export default function EditDivisionForm({ division }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const [form, setForm] = useState({
-    name: division.name || "",
-    location: division.location || "",
-    longitude: division.longitude ?? "",
-    latitude: division.latitude ?? "",
-    radius: division.radius ?? "",
-    type: division.type || "WFO",
-    status: division.status || "INACTIVE",
-    startTime: division.startTime ? minutesToTime(division.startTime) : "",
-    endTime: division.endTime ? minutesToTime(division.endTime) : "",
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleCustomChange = (name, value) => {
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const payload = {
-      ...form,
-      longitude: form.longitude ? parseFloat(form.longitude) : null,
-      latitude: form.latitude ? parseFloat(form.latitude) : null,
-      radius: form.radius ? parseInt(form.radius) : null,
-      startTime: form.startTime ? timeToMinutes(form.startTime) : null,
-      endTime: form.endTime ? timeToMinutes(form.endTime) : null,
-    };
-
-    try {
-      await apiFetchData({
-        url: `/division/${division.id}`,
-        method: "put",
-        data: payload,
-        successMessage: "Division updated successfully ✅",
-        errorMessage: "Failed to update division ❌",
-        onSuccess: () => router.push("/admin/dashboard/users/divisions"),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  async function handleSubmit(formData) {
+    startTransition(async () => {
+      await updateDivision(division.id, formData);
+      router.push("/admin/dashboard/divisions");
+    });
+  }
 
   return (
     <ContentForm>
-      <form onSubmit={handleSubmit} className="space-y-2">
+      <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
           <ContentInformation
             heading="Edit Division"
@@ -85,29 +44,13 @@ export default function EditDivisionForm({ division }) {
         <ContentForm.Body>
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name">
-                Name <span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                name="name"
-                placeholder="Head Division"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
+              <Label>Name <span className="text-rose-500">*</span></Label>
+              <Input name="name" defaultValue={division.name} required />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">
-                Location <span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                name="location"
-                placeholder="Jakarta"
-                value={form.location}
-                onChange={handleChange}
-                required
-              />
+              <Label>Location <span className="text-rose-500">*</span></Label>
+              <Input name="location" defaultValue={division.location} required />
             </div>
 
             <ContentInformation
@@ -117,63 +60,36 @@ export default function EditDivisionForm({ division }) {
 
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="space-y-2">
-                <Label htmlFor="longitude">
-                  Longitude<span className="text-rose-500">*</span>
-                </Label>
-                <Input
-                  name="longitude"
-                  placeholder="106.8456"
-                  value={form.longitude}
-                  onChange={handleChange}
-                />
+                <Label>Longitude<span className="text-rose-500">*</span></Label>
+                <Input name="longitude" defaultValue={division.longitude ?? ""} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="latitude">
-                  Latitude<span className="text-rose-500">*</span>
-                </Label>
-                <Input
-                  name="latitude"
-                  placeholder="-6.2088"
-                  value={form.latitude}
-                  onChange={handleChange}
-                />
+                <Label>Latitude<span className="text-rose-500">*</span></Label>
+                <Input name="latitude" defaultValue={division.latitude ?? ""} />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="radius">
-                Radius (meter)<span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                name="radius"
-                placeholder="100"
-                value={form.radius}
-                onChange={handleChange}
-              />
+              <Label>Radius (meter)<span className="text-rose-500">*</span></Label>
+              <Input name="radius" defaultValue={division.radius ?? ""} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="startTime">
-                  Start Time <span className="text-rose-500">*</span>
-                </Label>
+                <Label>Start Time <span className="text-rose-500">*</span></Label>
                 <Input
                   type="time"
                   name="startTime"
-                  value={form.startTime}
-                  onChange={handleChange}
+                  defaultValue={division.startTime ? minutesToTime(division.startTime) : ""}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="endTime">
-                  End Time <span className="text-rose-500">*</span>
-                </Label>
+                <Label>End Time <span className="text-rose-500">*</span></Label>
                 <Input
                   type="time"
                   name="endTime"
-                  value={form.endTime}
-                  onChange={handleChange}
+                  defaultValue={division.endTime ? minutesToTime(division.endTime) : ""}
                   required
                 />
               </div>
@@ -181,39 +97,23 @@ export default function EditDivisionForm({ division }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>
-                  Type<span className="text-rose-500">*</span>
-                </Label>
-                <Select
-                  value={form.type}
-                  onValueChange={(value) => handleCustomChange("type", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
+                <Label>Type<span className="text-rose-500">*</span></Label>
+                <Select name="type" defaultValue={division.type}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {typeOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
+                    {typeOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>
-                  Status<span className="text-rose-500">*</span>
-                </Label>
-                <Select
-                  value={form.status}
-                  onValueChange={(value) => handleCustomChange("status", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
+                <Label>Status<span className="text-rose-500">*</span></Label>
+                <Select name="status" defaultValue={division.status}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {statusOptions.map((opt) => (
+                    {statusOptions.map(opt => (
                       <SelectItem key={opt.value} value={opt.value}>
                         {capitalize(opt.label)}
                       </SelectItem>
@@ -226,11 +126,15 @@ export default function EditDivisionForm({ division }) {
         </ContentForm.Body>
 
         <ContentForm.Footer>
-          <Button type="submit" disabled={loading}>
-            {loading 
-              ? (<><Loader className="w-4 h-4 animate-spin" /> Updating...</>) 
-              : ("Update Division")
-            }
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader className="w-4 h-4 animate-spin" />
+                Updating...
+              </>
+            ) : (
+              "Update Division"
+            )}
           </Button>
         </ContentForm.Footer>
       </form>

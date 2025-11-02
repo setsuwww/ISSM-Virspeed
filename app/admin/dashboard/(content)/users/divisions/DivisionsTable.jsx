@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { format } from "date-fns"
-import { MapPin, AlarmClock, Radar, Locate, LocateFixed, Loader, Building2 } from "lucide-react"
+import { AlarmClock, Loader, Building2 } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -10,14 +10,12 @@ import { Button } from "@/_components/ui/Button"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import { Switch } from "@/_components/ui/Switch"
 import { Label } from "@/_components/ui/Label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/_components/ui/Popover"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
 
 import { divisionStyles } from "@/_constants/divisionConstants"
 import { DivisionsStatusBadge } from "./DivisionsStatusBadge"
 import { DivisionsActionHeader } from "./DivisionsActionHeader"
 import { useDivisionsHooks } from "@/_function/hooks/useDivisionsHooks"
-import { handleDivisions } from "@/_function/handlers/handleDivisions"
 
 export default function DivisionsTable({ data }) {
   const {

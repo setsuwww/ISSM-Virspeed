@@ -8,7 +8,7 @@ export function DivisionsStatusBadge({ status, onToggle }) {
 
   return (
     <Badge variant="outline" onClick={onToggle}
-      className="flex items-center gap-2 px-2.5 py-1 rounded-full cursor-pointer select-none border-slate-200 hover:bg-slate-100 hover:shadow-sm transition"
+      className="flex items-center gap-2 px-2.5 py-1 rounded-full cursor-pointer select-none border-slate-200 hover:border-slate-300 transition"
     >
       <span className="relative flex h-2 w-2">
         <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${isActive ? "bg-teal-300" : "bg-rose-400"}`}/>

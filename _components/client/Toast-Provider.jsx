@@ -37,36 +37,43 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
 
   const addToast = useCallback((message, options = {}) => {
-    const id = Date.now()
+    const id = Date.now();
+    const msg = typeof message === "object" ? message : { description: message };
+
+    const type = options.type || "info";
+    const variant = toastVariants[type];
+
     const newToast = {
       id,
-      title: options.title || toastVariants[options.type || "info"].title,
-      description: message,
-      type: options.type || "info",
+      title: msg.title || options.title || variant.title,
+      description: msg.description || options.description || "",
+      type,
       duration: options.duration || 4000,
-    }
-    setToasts((prev) => [...prev, newToast])
+    };
 
-    setTimeout(() => { setToasts((prev) => prev.filter((t) => t.id !== id))
-    }, newToast.duration)
-  }, [])
+    setToasts((prev) => [...prev, newToast]);
 
-  const removeToast = useCallback((id) => { setToasts((prev) => prev.filter((t) => t.id !== id))}, [])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, newToast.duration);
+  }, []);
+
+
+  const removeToast = useCallback((id) => { setToasts((prev) => prev.filter((t) => t.id !== id)) }, [])
 
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
 
-      <div className="fixed top-4 right-4 flex flex-col gap-3 z-[9999] w-[360px] max-w-[90vw]">
+      <div className="fixed top-4 right-4 flex flex-col gap-3 z-[9999] w-[460px] max-w-[90vw]">
         {toasts.map((toast) => {
           const variant = toastVariants[toast.type] || toastVariants.info
           return (
             <div key={toast.id} className={cn(
-                "relative flex items-start gap-3 bg-white border-0 border-l-4 shadow-lg rounded-r-sm p-4 pr-6 w-full animate-slide-in backdrop-blur-sm",
-                variant.border
-              )}
+              "relative flex items-start gap-3 bg-white border-0 border-l-4 shadow-lg rounded-r-sm p-4 pr-6 w-full animate-slide-in backdrop-blur-sm",
+              variant.border
+            )}
             >
-              {/* Icon */}
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-full border ${variant.bg}`}>
                   {variant.icon}
@@ -77,28 +84,26 @@ export function ToastProvider({ children }) {
                 </div>
               </div>
 
-              {/* Close */}
               <button onClick={() => removeToast(toast.id)} className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors">
                 <X size={16} />
               </button>
 
               <div
-                className={cn( "absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
-                    toast.type === "success" ? "bg-teal-500"
+                className={cn("absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
+                  toast.type === "success" ? "bg-teal-500"
                     : toast.type === "error" ? "bg-rose-500"
-                    : toast.type === "warning" ? "bg-yellow-500"
-                    : "bg-sky-500"
+                      : toast.type === "warning" ? "bg-yellow-500"
+                        : "bg-sky-500"
                 )}
-                style={{ width: "100%", animation: `progress ${toast.duration}ms linear forwards`}}
+                style={{ width: "100%", animation: `progress ${toast.duration}ms linear forwards` }}
               />
             </div>
           )
         })}
       </div>
 
-      {/* Animations */}
       <style jsx global>
-      {`
+        {`
         @keyframes slide-in {
           from {
             transform: translateX(100%);
