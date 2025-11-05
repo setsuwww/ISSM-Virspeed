@@ -1,57 +1,39 @@
-"use client";
+"use client"
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { CalendarClock, MoreHorizontal } from "lucide-react";
-import { format } from "date-fns";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { CalendarClock, MoreHorizontal, Pen, Trash } from "lucide-react"
+import { format } from "date-fns"
 
-import { Checkbox } from "@/_components/ui/Checkbox";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/_components/ui/Card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/_components/ui/Dropdown-menu";
+import { Checkbox } from "@/_components/ui/Checkbox"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/_components/ui/Card"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/_components/ui/Dropdown-menu"
 
-import SchedulesActionHeader from "./SchedulesActionHeader";
-import ScheduleUsersDialog from "./SchedulesUsersDialog";
-import { handleSchedules } from "@/_function/handlers/handleSchedules";
-import { capitalize } from "@/_function/globalFunction";
-import { frequencyStyles } from "@/_constants/scheduleConstants";
+import SchedulesActionHeader from "./SchedulesActionHeader"
+import ScheduleUsersDialog from "./SchedulesUsersDialog"
+import { useHandleSchedules } from "@/_function/handlers/useHandleSchedules"
+import { capitalize } from "@/_function/globalFunction"
+import { frequencyStyles } from "@/_constants/scheduleConstants"
+import EmptyStates from "@/_components/content/EmptyStates"
+import { useSchedulesHooks } from "@/_function/hooks/useSchedulesHooks"
 
 export default function SchedulesCard({ data }) {
-  const [search, setSearch] = useState("");
-  const [filterFrequency, setFilterFrequency] = useState("all");
-  const [selectedIds, setSelectedIds] = useState([]);
+  const router = useRouter()
+  const [selectedIds, setSelectedIds] = useState([])
 
-  const router = useRouter();
-
-  const filteredData = useMemo(() => {
-  const safeData = Array.isArray(data) ? data : [];
-
-  return safeData
-    .filter((s) => {
-      const title = s?.title ?? "";
-      const desc = s?.description ?? "";
-      return (
-        title.toLowerCase().includes(search.toLowerCase()) ||
-        desc.toLowerCase().includes(search.toLowerCase())
-      );
-    })
-    .filter((s) => {
-      if (filterFrequency === "all") return true;
-      return s.frequency === filterFrequency;
-    })
-    .sort((a, b) => {
-      const dateA = new Date(a.startDate).getTime();
-      const dateB = new Date(b.startDate).getTime();
-      return dateB - dateA;
-    });
-  }, [data, search, filterFrequency]);
+  const {
+    search, setSearch,
+    filterFrequency, setFilterFrequency,
+    filteredData,
+  } = useSchedulesHooks(data)
 
   const {
     toggleSelect, deleteSelected, deleteAll,
     handleEditSchedule, handleDeleteSchedule,
     onExportPDF,
-  } = handleSchedules(
+  } = useHandleSchedules(
     selectedIds, setSelectedIds, filteredData, () => router.refresh()
-  );
+  )
 
   return (
     <div className="space-y-4">
@@ -64,14 +46,12 @@ export default function SchedulesCard({ data }) {
       />
 
       {filteredData.length === 0 ? (
-        <div className="text-center text-slate-600 py-8">
-          No schedules found
-        </div>
+        <EmptyStates />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredData.map((schedule) => {
-            const formatedCreatedDate = format(new Date(schedule.createdAt), "dd-MMMM-yyyy");
-            const formatedUpdatedDate = format(new Date(schedule.updatedAt), "dd-MMMM-yyyy");
+            const formatedCreatedDate = format(new Date(schedule.createdAt), "dd-MMMM-yyyy")
+            const formatedUpdatedDate = format(new Date(schedule.updatedAt), "dd-MMMM-yyyy")
 
             return (
               <Card key={schedule.id} className="relative group">
@@ -88,7 +68,9 @@ export default function SchedulesCard({ data }) {
                   </CardTitle>
 
                   <div className="flex items-center gap-2">
-                    <Checkbox checked={selectedIds.includes(schedule.id)} className="border-slate-300"
+                    <Checkbox
+                      checked={selectedIds.includes(schedule.id)}
+                      className="border-slate-300"
                       onCheckedChange={(checked) => toggleSelect(schedule.id, checked === true)}
                     />
                     <DropdownMenu>
@@ -99,12 +81,10 @@ export default function SchedulesCard({ data }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-28">
                         <DropdownMenuItem onClick={() => handleEditSchedule(schedule.id)}>
-                          Edit
+                          <Pen size={10}/> <span>Edit</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteSchedule(schedule.id)}
-                          className="text-rose-600 focus:text-rose-600"
-                        >
-                          Delete
+                        <DropdownMenuItem onClick={() => handleDeleteSchedule(schedule.id)} className="hover:text-rose-600">
+                          <Trash size={10}/> <span>Delete</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -123,10 +103,10 @@ export default function SchedulesCard({ data }) {
                   </div>
                 </CardFooter>
               </Card>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }

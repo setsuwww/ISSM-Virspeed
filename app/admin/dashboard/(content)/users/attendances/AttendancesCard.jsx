@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import { capitalize } from "@/_function/globalFunction"
 import { statusColorsClass } from "@/_constants/attendanceConstants"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"

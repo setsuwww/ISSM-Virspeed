@@ -43,9 +43,7 @@ export async function getScheduleCount({ search = "", frequency }) {
 export const revalidate = 60;
 
 export default async function Page({ searchParams }) {
-  const page = Number(searchParams?.page) || 1;
-  const search = searchParams?.search || "";
-  const frequency = searchParams?.frequency || null;
+  const { page, search, frequency } = await searchParams
 
   const [schedulesRaw, total] = await Promise.all([
     getSchedules({ page, search, frequency }),

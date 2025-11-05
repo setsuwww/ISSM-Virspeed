@@ -30,7 +30,7 @@ export default function SchedulesActionHeader({
         </Select>
 
         <Input value={search} onChange={(e) => setSearch(e.target.value)} className="min-w-[180px] max-w-[250px] w-auto"
-          placeholder="Search schedules..."
+          placeholder="Search schedules..." typeSearch={true}
         />
       </div>
 

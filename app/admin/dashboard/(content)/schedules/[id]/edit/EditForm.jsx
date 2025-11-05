@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
-import { toast } from "sonner"
 
 import UpdateAssignUserShift from "./UpdateAssignUserShift"
 
@@ -13,7 +12,10 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/content/ContentForm"
 import { ContentInformation } from "@/_components/content/ContentInformation"
 
-import { apiFetchData } from "@/_function/helpers/fetch"
+import { Loader } from "lucide-react"
+import { updateSchedule } from "@/_components/server/scheduleAction"
+import { useToast } from "@/_components/client/Toast-Provider"
+import { useRouter } from "next/navigation"
 
 export default function EditForm({ schedule, users, shifts }) {
   const [loading, setLoading] = useState(false)
@@ -24,6 +26,9 @@ export default function EditForm({ schedule, users, shifts }) {
     description: "",
     frequency: "ONCE",
   })
+
+  const { addToast } = useToast()
+  const router = useRouter()
 
   useEffect(() => {
     if (schedule) {
@@ -42,38 +47,38 @@ export default function EditForm({ schedule, users, shifts }) {
     }
   }, [schedule])
 
-  const handleChange = useCallback((field, value) => { setForm((prev) => ({ ...prev, [field]: value }))}, [])
+  const handleChange = useCallback((field, value) => { setForm((prev) => ({ ...prev, [field]: value })) }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title.trim() || !form.description.trim() || events.length === 0) {
-      toast.error("Please fill all required fields")
+      addToast("Missing field required", { type: "warning" })
       return
     }
 
     setLoading(true)
-    try { const userIds = Array.from(
+    try {
+      const userIds = Array.from(
         new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean)))
       )
 
-      const payload = {
+      const payload = { id: schedule.id,
         title: form.title, description: form.description, frequency: form.frequency,
         startDate: events[0]?.startDate ?? null, endDate: events[0]?.endDate ?? null,
         startTime: events[0]?.startTime ?? null, endTime: events[0]?.endTime ?? null,
         userIds,
       }
 
-      await apiFetchData({ url: `/schedules/${schedule.id}`, method: "put", data: payload,
-        successMessage: "Schedule updated successfully",
-        errorMessage: "Failed to update schedule",
-      })
+      await updateSchedule(payload)
 
-      toast.success("Schedule updated successfully")
-    } 
-    catch (error) { console.error("Error updating schedule:", error)
-      toast.error("Error updating schedule")
-    } 
-    finally { setLoading(false)}
+      addToast("Schedule updated successfully", { type: "success" })
+      router.push("/admin/dashboard/schedules")
+    }
+    catch (error) {
+      console.error("Error updating schedule:", error)
+      addToast("Schedule failed to update", { type: "error" })
+    }
+    finally { setLoading(false) }
   }
 
   return (
@@ -134,7 +139,10 @@ export default function EditForm({ schedule, users, shifts }) {
                   Cancel
                 </Button>
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Updating..." : "Update Schedule"}
+                  {loading
+                    ? (<><Loader className="w-4 h-4 animate-spin" /> Updating...</>)
+                    : "Update Shift"
+                  }
                 </Button>
               </div>
             </div>

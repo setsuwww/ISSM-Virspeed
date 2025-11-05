@@ -3,7 +3,10 @@
 import { useState, useCallback } from "react"
 import { toast } from "sonner"
 
+import { Loader } from "lucide-react"
+
 import InputAssignUserShift from "./InputAssignUserShift"
+import { createSchedule } from "@/_components/server/scheduleAction"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
@@ -13,9 +16,13 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/content/ContentForm"
 import { ContentInformation } from "@/_components/content/ContentInformation"
 
-import { apiFetchData } from "@/_function/helpers/fetch"
+
+import { useToast } from "@/_components/client/Toast-Provider"
+import { useRouter } from "next/navigation"
 
 export default function CreateForm({ users, shifts }) {
+  const { addToast } = useToast()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [activeDate, setActiveDate] = useState(null)
   const [events, setEvents] = useState([])
@@ -28,35 +35,46 @@ export default function CreateForm({ users, shifts }) {
     setForm((prev) => ({ ...prev, [field]: value }))
   }, [])
 
-  const handleSubmit = async (e) => { e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
     if (!form.title.trim() || !form.description.trim() || events.length === 0) {
       toast.error("Please fill all required fields")
       return
     }
 
     setLoading(true)
-    try { const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
+    try {
+      const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
 
       const payload = {
         title: form.title,
         description: form.description,
         frequency: form.frequency,
-        startDate: events[0]?.startDate ?? null, endDate: events[0]?.endDate ?? null,
-        startTime: events[0]?.startTime ?? null, endTime: events[0]?.endTime ?? null,
+        startDate: events[0]?.startDate,
+        endDate: events[0]?.endDate,
+        startTime: events[0]?.startTime,
+        endTime: events[0]?.endTime,
         userIds,
       }
 
-      await apiFetchData({ url: "/schedules", method: "post", data: payload,
-        successMessage: "Schedule created successfully",
-        errorMessage: "Failed to create schedule",
-      })
+      const result = await createSchedule(payload)
 
-      setForm({ title: "", description: "", frequency: "ONCE" })
-      setEvents([])
-      setActiveDate(null)
-    } 
-    catch (error) { console.error("Error creating schedule:", error)} 
-    finally { setLoading(false)}
+      if (result.success) {
+        addToast("Schedule created successfully", { type: "success" })
+        setForm({ title: "", description: "", frequency: "ONCE", })
+        setEvents([])
+        setActiveDate(null)
+        router.push("/admin/dashboard/schedules")
+      } else {
+        addToast("Schedule failed created", { type: "error" })
+      }
+    } catch (error) {
+      console.error("Error creating schedule:", error)
+      addToast("Schedule failed created", { type: "error" })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -65,7 +83,7 @@ export default function CreateForm({ users, shifts }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users"/>
+          <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users" />
         </ContentForm.Header>
 
         <ContentForm.Body>
@@ -114,11 +132,9 @@ export default function CreateForm({ users, shifts }) {
                 {events.length} dates scheduled
               </div>
               <div className="flex items-center space-x-2">
-                <Button type="button" variant="outline" disabled={loading}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" disabled={loading}>Cancel</Button>
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Saving..." : "Save Schedule"}
+                  {loading ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) : "Create Schedule"}
                 </Button>
               </div>
             </div>

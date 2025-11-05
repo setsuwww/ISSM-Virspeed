@@ -1,4 +1,5 @@
 "use client";
+
 import { Users } from "lucide-react";
 import { Badge } from "@/_components/ui/Badge";
 import { capitalize } from "@/_function/globalFunction";
@@ -55,7 +56,7 @@ export default function AttendancesApprovalPartials({
 
         <Badge
           className={`text-xs border-0 ${
-            statusColorsClass[status]?.bgDot || "bg-slate-200"
+            statusColorsClass[status]?.bgPing || "bg-slate-200"
           }`}
         >
           {users.length} Person

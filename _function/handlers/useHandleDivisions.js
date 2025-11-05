@@ -18,8 +18,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
   }
 
   const toggleSelectAll = (checked) => {
-    if (checked) {
-      const allIds = filteredData.map((d) => d.id)
+    if (checked) { const allIds = filteredData.map((d) => d.id)
       setSelectedIds(allIds)
     } else {
       setSelectedIds([])

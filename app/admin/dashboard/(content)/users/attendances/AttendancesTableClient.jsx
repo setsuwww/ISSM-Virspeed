@@ -19,13 +19,16 @@ export default function AttendancesTableClient() {
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
-    startTransition(async () => { const result = await getAttendancesByDate(date)
+    startTransition(async () => {
+      const result = await getAttendancesByDate(date)
       setData(result)
     })
   }, [])
 
-  const handleDateChange = (newDate) => { setDate(newDate)
-    startTransition(async () => { const result = await getAttendancesByDate(newDate)
+  const handleDateChange = (newDate) => {
+    setDate(newDate)
+    startTransition(async () => {
+      const result = await getAttendancesByDate(newDate)
       setData(result)
     })
   }
@@ -99,10 +102,9 @@ export default function AttendancesTableClient() {
                   <TableCell>
                     {att.shift ? (
                       <Badge
-                        className={`px-2 py-0.5 border-none rounded-md ${
-                          shiftStyles[att.shift.type] ??
+                        className={`px-2 py-0.5 border-none rounded-md ${shiftStyles[att.shift.type] ??
                           "bg-gray-100 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {capitalize(att.shift.name)}
                       </Badge>
@@ -123,20 +125,19 @@ export default function AttendancesTableClient() {
                   </TableCell>
 
                   <TableCell>
-  {att.checkInTime && att.checkOutTime ? (
-    <span className="text-sm text-slate-700 font-semibold">
-      {calculateWorkHours(att.checkInTime, att.checkOutTime, 1)} jam
-    </span>
-  ) : (
-    <span className="text-sm text-gray-400">-</span>
-  )}
-</TableCell>
+                    {att.checkInTime && att.checkOutTime ? (
+                      <span className="text-sm text-slate-700 font-semibold">
+                        {calculateWorkHours(att.checkInTime, att.checkOutTime, 1)} jam
+                      </span>
+                    ) : (
+                      <span className="text-sm text-gray-400">-</span>
+                    )}
+                  </TableCell>
 
                   <TableCell>
                     <Badge
-                      className={`border-none ${
-                        attedancesStyles[capitalize(att.status)]
-                      }`}
+                      className={`border-none ${attedancesStyles[capitalize(att.status)]
+                        }`}
                     >
                       {capitalize(att.status)}
                     </Badge>

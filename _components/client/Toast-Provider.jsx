@@ -65,7 +65,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ addToast }}>
       {children}
 
-      <div className="fixed top-4 right-4 flex flex-col gap-3 z-[9999] w-[460px] max-w-[90vw]">
+      <div className="fixed top-4 right-5 flex flex-col gap-3 z-[9999] w-[460px] max-w-[90vw]">
         {toasts.map((toast) => {
           const variant = toastVariants[toast.type] || toastVariants.info
           return (

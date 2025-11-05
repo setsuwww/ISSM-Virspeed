@@ -121,15 +121,15 @@
 }
 
 @font-face {
-  font-family: 'Lexend';
-  src: url('/fonts/Lexend-VariableFont_wght.ttf') format('truetype');
+  font-family: 'Geist';
+  src: url('/fonts/Geist-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
 
 @layer base {
   * {
-    font-family: 'Lexend';
+    font-family: 'Geist';
   }
 
   button, a {

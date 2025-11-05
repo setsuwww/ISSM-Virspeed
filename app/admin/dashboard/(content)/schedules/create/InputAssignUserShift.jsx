@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Badge } from "@/_components/ui/Badge"
 import { ContentInformation } from "@/_components/content/ContentInformation"
 import { Check, ChevronsUpDown, CircleUserRound, X, CalendarArrowUp, CalendarArrowDown, Clock } from "lucide-react"
-import { apiFetchData } from "@/_function/helpers/fetch"
 
 export default function InputAssignUserShift({ events, setEvents, users }) {
   const [startDate, setStartDate] = useState("")
@@ -37,7 +36,7 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
     setSelectedUsers([])
   }, [])
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!startDate || !endDate || !startTime || !endTime || selectedUsers.length === 0) {
       setDialogType("error")
       setDialogMessage("Please fill all required fields.")
@@ -45,32 +44,21 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
       return
     }
 
-    const payload = {
-      title: "Scheduled Task",
-      description: "Auto-generated schedule",
-      frequency: "ONCE",
-      startDate, startTime,
-      endDate, endTime,
-      userIds: selectedUsers,
+    const newEvent = {
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      users: users.filter(u => selectedUsers.includes(u.id))
     }
 
-    try {
-      const res = await apiFetchData({ url: "/schedules", method: "post", data: payload,
-        successMessage: "Schedule successfully created!",
-        errorMessage: "Failed to create schedule.",
-        onSuccess: (data) => setEvents((prev) => [...prev, data]),
-      })
+    setEvents(prev => [...prev, newEvent])
 
-      setDialogType("success")
-      setDialogMessage(`Schedule created for ${selectedUsers.length} user(s).`)
-      setDialogOpen(true)
-    } 
-    catch (err) { console.error(err)
-      setDialogType("error")
-      setDialogMessage("Something went wrong.")
-      setDialogOpen(true)
-    }
+    setDialogType("success")
+    setDialogMessage(`Draft schedule created for ${selectedUsers.length} user(s).`)
+    setDialogOpen(true)
   }
+
 
   return (
     <div className="space-y-6">
@@ -100,20 +88,20 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
           </div>
 
           {(startDate || startTime) && (
-  <div className="flex items-center gap-3 text-teal-600 mt-1">
-    <div className="flex items-center gap-1 text-xs font-semibold">
-      <CalendarArrowUp size={14} className="text-teal-600" />
-      <span>{startDate}</span>
-    </div>
+            <div className="flex items-center gap-3 text-teal-600 mt-1">
+              <div className="flex items-center gap-1 text-xs font-semibold">
+                <CalendarArrowUp size={14} className="text-teal-600" />
+                <span>{startDate}</span>
+              </div>
 
-    {startTime && (
-      <div className="flex items-center gap-1 text-xs font-semibold">
-        <Clock size={14} className="text-teal-600" />
-        <span>{startTime}</span>
-      </div>
-    )}
-  </div>
-)}
+              {startTime && (
+                <div className="flex items-center gap-1 text-xs font-semibold">
+                  <Clock size={14} className="text-teal-600" />
+                  <span>{startTime}</span>
+                </div>
+              )}
+            </div>
+          )}
 
         </div>
 
@@ -135,19 +123,19 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
           </div>
 
           {(endDate || endTime) && (
-  <div className="flex items-center gap-3 text-rose-600 mt-1">
-    <div className="flex items-center gap-1 text-xs font-semibold">
-      <CalendarArrowDown size={14} className="text-rose-600" />
-      <span>{endDate}</span>
-    </div>
-    {endTime && (
-      <div className="flex items-center gap-1 text-xs font-semibold">
-        <Clock size={14} className="text-rose-600" />
-        <span>{endTime}</span>
-      </div>
-    )}
-  </div>
-)}
+            <div className="flex items-center gap-3 text-rose-600 mt-1">
+              <div className="flex items-center gap-1 text-xs font-semibold">
+                <CalendarArrowDown size={14} className="text-rose-600" />
+                <span>{endDate}</span>
+              </div>
+              {endTime && (
+                <div className="flex items-center gap-1 text-xs font-semibold">
+                  <Clock size={14} className="text-rose-600" />
+                  <span>{endTime}</span>
+                </div>
+              )}
+            </div>
+          )}
 
         </div>
       </div>
@@ -159,12 +147,8 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
             <Button type="button" variant="outline" size="sm" onClick={setAllUsers}>
               Select All
             </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={clearUsers}
-              disabled={selectedUsers.length === 0}
+            <Button type="button" variant="destructive" size="sm"
+              onClick={clearUsers} disabled={selectedUsers.length === 0}
             >
               Clear
             </Button>
@@ -173,10 +157,7 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
 
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
+            <Button variant="outline" role="combobox" aria-expanded={open}
               className="w-full justify-between bg-white text-sm h-12"
             >
               <div className="flex flex-wrap gap-1.5 items-center min-h-[1.5rem]">
@@ -184,15 +165,11 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
                   selectedUsers.map((id) => {
                     const user = users.find((u) => u.id === id)
                     return (
-                      <Badge
-                        key={id}
-                        variant="secondary"
+                      <Badge key={id} variant="secondary"
                         className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-700 text-xs px-2 py-0.5"
                       >
                         {user?.name}
-                        <span
-                          role="button"
-                          tabIndex={0}
+                        <span role="button" tabIndex={0}
                           onClick={(e) => {
                             e.stopPropagation()
                             e.preventDefault()
@@ -224,25 +201,27 @@ export default function InputAssignUserShift({ events, setEvents, users }) {
                 {users.map((user) => {
                   const isSelected = selectedUsers.includes(user.id)
                   return (
-                    <CommandItem key={user.id} value={user.name} onSelect={() => toggleUser(user.id)}
-                      className="group cursor-pointer flex items-center justify-between py-1 px-2  border border-transparent hover:border-slate-200 transition-colors">
-                      <div className="flex items-center gap-3 w-full rounded-md p-1transition-colors">
-                        <div className="p-2 rounded-lg bg-slate-100 transition-colors">
-                          <CircleUserRound className="h-5 w-5 text-slate-600 transition-colors" />
+                    <CommandItem
+                      key={user.id}
+                      value={user.name}
+                      onSelect={() => toggleUser(user.id)}
+                      className="group cursor-pointer flex items-center justify-between rounded-md px-3 py-2 mb-1 hover:bg-slate-50 hover:border-slate-200 border border-transparent transition-all duration-150"
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="p-2.5 rounded-lg bg-slate-100 group-hover:bg-slate-200 transition-colors">
+                          <CircleUserRound className="h-5 w-5 text-slate-600" />
                         </div>
 
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-slate-700 transition-colors">
+                          <span className="text-sm font-medium text-slate-700">
                             {user.name}
                           </span>
-                          <span className="text-xs text-slate-400 transition-colors">
-                            {user.email}
-                          </span>
+                          <span className="text-xs text-slate-400">{user.email}</span>
                         </div>
 
                         {isSelected && (
-                          <div className="ml-auto bg-teal-100/50 p-1.5 rounded-md  transition-colors">
-                            <Check className="h-4 w-4 text-teal-600 transition-colors" />
+                          <div className="ml-auto bg-teal-100/60 p-1.5 rounded-md">
+                            <Check className="h-4 w-4 text-teal-600" />
                           </div>
                         )}
                       </div>
