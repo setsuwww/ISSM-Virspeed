@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/_lib/prisma";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
-import ContentForm from "@/_components/content/ContentForm";
-import { ContentInformation } from "@/_components/content/ContentInformation";
 import EditDivisionForm from "./EditForm";
 
 export const revalidate = 60;
@@ -11,18 +9,11 @@ async function getDivision(id) {
   const division = await prisma.division.findUnique({
     where: { id },
     select: {
-      id: true,
-      name: true,
-      location: true,
-      longitude: true,
-      latitude: true,
-      radius: true,
-      type: true,
-      status: true,
-      startTime: true,
-      endTime: true,
-      createdAt: true,
-      updatedAt: true,
+      id: true, name: true,
+      location: true, longitude: true, latitude: true, radius: true,
+      type: true, status: true,
+      startTime: true, endTime: true,
+      createdAt: true, updatedAt: true,
     },
   });
 

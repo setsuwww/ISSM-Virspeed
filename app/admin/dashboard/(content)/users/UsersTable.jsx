@@ -6,16 +6,16 @@ import { UsersActionHeader } from "./UsersActionHeader";
 import { UsersRow } from "./UsersRow";
 import { roleStyles } from "@/_constants/roleConstants";
 import { useUsersHooks } from "@/_function/hooks/useUsersHooks";
+import EmptyStates from "@/_components/content/EmptyStates";
 
 export default function UsersTable({ data }) {
-  const hooks = useUsersHooks(data);
   const {
     search, handleSearchChange,
     roleFilter, handleRoleFilterChange, shiftFilter, handleShiftFilterChange,
     filteredData, selectedIds, selectedIdsSet, isAllSelected,
     toggleSelect, selectAll, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser, onExportPDF
-  } = hooks;
+  } = useUsersHooks(data);
 
   return (
     <div className="rounded-md space-y-4">
@@ -44,9 +44,7 @@ export default function UsersTable({ data }) {
         <TableBody>
           {filteredData.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-slate-400">
-                No data found
-              </TableCell>
+              <TableCell colSpan={7} className="text-center text-slate-400"><EmptyStates /></TableCell>
             </TableRow>
           ) : (
             filteredData.map((user) => (

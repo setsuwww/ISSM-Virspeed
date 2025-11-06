@@ -121,15 +121,15 @@
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('/fonts/Geist-VariableFont_wght.ttf') format('truetype');
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
 
 @layer base {
   * {
-    font-family: 'Geist';
+    font-family: 'Manrope';
   }
 
   button, a {

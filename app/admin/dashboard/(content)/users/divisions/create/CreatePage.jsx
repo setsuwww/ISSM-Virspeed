@@ -50,8 +50,8 @@ export default function CreateDivisionForm() {
       const result = await createDivision(payload)
       setLoading(false)
 
-      if (result.success) { alert(result.message)
-        router.push("/admin/dashboard/divisions")
+      if (result.success) {
+        router.push("/admin/dashboard/users/divisions")
       } 
       else { alert(result.message)}
     })

@@ -63,16 +63,11 @@ export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, t
       </TableCell>
       <TableCell>
         <EmployeesActionButton
-          onHistory={onHistory}
-          onSwitch={() => setSwitchOpen(true)}
-          onEdit={onEdit}
-          onDelete={onDelete}
+          onHistory={onHistory} onSwitch={() => setSwitchOpen(true)} onEdit={onEdit} onDelete={onDelete}
         />
 
         <EmployeesSwitchModal
-          key={user.id}
-          open={switchOpen}
-          onOpenChange={setSwitchOpen}
+          key={user.id} open={switchOpen} onOpenChange={setSwitchOpen}
           currentUserId={user.id}
         />
       </TableCell>

@@ -41,7 +41,7 @@ export default function EditForm({ user, divisions, shifts }) {
     startTransition(async () => {
       const result = await updateUser(form);
         if (result?.success) { router.push("/admin/dashboard/users")} 
-          else { alert(result?.error || "Failed to update user ❌")}
+        else { alert(result?.error)}
     });
   }
 

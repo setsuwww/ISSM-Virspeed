@@ -14,14 +14,12 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   search, setSearch,
   selected, onDeleteSelected, onDeleteAll, onExport,
   divisionFilter, setDivisionFilter,
-  divisions = [], shifts = [],
+  divisions = [],
 }) {
   const [openDivision, setOpenDivision] = useState(false)
-  const [openShift, setOpenShift] = useState(false)
   const [statusFilter, setStatusFilter] = useState([])
 
-  const selectedDivision =
-    divisionFilter === "all" ? "All" : divisions.find((d) => String(d.id) === divisionFilter)?.name ?? "Select Division"
+  const selectedDivision = divisionFilter === "all" ? "All" : divisions.find((d) => String(d.id) === divisionFilter)?.name ?? "Select Division"
 
   const toggleStatus = (status) => {
     setStatusFilter((prev) =>

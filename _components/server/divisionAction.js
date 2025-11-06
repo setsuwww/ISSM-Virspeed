@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
+import { timeToMinutes } from "@/_function/globalFunction"
 
 export async function createDivision(data) {
   try {
@@ -97,15 +98,12 @@ export async function updateDivision(id, data) {
     const updatedDivision = await prisma.division.update({
       where: { id: Number(id) },
       data: {
-        name,
-        location,
-        longitude: longitude ?? null,
-        latitude: latitude ?? null,
-        radius: radius ?? null,
-        type,
-        status,
-        startTime: startTime ?? null,
-        endTime: endTime ?? null,
+        name, location,
+        longitude: longitude ? parseFloat(longitude) : null, latitude: latitude ? parseFloat(latitude) : null,
+        radius: radius ? parseFloat(radius) : null,
+        type, status,
+        startTime: timeToMinutes(startTime) ?? null, 
+        endTime: timeToMinutes(endTime) ?? null,
         updatedAt: new Date(),
       },
     })
@@ -121,12 +119,12 @@ export async function updateDivision(id, data) {
 
 export async function deleteDivision(id) {
   await prisma.division.delete({ where: { id } })
-  revalidatePath("/admin/divisions")
+  revalidatePath("/admin/dashboard/users/divisions")
 }
 
 export async function deleteAllDivisions() {
   await prisma.division.deleteMany()
-  revalidatePath("/admin/divisions")
+  revalidatePath("/admin/dashboard/users/divisions")
 }
 
 export async function toggleDivisionStatus(id) {
@@ -139,5 +137,5 @@ export async function toggleDivisionStatus(id) {
     data: { status: newStatus },
   })
 
-  revalidatePath("/admin/divisions")
+  revalidatePath("/admin/dashboard/users/divisions")
 }

@@ -16,6 +16,8 @@ import { divisionStyles } from "@/_constants/divisionConstants"
 import { DivisionsStatusBadge } from "./DivisionsStatusBadge"
 import { DivisionsActionHeader } from "./DivisionsActionHeader"
 import { useDivisionsHooks } from "@/_function/hooks/useDivisionsHooks"
+import EmptyStates from "@/_components/content/EmptyStates"
+import { apiFetchData } from "@/_function/helpers/fetch"
 
 export default function DivisionsTable({ data }) {
   const {
@@ -24,8 +26,7 @@ export default function DivisionsTable({ data }) {
     typeFilter, setTypeFilter,
     statusFilter, setStatusFilter,
     filteredData,
-    selectedIds,
-    toggleSelect, toggleSelectAll,
+    selectedIds, toggleSelect, toggleSelectAll,
     handleDeleteSelected,
     handleDeleteAll,
     handleExportPDF,
@@ -40,20 +41,18 @@ export default function DivisionsTable({ data }) {
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const res = await fetch("/api/system-config")
-        const data = await res.json()
+        const data = await apiFetchData({ url: "/system-config", method: "get",
+          successMessage: null, useCache: true,
+        })
         setAllActive(data.allWfaActive)
-      } catch (err) {
-        console.error("Failed to fetch config:", err)
-      } finally {
-        setLoadingConfig(false)
-      }
+      } 
+      catch (err) { console.error("❌ Failed to fetch config:", err)} 
+      finally { setLoadingConfig(false)}
     }
     fetchConfig()
   }, [])
 
-  const handleBulkToggle = () => {
-    const newStatus = !allActive
+  const handleBulkToggle = () => { const newStatus = !allActive
     setPendingStatus(newStatus)
     setConfirmOpen(true)
   }
@@ -63,20 +62,18 @@ export default function DivisionsTable({ data }) {
     setConfirmOpen(false)
 
     try {
-      await fetch("/api/system-config", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ allWfaActive: pendingStatus }),
+      await apiFetchData({ url: "/system-config", method: "patch", data: { allWfaActive: pendingStatus },
+        successMessage: "Configuration updated successfully",
+        errorMessage: "Failed to update configuration",
       })
 
       await onBulkUpdate({
-        activateType: "WFA",
-        deactivateType: "WFO",
+        activateType: "WFA", deactivateType: "WFO",
         isActive: pendingStatus,
       })
-
       mutate && mutate()
-    } catch (err) {
+    } 
+    catch (err) {
       console.error("❌ Error confirming bulk toggle:", err)
     }
   }
@@ -85,7 +82,7 @@ export default function DivisionsTable({ data }) {
     return (
       <p className="flex items-center gap-x-1 text-sm text-slate-500">
         <Loader size={14} className="animate-spin" />
-        Loading offices
+        Loading offices...
       </p>
     )
   }
@@ -101,16 +98,11 @@ export default function DivisionsTable({ data }) {
         </div>
 
         <DivisionsActionHeader
-          search={search}
-          onSearchChange={setSearch}
-          typeFilter={typeFilter}
-          onTypeFilterChange={setTypeFilter}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          onDeleteSelected={handleDeleteSelected}
-          onDeleteAll={handleDeleteAll}
-          onExportPDF={handleExportPDF}
-          filteredData={filteredData}
+          search={search} onSearchChange={setSearch}
+          typeFilter={typeFilter} onTypeFilterChange={setTypeFilter}
+          statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
+          onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
+          onExportPDF={handleExportPDF} filteredData={filteredData}
         />
 
         <div className="rounded-md overflow-hidden">
@@ -118,11 +110,7 @@ export default function DivisionsTable({ data }) {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px] text-center">
-                  <Checkbox
-                    checked={filteredData.length > 0 && selectedIds.length === filteredData.length}
-                    onCheckedChange={toggleSelectAll}
-                    className="translate-y-[1px]"
-                  />
+                  <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={toggleSelectAll}/>
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
@@ -135,20 +123,12 @@ export default function DivisionsTable({ data }) {
 
             <TableBody>
               {filteredData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-slate-400">
-                    No data found
-                  </TableCell>
-                </TableRow>
+                <TableRow><EmptyStates /></TableRow>
               ) : (
                 filteredData.map((division) => (
                   <TableRow key={division.id}>
                     <TableCell className="text-center">
-                      <Checkbox
-                        checked={selectedIds.includes(division.id)}
-                        onCheckedChange={() => toggleSelect(division.id)}
-                        className="translate-y-[1px]"
-                      />
+                      <Checkbox checked={selectedIds.includes(division.id)} onCheckedChange={() => toggleSelect(division.id)}/>
                     </TableCell>
 
                     <TableCell>
@@ -170,21 +150,16 @@ export default function DivisionsTable({ data }) {
                     </TableCell>
 
                     <TableCell>
-                      <DivisionsStatusBadge
-                        status={division.status}
-                        onToggle={() => onToggleStatus(division)}
-                      />
+                      <DivisionsStatusBadge status={division.status} onToggle={() => onToggleStatus(division)} />
                     </TableCell>
 
                     <TableCell>
                       <div className="flex items-center gap-2 text-slate-600">
-                        <div className="p-2 text-yellow-700 bg-yellow-100 rounded-full">
-                          <AlarmClock size={16} strokeWidth={1.5} />
+                        <div className="p-2 text-yellow-700 bg-yellow-500/15 rounded-full">
+                          <AlarmClock size={14} strokeWidth={1.5} />
                         </div>
                         <span>
-                          {division.startTime && division.endTime
-                            ? `${division.startTime} - ${division.endTime}`
-                            : "-"}
+                          {division.startTime && division.endTime ? `${division.startTime} - ${division.endTime}` : "-"}
                         </span>
                       </div>
                     </TableCell>
@@ -202,10 +177,10 @@ export default function DivisionsTable({ data }) {
 
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => onEdit(division)}>
+                        <Button size="sm" variant="outline" onClick={() => onEdit(division.id)}>
                           Edit
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => onDelete(division)}>
+                        <Button size="sm" variant="destructive" onClick={() => onDelete(division.id)}>
                           Delete
                         </Button>
                       </div>
@@ -224,8 +199,7 @@ export default function DivisionsTable({ data }) {
             <DialogTitle>Confirm Activate</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-slate-600">
-            {pendingStatus
-              ? "Are you sure you want to activate all WFA and inactivate all WFO?"
+            {pendingStatus ? "Are you sure you want to activate all WFA and inactivate all WFO?"
               : "Are you sure you want to deactivate all WFA and activate all WFO?"}
           </p>
           <DialogFooter className="mt-4">

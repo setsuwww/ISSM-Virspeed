@@ -1,123 +1,85 @@
 "use client"
 
 import { useToast } from "@/_components/client/Toast-Provider"
-import {
-  toggleDivisionStatus,
-  deleteDivision,
-  deleteAllDivisions,
-  bulkToggleDivisions,
-} from "@/_components/server/divisionAction"
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleDivisions } from "@/_components/server/divisionAction"
+import { exportDivision } from "../exports/exportDivision"
+import { useRouter } from "next/navigation"
 
 export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, mutate }) {
-  const { addToast } = useToast()
+  const toast = useToast()
+  const router = useRouter()
 
   const toggleSelect = (id) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    )
+    setSelectedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
   }
 
   const toggleSelectAll = (checked) => {
     if (checked) { const allIds = filteredData.map((d) => d.id)
       setSelectedIds(allIds)
-    } else {
-      setSelectedIds([])
-    }
+    } else { setSelectedIds([])}
   }
 
   const onToggleStatus = async (division) => {
-    try {
-      await toggleDivisionStatus(division.id)
-      addToast({
-        title: "Status updated",
-        description: `Division "${division.name}" status successfully changed.`,
-      })
+    try { await toggleDivisionStatus(division.id)
+      toast.success(`Division "${division.name}" status successfully changed.`)
       mutate && mutate()
-    } catch (error) {
-      console.error(error)
-      addToast({
-        title: "Error",
-        description: "Failed to update division status.",
-        variant: "destructive",
-      })
-    }
+    } catch (error) { toast.error("Failed to update division status.")}
   }
 
-  const onDelete = async (division) => {
-    if (!confirm(`Delete ${division.name}?`)) return
-    try {
-      await deleteDivision(division.id)
-      addToast({
-        title: "Division deleted",
-        description: `"${division.name}" has been removed.`,
-      })
+  const onDelete = async (id) => {
+    if (!confirm(`Delete this division?`)) return
+    try { await deleteDivision(id)
+      toast.success(`"Division has been removed.`)
       mutate && mutate()
-    } catch (error) {
-      addToast({
-        title: "Error",
-        description: "Failed to delete division.",
-        variant: "destructive",
-      })
-    }
+    } catch { toast.error("Failed to delete division.")}
   }
 
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0)
-      return addToast({
-        title: "No selection",
-        description: "Please select at least one division to delete.",
-        variant: "destructive",
-      })
+      return toast.error("Please select at least one division to delete.")
 
     if (!confirm("Delete selected divisions?")) return
 
     for (const id of selectedIds) await deleteDivision(id)
     setSelectedIds([])
 
-    addToast({
-      title: "Divisions deleted",
-      description: "Selected divisions have been successfully removed.",
-    })
-
+    toast.success("Selected divisions have been successfully removed.")
     mutate && mutate()
   }
 
   const handleDeleteAll = async () => {
     if (!confirm("Delete ALL divisions?")) return
+
     await deleteAllDivisions()
-
-    addToast({
-      title: "All divisions deleted",
-      description: "All divisions have been successfully removed.",
-    })
-
+    toast.success("All divisions have been successfully removed.")
     mutate && mutate()
   }
 
   const onBulkUpdate = async (payload) => {
-    try {
-      await bulkToggleDivisions(payload)
-      addToast({
-        title: "Bulk update complete",
-        description: `All divisions updated to ${payload.isActive ? "active" : "inactive"} mode.`,
-      })
+    try { await bulkToggleDivisions(payload)
+      toast.success( `All divisions updated to ${payload.isActive ? "active" : "inactive"} mode.`)
       mutate && mutate()
-    } catch (err) {
-      addToast({
-        title: "Error",
-        description: "Failed to bulk update divisions.",
-        variant: "destructive",
-      })
+    } catch { toast.error("Failed to bulk update divisions.")}
+  }
+
+  const onEdit = (division) => { router.push(`/admin/dashboard/users/divisions/${division}/edit`)}
+
+  const handleExportPDF = () => {
+    if (!filteredData?.length) { toast.error("No divisions to export.")
+      return
     }
+
+    try { exportDivision(filteredData)
+      toast.success("Division data exported as PDF.")
+    } catch { toast.error("An error occurred while exporting.")}
   }
 
   return {
-    toggleSelect,
-    toggleSelectAll,
+    toggleSelect, toggleSelectAll,
     onToggleStatus,
-    onDelete,
-    handleDeleteSelected,
-    handleDeleteAll,
+    onEdit, onDelete,
+    handleExportPDF,
+    handleDeleteSelected, handleDeleteAll,
     onBulkUpdate,
   }
 }

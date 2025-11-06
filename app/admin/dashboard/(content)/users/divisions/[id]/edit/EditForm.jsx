@@ -15,15 +15,31 @@ import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
 import { minutesToTime, capitalize } from "@/_function/globalFunction";
 
 import { updateDivision } from "@/_components/server/divisionAction";
+import { useToast } from "@/_components/client/Toast-Provider";
 
 export default function EditDivisionForm({ division }) {
   const router = useRouter();
+  const { addToast } = useToast()
   const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData) {
+    const data = Object.fromEntries(formData.entries()); // ✅ Fix: ubah FormData jadi object
+
     startTransition(async () => {
-      await updateDivision(division.id, formData);
-      router.push("/admin/dashboard/divisions");
+      const res = await updateDivision(division.id, data);
+      if (res?.success) {
+        addToast({
+          title: "Status updated",
+          description: `Division "${division.name}" status successfully changed.`,
+        })
+        router.push("/admin/dashboard/users/divisions");
+      }
+      else {
+        addToast({
+          title: "Update failed",
+          description: `Division "${division.name}" fail to change`,
+        })
+      }
     });
   }
 
@@ -31,13 +47,8 @@ export default function EditDivisionForm({ division }) {
     <ContentForm>
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
-          <ContentInformation
-            heading="Edit Division"
-            subheading={`Editing data for: ${division.name}`}
-            show
-            variant="outline"
-            buttonText="Back"
-            href="/admin/dashboard/divisions"
+          <ContentInformation heading="Edit Division" subheading={`Editing data for: ${division.name}`}
+            show variant="outline" buttonText="Back" href="/admin/dashboard/users/divisions"
           />
         </ContentForm.Header>
 

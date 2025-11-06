@@ -11,15 +11,10 @@ export function useUsersHooks(initialData) {
   const selectedIdsSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
   const filteredData = useMemo(() => {
-    console.log("ShiftFilter:", shiftFilter);
-    console.log("Sample shifts:", initialData.map(u => u.shift));
-    
     return initialData.filter((user) => {
       const name = user.name?.toLowerCase() || "";
       const email = user.email?.toLowerCase() || "";
       const role = user.role?.toUpperCase() || "USER";
-
-      const shiftName = typeof user.shift === "string" ? user.shift : user.shift?.name || "None";
 
       const matchSearch = name.includes(search.toLowerCase()) || email.includes(search.toLowerCase());
       const matchRole = roleFilter === "all" || role === roleFilter.toUpperCase();

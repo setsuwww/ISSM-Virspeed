@@ -130,7 +130,7 @@ export default function CreateForm({ divisions, shifts }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="divisionId">division Assignment</Label>
+                <Label htmlFor="divisionId">Division Assignment</Label>
                 <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)}>
                   <SelectTrigger className="w-1/2">
                     <SelectValue placeholder="Select an division" />

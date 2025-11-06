@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { CircleUserRound, Search, Loader, CalendarSync } from "lucide-react"
+import { CircleUserRound, Search, CalendarSync, Loader } from "lucide-react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog"
@@ -22,30 +22,19 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
   const { data: currentUser, isLoading: loadingCurrent } = useQuery({
     queryKey: ["currentUser", currentUserId],
     queryFn: () =>
-      apiFetchData({
-        url: `/users/${currentUserId}`, method: "get",
-        errorMessage: "Failed to load current user",
-      }),
+      apiFetchData({ url: `/users/${currentUserId}`, method: "get"}),
     enabled: open && !!currentUserId,
   })
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["usersToSwitch", currentUserId],
     queryFn: () =>
-      apiFetchData({
-        url: `/users/${currentUserId}/switch`, method: "get",
-        errorMessage: "Failed to load users",
-      }),
+      apiFetchData({ url: `/users/${currentUserId}/switch`, method: "get" }),
     enabled: open && !!currentUserId,
   })
 
   const swapMutation = useMutation({
-    mutationFn: () =>
-      apiFetchData({
-        url: `/users/${currentUserId}/switch`, method: "post", data: { otherUserId: selectedId },
-        successMessage: "Shift swapped successfully",
-        errorMessage: "Failed to swap shifts",
-      }),
+    mutationFn: () => apiFetchData({ url: `/users/${currentUserId}/switch`, method: "post", data: { otherUserId: selectedId }}),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["currentUser", currentUserId] })
       await queryClient.invalidateQueries({ queryKey: ["usersToSwitch", currentUserId] })
@@ -60,8 +49,7 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
 
   return (
     <Dialog open={open} onOpenChange={(val) => {
-      if (!val) {
-        setSelectedId(null)
+      if (!val) { setSelectedId(null)
         setSearch("")
       }
       onOpenChange(val)
@@ -143,7 +131,10 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
             Cancel
           </Button>
           <Button disabled={!selectedId || swapMutation.isPending} onClick={() => swapMutation.mutate()}>
-            {swapMutation.isPending ? "Swapping..." : "Confirm"}
+            {swapMutation.isPending 
+              ? (<><Loader />Swapping...</>) 
+              : "Confirm"
+            }
           </Button>
         </div>
       </DialogContent>
