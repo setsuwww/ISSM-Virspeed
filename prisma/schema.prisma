@@ -104,7 +104,6 @@ model User {
   division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
   shift  Shift?  @relation("ShiftUsers", fields: [shiftId], references: [id])
 
-  customShifts       UserShiftAssignment[]
   schedules          SchedulesOnUsers[]
   attendances        Attendance[]
 
@@ -128,11 +127,7 @@ model Shift {
   division   Division? @relation(fields: [divisionId], references: [id])
 
   users              User[]                @relation("ShiftUsers")
-  assignments        UserShiftAssignment[]
   attendances        Attendance[]
-
-  scheduleDatesPrimary   ScheduleDate[] @relation("PrimaryShift")
-  scheduleDatesSecondary ScheduleDate[] @relation("SecondaryShift")
 
   oldShiftRequests     ShiftChangeRequest[] @relation("OldShift")
   newShiftRequests     ShiftChangeRequest[] @relation("NewShift")
@@ -170,31 +165,6 @@ model SchedulesOnUsers {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, userId])
-}
-
-model ScheduleDate {
-  id            Int      @id @default(autoincrement())
-  scheduleId    Int
-  date          DateTime
-  shiftId       Int?
-  secondShiftId Int?
-
-  shift       Shift?   @relation("PrimaryShift", fields: [shiftId], references: [id])
-  secondShift Shift?   @relation("SecondaryShift", fields: [secondShiftId], references: [id])
-
-  @@unique([scheduleId, date])
-}
-
-model UserShiftAssignment {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  shiftId    Int
-  assignedAt DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id])
-  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, shiftId])
 }
 
 model Attendance {
