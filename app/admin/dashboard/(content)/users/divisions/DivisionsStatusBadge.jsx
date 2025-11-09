@@ -12,8 +12,7 @@ export function DivisionsStatusBadge({ status, onToggle }) {
     >
       <span className="relative flex h-2 w-2">
         <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${isActive ? "bg-teal-300" : "bg-rose-400"}`}/>
-        <span
-          className={`relative inline-flex rounded-full h-2 w-2 ${
+        <span className={`relative inline-flex rounded-full h-2 w-2 ${
             isActive ? "bg-teal-500" : "bg-rose-600"
           }`}
         />

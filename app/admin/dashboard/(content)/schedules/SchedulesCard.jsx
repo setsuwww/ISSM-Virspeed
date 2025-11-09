@@ -31,9 +31,7 @@ export default function SchedulesCard({ data }) {
     toggleSelect, deleteSelected, deleteAll,
     handleEditSchedule, handleDeleteSchedule,
     onExportPDF,
-  } = useHandleSchedules(
-    selectedIds, setSelectedIds, filteredData, () => router.refresh()
-  )
+  } = useHandleSchedules(selectedIds, setSelectedIds, filteredData, () => router.refresh())
 
   return (
     <div className="space-y-4">
@@ -68,8 +66,7 @@ export default function SchedulesCard({ data }) {
                   </CardTitle>
 
                   <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={selectedIds.includes(schedule.id)}
+                    <Checkbox checked={selectedIds.includes(schedule.id)}
                       className="border-slate-300"
                       onCheckedChange={(checked) => toggleSelect(schedule.id, checked === true)}
                     />

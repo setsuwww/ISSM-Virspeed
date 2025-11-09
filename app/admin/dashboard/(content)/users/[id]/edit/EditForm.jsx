@@ -58,7 +58,7 @@ export default function EditForm({ user, divisions, shifts }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Back" variant="outline" href="/admin/dashboard/users/employees" />
+            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/users/employees" />
           </ContentForm.Header>
 
           <ContentForm.Body>

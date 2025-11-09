@@ -18,7 +18,7 @@ export async function getSchedules({ page = 1, search = "", frequency, shift }) 
         ? { OR: [ { title: { contains: search, mode: "insensitive" } },
               { description: { contains: search, mode: "insensitive" } },
             ],
-          }
+          } 
         : {}),
       ...(frequency && frequency !== "all" ? { frequency } : {}), ...(shift && shift !== "all" ? { shift: { type: shift } } : {}),
     },

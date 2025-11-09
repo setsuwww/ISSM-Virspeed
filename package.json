@@ -37,7 +37,6 @@
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
-    "framer-motion": "^12.23.12",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",

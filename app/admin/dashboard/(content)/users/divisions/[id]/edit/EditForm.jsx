@@ -48,7 +48,7 @@ export default function EditDivisionForm({ division }) {
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
           <ContentInformation heading="Edit Division" subheading={`Editing data for: ${division.name}`}
-            show variant="outline" buttonText="Back" href="/admin/dashboard/users/divisions"
+            show variant="outline" buttonText="Cancel" href="/admin/dashboard/users/divisions"
           />
         </ContentForm.Header>
 

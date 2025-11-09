@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { Loader, Building2, AlarmClock } from "lucide-react"
 import { format } from "date-fns"
-import { AlarmClock, Loader, Building2 } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -17,7 +17,8 @@ import { DivisionsStatusBadge } from "./DivisionsStatusBadge"
 import { DivisionsActionHeader } from "./DivisionsActionHeader"
 import { useDivisionsHooks } from "@/_function/hooks/useDivisionsHooks"
 import EmptyStates from "@/_components/content/EmptyStates"
-import { apiFetchData } from "@/_function/helpers/fetch"
+
+import { useDivisionStore } from "@/_stores/useDivisionStore"
 
 export default function DivisionsTable({ data }) {
   const {
@@ -33,56 +34,23 @@ export default function DivisionsTable({ data }) {
     onEdit, onDelete, onToggleStatus, onBulkUpdate,
   } = useDivisionsHooks(data)
 
-  const [allActive, setAllActive] = useState(false)
-  const [loadingConfig, setLoadingConfig] = useState(true)
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [pendingStatus, setPendingStatus] = useState(null)
+  const {
+    allActive,
+    confirmOpen,
+    pendingStatus,
+    loading,
+    fetchConfig,
+    handleBulkToggle,
+    confirmBulkToggle,
+    closeDialog,
+  } = useDivisionStore()
 
-  useEffect(() => {
-    async function fetchConfig() {
-      try {
-        const data = await apiFetchData({ url: "/system-config", method: "get",
-          successMessage: null, useCache: true,
-        })
-        setAllActive(data.allWfaActive)
-      } 
-      catch (err) { console.error("❌ Failed to fetch config:", err)} 
-      finally { setLoadingConfig(false)}
-    }
-    fetchConfig()
-  }, [])
+  useEffect(() => { fetchConfig()}, [fetchConfig])
 
-  const handleBulkToggle = () => { const newStatus = !allActive
-    setPendingStatus(newStatus)
-    setConfirmOpen(true)
-  }
-
-  const confirmBulkToggle = async () => {
-    setAllActive(pendingStatus)
-    setConfirmOpen(false)
-
-    try {
-      await apiFetchData({ url: "/system-config", method: "patch", data: { allWfaActive: pendingStatus },
-        successMessage: "Configuration updated successfully",
-        errorMessage: "Failed to update configuration",
-      })
-
-      await onBulkUpdate({
-        activateType: "WFA", deactivateType: "WFO",
-        isActive: pendingStatus,
-      })
-      mutate && mutate()
-    } 
-    catch (err) {
-      console.error("❌ Error confirming bulk toggle:", err)
-    }
-  }
-
-  if (loadingConfig) {
+  if (loading) {
     return (
       <p className="flex items-center gap-x-1 text-sm text-slate-500">
-        <Loader size={14} className="animate-spin" />
-        Loading offices...
+        <Loader size={14} className="animate-spin" /> Loading offices...
       </p>
     )
   }
@@ -90,6 +58,7 @@ export default function DivisionsTable({ data }) {
   return (
     <>
       <div className="space-y-3">
+        {/* === Global WFA Toggle === */}
         <div className="flex items-center gap-2">
           <Switch id="bulk-toggle" checked={allActive} onCheckedChange={handleBulkToggle} />
           <Label htmlFor="bulk-toggle" className="text-sm text-slate-600">
@@ -102,7 +71,8 @@ export default function DivisionsTable({ data }) {
           typeFilter={typeFilter} onTypeFilterChange={setTypeFilter}
           statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
           onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
-          onExportPDF={handleExportPDF} filteredData={filteredData}
+          onExportPDF={handleExportPDF}
+          filteredData={filteredData}
         />
 
         <div className="rounded-md overflow-hidden">
@@ -193,20 +163,21 @@ export default function DivisionsTable({ data }) {
         </div>
       </div>
 
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+      <Dialog open={confirmOpen} onOpenChange={closeDialog}>
         <DialogContent className="max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Confirm Activate</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-slate-600">
-            {pendingStatus ? "Are you sure you want to activate all WFA and inactivate all WFO?"
+            {pendingStatus
+              ? "Are you sure you want to activate all WFA and inactivate all WFO?"
               : "Are you sure you want to deactivate all WFA and activate all WFO?"}
           </p>
           <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+            <Button variant="outline" onClick={closeDialog}>
               Cancel
             </Button>
-            <Button onClick={confirmBulkToggle}>Confirm</Button>
+            <Button onClick={() => confirmBulkToggle(onBulkUpdate, mutate)}>Confirm</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

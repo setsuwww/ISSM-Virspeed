@@ -70,7 +70,7 @@ export async function updateSchedule(data) {
     data: {
       title,
       description,
-      frequency,
+      frequency: frequency || "ONCE",
       startDate: new Date(startDate),
       startTime,
       endDate: new Date(endDate),

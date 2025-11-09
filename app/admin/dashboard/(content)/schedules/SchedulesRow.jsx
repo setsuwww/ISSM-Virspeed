@@ -13,13 +13,8 @@ import { frequencyStyles } from "@/_constants/scheduleConstants";
 
 export const SchedulesRow = React.memo(function ({ schedule, isSelected, onSelect, onEdit, onDelete }) {
 
-  const formatedUpdatedDate = useMemo(() =>
-    format(new Date(schedule.updatedAt), "dd-MMMM-yyyy"),
-    [schedule.updatedAt])
-
-  const formatedCreatedDate = useMemo(() =>
-    format(new Date(schedule.createdAt), "dd-MMMM-yyyy"),
-    [schedule.createdAt])
+  const formatedUpdatedDate = useMemo(() => format(new Date(schedule.updatedAt), "dd-MMMM-yyyy"), [schedule.updatedAt])
+  const formatedCreatedDate = useMemo(() => format(new Date(schedule.createdAt), "dd-MMMM-yyyy"), [schedule.createdAt])
 
   return (
     <TableRow>

@@ -105,6 +105,7 @@ model User {
   shift  Shift?  @relation("ShiftUsers", fields: [shiftId], references: [id])
 
   schedules          SchedulesOnUsers[]
+  customShifts       UserShiftAssignment[]
   attendances        Attendance[]
 
   shiftRequests        ShiftChangeRequest[] @relation("RequestedUser")     
@@ -127,6 +128,7 @@ model Shift {
   division   Division? @relation(fields: [divisionId], references: [id])
 
   users              User[]                @relation("ShiftUsers")
+  assignments        UserShiftAssignment[]
   attendances        Attendance[]
 
   oldShiftRequests     ShiftChangeRequest[] @relation("OldShift")
@@ -135,6 +137,18 @@ model Shift {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model UserShiftAssignment {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  shiftId    Int
+  assignedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, shiftId])
 }
 
 model Schedule {

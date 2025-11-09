@@ -1,81 +1,59 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { toast } from "sonner"
-
 import { Loader } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useCallback } from "react"
 
-import InputAssignUserShift from "./InputAssignUserShift"
+import { useScheduleStore } from "@/_stores/useScheduleStore"
+import { useToast } from "@/_components/client/Toast-Provider"
 import { createSchedule } from "@/_components/server/scheduleAction"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select"
-import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
+
+import { DashboardHeader } from "../../../DashboardHeader"
 import ContentForm from "@/_components/content/ContentForm"
 import { ContentInformation } from "@/_components/content/ContentInformation"
-
-
-import { useToast } from "@/_components/client/Toast-Provider"
-import { useRouter } from "next/navigation"
+import InputAssignUserShift from "./InputAssignUserShift"
 
 export default function CreateForm({ users, shifts }) {
-  const { addToast } = useToast()
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [activeDate, setActiveDate] = useState(null)
-  const [events, setEvents] = useState([])
+  const { addToast } = useToast()
 
-  const [form, setForm] = useState({
-    title: "", description: "", frequency: "ONCE",
-  })
+  const { form, events, loading, setFormField, setLoading, resetForm, totalAssignedUsers } = useScheduleStore()
 
-  const handleChange = useCallback((field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-  }, [])
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!form.title.trim() || !form.description.trim() || events.length === 0) {
-      toast.error("Please fill all required fields")
-      return
-    }
-
-    setLoading(true)
-    try {
-      const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
-
-      const payload = {
-        title: form.title,
-        description: form.description,
-        frequency: form.frequency,
-        startDate: events[0]?.startDate,
-        endDate: events[0]?.endDate,
-        startTime: events[0]?.startTime,
-        endTime: events[0]?.endTime,
-        userIds,
+      if (!form.title.trim() || !form.description.trim() || events.length === 0) {
+        addToast("Fill all required form", { type: "error" })
+        return
       }
 
-      const result = await createSchedule(payload)
+      setLoading(true)
+      try { const userIds = Array.from( new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
 
-      if (result.success) {
-        addToast("Schedule created successfully", { type: "success" })
-        setForm({ title: "", description: "", frequency: "ONCE", })
-        setEvents([])
-        setActiveDate(null)
-        router.push("/admin/dashboard/schedules")
-      } else {
-        addToast("Schedule failed created", { type: "error" })
-      }
-    } catch (error) {
-      console.error("Error creating schedule:", error)
-      addToast("Schedule failed created", { type: "error" })
-    } finally {
-      setLoading(false)
-    }
-  }
+        const payload = {
+          title: form.title, description: form.description, frequency: form.frequency,
+          startDate: events[0]?.startDate, endDate: events[0]?.endDate,
+          startTime: events[0]?.startTime, endTime: events[0]?.endTime,
+          userIds,
+        }
+
+        const result = await createSchedule(payload)
+
+        if (result.success) { addToast("Schedule created successfully", { type: "success" })
+          resetForm()
+          router.push("/admin/dashboard/schedules")
+        } else { addToast("Schedule failed created", { type: "error" })}
+      } catch (error) { addToast("Schedule failed created", { type: "error" })} 
+      finally { setLoading(false)}
+    },
+    [form, events, setLoading, addToast, resetForm, router]
+  )
 
   return (
     <section>
@@ -83,7 +61,9 @@ export default function CreateForm({ users, shifts }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users" />
+          <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users"
+            show={true} buttonText="Back" variant="outline" href="/admin/dashboard/schedules"
+          />
         </ContentForm.Header>
 
         <ContentForm.Body>
@@ -91,14 +71,14 @@ export default function CreateForm({ users, shifts }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
-                <Input id="title" value={form.title} onChange={(e) => handleChange("title", e.target.value)}
+                <Input id="title" value={form.title} onChange={(e) => setFormField("title", e.target.value)}
                   placeholder="Enter schedule title" required
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Input id="description" value={form.description} onChange={(e) => handleChange("description", e.target.value)}
+                <Input id="description" value={form.description} onChange={(e) => setFormField("description", e.target.value)}
                   placeholder="Enter schedule description" required
                 />
               </div>
@@ -106,7 +86,7 @@ export default function CreateForm({ users, shifts }) {
 
             <div className="space-y-2">
               <Label htmlFor="frequency">Select Frequency</Label>
-              <Select value={form.frequency} onValueChange={(value) => handleChange("frequency", value)}>
+              <Select value={form.frequency} onValueChange={(value) => setFormField("frequency", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Frequency" />
                 </SelectTrigger>
@@ -120,21 +100,21 @@ export default function CreateForm({ users, shifts }) {
               </Select>
             </div>
 
-            <InputAssignUserShift
-              events={events} setEvents={setEvents}
-              users={users}
-              activeDate={activeDate} setActiveDate={setActiveDate}
-            />
+            <InputAssignUserShift users={users} />
 
             <div className="flex items-center justify-between pt-6 border-t border-slate-200">
               <div className="text-sm text-slate-600">
-                {events.reduce((acc, e) => acc + e.users.length, 0)} users assigned •{" "}
-                {events.length} dates scheduled
+                {totalAssignedUsers()} users assigned • {events.length} dates scheduled
               </div>
               <div className="flex items-center space-x-2">
-                <Button type="button" variant="outline" disabled={loading}>Cancel</Button>
+                <Button type="button" variant="outline" disabled={loading}>
+                  Cancel
+                </Button>
                 <Button type="submit" disabled={loading}>
-                  {loading ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) : "Create Schedule"}
+                  {loading 
+                    ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) 
+                    : ("Create Schedule")
+                  }
                 </Button>
               </div>
             </div>
