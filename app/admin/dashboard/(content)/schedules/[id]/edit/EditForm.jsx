@@ -45,7 +45,7 @@ export default function EditForm({ schedule, users }) {
 
     setLoading(true)
     try { const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
-
+      
       const payload = {
         id: schedule.id, title: form.title, description: form.description, frequency: form.frequency,
         startDate: events[0]?.startDate ?? null, endDate: events[0]?.endDate ?? null,
