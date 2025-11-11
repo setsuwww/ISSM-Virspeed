@@ -37,8 +37,7 @@ export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1;
 
   const [users, total] = await Promise.all([
-    getUsers(page),
-    getUserCount(),
+    getUsers(page), getUserCount(),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -50,8 +49,7 @@ export default async function Page({ searchParams }) {
           label: capitalize(u.shift.name || u.shift.type),
           start: u.shift.startTime, end: u.shift.endTime,
           type: u.shift.type,
-        }
-      : null;
+        } : null;
 
     const divisionShift =
       !userShift && u.division?.shifts?.length
@@ -59,8 +57,7 @@ export default async function Page({ searchParams }) {
             label: `${u.division.shifts[0].name} - (Division)`,
             start: u.division.shifts[0].startTime, end: u.division.shifts[0].endTime,
             type: "DIVISION"
-          }
-        : null;
+          } : null;
 
     const divisionTime =
       !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
@@ -68,8 +65,7 @@ export default async function Page({ searchParams }) {
             label: u.division.name,
             start: u.division.startTime, end: u.division.endTime,
             type: "DIVISION_TIME"
-          }
-        : null;
+          } : null;
 
     const finalShift = userShift || divisionShift || divisionTime;
     const shiftLabel = finalShift ? finalShift.label : "—";

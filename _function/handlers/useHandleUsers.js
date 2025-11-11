@@ -6,7 +6,7 @@ import { exportUser } from "@/_function/exports/exportUser"
 import { useToast } from "@/_components/client/Toast-Provider"
 import { useRouter } from "next/navigation"
 
-export function handleUsers({ filteredData, selectedIds, setSelectedIds }) {
+export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
   const toast = useToast()
   const router = useRouter()
 

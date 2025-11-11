@@ -1,4 +1,3 @@
-
 export function timeToInt(time) {
   if (!time || typeof time !== "string" || !time.includes(":")) return 0;
   const [hours, minutes] = time.split(":").map(Number);

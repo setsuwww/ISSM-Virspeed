@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
-import { handleUsers } from "../handlers/handleUsers";
+import { useHandleUsers } from "../handlers/useHandleUsers";
 
 export function useUsersHooks(initialData) {
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ export function useUsersHooks(initialData) {
     isAllSelected, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,
     onExportPDF,
-  } = handleUsers({ filteredData, selectedIds, setSelectedIds })
+  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds })
 
   return {
     search, roleFilter, shiftFilter,

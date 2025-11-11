@@ -7,7 +7,7 @@ import { ChevronDown, Grip, Menu, X, Users, Clock, LayoutDashboard, User, Circle
 import { roleStyles } from "@/_constants/roleConstants"
 import clsx from "clsx"
 
-const subLinkBase = "block text-sm px-3 py-1.5 transition-colors font-medium rounded-md"
+const subLinkBase = "block my-0.5 text-sm px-3 py-1.5 transition-colors font-medium rounded-md"
 
 function SidebarLink({ href, icon: Icon, children, minimized }) {
   const pathname = usePathname()
@@ -191,7 +191,7 @@ export function Sidebar({ user }) {
             minimized={minimized}
           />
 
-          <SidebarLink href="/admin/dashboard/profile" icon={User} minimized={minimized}>
+          <SidebarLink href="/admin/dashboard/profiles" icon={User} minimized={minimized}>
             Profile
           </SidebarLink>
         </nav>
