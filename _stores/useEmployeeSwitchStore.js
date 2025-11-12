@@ -1,4 +1,3 @@
-// stores/useEmployeeSwitchStore.js
 import { create } from "zustand"
 
 export const useEmployeeSwitchStore = create((set) => ({

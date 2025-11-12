@@ -12,4 +12,23 @@ export const shiftIcons = {
   EVENING: <Moon className="w-4 h-4 text-purple-500" />,
 };
 
+function PingDot({ color }) {
+  return (
+    <span className="relative flex h-2 w-2 ml-1">
+      <span
+        className={`absolute inline-flex h-full w-full rounded-full opacity-20 scale-175 ${color}`}
+      ></span>
+      <span
+        className={`relative inline-flex rounded-full h-2 w-2 ${color}`}
+      ></span>
+    </span>
+  )
+}
+
+export const shiftDots = {
+  MORNING: (<PingDot color="bg-yellow-400" />),
+  AFTERNOON: (<PingDot color="bg-orange-300" />),
+  EVENING: (<PingDot color="bg-purple-300" />),
+}
+
 export const defaultShifts = ["MORNING", "AFTERNOON", "EVENING"];

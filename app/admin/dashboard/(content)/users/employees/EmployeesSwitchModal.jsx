@@ -47,9 +47,8 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
   })
 
   const filteredUsers =
-    users?.filter(
-      (u) => u.id !== currentUserId &&
-        (u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
+    users?.filter((u) => u.id !== currentUserId &&
+      (u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
     ) ?? []
 
   return (

@@ -3,17 +3,17 @@
 import { useState, useMemo } from "react";
 import { CircleUserRound, Trash2, FolderInput, RefreshCcw } from "lucide-react";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/_components/ui/Table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
-
 import { capitalize } from "@/_function/globalFunction";
 import { roleStyles } from "@/_constants/roleConstants";
 import { format } from "date-fns";
 
 import { EmployeesSwitchModal } from "../../../users/employees/EmployeesSwitchModal";
+import EmptyStates from "@/_components/content/EmptyStates";
 
 export default function UserShiftTable({ data }) {
   const [selectedIds, setSelectedIds] = useState([]);
@@ -24,7 +24,7 @@ export default function UserShiftTable({ data }) {
 
   const toggleSelectAll = () => {
     if (selectedIds.length === filteredData.length) { setSelectedIds([])} 
-    else { setSelectedIds(filteredData.map((u) => u.id)) }
+    else { setSelectedIds(filteredData.map((u) => u.id));}
   };
 
   const filteredData = useMemo(() => {
@@ -32,14 +32,12 @@ export default function UserShiftTable({ data }) {
       const matchesSearch =
         u.name.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase());
-
       const matchesRole = filterRole === "ALL" ? true : u.role === filterRole;
-
       return matchesSearch && matchesRole;
     });
   }, [data, search, filterRole]);
 
-  const handleDeleteSelected = () => { console.log("Delete selected:", selectedIds);
+  const handleDeleteSelected = () => {
     setSelectedIds([]);
   };
 
@@ -75,106 +73,107 @@ export default function UserShiftTable({ data }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" className="text-rose-500" disabled={selectedIds.length === 0} onClick={handleDeleteSelected}>
+          <Button size="sm" variant="ghost" className="text-rose-500" 
+            disabled={selectedIds.length === 0} onClick={handleDeleteSelected}
+          >
             Delete Selected
           </Button>
-          <Button size="sm" variant="ghost" className="bg-rose-50 text-rose-500 hover:bg-rose-100" onClick={handleDeleteAll}>
+          <Button size="sm" variant="ghost" className="bg-rose-50 text-rose-500 hover:bg-rose-100"
+            onClick={handleDeleteAll}
+          >
             <Trash2 size={18} strokeWidth={2} />
             Delete All
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => console.log("Export CSV")} className="bg-teal-100/50 text-teal-600 hover:bg-teal-100">
+          <Button size="sm" variant="ghost" onClick={() => console.log("Export CSV")}
+            className="bg-teal-100/50 text-teal-600 hover:bg-teal-100"
+          >
             <FolderInput size={16} /> Export
           </Button>
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>
-              <Checkbox checked={ selectedIds.length > 0 &&
-                  selectedIds.length === filteredData.length
-                }
-                onCheckedChange={toggleSelectAll}
-              />
-            </TableHead>
-            <TableHead>Username</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Created & Updated</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+      {filteredData.length === 0 ? (
+        <EmptyStates />
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                <Checkbox checked={selectedIds.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={toggleSelectAll}/>
+              </TableHead>
+              <TableHead>Username</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Created & Updated</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
 
-        <TableBody>
-          {filteredData.map((user) => {
-            const created = format(new Date(user.createdAt), "dd MMMM yyyy");
-            const updated = format(new Date(user.updatedAt), "dd MMMM yyyy");
+          <TableBody>
+            {filteredData.map((user) => {
+              const created = format(new Date(user.createdAt), "dd MMMM yyyy");
+              const updated = format(new Date(user.updatedAt), "dd MMMM yyyy");
 
-            return (
-              <TableRow key={user.id}>
-                <TableCell>
-                  <Checkbox checked={selectedIds.includes(user.id)}
-                    onCheckedChange={() =>
-                      setSelectedIds(selectedIds.includes(user.id)
+              return (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <Checkbox checked={selectedIds.includes(user.id)}
+                      onCheckedChange={() => setSelectedIds(selectedIds.includes(user.id)
                         ? selectedIds.filter((id) => id !== user.id)
                           : [...selectedIds, user.id]
-                      )
-                    }
-                  />
-                </TableCell>
+                      )}
+                    />
+                  </TableCell>
 
-                <TableCell>
-                  <div className="flex items-center gap-x-2">
-                    <div className="p-2 bg-slate-200 rounded-full">
-                      <CircleUserRound strokeWidth={1.5} className="text-slate-500" />
+                  <TableCell>
+                    <div className="flex items-center gap-x-2">
+                      <div className="p-2 bg-slate-200 rounded-full">
+                        <CircleUserRound strokeWidth={1.5} className="text-slate-500" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-600">{user.name}</span>
+                        <span className="text-xs text-slate-400">{user.email}</span>
+                      </div>
                     </div>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-slate-600">{user.name}</span>
-                      <span className="text-xs text-slate-400">{user.email}</span>
+                  </TableCell>
+
+                  <TableCell>
+                    <span className={`bg-transparent text-base ${roleStyles[capitalize(user.role)] ?? ""}`}>
+                      {capitalize(user.role)}
+                    </span>
+                  </TableCell>
+
+                  <TableCell>
+                    <span className="flex flex-col">
+                      <span className="text-sm font-semibold text-slate-600">{created}</span>
+                      <span className="text-xs text-slate-400">{updated}</span>
+                    </span>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant="outline" onClick={() => handleSwapShift(user.id)}>
+                        <RefreshCcw />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleEditUser(user.id)}>
+                        Edit
+                      </Button>
+                      <Button size="sm" variant="destructive" onClick={() => handleDeleteUser(user.id)}>
+                        Delete
+                      </Button>
                     </div>
-                  </div>
-                </TableCell>
-
-                <TableCell>
-                  <span className={`bg-transparent text-base ${roleStyles[capitalize(user.role)] ?? ""}`}>
-                    {capitalize(user.role)}
-                  </span>
-                </TableCell>
-
-                <TableCell>
-                  <span className="flex flex-col">
-                    <span className="text-sm font-semibold text-slate-600">
-                      {created}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {updated}
-                    </span>
-                  </span>
-                </TableCell>
-
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleSwapShift(user.id)}>
-                      <RefreshCcw />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleEditUser(user.id)}>
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDeleteUser(user.id)}>
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
 
       <EmployeesSwitchModal
         open={modalOpen}
-        onOpenChange={(isOpen) => { setModalOpen(isOpen)
-          if (!isOpen) setCurrentUserId(null)
+        onOpenChange={(isOpen) => {
+          setModalOpen(isOpen);
+          if (!isOpen) setCurrentUserId(null);
         }}
         currentUserId={currentUserId}
       />

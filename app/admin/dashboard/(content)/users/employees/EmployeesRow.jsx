@@ -11,13 +11,14 @@ import { EmployeesSwitchModal } from "./EmployeesSwitchModal";
 
 import { format } from "date-fns";
 import { capitalize } from "@/_function/globalFunction";
+import { shiftDots } from "@/_constants/shiftConstants";
 
 export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, toggleSelect, onHistory, onEdit, onDelete }) {
   const [switchOpen, setSwitchOpen] = useState(false);
   return (
     <TableRow key={user.id}>
       <TableCell>
-        <Checkbox checked={selected.includes(user.id)} onCheckedChange={() => toggleSelect(user.id)}/>
+        <Checkbox checked={selected.includes(user.id)} onCheckedChange={() => toggleSelect(user.id)} />
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
@@ -33,12 +34,16 @@ export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, t
         </div>
       </TableCell>
       <TableCell>
-        <div className="flex flex-col text-sm text-slate-600">
-          <p className="font-semibold">{capitalize(user.shift?.type)}</p>
+        <div className="flex items-center space-x-3">
+          {shiftDots[user.shift?.type]}
 
-          <p className="text-xs text-slate-400">
-            <span>{user.shift?.startTime}</span> - <span>{user.shift?.endTime}</span>
-          </p>
+          <div className="flex flex-col text-sm text-slate-600">
+            <p className="font-semibold">{capitalize(user.shift?.type)}</p>
+
+            <p className="text-xs text-slate-400">
+              <span>{user.shift?.startTime}</span> - <span>{user.shift?.endTime}</span>
+            </p>
+          </div>
         </div>
       </TableCell>
       <TableCell>
