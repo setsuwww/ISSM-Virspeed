@@ -69,7 +69,7 @@ export default async function Page({ searchParams }) {
           <ContentInformation heading="Schedule table" subheading="Manage schedule more detail than calendar view"/>
           <div className="flex items-center space-x-2 mt-4 mb-4">
             {frequenciesLabel.map((f) => (
-              <div key={f.label} className={`flex items-center space-x-2 bg-${f.color}-100 border border-${f.color}-200 px-2 py-0.5 rounded-md`}>
+              <div key={f.label} className={`flex items-center space-x-2 bg-${f.color}-100/60 border border-${f.color}-200 px-2 py-0.5 rounded-full`}>
                 <Tag strokeWidth={2} className={`w-3 h-3 text-${f.color}-600`}/>
                 <span className={`text-${f.color}-600 text-sm font-base`}>
                   {f.label}

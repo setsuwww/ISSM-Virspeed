@@ -18,6 +18,7 @@ import { updateSchedule } from "@/_components/server/scheduleAction"
 import { useToast } from "@/_components/client/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
+import { Textarea } from "@/_components/ui/Textarea"
 
 export default function EditForm({ schedule, users }) {
   const { form, events, setFormField, setEvents, loading, setLoading, resetForm } = useScheduleStore()
@@ -25,9 +26,9 @@ export default function EditForm({ schedule, users }) {
   const router = useRouter()
 
   useEffect(() => { if (schedule) {
-      setFormField("title", schedule.title || "")
-      setFormField("description", schedule.description || "")
-      setFormField("frequency", schedule.frequency || "ONCE")
+      setFormField("title", schedule.title ?? "")
+      setFormField("description", schedule.description ?? "")
+      setFormField("frequency", schedule.frequency ?? "ONCE");
 
       setEvents([{
         startDate: schedule.startDate || "", endDate: schedule.endDate || "",
@@ -54,9 +55,7 @@ export default function EditForm({ schedule, users }) {
       }
 
       await updateSchedule(payload)
-
       addToast("Schedule updated successfully", { type: "success" })
-      resetForm()
       router.push("/admin/dashboard/schedules")
     } 
     catch (error) {addToast("Schedule failed to update", { type: "error" })} 
@@ -76,18 +75,18 @@ export default function EditForm({ schedule, users }) {
 
         <ContentForm.Body>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+            <div className="flex flex-col gap-4">
+              <div className="space-y-2 max-w-sm">
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" value={form.title} onChange={(e) => setFormField("title", e.target.value)}
-                  placeholder="Enter schedule title" required
+                  placeholder="Enter schedule title" required 
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Input id="description" value={form.description} onChange={(e) => setFormField("description", e.target.value)}
-                  placeholder="Enter schedule description" required
+                <Textarea id="description" value={form.description} onChange={(e) => setFormField("description", e.target.value)}
+                  placeholder="Enter schedule description" required className="h-32"
                 />
               </div>
             </div>
