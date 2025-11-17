@@ -177,6 +177,7 @@ export function Sidebar({ user }) {
               { label: "Add Divisions", href: "/admin/dashboard/users/divisions/create" },
               { label: "Employees", href: "/admin/dashboard/users/employees" },
               { label: "Attendances", href: "/admin/dashboard/users/attendances" },
+              { label: "Work Hours", href: "/admin/dashboard/users/work-hours" },
             ]}
             minimized={minimized}
           />

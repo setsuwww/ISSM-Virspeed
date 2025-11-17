@@ -17,6 +17,7 @@ import { DashboardHeader } from "../../../DashboardHeader"
 import ContentForm from "@/_components/content/ContentForm"
 import { ContentInformation } from "@/_components/content/ContentInformation"
 import InputAssignUserShift from "./InputAssignUserShift"
+import { Textarea } from "@/_components/ui/Textarea"
 
 export default function CreateForm({ users, shifts }) {
   const router = useRouter()
@@ -68,8 +69,8 @@ export default function CreateForm({ users, shifts }) {
 
         <ContentForm.Body>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+            <div className="flex flex-col gap-4">
+              <div className="space-y-2 max-w-sm">
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" value={form.title} onChange={(e) => setFormField("title", e.target.value)}
                   placeholder="Enter schedule title" required
@@ -78,8 +79,8 @@ export default function CreateForm({ users, shifts }) {
 
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Input id="description" value={form.description} onChange={(e) => setFormField("description", e.target.value)}
-                  placeholder="Enter schedule description" required
+                <Textarea id="description" value={form.description} onChange={(e) => setFormField("description", e.target.value)}
+                  placeholder="Enter schedule description..." required className="h-32"
                 />
               </div>
             </div>

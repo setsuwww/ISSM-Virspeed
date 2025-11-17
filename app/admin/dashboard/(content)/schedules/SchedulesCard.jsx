@@ -1,37 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { CalendarClock, MoreHorizontal, Pen, Trash } from "lucide-react"
-import { format } from "date-fns"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { CalendarClock } from "lucide-react";
+import { format } from "date-fns";
 
-import { Checkbox } from "@/_components/ui/Checkbox"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/_components/ui/Card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/_components/ui/Dropdown-menu"
+import { Checkbox } from "@/_components/ui/Checkbox";
 
-import SchedulesActionHeader from "./SchedulesActionHeader"
-import ScheduleUsersDialog from "./SchedulesUsersDialog"
-import { useHandleSchedules } from "@/_function/handlers/useHandleSchedules"
-import { capitalize } from "@/_function/globalFunction"
-import { frequencyStyles } from "@/_constants/scheduleConstants"
-import EmptyStates from "@/_components/content/EmptyStates"
-import { useSchedulesHooks } from "@/_function/hooks/useSchedulesHooks"
+import SchedulesActionHeader from "./SchedulesActionHeader";
+import ScheduleUsersDialog from "./SchedulesUsersDialog";
+import { useHandleSchedules } from "@/_function/handlers/useHandleSchedules";
+import { capitalize } from "@/_function/globalFunction";
+import { frequencyStyles } from "@/_constants/scheduleConstants";
+import EmptyStates from "@/_components/content/EmptyStates";
+import { useSchedulesHooks } from "@/_function/hooks/useSchedulesHooks";
 
 export default function SchedulesCard({ data }) {
-  const router = useRouter()
-  const [selectedIds, setSelectedIds] = useState([])
+  const router = useRouter();
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const {
     search, setSearch,
     filterFrequency, setFilterFrequency,
     filteredData,
-  } = useSchedulesHooks(data)
+  } = useSchedulesHooks(data);
 
   const {
-    toggleSelect, deleteSelected, deleteAll,
-    handleEditSchedule, handleDeleteSchedule,
+    toggleSelect,
+    deleteSelected,
+    deleteAll,
+    handleEditSchedule,
+    handleDeleteSchedule,
     onExportPDF,
-  } = useHandleSchedules(selectedIds, setSelectedIds, filteredData, () => router.refresh())
+  } = useHandleSchedules({
+    selectedIds,
+    setSelectedIds,
+    filteredData,
+    reloadData: () => router.refresh(),
+  });
 
   return (
     <div className="space-y-4">
@@ -48,62 +54,49 @@ export default function SchedulesCard({ data }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredData.map((schedule) => {
-            const formatedCreatedDate = format(new Date(schedule.createdAt), "dd-MMMM-yyyy")
-            const formatedUpdatedDate = format(new Date(schedule.updatedAt), "dd-MMMM-yyyy")
+            const formatedStartDate = format(new Date(schedule.startDate), "dd MMMM yyyy");
 
             return (
-              <Card key={schedule.id} className="relative group">
-                <CardHeader className="flex flex-row items-center justify-between px-6 py-3">
-                  <CardTitle>
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-md ${frequencyStyles[capitalize(schedule.frequency)]}`}>
-                        <CalendarClock strokeWidth={1.5} size={20} />
-                      </div>
-                      <div className="flex font-semibold text-slate-600">
-                        <h2 className="leading-snug">{schedule.title}</h2>
-                      </div>
+              <div key={schedule.id}
+                className="rounded-xl ring-1 ring-slate-200 border-b-2 border-slate-200 bg-white shadow-sm transition-all flex flex-col"
+              >
+                <div className="flex flex-row items-center justify-between px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-md ${frequencyStyles[capitalize(schedule.frequency)]}`}>
+                      <CalendarClock strokeWidth={1.5} size={20} />
                     </div>
-                  </CardTitle>
+
+                    <div className="flex flex-col">
+                      <h2 className="text-sm font-medium text-slate-700">{schedule.title}</h2>
+                      <h4 className="text-xs font-light text-slate-400">{formatedStartDate}</h4>
+                    </div>
+                  </div>
 
                   <div className="flex items-center gap-2">
-                    <Checkbox checked={selectedIds.includes(schedule.id)}
-                      className="border-slate-300"
+                    <Checkbox
+                      checked={selectedIds.includes(schedule.id)} className="border-slate-300"
                       onCheckedChange={(checked) => toggleSelect(schedule.id, checked === true)}
                     />
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="p-1 rounded-md bg-slate-50 hover:bg-slate-100">
-                          <MoreHorizontal className="w-5 h-5 text-slate-500" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-28">
-                        <DropdownMenuItem onClick={() => handleEditSchedule(schedule.id)}>
-                          <Pen size={10}/> <span>Edit</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteSchedule(schedule.id)} className="hover:text-rose-600">
-                          <Trash size={10}/> <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
-                </CardHeader>
+                </div>
 
-                <CardContent className="space-y-3">
-                  <p className="text-sm font-semibold text-slate-600">Assigned Users:</p>
+                <div className="pt-2 pb-6 px-4 space-y-2">
+                  <p className="text-xs font-base text-slate-400">
+                    {schedule.description}
+                  </p>
+
                   <ScheduleUsersDialog users={schedule.users} schedules={schedule} />
-                </CardContent>
+                </div>
 
-                <CardFooter className="flex justify-between items-center text-xs text-slate-500">
-                  <div>
-                    <div className="font-semibold text-slate-600">{formatedCreatedDate}</div>
-                    <div className="text-slate-400">{formatedUpdatedDate}</div>
-                  </div>
-                </CardFooter>
-              </Card>
-            )
+                <div className="flex space-x-2 items-center text-xs text-slate-500 px-4 py-3 border-t">
+                  <button className="hover:text-slate-600" onClick={() => handleEditSchedule(schedule.id)}>Edit</button>
+                  <button className="text-rose-400 hover:text-rose-600" onClick={() => handleDeleteSchedule(schedule.id)}>Delete</button>
+                </div>
+              </div>
+            );
           })}
         </div>
       )}
     </div>
-  )
+  );
 }
