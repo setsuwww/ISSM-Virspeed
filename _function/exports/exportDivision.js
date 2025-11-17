@@ -12,21 +12,13 @@ export function exportDivision(divisions = []) {
   doc.text("Division List Report", 14, 15)
 
   const today = new Date().toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
+    day: "2-digit", month: "long", year: "numeric",
   })
   doc.setFontSize(10)
   doc.text(`Generated on: ${today}`, 14, 23)
 
   const tableColumn = [
-    "Name",
-    "Location",
-    "Type",
-    "Status",
-    "Start Time",
-    "End Time",
-    "Created At",
+    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At",
   ]
 
   const tableRows = divisions.map((d) => [
