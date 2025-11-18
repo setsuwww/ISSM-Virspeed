@@ -4,6 +4,7 @@ import { ContentInformation } from "@/_components/content/ContentInformation"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
 import DivisionsTable from "./DivisionsTable"
 import { prisma } from "@/_lib/prisma"
+import { minutesToTime } from "@/_function/globalFunction"
 
 const PAGE_SIZE = 5
 
@@ -23,12 +24,8 @@ export default async function Page({ searchParams }) {
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
   const formattedDivisions = divisions.map((division) => ({...division,
-    startTime: division.startTime != null
-      ? `${String(Math.floor(division.startTime / 60)).padStart(2, "0")}:${String(division.startTime % 60).padStart(2, "0")}`
-      : "-",
-    endTime: division.endTime != null
-      ? `${String(Math.floor(division.endTime / 60)).padStart(2, "0")}:${String(division.endTime % 60).padStart(2, "0")}`
-      : "-",
+    startTime: minutesToTime(division.startTime),
+    endTime: minutesToTime(division.endTime)
   }))
 
   return (

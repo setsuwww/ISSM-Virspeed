@@ -31,7 +31,6 @@ export function formatTimeToInt(time) {
   return h * 100 + m
 }
 
-
 export function timeToMinutes(time) {
   const [h, m] = time.split(":").map(Number)
   return h * 60 + m
