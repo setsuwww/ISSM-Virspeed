@@ -1,9 +1,9 @@
 import { Sun, SunMoon, Moon } from "lucide-react";
 
 export const shiftStyles = {
-  MORNING: "text-yellow-600 bg-yellow-100 border-yellow-200",
-  AFTERNOON: "text-orange-600 bg-orange-100 border-orange-200",
-  EVENING: "text-purple-600 bg-purple-100 border-purple-200",
+  MORNING: "text-yellow-600 bg-yellow-100/50 border-yellow-200/50",
+  AFTERNOON: "text-orange-600 bg-orange-100/50 border-orange-200/50",
+  EVENING: "text-purple-600 bg-purple-100/50 border-purple-200/50",
 };
 
 export const shiftIcons = {

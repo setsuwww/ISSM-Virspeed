@@ -32,18 +32,9 @@ export function getDisplayStatus(status) {
 }
 
 export const statusColorsClass = {
-  PRESENT: { 
-    bgPing: "bg-teal-400", 
-    bgDot: "bg-radial from-teal-400 to-teal-500", 
-
-    head: "text-teal-800",
-    text: "text-teal-600", 
-    subtext: "text-teal-400", 
-    border: "bg-teal-100 border-teal-600" 
-  },
   ABSENT: { 
     bgPing: "bg-rose-400", 
-    bgDot: "bg-radial from-rose-400 to-rose-500", 
+    bgDot: "bg-rose-400", 
     
     head: "text-rose-800",
     text: "text-rose-600", 
@@ -52,7 +43,7 @@ export const statusColorsClass = {
   },
   LATE: { 
     bgPing: "bg-yellow-400", 
-    bgDot: "bg-radial from-yellow-400 to-yellow-500", 
+    bgDot: "bg-yellow-400", 
     
     head: "text-yellow-800",
     text: "text-yellow-600", 
@@ -61,7 +52,7 @@ export const statusColorsClass = {
   },
   PERMISSION: { 
     bgPing: "bg-blue-400", 
-    bgDot: "bg-radial from-blue-400 to-blue-500", 
+    bgDot: "bg-blue-400", 
     
     head: "text-blue-800",
     text: "text-blue-600", 

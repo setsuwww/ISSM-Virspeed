@@ -17,10 +17,10 @@ function SidebarLink({ href, icon: Icon, children, minimized }) {
     <Link
       href={href}
       className={clsx(
-        "text-sm flex items-center rounded-lg transition-all duration-200",
+        "text-sm font-semibold flex items-center rounded-lg transition-all duration-200",
         minimized ? "justify-center h-12 w-12 mx-auto" : "gap-3 px-3 py-2 w-full",
         isActive
-          ? "bg-slate-50 ring ring-slate-200 text-slate-800 font-medium border-b-2 border-0 border-slate-200"
+          ? "bg-slate-50 ring ring-slate-200 text-slate-800 border-b-2 border-0 border-slate-200"
           : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
       )}
     >
@@ -72,7 +72,7 @@ function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
       <button onClick={handleClick}
         className={clsx("group w-full flex items-center transition-all duration-200 rounded-lg",
           minimized ? "justify-center h-12 w-12 mx-auto" : "justify-between py-2 px-2.5",
-          isParentActive ? "bg-slate-50 ring ring-slate-200 text-slate-800 font-medium border-b-2 border-0 border-slate-200" : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
+          isParentActive ? "bg-slate-50 ring ring-slate-200 text-slate-600 font-bold border-b-2 border-0 border-slate-200" : "font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-50"
         )}
       >
         <div className="flex items-center gap-x-3">

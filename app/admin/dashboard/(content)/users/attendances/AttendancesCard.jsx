@@ -21,13 +21,8 @@ export function AttendancesCard({ shifts = [] }) {
     )
   }, [shifts])
 
-  const handleOpen = useCallback((status) => {
-    setSelectedStatus(status)
-  }, [])
-
-  const handleClose = useCallback(() => {
-    setSelectedStatus(null)
-  }, [])
+  const handleOpen = useCallback((status) => { setSelectedStatus(status)}, [])
+  const handleClose = useCallback(() => { setSelectedStatus(null)}, [])
 
   const defaultStatuses = useMemo(() => ["ABSENT", "LATE", "PERMISSION"], [])
 
@@ -51,7 +46,6 @@ export function AttendancesCard({ shifts = [] }) {
           return acc
         }, { accepted: 0, pending: 0, rejected: 0 }
       )
-
       return { status, users, approvalCounts }
     })
   }, [allUsers, defaultStatuses])

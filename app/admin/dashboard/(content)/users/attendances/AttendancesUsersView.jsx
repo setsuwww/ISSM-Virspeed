@@ -21,8 +21,8 @@ export default function AttendancesUsersView({
                 <User size={26} />
               </div>
               <div className="flex flex-col">
-                <span>Attendance detail</span>
-                <span className="text-sm text-slate-400">
+                <span className="text-sm">Attendance detail</span>
+                <span className="text-xs text-slate-400">
                   {allUsers.filter((u) => u.attendanceStatus === selectedStatus).length}{" "}Employees
                 </span>
               </div>
@@ -40,7 +40,7 @@ export default function AttendancesUsersView({
             if (!usersInShift.length) return null
             return (
               <div key={shift.id} className="border rounded-lg overflow-hidden bg-white">
-                <div className="px-4 py-2 font-medium bg-slate-50 border-b text-slate-800">
+                <div className="px-4 py-2 text-sm font-medium bg-slate-50 border-b text-slate-600">
                   {capitalize(String(shift.type || shift.name || "-"))} -{" "}
                   {shift.divisionName || "-"}
                 </div>

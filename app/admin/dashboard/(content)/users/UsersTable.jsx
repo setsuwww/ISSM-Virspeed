@@ -44,7 +44,7 @@ export default function UsersTable({ data }) {
         <TableBody>
           {filteredData.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-slate-400"><EmptyStates /></TableCell>
+              <TableCell colSpan={7} className="w-10 text-center text-slate-400"><EmptyStates /></TableCell>
             </TableRow>
           ) : (
             filteredData.map((user) => (
