@@ -6,7 +6,7 @@ import { ContentInformation } from "@/_components/content/ContentInformation";
 import { Pagination } from "../../../Pagination";
 import { notFound } from "next/navigation";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 export const revalidate = 60;
 
 async function getWorkHoursData(page = 1) {

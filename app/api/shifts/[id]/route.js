@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/_lib/prisma";
-import { timeToInt } from "@/_function/services/shiftAttendanceHelpers";
+import { timeToMinutes } from "@/_function/globalFunction";
 
 export async function GET(req, context) {
   const params = await context.params;
@@ -30,8 +30,8 @@ export async function PUT(req, context) {
       data: {
         type,
         name,
-        startTime: timeToInt(startTime),
-        endTime: timeToInt(endTime),
+        startTime: timeToMinutes(startTime),
+        endTime: timeToMinutes(endTime),
         divisionId: parseInt(divisionId),
       },
     });

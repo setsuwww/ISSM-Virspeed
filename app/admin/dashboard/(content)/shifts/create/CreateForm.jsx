@@ -12,7 +12,7 @@ import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
 import { apiFetchData } from "@/_function/helpers/fetch";
-import { timeToInt } from "@/_function/services/shiftAttendanceHelpers";
+import { timeToMinutes } from "@/_function/globalFunction";
 import { capitalize } from "@/_function/globalFunction";
 import { Loader } from "lucide-react";
 
@@ -36,8 +36,8 @@ export default function CreateShiftForm({ divisions }) {
 
     const payload = {
       type, name,
-      startTime: timeToInt(startTime),
-      endTime: timeToInt(endTime),
+      startTime: timeToMinutes(startTime),
+      endTime: timeToMinutes(endTime),
       divisionId: parseInt(divisionId),
     };
 

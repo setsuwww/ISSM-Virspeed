@@ -37,6 +37,7 @@
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "exceljs": "^4.4.0",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",

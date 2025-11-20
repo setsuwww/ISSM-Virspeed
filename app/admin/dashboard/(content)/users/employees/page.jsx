@@ -4,10 +4,10 @@ import ContentForm from "@/_components/content/ContentForm";
 import EmployeesTable from "./EmployeesTable";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import { minutesToTime } from "@/_function/services/shiftAttendanceHelpers";
+import { minutesToTime } from "@/_function/globalFunction";
 import EmployeesTableButton from "./EmployeesTableButton";
 
-const PAGE_SIZE = 100;
+const PAGE_SIZE = 10;
 
 async function getEmployees(page = 1) {
   return prisma.user.findMany({ where: { role: "EMPLOYEE", shiftId: { not: null }},

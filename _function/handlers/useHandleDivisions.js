@@ -1,7 +1,7 @@
 "use client"
 
 import { useToast } from "@/_components/client/Toast-Provider"
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleDivisions } from "@/_components/server/divisionAction"
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision } from "@/_components/server/divisionAction"
 import { exportDivision } from "../exports/exportDivision"
 import { useRouter } from "next/navigation"
 
@@ -55,12 +55,16 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
     mutate && mutate()
   }
 
-  const onBulkUpdate = async (payload) => {
-    try { await bulkToggleDivisions(payload)
-      toast.success( `All divisions updated to ${payload.isActive ? "active" : "inactive"} mode.`)
-      mutate && mutate()
-    } catch { toast.error("Failed to bulk update divisions.")}
-  }
+  const onBulkUpdate = async (ids, mode) => {
+    const payload = { ids, isActive: mode === "ACTIVE"};
+
+    try { await bulkToggleSelectedDivision(payload);
+
+      toast.success(`All selected divisions updated to ${payload.isActive ? "active" : "inactive"}.`);
+      mutate && mutate();
+    } 
+    catch {toast.error("Failed to bulk update divisions.")}
+  };
 
   const onEdit = (division) => { router.push(`/admin/dashboard/users/divisions/${division}/edit`)}
 

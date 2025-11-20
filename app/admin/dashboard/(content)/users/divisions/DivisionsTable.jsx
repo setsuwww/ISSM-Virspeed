@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { Loader, Building2, AlarmClock } from "lucide-react"
+import { Loader, Building2, AlarmClock, Check, X } from "lucide-react"
 import { format } from "date-fns"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
@@ -45,7 +45,7 @@ export default function DivisionsTable({ data }) {
     closeDialog,
   } = useDivisionStore()
 
-  useEffect(() => { fetchConfig()}, [fetchConfig])
+  useEffect(() => { fetchConfig() }, [fetchConfig])
 
   if (loading) {
     return (
@@ -58,12 +58,33 @@ export default function DivisionsTable({ data }) {
   return (
     <>
       <div className="space-y-3">
-        {/* === Global WFA Toggle === */}
-        <div className="flex items-center gap-2">
-          <Switch id="bulk-toggle" checked={allActive} onCheckedChange={handleBulkToggle} />
-          <Label htmlFor="bulk-toggle" className="text-sm text-slate-600">
-            Set All WFA Active / WFO Inactive
-          </Label>
+
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Switch id="bulk-toggle" checked={allActive} onCheckedChange={handleBulkToggle} />
+            <div className="flex flex-col">
+              <Label htmlFor="bulk-toggle" className="text-sm text-slate-600">Toggle Division</Label>
+              <span className="text-xs text-slate-400">Set all Division status Active or Inactive</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-2">
+            <Button size="sm"
+              variant="outline" className="text-xs rounded-full" disabled={selectedIds.length === 0}
+              onClick={() => onBulkUpdate(selectedIds, "ACTIVE")}
+            >
+              <Check className="text-teal-600" />
+              Activate Selected
+            </Button>
+
+            <Button size="sm"
+              variant="outline" className="text-xs rounded-full" disabled={selectedIds.length === 0}
+              onClick={() => onBulkUpdate(selectedIds, "INACTIVE")}
+            >
+              <X className="text-rose-600" />
+              Inactivate Selected
+            </Button>
+          </div>
         </div>
 
         <DivisionsActionHeader
@@ -80,7 +101,7 @@ export default function DivisionsTable({ data }) {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px] text-center">
-                  <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={toggleSelectAll}/>
+                  <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={toggleSelectAll} />
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
@@ -98,7 +119,7 @@ export default function DivisionsTable({ data }) {
                 filteredData.map((division) => (
                   <TableRow key={division.id}>
                     <TableCell className="text-center">
-                      <Checkbox checked={selectedIds.includes(division.id)} onCheckedChange={() => toggleSelect(division.id)}/>
+                      <Checkbox checked={selectedIds.includes(division.id)} onCheckedChange={() => toggleSelect(division.id)} />
                     </TableCell>
 
                     <TableCell>

@@ -6,7 +6,7 @@ import DivisionsTable from "./DivisionsTable"
 import { prisma } from "@/_lib/prisma"
 import { minutesToTime } from "@/_function/globalFunction"
 
-const PAGE_SIZE = 5
+const PAGE_SIZE = 10
 
 export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1
@@ -40,7 +40,7 @@ export default async function Page({ searchParams }) {
 
         <ContentForm.Body>
           <DivisionsTable data={formattedDivisions} />
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/divisions" />
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/divisions" />
         </ContentForm.Body>
       </ContentForm>
     </section>
