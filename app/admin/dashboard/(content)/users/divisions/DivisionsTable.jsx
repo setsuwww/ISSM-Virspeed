@@ -15,8 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { divisionStyles } from "@/_constants/divisionConstants"
 import { DivisionsStatusBadge } from "./DivisionsStatusBadge"
 import { DivisionsActionHeader } from "./DivisionsActionHeader"
-import { useDivisionsHooks } from "@/_function/hooks/useDivisionsHooks"
-import EmptyStates from "@/_components/content/EmptyStates"
+import { useDivisionsHooks } from "@/_client/hooks/useDivisionsHooks"
+import EmptyStates from "@/_components/common/EmptyStates"
 
 import { useDivisionStore } from "@/_stores/useDivisionStore"
 
@@ -114,7 +114,7 @@ export default function DivisionsTable({ data }) {
 
             <TableBody>
               {filteredData.length === 0 ? (
-                <TableRow><EmptyStates /></TableRow>
+                <TableRow><TableCell colSpan={7} className="w-10 text-center text-slate-400"><EmptyStates /></TableCell></TableRow>
               ) : (
                 filteredData.map((division) => (
                   <TableRow key={division.id}>

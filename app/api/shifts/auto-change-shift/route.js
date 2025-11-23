@@ -1,4 +1,4 @@
-import { startingShiftUpdate, resetExpiredShiftChanges } from "@/_components/server/shiftAction"
+import { startingShiftUpdate, resetExpiredShiftChanges } from "@/_server/shiftAction"
 import dayjs from "@/_lib/day"
 
 export async function GET(request) {

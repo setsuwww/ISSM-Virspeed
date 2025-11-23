@@ -2,8 +2,8 @@ import { prisma } from "@/_lib/prisma"
 import { notFound } from "next/navigation"
 import { getCurrentUser } from "@/_lib/auth"
 import HistoryTable from "./HistoryTable"
-import { ContentInformation } from "@/_components/content/ContentInformation"
-import ContentForm from '@/_components/content/ContentForm';
+import { ContentInformation } from "@/_components/common/ContentInformation"
+import ContentForm from '@/_components/common/ContentForm';
 
 export const revalidate = 60
 

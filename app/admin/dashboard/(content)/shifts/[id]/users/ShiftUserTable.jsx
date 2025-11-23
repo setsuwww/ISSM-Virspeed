@@ -13,7 +13,7 @@ import { roleStyles } from "@/_constants/roleConstants";
 import { format } from "date-fns";
 
 import { EmployeesSwitchModal } from "../../../users/employees/EmployeesSwitchModal";
-import EmptyStates from "@/_components/content/EmptyStates";
+import EmptyStates from "@/_components/common/EmptyStates";
 
 export default function UserShiftTable({ data }) {
   const [selectedIds, setSelectedIds] = useState([]);

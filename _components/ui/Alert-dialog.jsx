@@ -4,12 +4,7 @@ import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 import { cn } from "@/_lib/utils"
 import { buttonVariants } from "@/_components/ui/Button"
-import {
-  Info,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle
-} from "lucide-react"
+import { Info, AlertTriangle, CheckCircle2, XCircle } from "lucide-react"
 
 function AlertDialog({ ...props }) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
@@ -25,8 +20,7 @@ function AlertDialogPortal({ ...props }) {
 
 function AlertDialogOverlay({ className, ...props }) {
   return (
-    <AlertDialogPrimitive.Overlay
-      data-slot="alert-dialog-overlay"
+    <AlertDialogPrimitive.Overlay data-slot="alert-dialog-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className

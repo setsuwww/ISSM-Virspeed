@@ -1,6 +1,6 @@
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
 import DivisionsTable from "./DivisionsTable"
 import { prisma } from "@/_lib/prisma"

@@ -1,6 +1,6 @@
 import { prisma } from "@/_lib/prisma";
-import { ContentInformation } from "@/_components/content/ContentInformation";
-import ContentForm from "@/_components/content/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
+import ContentForm from "@/_components/common/ContentForm";
 import EmployeesTable from "./EmployeesTable";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";

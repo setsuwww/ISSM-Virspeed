@@ -8,7 +8,7 @@ import {
   User,
   RefreshCcw,
 } from "lucide-react"
-import SubHeading from "./content/SubHeading"
+import SubHeading from "./common/SubHeading"
 import { cn } from "@/_lib/utils"
 
 const linkBase =

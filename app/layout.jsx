@@ -1,4 +1,4 @@
-import { ToastProvider } from "@/_components/client/Toast-Provider"
+import { ToastProvider } from "@/_context/Toast-Provider"
 import "@/_styles/globals.css"
 
 export const metadata = {

@@ -9,11 +9,11 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 
 import SchedulesActionHeader from "./SchedulesActionHeader";
 import ScheduleUsersDialog from "./SchedulesUsersDialog";
-import { useHandleSchedules } from "@/_function/handlers/useHandleSchedules";
+import { useHandleSchedules } from "@/_client/handlers/useHandleSchedules";
 import { capitalize } from "@/_function/globalFunction";
 import { frequencyStyles } from "@/_constants/scheduleConstants";
-import EmptyStates from "@/_components/content/EmptyStates";
-import { useSchedulesHooks } from "@/_function/hooks/useSchedulesHooks";
+import EmptyStates from "@/_components/common/EmptyStates";
+import { useSchedulesHooks } from "@/_client/hooks/useSchedulesHooks";
 
 export default function SchedulesCard({ data }) {
   const router = useRouter();

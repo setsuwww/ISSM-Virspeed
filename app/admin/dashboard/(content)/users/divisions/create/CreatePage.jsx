@@ -9,13 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/_components/ui/Label"
 
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants"
 import { capitalize, timeToMinutes } from "@/_function/globalFunction"
 import { Loader } from "lucide-react"
-import { createDivision } from "@/_components/server/divisionAction"
+import { createDivision } from "@/_server/divisionAction"
 
 export default function CreateDivisionForm() {
   const router = useRouter()

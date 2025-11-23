@@ -7,7 +7,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/_components/ui/Popove
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/_components/ui/Command"
 import { Badge } from "@/_components/ui/Badge"
 import { Check, ChevronsUpDown, CircleUserRound, X } from "lucide-react"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 
 export default function UpdateAssignUserShift({ users }) {

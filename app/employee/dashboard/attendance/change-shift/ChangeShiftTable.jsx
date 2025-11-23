@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { updateShiftChangeStatus } from "@/_components/server/shiftAction"
+import { updateShiftChangeStatus } from "@/_server/shiftAction"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/Dialog"
 import { Button } from "@/_components/ui/Button"
@@ -10,8 +10,8 @@ import { Badge } from "@/_components/ui/Badge"
 import { capitalize } from "@/_function/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attedancesStyles } from "@/_constants/attendanceConstants"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 
 export default function ChangeShiftTable({ requests = [], currentUserId }) {
   const [isPending, startTransition] = useTransition()

@@ -5,7 +5,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_component
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { EmployeesActionHeader } from "./EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
-import { useEmployeesHooks } from "@/_function/hooks/useEmployeesHooks";
+import { useEmployeesHooks } from "@/_client/hooks/useEmployeesHooks";
 
 export default function EmployeesTable({ users, divisions, shifts }) {
   const {

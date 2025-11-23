@@ -54,7 +54,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         onOpenChange(val)
       }}
     >
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-4xl h-full" position="right">
         <DialogHeader>
           <DialogTitle>
             <div className="flex items-center space-x-2">

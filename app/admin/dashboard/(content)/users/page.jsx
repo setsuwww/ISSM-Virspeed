@@ -4,8 +4,8 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import UsersTable from "./UsersTable";
 
-import ContentForm from "@/_components/content/ContentForm";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import ContentForm from "@/_components/common/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize } from "@/_function/globalFunction";
 import { minutesToTime } from "@/_function/globalFunction";

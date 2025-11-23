@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useTransition } from "react"
-import { useToast } from "@/_components/client/Toast-Provider"
+import { useToast } from "@/_context/Toast-Provider"
 import { useRouter } from "next/navigation"
 
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
@@ -10,12 +10,12 @@ import { Button } from "@/_components/ui/Button"
 import { Input } from "@/_components/ui/Input"
 import { RadioButton } from "@/_components/ui/RadioButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
-import { ContentList } from "@/_components/content/ContentList"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
+import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
-import { createUser } from "@/_components/server/userAction.js"
+import { createUser } from "@/_server/userAction.js"
 import { capitalize, formatIntToTime } from "@/_function/globalFunction"
 import { roleOptions } from "@/_constants/roleConstants"
 import { Loader } from 'lucide-react';

@@ -33,10 +33,7 @@ export function useSchedulesHooks(data = []) {
   const onFilterFrequencyChange = useCallback((value) => setFilterFrequency(value), [])
 
   return {
-    search,
-    filterFrequency,
-    filteredData,
-    setSearch: onSearchChange,
-    setFilterFrequency: onFilterFrequencyChange,
+    search, filterFrequency, filteredData,
+    setSearch: onSearchChange, setFilterFrequency: onFilterFrequencyChange,
   }
 }

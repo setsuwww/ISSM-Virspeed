@@ -1,8 +1,8 @@
 import { prisma } from "@/_lib/prisma"
 import { CircleUserRound } from "lucide-react"
 
-import { ContentInformation } from "@/_components/content/ContentInformation"
-import ContentForm from "@/_components/content/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
 import UserHistoryTable from "./HistoryTable"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import { Pagination } from "@/app/admin/dashboard/Pagination"

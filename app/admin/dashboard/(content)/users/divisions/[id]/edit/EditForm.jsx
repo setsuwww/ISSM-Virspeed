@@ -8,14 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/_components/ui/Label";
 import { Loader } from "lucide-react";
 
-import ContentForm from "@/_components/content/ContentForm";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import ContentForm from "@/_components/common/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
 import { minutesToTime, capitalize } from "@/_function/globalFunction";
 
-import { updateDivision } from "@/_components/server/divisionAction";
-import { useToast } from "@/_components/client/Toast-Provider";
+import { updateDivision } from "@/_server/divisionAction";
+import { useToast } from "@/_context/Toast-Provider";
 
 export default function EditDivisionForm({ division }) {
   const router = useRouter();

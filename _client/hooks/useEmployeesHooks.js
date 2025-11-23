@@ -3,6 +3,21 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { api } from "@/_lib/api";
 
+import { useConfirmStore } from "@/_stores/common/useConfirmStore";
+
+const askConfirm = useConfirmStore.getState().ask;
+
+const MSG = {
+  NO_SELECTED: "No employees selected.",
+  CONFIRM_DELETE_SELECTED: "Are you sure to delete selected employees?",
+  CONFIRM_DELETE_ALL: "Are you sure to delete all employees?",
+  CONFIRM_DELETE_ONE: "Are you sure to delete this user?",
+  UPDATE_FAIL: "Failed to update user state",
+  DELETE_FAIL: "Failed to delete user",
+};
+
+const buildCSV = (rows) => rows.map((row) => row.join(",")).join("\n");
+
 export function useEmployeesHooks(users, shifts) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]);
@@ -20,46 +35,39 @@ export function useEmployeesHooks(users, shifts) {
         u.email.toLowerCase().includes(search.toLowerCase());
 
       const matchDivision =
-        divisionFilter === "all" || u.division?.id === Number(divisionFilter);
+        divisionFilter === "all" ||
+        u.division?.id === Number(divisionFilter);
 
       return matchSearch && matchDivision;
     });
   }, [data, search, divisionFilter]);
 
   const toggleSelect = useCallback(
-    (id) =>
-      setSelected((prev) =>
-        prev.includes(id)
-          ? prev.filter((s) => s !== id)
-          : [...prev, id]
-      ),
-    []
+    (id) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]), []
   );
 
   const deleteSelected = useCallback(() => {
-    if (!selected.length) return alert("No employees selected.");
-    if (!confirm("Are you sure to delete selected employees?")) return;
+    if (!selected.length) return alert(MSG.NO_SELECTED);
+    if (!askConfirm(MSG.CONFIRM_DELETE_SELECTED)) return;
 
     setData((prev) => prev.filter((u) => !selected.includes(u.id)));
     setSelected([]);
   }, [selected]);
 
   const deleteAll = useCallback(() => {
-    if (!confirm("Are you sure to delete all employees?")) return;
+    if (!askConfirm(MSG.CONFIRM_DELETE_ALL)) return;
     setData([]);
     setSelected([]);
   }, []);
 
   const exportCSV = useCallback(() => {
-    const csv = [
-      ["ID", "Name", "Email", "Role"],
+    const csv = buildCSV([["ID", "Name", "Email", "Role"],
       ...filteredData.map((u) => [u.id, u.name, u.email, u.role]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
+    ]);
 
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
+
     const a = document.createElement("a");
     a.href = url;
     a.download = "employees.csv";
@@ -67,42 +75,26 @@ export function useEmployeesHooks(users, shifts) {
   }, [filteredData]);
 
   const onSwitch = useCallback(async (id, newActiveState) => {
-    try {
-      await api.patch(`/users/${id}`, { active: newActiveState });
-      setData((prev) =>
-        prev.map((u) =>
-          u.id === id ? { ...u, active: newActiveState } : u
-        )
-      );
-    } catch (err) {
-      alert("Failed to update user state");
-    }
+    try { await api.patch(`/users/${id}`, { active: newActiveState });
+      setData((prev) => prev.map((u) => u.id === id ? { ...u, active: newActiveState } : u));
+    } 
+    catch {alert(MSG.UPDATE_FAIL);}
   }, []);
 
   const onDelete = useCallback(async (id) => {
-    if (!confirm("Are you sure to delete this user?")) return;
-    try {
-      await api.delete(`/users/${id}`);
+    if (!askConfirm(MSG.CONFIRM_DELETE_ONE)) return;
+
+    try { await api.delete(`/users/${id}`);
       setData((prev) => prev.filter((u) => u.id !== id));
-    } catch (err) {
-      alert("Failed to delete user");
-    }
+    } 
+    catch {alert(MSG.DELETE_FAIL);}
   }, []);
 
   return {
-    search,
-    setSearch,
-    selected,
-    setSelected,
-    data,
-    filteredData,
-    divisionFilter,
-    setDivisionFilter,
-    toggleSelect,
-    deleteSelected,
-    deleteAll,
+    search, setSearch, selected, setSelected,
+    data, filteredData, divisionFilter, setDivisionFilter,
+    toggleSelect, deleteSelected, deleteAll,
     exportCSV,
-    onSwitch,
-    onDelete,
+    onSwitch, onDelete,
   };
 }

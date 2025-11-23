@@ -10,7 +10,7 @@ import RequestStatusChangerToggle from "./RequestStatusChangerToggle"
 import RequestRejectedAlert from "./RequestRejectedAlert"
 import RenderUserInfo from "./element/renderUserInfo"
 import RenderShiftInfo from "./element/renderShiftInfo"
-import { updateShiftChangeRequestStatus, updatePermissionStatus } from "@/_components/server/shiftAction"
+import { updateShiftChangeRequestStatus, updatePermissionStatus } from "@/_server/shiftAction"
 
 export default function RequestsTableRow({
   id, requestedBy, user,

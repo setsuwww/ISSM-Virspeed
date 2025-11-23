@@ -8,10 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attedancesStyles } from "@/_constants/attendanceConstants"
 import { safeFormat, capitalize } from "@/_function/globalFunction"
-import { ContentInformation } from "@/_components/content/ContentInformation"
-import { getAttendancesByDate } from "@/_components/server/attendanceAction"
+import { ContentInformation } from "@/_components/common/ContentInformation"
+import { getAttendancesByDate } from "@/_server/attendanceAction"
 import { calculateWorkHours } from "@/_function/helpers/attendanceHelpers"
-import EmptyStates from "@/_components/content/EmptyStates"
+import EmptyStates from "@/_components/common/EmptyStates"
 
 export default function AttendancesTableClient() {
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])

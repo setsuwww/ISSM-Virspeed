@@ -11,7 +11,7 @@ import { ScrollArea } from "@/_components/ui/Scroll-area";
 export default function UsersModal({ open, onClose, title, users }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md p-0">
+      <DialogContent size="xl" className="p-0">
         <DialogHeader className="px-6 pt-6">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
         </DialogHeader>
@@ -24,10 +24,7 @@ export default function UsersModal({ open, onClose, title, users }) {
           <ScrollArea className="max-h-[320px] px-2 pb-4">
             <ul className="space-y-1 px-4 pb-2">
               {users.map((u) => (
-                <li
-                  key={u.id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition border border-slate-200/60"
-                >
+                <li key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition border border-slate-200/60">
                   <span className="px-3 py-2 bg-slate-200 text-slate-600 text-xs rounded-full">
                     {u.name?.charAt(0).toUpperCase()}
                   </span>

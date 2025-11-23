@@ -5,12 +5,14 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
 import { cn } from "@/_lib/utils"
 
-// 🧩 Variant context system
 const DialogVariantContext = React.createContext("info")
 const useDialogVariant = () => React.useContext(DialogVariantContext)
 
-// 🎨 Variant styles
 const variantStyles = {
+  none: {
+    border: "border-slate-200",
+    title: "text-slate-700",
+  },
   info: {
     border: "border-sky-500",
     title: "text-sky-700",
@@ -61,33 +63,62 @@ function DialogOverlay({ className, ...props }) {
 }
 
 function DialogContent({
-  className, children, variant = "info", showCloseButton = true,
+  className,
+  children,
+  variant = "info",
+  showCloseButton = true,
+  size = "lg", position = "center",
   ...props
 }) {
   const style = variantStyles[variant] ?? variantStyles.info
+
+  const positionMap = {
+    center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+
+    top: "top-10 left-1/2 -translate-x-1/2",
+    bottom: "bottom-10 left-1/2 -translate-x-1/2",
+
+    left: "left-10 top-1/2 -translate-y-1/2",
+    right: "left-0 top-1/2 -translate-y-1/2",
+
+    "top-left": "top-10 left-10",
+    "top-right": "top-10 right-10",
+    "bottom-left": "bottom-10 left-10",
+    "bottom-right": "bottom-10 right-10",
+
+    // Fixing nih posisi kaga danta
+  }
+
+  const sizeMap = {
+    sm: "sm:max-w-sm",
+    md: "sm:max-w-md",
+    lg: "sm:max-w-lg",
+    xl: "sm:max-w-xl",
+    full: "sm:max-w-[90vw]",
+  }
 
   return (
     <DialogVariantContext.Provider value={variant}>
       <DialogPortal>
         <DialogOverlay />
+
         <DialogPrimitive.Content
           data-slot="dialog-content"
           className={cn(
-            "bg-white fixed top-1/2 left-1/2 z-50 grid w-full text-slate-500",
-            "translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border-0 p-6 shadow-lg duration-200",
+            "bg-white fixed top-1/2 left-1/2 z-50 grid w-full text-slate-500", 
+            "gap-4 rounded-lg border-0 p-6 shadow-lg duration-200",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-            `border-l-4 ${style.border}`,
-            "sm:max-w-lg", className
-          )} {...props}
+            `border-l-4 
+            
+            ${style.border}`, sizeMap[size] ?? sizeMap.lg, positionMap[position] ?? positionMap.center, className
+          )}
+          {...props}
         >
-
           {children}
 
           {showCloseButton && (
-            <DialogPrimitive.Close
-              className="absolute top-7 right-5 text-slate-600 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:pointer-events-none"
-            >
+            <DialogPrimitive.Close className="absolute top-7 right-5 text-slate-600 rounded-xs opacity-70 transition-opacity hover:opacity-100">
               <XIcon size={20} />
               <span className="sr-only">Close</span>
             </DialogPrimitive.Close>
@@ -97,6 +128,7 @@ function DialogContent({
     </DialogVariantContext.Provider>
   )
 }
+
 
 function DialogHeader({ className, ...props }) {
   return (

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation"
 import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
-import { useToast } from "@/_components/client/Toast-Provider"
-import { createSchedule } from "@/_components/server/scheduleAction"
+import { useToast } from "@/_context/Toast-Provider"
+import { createSchedule } from "@/_server/scheduleAction"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
@@ -14,8 +14,8 @@ import { Button } from "@/_components/ui/Button"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select"
 
 import { DashboardHeader } from "../../../DashboardHeader"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 import InputAssignUserShift from "./InputAssignUserShift"
 import { Textarea } from "@/_components/ui/Textarea"
 

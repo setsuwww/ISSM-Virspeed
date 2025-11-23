@@ -4,13 +4,13 @@ import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import { Clock, LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/_components/ui/Card"
-import { userSendCheckIn, userSendCheckOut, userSendPermissionRequest } from "@/_components/server/attendanceAction"
+import { userSendCheckIn, userSendCheckOut, userSendPermissionRequest } from "@/_server/attendanceAction"
 import { apiFetchData } from "@/_lib/fetch"
 import { Button } from "@/_components/ui/Button"
-import { ContentInformation } from '@/_components/content/ContentInformation';
+import { ContentInformation } from '@/_components/common/ContentInformation';
 import Link from 'next/link';
 import { Label } from '@/_components/ui/Label';
-import LoadingStates from '@/_components/content/LoadingStates';
+import LoadingStates from '@/_components/common/LoadingStates';
 
 export default function CheckinForm() {
   const [user, setUser] = useState(null)

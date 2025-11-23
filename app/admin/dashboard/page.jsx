@@ -2,7 +2,7 @@ import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined } from "lucide-reac
 
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { DashboardStats } from "@/app/admin/dashboard/DashboardStats";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 import { AreaDiagram, BarDiagram } from "./DashboardDiagram";
 
 import { prisma } from "@/_lib/prisma";

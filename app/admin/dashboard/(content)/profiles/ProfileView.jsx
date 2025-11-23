@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useUserStore } from "@/_stores/useUserStore"
-import { updateUserProfile, updateShiftTime } from "@/_components/server/profileAction"
+import { updateUserProfile, updateShiftTime } from "@/_server/profileAction"
 import { toast } from "sonner"
 
 import { CircleUserRound, LogOut, Trash2, Save, Clock } from "lucide-react"

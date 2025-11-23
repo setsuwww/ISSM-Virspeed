@@ -1,7 +1,8 @@
 import SidebarServer from "@/_components/SidebarServer"
 import '@/_styles/globals.css'
-import { ReactQueryProvider } from '@/_components/client/Query-Provider';
-import { ToastProvider } from '@/_components/client/Toast-Provider';
+import { ReactQueryProvider } from '@/_context/Query-Provider';
+import { ToastProvider } from '@/_context/Toast-Provider';
+import { ConfirmDialog } from "@/_components/ui/Confirm";
 
 export const metadata = {
   title: "Admin | Dashboard",
@@ -18,7 +19,7 @@ export default function DashboardLayout({ children, action }) {
 
         <main className="flex-1 overflow-y-auto p-[13px] bg-slate-100">
           <ReactQueryProvider>
-            <ToastProvider>
+            <ToastProvider><ConfirmDialog />
               {children}
             </ToastProvider>
           </ReactQueryProvider>

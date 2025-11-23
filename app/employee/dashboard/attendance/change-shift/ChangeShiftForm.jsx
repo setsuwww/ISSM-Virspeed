@@ -8,8 +8,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@
 import { CalendarDays, CircleUserRound, Loader } from "lucide-react"
 import { toast } from "sonner"
 import { apiFetchData } from "@/_lib/fetch"
-import ContentForm from '@/_components/content/ContentForm';
-import { ContentInformation } from '@/_components/content/ContentInformation';
+import ContentForm from '@/_components/common/ContentForm';
+import { ContentInformation } from '@/_components/common/ContentInformation';
 import { shiftStyles } from "@/_constants/shiftConstants"
 
 // Konversi tanggal ke ISO lokal tanpa geser timezone (hindari bug UTC -7 jam)

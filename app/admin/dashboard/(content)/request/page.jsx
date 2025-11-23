@@ -5,8 +5,8 @@ export const revalidate = 20
 import { prisma } from "@/_lib/prisma"
 import RequestsTabs from "./RequestsTabs"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
-import ContentForm from "@/_components/content/ContentForm"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import ContentForm from "@/_components/common/ContentForm"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 
 async function getRequests(mode = "pending") {
   const isHistory = mode === "history"

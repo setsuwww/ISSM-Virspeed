@@ -37,38 +37,24 @@ export function useDivisionsHooks(initialData) {
   });
 
   const {
-    toggleSelect,
-    toggleSelectAll,
-    handleDeleteSelected,
-    handleDeleteAll,
+    toggleSelect, toggleSelectAll,
+    handleDeleteSelected, handleDeleteAll,
     handleExportPDF: maybeHandleExportPDF,
-    onEdit,
-    onDelete,
-    onToggleStatus,
-    onBulkUpdate,
+    onEdit, onDelete,
+    onToggleStatus, onBulkUpdate,
   } = handlers;
 
   const handleExportPDF = maybeHandleExportPDF || handlers.onExportPDF || handlers.onExport || (() => {});
 
   return {
-    mutate,
-    search,
-    setSearch,
-    typeFilter,
-    setTypeFilter,
-    statusFilter,
-    setStatusFilter,
-    filteredData,
+    mutate, search, setSearch,
+    typeFilter, setTypeFilter,
+    statusFilter, setStatusFilter, filteredData,
     selectedIds,
 
-    toggleSelect,
-    toggleSelectAll,
-    handleDeleteSelected,
-    handleDeleteAll,
-    handleExportPDF,
-    onEdit,
-    onDelete,
-    onToggleStatus,
-    onBulkUpdate,
+    toggleSelect, toggleSelectAll,
+    handleDeleteSelected, handleDeleteAll, handleExportPDF,
+    onEdit, onDelete,
+    onToggleStatus, onBulkUpdate,
   };
 }
