@@ -7,7 +7,7 @@ import { Textarea } from "@/_components/ui/Textarea"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select"
 import { CalendarDays, CircleUserRound, Loader } from "lucide-react"
 import { toast } from "sonner"
-import { apiFetchData } from "@/_function/helpers/fetch"
+import { apiFetchData } from "@/_lib/fetch"
 import ContentForm from '@/_components/content/ContentForm';
 import { ContentInformation } from '@/_components/content/ContentInformation';
 import { shiftStyles } from "@/_constants/shiftConstants"

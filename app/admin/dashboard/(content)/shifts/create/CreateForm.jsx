@@ -11,7 +11,7 @@ import { ContentInformation } from "@/_components/content/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { apiFetchData } from "@/_function/helpers/fetch";
+import { apiFetchData } from "@/_lib/fetch";
 import { timeToMinutes } from "@/_function/globalFunction";
 import { capitalize } from "@/_function/globalFunction";
 import { Loader } from "lucide-react";

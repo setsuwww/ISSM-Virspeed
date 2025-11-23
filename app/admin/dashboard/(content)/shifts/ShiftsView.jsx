@@ -9,7 +9,7 @@ import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 
 import { capitalize } from "@/_function/globalFunction";
-import { apiFetchData } from "@/_function/helpers/fetch";
+import { apiFetchData } from "@/_lib/fetch";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 
 export function ShiftsView({ data }) {

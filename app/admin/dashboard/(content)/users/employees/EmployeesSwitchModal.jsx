@@ -11,7 +11,7 @@ import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 
-import { apiFetchData } from "@/_function/helpers/fetch"
+import { apiFetchData } from "@/_lib/fetch"
 import { capitalize } from "@/_function/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 
