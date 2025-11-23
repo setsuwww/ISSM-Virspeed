@@ -54,14 +54,17 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         onOpenChange(val)
       }}
     >
-      <DialogContent className="sm:max-w-4xl h-full" position="right">
+      <DialogContent className="sm:max-w-4xl h-full rounded-none" position="right">
         <DialogHeader>
           <DialogTitle>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               <div className="p-3 bg-sky-100 rounded-full">
                 <CalendarSync size={26} />
               </div>
-              <span>Swap shift</span>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold">Swap shift drawer</h1>
+                <p className="text-sm font-base text-slate-400">Change 1 employee's shift one by one</p>
+              </div>
             </div>
           </DialogTitle>
         </DialogHeader>
