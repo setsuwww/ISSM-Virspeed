@@ -33,7 +33,6 @@ export function getDisplayStatus(status) {
 
 export const statusColorsClass = {
   ABSENT: { 
-    bgPing: "bg-rose-400", 
     bgDot: "bg-rose-400", 
     
     head: "text-rose-800",
@@ -42,7 +41,6 @@ export const statusColorsClass = {
     border: "bg-rose-50 border-rose-600" 
   },
   LATE: { 
-    bgPing: "bg-yellow-400", 
     bgDot: "bg-yellow-400", 
     
     head: "text-yellow-800",
@@ -51,7 +49,6 @@ export const statusColorsClass = {
     border: "bg-yellow-50 border-yellow-600" 
   },
   PERMISSION: { 
-    bgPing: "bg-blue-400", 
     bgDot: "bg-blue-400", 
     
     head: "text-blue-800",

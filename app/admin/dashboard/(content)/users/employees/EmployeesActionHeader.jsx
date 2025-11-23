@@ -42,7 +42,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
               <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="p-0 w-80">
+          <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>
             <Command>
               <div className="flex items-center justify-between px-2 py-2 border-b border-slate-200">
                 <CommandInput placeholder="Search division..." withBorder={false} />
@@ -62,21 +62,23 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
               <CommandList>
                 <CommandEmpty>No division found.</CommandEmpty>
                 <CommandGroup>
-                  <CommandItem value="all" onSelect={() => { setDivisionFilter("all")
-                      setOpenDivision(false)
-                    }}
+                  <CommandItem value="all" onSelect={() => {
+                    setDivisionFilter("all")
+                    setOpenDivision(false)
+                  }}
                   >
-                    <Check className={cn("mr-2 h-4 w-4", divisionFilter === "all" ? "opacity-100" : "opacity-0")}/>
                     All
+                    <Check className={cn("mr-2 h-4 w-4", divisionFilter === "all" ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
 
                   {divisions.filter((d) => statusFilter.length === 0 || statusFilter.includes(d.type))
                     .map((d) => (
-                      <CommandItem key={d.id} value={d.name} onSelect={() => { setDivisionFilter(String(d.id))
-                          setOpenDivision(false)
-                        }}>
-                        <Check className={cn("mr-2 h-4 w-4", divisionFilter === String(d.id) ? "opacity-100" : "opacity-0")}/>
+                      <CommandItem key={d.id} value={d.name} onSelect={() => {
+                        setDivisionFilter(String(d.id))
+                        setOpenDivision(false)
+                      }}>
                         {d.name}
+                        <Check className={cn("mr-2 h-4 w-4", divisionFilter === String(d.id) ? "opacity-100" : "opacity-0")} />
                       </CommandItem>
                     ))}
                 </CommandGroup>

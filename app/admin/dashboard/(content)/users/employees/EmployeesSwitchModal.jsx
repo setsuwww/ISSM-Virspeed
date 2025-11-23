@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import { CircleUserRound, Search, CalendarSync, Loader } from "lucide-react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEmployeeSwitchStore } from "@/_stores/useEmployeeSwitchStore"
@@ -15,8 +14,10 @@ import { apiFetchData } from "@/_lib/fetch"
 import { capitalize } from "@/_function/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 
-export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
-  const { selectedId, search, setSelectedId, setSearch, reset } = useEmployeeSwitchStore()
+export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
+  const { selectedId, search, setSelectedId, setSearch, reset } =
+    useEmployeeSwitchStore()
+
   const queryClient = useQueryClient()
 
   const { data: currentUser, isLoading: loadingCurrent } = useQuery({
@@ -27,32 +28,29 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["usersToSwitch", currentUserId],
-    queryFn: () => apiFetchData({ url: `/users/${currentUserId}/switch`, method: "get" }),
+    queryFn: () => apiFetchData({ url: `/users/${currentUserId}/switch`, method: "get"}),
     enabled: open && !!currentUserId,
   })
 
   const swapMutation = useMutation({
     mutationFn: () =>
-      apiFetchData({
-        url: `/users/${currentUserId}/switch`,
-        method: "post",
-        data: { otherUserId: selectedId },
-      }),
+      apiFetchData({ url: `/users/${currentUserId}/switch`, method: "post", data: { otherUserId: selectedId }}),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["currentUser", currentUserId] })
-      await queryClient.invalidateQueries({ queryKey: ["usersToSwitch", currentUserId] })
+      await queryClient.invalidateQueries({queryKey: ["currentUser", currentUserId]})
+      await queryClient.invalidateQueries({queryKey: ["usersToSwitch", currentUserId]})
       reset()
       onOpenChange(false)
     },
   })
 
   const filteredUsers =
-    users?.filter((u) => u.id !== currentUserId &&
-      (u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()))
-    ) ?? []
+    users?.filter((u) => [u.name.toLowerCase(), u.email.toLowerCase()].some((x) =>
+      x.includes(search.toLowerCase())
+    )) ?? []
 
   return (
-    <Dialog open={open} onOpenChange={(val) => { if (!val) reset()
+    <Dialog open={open}
+      onOpenChange={(val) => { if (!val) reset()
         onOpenChange(val)
       }}
     >
@@ -69,60 +67,74 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
         </DialogHeader>
 
         {loadingCurrent ? (
-          <p className="flex items-center space-x-1 text-xs text-slate-400">
+          <p className="flex items-center text-xs text-slate-400 mb-2">
             <Loader className="w-4 h-4 animate-spin mr-2" /> Loading current user...
           </p>
-        ) : currentUser ? (
-          <header>
-            <Label htmlFor="past" className="mb-4">
-              Current user
-            </Label>
-            <div className="flex items-center border border-slate-300 rounded p-2 space-x-2 bg-slate-100 text-slate-600">
-              <div className="p-2 rounded-full bg-slate-300">
-                <CircleUserRound strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-700">{currentUser.name}</p>
-                <p className="text-xs">{currentUser.email}</p>
+        ) : (
+          currentUser && (
+            <div>
+              <Label className="mb-1 block">Current user</Label>
+
+              <div className="flex items-center border border-slate-200 bg-slate-50 rounded-lg p-3 space-x-3">
+                <div className="p-2 bg-slate-200 rounded-full">
+                  <CircleUserRound />
+                </div>
+                <div>
+                  <p className="font-medium text-sm text-slate-700">
+                    {currentUser.name}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {currentUser.email}
+                  </p>
+                </div>
               </div>
             </div>
-          </header>
-        ) : null}
+          )
+        )}
 
-        <Label htmlFor="search" className="mt-4 block">
-          Search & switch user
-        </Label>
-        <div className="relative mb-1">
+        <Label className="mt-4 block">Search user</Label>
+        <p className="text-xs max-w-lg">
+          Search users, and then select users in one division with current user to swap shift
+        </p>
+        <div className="relative mb-2">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
-          <Input placeholder="Search user..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8"
-            typeSearch={true}
+          <Input className="pl-8" placeholder="Search by name or email…" 
+            value={search} onChange={(e) => setSearch(e.target.value)} typeSearch={true}
           />
         </div>
 
         <section className="max-h-80 overflow-y-auto border border-slate-100 shadow-xs rounded-lg p-3">
           {loadingUsers ? (
-            <p className="flex items-center justify-center text-xs text-center text-slate-400">
-              <Loader className="w-4 h-4 animate-spin mr-2" />Loading users...
+            <p className="flex items-center justify-center text-xs text-slate-400">
+              <Loader className="w-4 h-4 animate-spin mr-2" /> Loading users…
             </p>
-          ) : filteredUsers.length === 0 ? (<p className="text-xs text-center text-slate-400">No users found</p>) 
-          : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {filteredUsers.map((user) => (
-                <label key={user.id} className="group flex items-center gap-x-3 cursor-pointer border border-slate-200 px-4 py-3 rounded-lg transition hover:bg-slate-50">
-                  <Checkbox checked={selectedId === user.id} onCheckedChange={() => setSelectedId(user.id)}/>
-                  <div className="flex items-center gap-x-3 flex-1">
-                    <div className="p-2 bg-slate-100 group-hover:bg-sky-100 rounded-lg flex items-center justify-center transition">
-                      <CircleUserRound strokeWidth={1.5} className="text-slate-400 group-hover:text-sky-600 transition"/>
+          ) 
+          : filteredUsers.length === 0 ? (<p className="text-xs text-center text-slate-400">No users found</p>) 
+          : (<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {filteredUsers.map((u) => (
+                <label key={u.id}
+                  className="flex items-center gap-3 cursor-pointer border border-slate-200 px-4 py-3 rounded-lg hover:bg-slate-50 transition group"
+                >
+                  <Checkbox checked={selectedId === u.id} onCheckedChange={() => setSelectedId(u.id)}/>
+
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-sky-100 transition">
+                      <CircleUserRound className="text-slate-400 group-hover:text-sky-600" />
                     </div>
 
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-700 truncate">{user.name}</p>
-                        <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                    <div className="w-full flex items-center justify-between">
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-sm font-semibold text-slate-700 truncate">
+                          {u.name}
+                        </p>
+                        <p className="text-xs text-slate-400 truncate">
+                          {u.email}
+                        </p>
                       </div>
-                      <p className={`px-2 py-0.5 rounded-md text-xs ml-3 ${shiftStyles[user.shift?.type ?? "bg-slate-100"]}`}>
-                        {capitalize(user.shift?.type ?? "OFF")}
-                      </p>
+
+                      <span className={`px-2 py-0.5 rounded-md text-xs ${shiftStyles[u.shift.type]}`}>
+                        {capitalize(u.shift.type)}
+                      </span>
                     </div>
                   </div>
                 </label>
@@ -135,9 +147,10 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
+
           <Button disabled={!selectedId || swapMutation.isPending} onClick={() => swapMutation.mutate()}>
             {swapMutation.isPending 
-              ? (<><Loader className="w-4 h-4 animate-spin mr-2" /> Swapping...</>) 
+              ? (<><Loader className="w-4 h-4 animate-spin mr-2" />Swapping...</>) 
               : ("Confirm")
             }
           </Button>
@@ -145,4 +158,4 @@ export const EmployeesSwitchModal = React.memo(function EmployeesSwitchModal({ o
       </DialogContent>
     </Dialog>
   )
-})
+}

@@ -70,8 +70,7 @@ export function ToastProvider({ children }) {
         {toasts.map((toast) => {
           const variant = toastVariants[toast.type] || toastVariants.info
           return (
-            <div
-              key={toast.id}
+            <div key={toast.id}
               className={cn(
                 "relative flex items-start gap-3 bg-white border-0 border-l-4 shadow-lg rounded-r-sm p-4 pr-6 w-full animate-slide-in backdrop-blur-sm",
                 variant.border
@@ -93,15 +92,11 @@ export function ToastProvider({ children }) {
               </button>
 
               <div
-                className={cn(
-                  "absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
+                className={cn("absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
                   toast.type === "success"
-                    ? "bg-teal-500"
-                    : toast.type === "error"
-                    ? "bg-rose-500"
-                    : toast.type === "warning"
-                    ? "bg-yellow-500"
-                    : "bg-sky-500"
+                    ? "bg-teal-500" : toast.type === "error"
+                    ? "bg-rose-500" : toast.type === "warning"
+                    ? "bg-yellow-500" : "bg-sky-500"
                 )}
                 style={{ width: "100%", animation: `progress ${toast.duration}ms linear forwards` }}
               />

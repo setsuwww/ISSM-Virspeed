@@ -7,9 +7,7 @@ import { capitalize } from "@/_function/globalFunction"
 import { attedancesStyles } from "@/_constants/attendanceConstants"
 import { User } from 'lucide-react';
 
-export default function AttendancesUsersView({
-  selectedStatus, shifts, allUsers, onClose,
-}) { 
+export default function AttendancesUsersView({ selectedStatus, shifts, allUsers, onClose }) { 
   if (!selectedStatus) return null
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -33,11 +31,11 @@ export default function AttendancesUsersView({
         <div className="space-y-3">
           {shifts.map((shift) => {
             const usersInShift = (shift.users || [])
-              .map((u) => ({...u,
-                attendanceStatus: String(u?.attendanceStatus || "PRESENT")
+              .map((u) => ({...u, attendanceStatus: String(u?.attendanceStatus || "PRESENT")
                 .toUpperCase(), approval: u?.approval ? String(u.approval).toUpperCase() : "",
               })).filter((u) => u.attendanceStatus === selectedStatus)
             if (!usersInShift.length) return null
+
             return (
               <div key={shift.id} className="border rounded-lg overflow-hidden bg-white">
                 <div className="px-4 py-2 text-sm font-medium bg-slate-50 border-b text-slate-600">

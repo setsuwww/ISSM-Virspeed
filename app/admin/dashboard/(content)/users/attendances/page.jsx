@@ -44,8 +44,7 @@ async function getShifts() {
       name: user.name,
       email: user.email,
       attendanceStatus:
-        user.attendances[0]?.status &&
-        ["ABSENT", "LATE", "PERMISSION"].includes(user.attendances[0].status)
+        user.attendances[0]?.status && ["ABSENT", "LATE", "PERMISSION"].includes(user.attendances[0].status)
           ? user.attendances[0].status
           : "PRESENT",
       approval: user.attendances[0]?.approval || "",
@@ -58,10 +57,7 @@ export default async function AttendancesPage() {
 
   return (
     <section>
-      <DashboardHeader
-        title="Attendances"
-        subtitle="Employees attendance records"
-      />
+      <DashboardHeader title="Attendances" subtitle="Employees attendance records"/>
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation

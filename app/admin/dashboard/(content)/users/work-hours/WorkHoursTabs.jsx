@@ -7,7 +7,7 @@ import { Clock3, ClipboardList } from "lucide-react";
 import TabsNormalHours from "./TabsNormalHours";
 import TabsShiftHours from "./TabsShiftHours";
 
-export default function WorkHoursTab({ divisions, shifts }) {
+export default function WorkHoursTabs({ divisions, shifts }) {
   const [activeTab, setActiveTab] = useState("normal");
 
   return (

@@ -11,6 +11,7 @@ import { safeFormat, capitalize } from "@/_function/globalFunction"
 import { ContentInformation } from "@/_components/content/ContentInformation"
 import { getAttendancesByDate } from "@/_components/server/attendanceAction"
 import { calculateWorkHours } from "@/_function/helpers/attendanceHelpers"
+import EmptyStates from "@/_components/content/EmptyStates"
 
 export default function AttendancesTableClient() {
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
@@ -42,14 +43,10 @@ export default function AttendancesTableClient() {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between my-6 gap-4">
-        <ContentInformation
-          heading="List Attendances"
-          subheading="Manage and review all attendance records"
-        />
+        <ContentInformation heading="List Attendances" subheading="Manage and review all attendance records"/>
 
         <div className="flex items-center gap-3">
-          <Input type="date"
-            value={date} onChange={(e) => handleDateChange(e.target.value)}
+          <Input type="date" value={date} onChange={(e) => handleDateChange(e.target.value)}
             typeSearch={true}
           />
 
@@ -66,10 +63,9 @@ export default function AttendancesTableClient() {
         </div>
       </div>
 
-      {isPending ? (
-        <div className="text-center py-6 text-slate-500">Loading...</div>
-      ) : (
-        <Table>
+      {isPending 
+        ? (<div className="text-center py-6 text-slate-500">Loading...</div>) 
+        : (<Table>
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead>
@@ -101,16 +97,12 @@ export default function AttendancesTableClient() {
 
                   <TableCell>
                     {att.shift ? (
-                      <Badge
-                        className={`px-2 py-0.5 border-none rounded-md ${shiftStyles[att.shift.type] ??
-                          "bg-gray-100 text-gray-700"
-                          }`}
-                      >
+                      <Badge className={`px-2 py-0.5 border-none rounded-md 
+                        ${shiftStyles[att.shift.type] ?? "bg-gray-100 text-gray-700"}
+                      `}>
                         {capitalize(att.shift.name)}
                       </Badge>
-                    ) : (
-                      <span className="text-sm text-gray-400">-</span>
-                    )}
+                    ) : (<span className="text-sm text-gray-400">-</span>)}
                   </TableCell>
 
                   <TableCell>
@@ -127,18 +119,13 @@ export default function AttendancesTableClient() {
                   <TableCell>
                     {att.checkInTime && att.checkOutTime ? (
                       <span className="text-sm text-slate-700 font-semibold">
-                        {calculateWorkHours(att.checkInTime, att.checkOutTime, 1)} jam
+                        {calculateWorkHours(att.checkInTime, att.checkOutTime, 1)} Hours
                       </span>
-                    ) : (
-                      <span className="text-sm text-gray-400">-</span>
-                    )}
+                    ) : (<span className="text-sm text-gray-400">-</span>)}
                   </TableCell>
 
                   <TableCell>
-                    <Badge
-                      className={`border-none ${attedancesStyles[capitalize(att.status)]
-                        }`}
-                    >
+                    <Badge className={`border-none ${attedancesStyles[capitalize(att.status)]}`}>
                       {capitalize(att.status)}
                     </Badge>
                   </TableCell>
@@ -148,11 +135,8 @@ export default function AttendancesTableClient() {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="text-center py-4 text-slate-500"
-                >
-                  No attendance records found for this date.
+                <TableCell colSpan={7} className="text-center py-4 text-slate-500">
+                  <EmptyStates />
                 </TableCell>
               </TableRow>
             )}

@@ -1,12 +1,12 @@
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
-import WorkHoursTab from "./WorkHoursTab";
+import WorkHoursTabs from "./WorkHoursTabs";
 import { prisma } from "@/_lib/prisma";
 import ContentForm from "@/_components/content/ContentForm";
 import { ContentInformation } from "@/_components/content/ContentInformation";
 import { Pagination } from "../../../Pagination";
 import { notFound } from "next/navigation";
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 12;
 export const revalidate = 60;
 
 async function getWorkHoursData(page = 1) {
@@ -40,10 +40,12 @@ async function getWorkHoursData(page = 1) {
       users: {
         where: {
           shiftId: null,
+          role: "EMPLOYEE",
         },
         select: {
           id: true,
           name: true,
+          email: true,
         },
       },
       shifts: {
@@ -65,9 +67,13 @@ async function getWorkHoursData(page = 1) {
       endTime: true,
       type: true,
       users: {
+        where: {
+          role: "EMPLOYEE",
+        },
         select: {
           id: true,
           name: true,
+          email: true,
         },
       },
     },
@@ -107,7 +113,7 @@ export default async function Page({ searchParams }) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <WorkHoursTab
+          <WorkHoursTabs
             users={users}
             divisions={divisions}
             shifts={shifts}

@@ -19,7 +19,7 @@ function PopoverTrigger({
 
 function PopoverContent({
   className,
-  align = "center",
+  align = "right",
   sideOffset = 4,
   ...props
 }) {

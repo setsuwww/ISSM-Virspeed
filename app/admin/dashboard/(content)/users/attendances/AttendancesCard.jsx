@@ -33,14 +33,11 @@ export function AttendancesCard({ shifts = [] }) {
       const approvalCounts = users.reduce(
         (acc, u) => {
           switch (u.approval) {
-            case "ACCEPTED":
-              acc.accepted++
+            case "ACCEPTED": acc.accepted++
               break
-            case "REJECTED":
-              acc.rejected++
+            case "REJECTED": acc.rejected++
               break
-            default:
-              acc.pending++
+            default: acc.pending++
               break
           }
           return acc
@@ -66,10 +63,7 @@ export function AttendancesCard({ shifts = [] }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {statusSummary.map(({ status, users, approvalCounts }) => (
-          <AttendancesApprovalPartials
-            key={status}
-            status={status}
-            users={users}
+          <AttendancesApprovalPartials key={status} status={status} users={users}
             approvalCounts={approvalCounts}
             statusColorsClass={statusColorsClass}
             onClick={() => users.length > 0 && handleOpen(status)}
