@@ -74,32 +74,41 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
     if (isActive) {
       await prisma.division.updateMany({
         where: { type: activateType },
-        data: { status: "ACTIVE" }
+        data: { status: "ACTIVE" },
       });
+
       await prisma.division.updateMany({
         where: { type: deactivateType },
-        data: { status: "INACTIVE" }
+        data: { status: "INACTIVE" },
       });
 
     } else {
       await prisma.division.updateMany({
         where: { type: activateType },
-        data: { status: "INACTIVE" }
+        data: { status: "INACTIVE" },
       });
+
       await prisma.division.updateMany({
         where: { type: deactivateType },
-        data: { status: "ACTIVE" }
+        data: { status: "ACTIVE" },
       });
     }
 
     revalidatePath("/admin/dashboard/users/divisions");
-    return { success: true };
 
-  } 
-  catch (error) {
-    return { success: false };
+    return {
+      success: true,
+      message: "Global toggle updated.",
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || "Unknown error",
+    };
   }
 }
+
 
 export async function updateDivision(id, data) {
   try {

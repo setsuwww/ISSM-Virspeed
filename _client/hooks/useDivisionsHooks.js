@@ -41,7 +41,7 @@ export function useDivisionsHooks(initialData) {
     handleDeleteSelected, handleDeleteAll,
     handleExportPDF: maybeHandleExportPDF,
     onEdit, onDelete,
-    onToggleStatus, onBulkUpdate,
+    onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
 
   const handleExportPDF = maybeHandleExportPDF || handlers.onExportPDF || handlers.onExport || (() => {});
@@ -55,6 +55,6 @@ export function useDivisionsHooks(initialData) {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll, handleExportPDF,
     onEdit, onDelete,
-    onToggleStatus, onBulkUpdate,
+    onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   };
 }

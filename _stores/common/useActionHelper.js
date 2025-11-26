@@ -16,6 +16,11 @@ export function useActionHelper() {
   const withTry = async (action, successMsg, errorMsg) => {
     try {
       const result = await action();
+
+      if (result && result.success === false) {
+        throw new Error(result.error || errorMsg);
+      }
+
       toast.success(successMsg);
       return result;
     } catch (e) {
@@ -23,6 +28,7 @@ export function useActionHelper() {
       return null;
     }
   };
+
 
   return { withConfirm, withTry };
 }

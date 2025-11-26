@@ -28,8 +28,8 @@ export default function FastActions() {
     },
     {
       label: "Divisions",
-      hrefView: "/admin/dashboard/divisions",
-      hrefCreate: "/admin/dashboard/divisions/create",
+      hrefView: "/admin/dashboard/users/divisions",
+      hrefCreate: "/admin/dashboard/users/divisions/create",
     },
   ];
 

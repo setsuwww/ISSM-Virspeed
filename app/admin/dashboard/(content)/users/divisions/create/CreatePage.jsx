@@ -46,17 +46,13 @@ export default function CreateDivisionForm() {
       endTime: form.endTime ? timeToMinutes(form.endTime) : null,
     }
 
-    startTransition(async () => {
-      const result = await createDivision(payload)
+    startTransition(async () => { const result = await createDivision(payload)
       setLoading(false)
 
-      if (result.success) {
-        router.push("/admin/dashboard/users/divisions")
-      } 
-      else { alert(result.message)}
+      if (result.success) { router.push("/admin/dashboard/users/divisions")} 
+      else { alert(result.message) }
     })
   }
-
   return (
     <section>
       <DashboardHeader

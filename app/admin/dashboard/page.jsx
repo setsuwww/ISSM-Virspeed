@@ -1,85 +1,69 @@
+// app/admin/dashboard/page.jsx
 import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined } from "lucide-react";
 
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { DashboardStats } from "@/app/admin/dashboard/DashboardStats";
 import { ContentInformation } from "@/_components/common/ContentInformation";
-import { AreaDiagram, BarDiagram } from "./DashboardDiagram";
-
+import AnalyticsDiagram from "./AnalyticsDiagram"; // <- client component
 import { prisma } from "@/_lib/prisma";
-import FastActions from './page-action';
+import FastActions from "./page-action";
 
 export default async function AdminDashboardPage() {
+  // Stats count
   const totalUsers = await prisma.user.count();
+  const morningEmployees = await prisma.user.count({ where: { shift: { type: "MORNING" } } });
+  const afternoonEmployees = await prisma.user.count({ where: { shift: { type: "AFTERNOON" } } });
+  const eveningEmployees = await prisma.user.count({ where: { shift: { type: "EVENING" } } });
 
-  const morningEmployees = await prisma.user.count({
-    where: { shift: { type: "MORNING" } },
+  // Raw attendance last 30 days
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - 29); // 30 days total (including today)
+  // normalize to 00:00:00 for start
+  startDate.setHours(0, 0, 0, 0);
+
+  const rawAttendances = await prisma.attendance.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      date: true,
+      status: true,
+    },
+    orderBy: { date: "asc" },
   });
 
-  const afternoonEmployees = await prisma.user.count({
-    where: { shift: { type: "AFTERNOON" } },
-  });
-
-  const eveningEmployees = await prisma.user.count({
-    where: { shift: { type: "EVENING" } },
-  });
-
-  const salesChartData = [
-    { name: "1", value: 10, negativeValue: 2 },
-    { name: "2", value: 15, negativeValue: 5 },
-    { name: "3", value: 8, negativeValue: 3 },
-    { name: "4", value: 20, negativeValue: 7 },
-    { name: "5", value: 12, negativeValue: 4 },
-    { name: "6", value: 18, negativeValue: 6 },
-    { name: "7", value: 25, negativeValue: 9 },
-    { name: "8", value: 8, negativeValue: 9 },
-    { name: "9", value: 9, negativeValue: 9 },
-    { name: "10", value: 15, negativeValue: 9 },
-    { name: "11", value: 20, negativeValue: 9 },
-    { name: "12", value: 6, negativeValue: 9 },
-  ];
-
-  const ticketChartData = [
-    { name: "Minggu", accepted: 9, rejected: 3, late: 7, onTime: 4 },
-    { name: "Senin", accepted: 7, rejected: 5, late: 5, onTime: 6 },
-    { name: "Selasa", accepted: 9, rejected: 4, late: 7, onTime: 2 },
-    { name: "Rabu", accepted: 7, rejected: 3, late: 5, onTime: 5 },
-    { name: "Kamis", accepted: 9, rejected: 5, late: 7, onTime: 6 },
-    { name: "Jumat", accepted: 12, rejected: 7, late: 10, onTime: 12 },
-    { name: "Sabtu", accepted: 10, rejected: 5, late: 8, onTime: 15 },
-  ];
+  // serialize dates to ISO for client
+  const attendanceRaw = rawAttendances.map((a) => ({
+    date: a.date.toISOString(),
+    status: a.status,
+  }));
 
   return (
     <div className="space-y-6">
       <DashboardHeader title="Dashboard" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardStats
-          dark={true}
-          link="/admin/dashboard/shifts"
-          title="Total Users"
-          value={`${totalUsers.toString()} Users`}
-          valueColor="text-yellow-400"
+        <DashboardStats dark={true} link="/admin/dashboard/shifts" title="Total Users"
+          value={`${totalUsers} Users`} valueColor="text-yellow-400"
           icon={<Clock strokeWidth={2} />}
           color="bg-slate-500 text-white"
         />
 
-        <DashboardStats
-          title="Morning Shifts"
-          value={morningEmployees.toString()}
+        <DashboardStats title="Morning Shifts" value={String(morningEmployees)}
           icon={<Sun strokeWidth={2} />}
           color="bg-gradient-to-br from-yellow-100 to-yellow-50 text-yellow-600"
         />
 
-        <DashboardStats
-          title="Afternoon Shifts"
-          value={afternoonEmployees.toString()}
+        <DashboardStats title="Afternoon Shifts" value={String(afternoonEmployees)}
           icon={<SunMoon strokeWidth={2} />}
           color="bg-gradient-to-br from-orange-100 to-orange-50 text-orange-600"
         />
 
-        <DashboardStats
-          title="Evening Shifts"
-          value={eveningEmployees.toString()}
+        <DashboardStats title="Evening Shifts" value={String(eveningEmployees)}
           icon={<Moon strokeWidth={2} />}
           color="bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600"
         />
@@ -92,7 +76,6 @@ export default async function AdminDashboardPage() {
           </div>
           <ContentInformation heading="Fast action" subheading="Access your content in one click" autoMargin={false} />
         </div>
-
         <FastActions />
       </div>
 
@@ -105,26 +88,9 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 grid-cols-2">
-        <BarDiagram
-          title="Employee performance"
-          description="Bad and Good performance from Employee"
-          data={salesChartData}
-          series={[{ key: "value", color: "#1d293d", label: "Value" }]}
-        />
-
-        <AreaDiagram
-          title="Shifts statistic"
-          description="Shift attendance diagram"
-          data={ticketChartData}
-          series={[
-            { key: "accepted", color: "#7bf1a8", label: "On Time" },
-            { key: "rejected", color: "#ffdf20", label: "Late" },
-            { key: "late", color: "#ffa2a2", label: "Absent" },
-            { key: "onTime", color: "#3b82f6", label: "Permission" },
-          ]}
-        />
+      <div className="grid gap-4 grid-cols-1">
+        <AnalyticsDiagram attendanceRaw={attendanceRaw} />
       </div>
-    </div >
+    </div>
   );
 }

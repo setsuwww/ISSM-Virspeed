@@ -24,7 +24,7 @@ export async function getSchedules({ page = 1, search = "", frequency, shift }) 
     },
     select: {
       id: true, title: true, description: true,
-      startDate: true, endDate: true,
+      startDate: true, endDate: true, startTime: true, endTime: true,
       frequency: true, createdAt: true, updatedAt: true,
       users: { select: { user: { select: { id: true, name: true, email: true } }}},
     },

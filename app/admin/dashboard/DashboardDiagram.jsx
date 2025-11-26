@@ -50,9 +50,11 @@ export function AreaDiagram({ title, description, data, series }) {
   const seriesToUse = series ?? [{ key: "value", color: "#4f46e5", label: "Value" }];
 
   return (
-    <Card className="border border-slate-200 shadow-sm rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-slate-700 font-semibold">{title}</CardTitle>
+    <Card className="border-transparent shadow-none rounded-2xl">
+      <CardHeader className="border-transparent">
+        {title && (
+          <CardTitle className="text-slate-700 font-semibold">{title}</CardTitle>
+        )}
         {description && (
           <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
         )}
@@ -64,21 +66,21 @@ export function AreaDiagram({ title, description, data, series }) {
               {seriesToUse.map((s, idx) => (
                 <linearGradient key={s.key} id={`gradient-${s.key}-${idx}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={s.color} stopOpacity={0.6} />
-                  <stop offset="95%" stopColor={s.color} stopOpacity={0.1} />
+                  <stop offset="90%" stopColor={s.color} stopOpacity={0.1} />
                 </linearGradient>
               ))}
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} />
-            <YAxis tick={{ fontSize: 11, fill: "#6b7280" }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#cee0fa95" />
+            <XAxis dataKey="name" tick={{ fontSize: 8, fill: "#6b7280" }} />
+            <YAxis tick={{ fontSize: 8, fill: "#6b7280" }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#18181b",
-                border: "1px solid #27272a",
+                backgroundColor: "#ffffff",
+                border: "1px solid #e2e8f0",
                 borderRadius: "0.5rem",
-                fontSize: "12px",
-                color: "white",
+                fontSize: "14px",
+                color: "#45556c",
               }}
             />
             <Legend wrapperStyle={{ fontSize: "12px", color: "#6b7280" }} />

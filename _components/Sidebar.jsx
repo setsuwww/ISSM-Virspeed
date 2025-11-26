@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ChevronDown, Grip, Menu, X, Users, Clock, LayoutDashboard, User, CircleUserRound, Building2 } from "lucide-react"
 import { roleStyles } from "@/_constants/roleConstants"
 import clsx from "clsx"
+import Image from "next/image"
 
 const subLinkBase = "block my-0.5 text-sm px-3 py-1.5 transition-colors font-medium rounded-md"
 
@@ -116,9 +117,7 @@ export function Sidebar({ user }) {
   return (
     <>
       <div className="md:hidden fixed top-0 left-0 w-full bg-white border-b border-slate-200 z-50 flex items-center justify-between px-4 py-3">
-        <div className="text-xl font-bold text-sky-800">
-          Live<span className="text-sky-600">system.</span>
-        </div>
+
         <button onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-700 hover:text-slate-900">
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -128,20 +127,19 @@ export function Sidebar({ user }) {
         <div onClick={() => setMobileOpen(false)} className="fixed inset-0 bg-black/30 z-40 md:hidden"></div>
       )}
 
-      {/* Sidebar */}
       <aside className={clsx("fixed md:static top-0 left-0 h-screen bg-white border-r border-slate-200 flex flex-col z-50 transition-all duration-300 ease-in-out",
         minimized ? "w-[80px]" : "w-64",
         mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}
       >
-        {/* Header */}
         <div className={clsx("flex items-center justify-between border-b border-slate-200 px-5 py-4",
           minimized && "justify-center px-0"
         )}
         >
           {!minimized && (
-            <div className="text-2xl font-bold text-sky-800">
-              Live<span className="text-sky-600">system.</span>
+            <div className="flex items-center space-x-2">
+              <Image src="/icons/liveon.png" width={20} height={20} alt="Liveon icon"/>
+              <div className="text-xl font-bold text-sky-800">Liveon.</div>
             </div>
           )}
           <button onClick={() => setMinimized(!minimized)}
@@ -154,7 +152,6 @@ export function Sidebar({ user }) {
           </button>
         </div>
 
-        {/* Nav */}
         <nav className={clsx("flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400",
           minimized ? "px-2 py-4 space-y-2" : "px-4 py-5 space-y-3"
         )}

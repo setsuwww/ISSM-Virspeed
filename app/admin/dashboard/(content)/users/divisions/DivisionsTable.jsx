@@ -22,8 +22,7 @@ import { useDivisionStore } from "@/_stores/useDivisionStore"
 
 export default function DivisionsTable({ data }) {
   const {
-    mutate,
-    search, setSearch,
+    mutate, search, setSearch,
     typeFilter, setTypeFilter,
     statusFilter, setStatusFilter,
     filteredData,
@@ -31,7 +30,7 @@ export default function DivisionsTable({ data }) {
     handleDeleteSelected,
     handleDeleteAll,
     handleExportPDF,
-    onEdit, onDelete, onToggleStatus, onBulkUpdate,
+    onEdit, onDelete, onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   } = useDivisionsHooks(data)
 
   const {
@@ -40,8 +39,7 @@ export default function DivisionsTable({ data }) {
     pendingStatus,
     loading,
     fetchConfig,
-    handleBulkToggle,
-    confirmBulkToggle,
+    handleBulkToggle, confirmBulkToggle,
     closeDialog,
   } = useDivisionStore()
 
@@ -50,7 +48,7 @@ export default function DivisionsTable({ data }) {
   if (loading) {
     return (
       <p className="flex items-center gap-x-1 text-sm text-slate-500">
-        <Loader size={14} className="animate-spin" /> Loading offices...
+        <Loader size={14} className="animate-spin" /> Loading division...
       </p>
     )
   }
@@ -198,7 +196,7 @@ export default function DivisionsTable({ data }) {
             <Button variant="outline" onClick={closeDialog}>
               Cancel
             </Button>
-            <Button onClick={() => confirmBulkToggle(onBulkUpdate, mutate)}>Confirm</Button>
+            <Button onClick={() => confirmBulkToggle(onBulkGlobalUpdate, mutate)}>Confirm</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

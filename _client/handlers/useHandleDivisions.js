@@ -3,20 +3,20 @@
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
 
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision } from "@/_server/divisionAction";
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle } from "@/_server/divisionAction";
 
-import { exportDivision } from "../../_function/exports/exportDivision";
+import { exportDivision } from "@/_function/exports/exportDivision";
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 
 export function useHandleDivisions({
-  filteredData, selectedIds, setSelectedIds, mutate }) {
+  filteredData, selectedIds, setSelectedIds, mutate,
+}) {
   const router = useRouter();
   const { withConfirm, withTry } = useActionHelper();
 
-  const toggleSelect = (id) =>
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+  const toggleSelect = (id) => setSelectedIds((prev) =>
+    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+  );
 
   const toggleSelectAll = (checked) => setSelectedIds(checked ? filteredData.map((d) => d.id) : []);
 
@@ -28,8 +28,8 @@ export function useHandleDivisions({
   const onDelete = async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
       () => withTry(() => deleteDivision(id),
-          "Division successfully removed.", "Failed to delete division."
-        ),
+        "Division successfully removed.", "Failed to delete division."
+      ),
       confirmMessages.deleteOne(name).variant
     ).then(() => mutate?.());
 
@@ -38,34 +38,47 @@ export function useHandleDivisions({
 
     const { message, variant } = confirmMessages.deleteSelected(selectedIds.length);
 
-    await withConfirm( message, async () => {
-        await Promise.all(selectedIds.map((id) => deleteDivision(id)));
+    await withConfirm(message,
+      async () => { await withTry(() => Promise.all(selectedIds.map(deleteDivision)),
+        `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
+      );
         setSelectedIds([]);
         mutate?.();
-      }, variant
+      },
+      variant
     );
   };
 
   const handleDeleteAll = async () => {
     const { message, variant } = confirmMessages.deleteAll;
 
-    await withConfirm( message, async () => {
-        await withTry( deleteAllDivisions,
+    await withConfirm(message,
+      async () => {await withTry(deleteAllDivisions,
           "All divisions removed.", "Failed to delete all divisions."
-        ); mutate?.();
+        );
+        mutate?.();
       }, variant
     );
+  };
+
+  const onBulkGlobalUpdate = async (isActive) => {
+    await withTry(() => bulkToggle({
+          activateType: "WFA", deactivateType: "WFO",
+          isActive,
+        }),
+      "Bulk status updated.", "Failed to update global toggle."
+    );
+    mutate?.();
   };
 
   const onBulkUpdate = async (ids, mode) => {
     const { message, variant } = confirmMessages.bulkUpdate(ids.length, mode);
 
-    await withConfirm(message, () =>
-        withTry(() => bulkToggleSelectedDivision({
+    await withConfirm(message,
+      () => withTry(() => bulkToggleSelectedDivision({
               ids, isActive: mode === "ACTIVE",
             }),
-          `Divisions set to ${mode.toLowerCase()}.`,
-          "Bulk update failed."
+          `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
         ), variant
     ).then(() => mutate?.());
   };
@@ -74,8 +87,7 @@ export function useHandleDivisions({
 
   const handleExportPDF = () =>
     withTry(() => exportDivision(filteredData),
-      "PDF exported.",
-      "Failed to export."
+      "PDF exported.", "Failed to export PDF."
     );
 
   return {
@@ -86,6 +98,8 @@ export function useHandleDivisions({
     onDelete,
     handleDeleteSelected,
     handleDeleteAll,
+
+    onBulkGlobalUpdate,
     onBulkUpdate,
 
     onEdit,

@@ -79,9 +79,7 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
 
   const handleEditUser = useCallback(
     async (id) => {
-      await withTry(() => getUserWithId(id),
-        null, "Failed to load user data."
-      ); router.push(`/admin/dashboard/users/${id}/edit`);
+      router.push(`/admin/dashboard/users/${id}/edit`);
     }, [router]
   );
 

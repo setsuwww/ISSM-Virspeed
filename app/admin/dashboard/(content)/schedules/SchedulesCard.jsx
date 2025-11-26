@@ -81,7 +81,7 @@ export default function SchedulesCard({ data }) {
                 </div>
 
                 <div className="pt-2 pb-6 px-4 space-y-2">
-                  <p className="text-xs font-base text-slate-400">
+                  <p className="text-xs text-slate-400">
                     {schedule.description}
                   </p>
 
