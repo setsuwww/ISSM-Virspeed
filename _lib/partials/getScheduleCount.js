@@ -1,10 +1,13 @@
-"use server";
+import { prisma } from "@/_lib/prisma"
+import { getCurrentUser } from "../auth"
 
-import prisma from "@/lib/prisma";
+export async function getScheduleCount() {
+  const user = await getCurrentUser()
+  if (!user) return 0
 
-export async function getUserScheduleCount(userId) {
-  const count = await prisma.scheduleAssignment.count({
-    where: { userId },
-  });
-  return count;
+  const count = await prisma.schedulesOnUsers.count({
+    where: { userId: user.id }
+  })
+
+  return count
 }
