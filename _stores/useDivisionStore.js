@@ -30,7 +30,7 @@ export const useDivisionStore = create((set, get) => ({
 
       await onBulkUpdate?.({ activateType: "WFA", deactivateType: "WFO",
         isActive: pendingStatus,
-      }) mutate?.()
+      }); mutate?.()
     } catch (err) { console.error(err)}
   },
 
