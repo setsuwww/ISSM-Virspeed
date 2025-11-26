@@ -6,7 +6,7 @@ import { ContentInformation } from "@/_components/content/ContentInformation";
 import { Pagination } from "../../../Pagination";
 import { notFound } from "next/navigation";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 export const revalidate = 60;
 
 async function getWorkHoursData(page = 1) {
@@ -32,11 +32,48 @@ async function getWorkHoursData(page = 1) {
   });
 
   const divisionsPromise = prisma.division.findMany({
-    include: { users: true, shifts: true },
+    select: {
+      id: true,
+      name: true,
+      startTime: true,
+      endTime: true,
+      users: {
+        where: {
+          shiftId: null,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      shifts: {
+        select: {
+          type: true,
+          name: true,
+          startTime: true,
+          endTime: true
+        }
+      }
+    },
   });
 
   const shiftsPromise = prisma.shift.findMany({
-    include: { users: true },
+    select: {
+      id: true,
+      name: true,
+      startTime: true,
+      endTime: true,
+      type: true,
+      users: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    where: {
+      isActive: true,
+    },
   });
 
   const [users, total, divisions, shifts] = await Promise.all([

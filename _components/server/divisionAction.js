@@ -54,33 +54,50 @@ export async function bulkDeleteDivisions(ids) {
   }
 }
 
-export async function bulkToggleDivisions({ activateType, deactivateType, isActive }) {
+export async function bulkToggleSelectedDivision({ ids, isActive }) {
+  try {
+    await prisma.division.updateMany({
+      where: { id: { in: ids }},
+      data: { status: isActive ? "ACTIVE" : "INACTIVE" }
+    });
+
+    revalidatePath("/admin/dashboard/users/divisions");
+    return { success: true };
+  } catch (error) {
+    console.error("❌ Bulk update failed:", error);
+    return { success: false };
+  }
+}
+
+export async function bulkToggle({ activateType, deactivateType, isActive }) {
   try {
     if (isActive) {
       await prisma.division.updateMany({
         where: { type: activateType },
-        data: { status: "ACTIVE" },
-      })
+        data: { status: "ACTIVE" }
+      });
       await prisma.division.updateMany({
         where: { type: deactivateType },
-        data: { status: "INACTIVE" },
-      })
+        data: { status: "INACTIVE" }
+      });
+
     } else {
       await prisma.division.updateMany({
         where: { type: activateType },
-        data: { status: "INACTIVE" },
-      })
+        data: { status: "INACTIVE" }
+      });
       await prisma.division.updateMany({
         where: { type: deactivateType },
-        data: { status: "ACTIVE" },
-      })
+        data: { status: "ACTIVE" }
+      });
     }
 
-    revalidatePath("/admin/dashboard/users/divisions")
-    return { success: true }
-  } catch (error) {
-    console.error("❌ Bulk update failed:", error)
-    return { success: false, message: "Bulk update failed" }
+    revalidatePath("/admin/dashboard/users/divisions");
+    return { success: true };
+
+  } 
+  catch (error) {
+    return { success: false };
   }
 }
 

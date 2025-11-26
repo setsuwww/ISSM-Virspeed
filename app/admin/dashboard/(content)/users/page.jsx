@@ -8,9 +8,9 @@ import ContentForm from "@/_components/content/ContentForm";
 import { ContentInformation } from "@/_components/content/ContentInformation";
 
 import { capitalize } from "@/_function/globalFunction";
-import { minutesToTime } from "@/_function/services/shiftAttendanceHelpers";
+import { minutesToTime } from "@/_function/globalFunction";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 export const revalidate = 60;
 
 async function getUsers(page = 1) {

@@ -6,7 +6,7 @@ import ContentForm from "@/_components/content/ContentForm"
 import UserHistoryTable from "./HistoryTable"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
-import { minutesToTime } from '@/_function/services/shiftAttendanceHelpers';
+import { minutesToTime } from '@/_function/globalFunction';
 
 const PAGE_SIZE = 10
 

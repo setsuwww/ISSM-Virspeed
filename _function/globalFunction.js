@@ -25,16 +25,16 @@ export function formatIntToTime(hourInt) {
   return `${hh}:${mm}`
 }
 
-export function formatTimeToInt(time) {
+export function formattimeToMinutes(time) {
   if (!time) return null
   const [h, m] = time.split(":").map(Number)
   return h * 100 + m
 }
 
-
 export function timeToMinutes(time) {
-  const [h, m] = time.split(":").map(Number)
-  return h * 60 + m
+  if (!time || typeof time !== "string" || !time.includes(":")) return 0;
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
 }
 
 export function minutesToTime(minutes) {

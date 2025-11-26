@@ -4,7 +4,7 @@ import { ContentInformation } from "@/_components/content/ContentInformation"
 import { AttendancesCard } from "./AttendancesCard"
 import AttendancesTableClient from "./AttendancesTableClient"
 import { prisma } from "@/_lib/prisma"
-import { minutesToTime } from "@/_function/services/shiftAttendanceHelpers"
+import { minutesToTime } from "@/_function/globalFunction"
 
 async function getShifts() {
   const startOfDay = new Date()
