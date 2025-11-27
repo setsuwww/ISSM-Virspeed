@@ -13,23 +13,29 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
+
+    "ignoreDeprecations": "6.0",
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    ]
   },
+
   "include": [
     "next-env.d.ts",
-    "**/*.ts", 
-    "**/*.js", 
-    "**/*.tsx", 
-    "**/*.jsx", 
-    ".next/types/**/*.ts", 
+    "**/*.ts",
+    "**/*.js",
+    "**/*.tsx",
+    "**/*.jsx",
+    ".next/types/**/*.ts"
   ],
+
   "exclude": ["node_modules"]
 }
