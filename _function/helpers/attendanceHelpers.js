@@ -19,18 +19,9 @@ export async function determineAttendanceStatus(shiftId) {
 
   const isCrossDay = shift.endTime < shift.startTime
   const shiftStart = startToday
-  const shiftEnd = isCrossDay
-    ? startToday.add(1, "day").add(shift.endTime, "minute")
-    : startToday.add(shift.endTime - shift.startTime, "minute")
+  const shiftEnd = isCrossDay ? startToday.add(1, "day").add(shift.endTime, "minute") : startToday.add(shift.endTime - shift.startTime, "minute")
 
   const diff = now.diff(shiftStart, "minute")
-
-  console.log({
-    shiftStart: shiftStart.format("YYYY-MM-DD HH:mm"),
-    shiftEnd: shiftEnd.format("YYYY-MM-DD HH:mm"),
-    now: now.format("YYYY-MM-DD HH:mm"),
-    diff,
-  })
 
   if (diff < -CHECKIN_EARLY_WINDOW_MINUTES) {
     throw new Error("Belum waktu untuk check-in. Tunggu hingga 20 menit sebelum shift dimulai.")
@@ -48,7 +39,6 @@ export async function determineAttendanceStatus(shiftId) {
 export function isUserWithinLocation(division, currentCoords) {
   if (!division?.latitude || !division?.longitude) return false
   if (!currentCoords?.lat && !currentCoords?.latitude) {
-    console.warn("No current location provided:", currentCoords)
     return false
   }
 
@@ -70,17 +60,14 @@ function getDistanceMeters(pointA, pointB) {
   const deltaLat = ((pointB.lat - pointA.lat) * Math.PI) / 180
   const deltaLon = ((pointB.lon - pointA.lon) * Math.PI) / 180
 
-  const a =
-    Math.sin(deltaLat / 2) ** 2 +
-    Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) ** 2
+  const a = Math.sin(deltaLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) ** 2
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return earthRadius * c
 }
 
 export async function canUserCheckout(shiftId) {
-  const shift = await prisma.shift.findUnique({
-    where: { id: shiftId },
+  const shift = await prisma.shift.findUnique({ where: { id: shiftId },
     select: { endTime: true, startTime: true },
   })
   if (!shift || shift.endTime == null) return false
