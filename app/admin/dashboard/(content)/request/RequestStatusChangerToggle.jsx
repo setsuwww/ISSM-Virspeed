@@ -29,8 +29,8 @@ export default function RequestStatusChangerToggle({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={disabled || isPending} className="border-slate-200 text-slate-400 text-sm font-semibold rounded-full flex items-center gap-2">
-          <span className={`w-2.5 h-2.5 rounded-full ${dotStatusColor[current]}`} />
+        <Button variant="outline" size="sm" disabled={disabled || isPending} className="px-2 py-1 border-slate-200 text-slate-400 text-xs font-semibold rounded-full flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${dotStatusColor[current]}`} />
           <span>
             {getDisplayStatus(current)}
           </span>
