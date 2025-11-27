@@ -9,9 +9,7 @@ export function exportSchedule(filteredData) {
   doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30)
 
   const tableData = filteredData.map((item) => [
-    item.id,
-    item.title,
-    item.description,
+    item.id, item.title, item.description,
     new Date(item.date).toLocaleDateString(),
     new Date(item.createdAt).toLocaleDateString(),
   ])

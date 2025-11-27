@@ -20,11 +20,7 @@ export function exportUser(users = []) {
 
   const tableColumn = ["Name", "Email", "Role", "Shift", "Shift Time", "Created At"];
   const tableRows = users.map((user) => [
-    user.name || "-",
-    user.email || "-",
-    user.role || "-",
-    user.shift || "-",
-    user.shiftTime || "-",
+    user.name || "-", user.email || "-", user.role || "-", user.shift || "-", user.shiftTime || "-",
     new Date(user.createdAt).toLocaleDateString("id-ID"),
   ]);
 
