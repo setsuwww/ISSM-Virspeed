@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Button } from "@/_components/ui/Button"
@@ -9,15 +9,16 @@ import RequestsTableRow from "./RequestsTableRow"
 export default function RequestsTabs({
   shiftRequests = [],
   permissionRequests = [],
-  mode: initialMode = "pending",
+  mode,
 }) {
-  const [mode, setMode] = useState(initialMode)
+  const router = useRouter()
+
   const isHistory = mode === "history"
 
-  const toggleMode = () => setMode(isHistory ? "pending" : "history")
-
-  const filteredShift = shiftRequests.filter((r) => isHistory ? true : r.status === "PENDING")
-  const filteredPermission = permissionRequests.filter((r) => isHistory ? true : r.status === "PENDING")
+  const toggleMode = () => {
+    const newMode = isHistory ? "pending" : "history"
+    router.push(`?mode=${newMode}`)
+  }
 
   return (
     <Tabs defaultValue="shift" className="w-full">
@@ -31,27 +32,25 @@ export default function RequestsTabs({
           </TabsTrigger>
         </TabsList>
 
-        <div>
-          <Button variant="outline" onClick={toggleMode} className="border-slate-200 shadow-xs">
-            <span className="font-semibold text-slate-600">Request:</span>
-            <span className="text-slate-400">{isHistory ? "Pending" : "Finished"}</span>
-          </Button>
-        </div>
+        <Button variant="outline" onClick={toggleMode} className="border-slate-200 shadow-xs">
+          <span className="font-semibold text-slate-600">Request:</span>
+          <span className="text-slate-400">{isHistory ? "Finished" : "Pending"}</span>
+        </Button>
       </div>
 
       <TabsContent value="shift" className="mt-6">
-        {filteredShift.length === 0 ? (
+        {shiftRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <p className="text-slate-400">
-              {isHistory ? "No shift change records found" : "No pending shift change requests"}
+              {isHistory ? "No shift change history" : "No pending shift change requests"}
             </p>
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Requested By</TableHead>
-                <TableHead>Target User</TableHead>
+                <TableHead>Requester</TableHead>
+                <TableHead>Responser</TableHead>
                 <TableHead>Shift Change</TableHead>
                 <TableHead>Reason</TableHead>
                 <TableHead>Status</TableHead>
@@ -59,7 +58,7 @@ export default function RequestsTabs({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredShift.map((request) => (
+              {shiftRequests.map((request) => (
                 <RequestsTableRow key={request.id} {...request} requestType="shift" />
               ))}
             </TableBody>
@@ -68,10 +67,10 @@ export default function RequestsTabs({
       </TabsContent>
 
       <TabsContent value="permission" className="mt-6">
-        {filteredPermission.length === 0 ? (
+        {permissionRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <p className="text-slate-400">
-              {isHistory ? "No permission records found" : "No pending permission requests"}
+              {isHistory ? "No permission history" : "No pending permission requests"}
             </p>
           </div>
         ) : (
@@ -86,7 +85,7 @@ export default function RequestsTabs({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPermission.map((request) => (
+              {permissionRequests.map((request) => (
                 <RequestsTableRow key={request.id} {...request} requestType="permission" />
               ))}
             </TableBody>

@@ -11,6 +11,7 @@ import RequestRejectedAlert from "./RequestRejectedAlert"
 import RenderUserInfo from "./element/renderUserInfo"
 import RenderShiftInfo from "./element/renderShiftInfo"
 import { updateShiftChangeRequestStatus, updatePermissionStatus } from "@/_server/shiftAction"
+import { FileText } from "lucide-react"
 
 export default function RequestsTableRow({
   id, requestedBy, user,
@@ -34,18 +35,20 @@ export default function RequestsTableRow({
     async (newStatus, reason = null) => {
       if (!actualId) return
       setIsLoading(true)
-      try { const res = requestType === "shift"
-            ? await updateShiftChangeRequestStatus(actualId, newStatus, reason)
-              : await updatePermissionStatus(actualId, newStatus, reason)
+      try {
+        const res = requestType === "shift"
+          ? await updateShiftChangeRequestStatus(actualId, newStatus, reason)
+          : await updatePermissionStatus(actualId, newStatus, reason)
 
-        if (res?.success) { setCurrentStatus(newStatus)
+        if (res?.success) {
+          setCurrentStatus(newStatus)
           toast.success(`Request ${newStatus.toLowerCase()} successfully`)
           router.refresh()
-        } 
-        else { toast.error(res?.message || "Failed to update request")}
-      } 
-      catch (err) { toast.error("An error occurred while updating the request")} 
-      finally { setIsLoading(false)}
+        }
+        else { toast.error(res?.message || "Failed to update request") }
+      }
+      catch (err) { toast.error("An error occurred while updating the request") }
+      finally { setIsLoading(false) }
     },
     [actualId, router, requestType]
   )
@@ -84,13 +87,13 @@ export default function RequestsTableRow({
           {reason ? (
             <Dialog>
               <DialogTrigger asChild>
-                <div className="text-left">
-                  <p className="line-clamp-3 text-sm text-slate-400 cursor-pointer">
-                    {reason}
+                <div className="flex items-center text-left space-x-1 text-slate-400">
+                  {requestType === "shift" && (
+                    <FileText size={16} />
+                  )}
+                  <p className="line-clamp-3 text-sm cursor-pointer">
+                    {reason}...
                   </p>
-                  <span className="text-xs text-sky-500 hover:underline cursor-pointer">
-                    Read more
-                  </span>
                 </div>
               </DialogTrigger>
               <DialogContent className="max-w-lg">
