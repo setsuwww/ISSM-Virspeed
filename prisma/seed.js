@@ -6,8 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🚀 Starting structured dummy seed...");
 
-  await prisma.shiftChangeRequest.deleteMany();
-  await prisma.attendance.deleteMany();
   await prisma.schedulesOnUsers.deleteMany();
   await prisma.schedule.deleteMany();
   await prisma.userShiftAssignment.deleteMany();
@@ -20,14 +18,13 @@ async function main() {
     data: [
       { allWfaActive: false },
       { allWfaActive: true },
-      { allWfaActive: false },
     ]
   });
 
   const divisions = await prisma.division.createMany({
     data: [
       {
-        name: "HQ Jakarta",
+        name: "PT. Aplikanusa Lintasarta",
         location: "Jakarta Selatan",
         type: LocationType.WFO,
         status: LocationStatus.ACTIVE,
@@ -38,8 +35,8 @@ async function main() {
         endTime: 17 * 60,
       },
       {
-        name: "Bandung Branch",
-        location: "Cimahi",
+        name: "PT. Lintasarta",
+        location: "Branch, Yogyakarta",
         type: LocationType.WFA,
         status: LocationStatus.ACTIVE,
         longitude: 107.61,
@@ -48,25 +45,14 @@ async function main() {
         startTime: 9 * 60,
         endTime: 18 * 60,
       },
-      {
-        name: "Surabaya Branch",
-        location: "Surabaya Pusat",
-        type: LocationType.WFO,
-        status: LocationStatus.INACTIVE,
-        longitude: 112.75,
-        latitude: -7.25,
-        radius: 90,
-        startTime: 7 * 60,
-        endTime: 16 * 60,
-      }
     ]
   });
 
   const divisionList = await prisma.division.findMany();
   const shiftTemplates = [
-    { type: ShiftType.MORNING, baseName: "Pagi", start: 8 * 60, end: 16 * 60 },
-    { type: ShiftType.AFTERNOON, baseName: "Sore", start: 16 * 60, end: 24 * 60 },
-    { type: ShiftType.EVENING, baseName: "Malem", start: 0, end: 8 * 60 },
+    { type: ShiftType.MORNING, baseName: "M", start: 8 * 60, end: 16 * 60 },
+    { type: ShiftType.AFTERNOON, baseName: "A", start: 16 * 60, end: 24 * 60 },
+    { type: ShiftType.EVENING, baseName: "E", start: 0, end: 8 * 60 },
   ];
 
   const shiftData = [];
@@ -88,9 +74,16 @@ async function main() {
   const shiftList = await prisma.shift.findMany();
 
   const usersData = [
-    { name: "Mikasa", email: "mikasa@example.com", role: Role.ADMIN },
-    { name: "Eren", email: "eren@example.com", role: Role.EMPLOYEE },
-    { name: "Armin", email: "armin@example.com", role: Role.EMPLOYEE },
+    { name: "Mikasa", email: "mikasa@next.com", role: Role.ADMIN },
+    { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
+    { name: "Brian", email: "brian@next.com", role: Role.EMPLOYEE },
+    { name: "Charlie", email: "charlie@next.com", role: Role.EMPLOYEE },
+    { name: "Dirman", email: "dirman@next.com", role: Role.EMPLOYEE },
+    { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
+    { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
+    { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
+    { name: "Iris", email: "iris@next.com", role: Role.EMPLOYEE },
+    { name: "John", email: "john@next.com", role: Role.EMPLOYEE },
   ];
 
   const users = [];
@@ -115,19 +108,14 @@ async function main() {
   const scheduleData = await prisma.schedule.createMany({
     data: [
       {
-        title: "Daily Standup",
+        title: "Prototyping",
         frequency: FrequencyType.DAILY,
         divisionId: divisionList[0].id,
       },
       {
-        title: "Weekly Review",
+        title: "Holy Friday",
         frequency: FrequencyType.WEEKLY,
         divisionId: divisionList[1].id,
-      },
-      {
-        title: "Monthly Meeting",
-        frequency: FrequencyType.MONTHLY,
-        divisionId: divisionList[2].id,
       },
     ],
   });
@@ -138,7 +126,6 @@ async function main() {
     data: [
       { scheduleId: schedules[0].id, userId: users[0].id },
       { scheduleId: schedules[1].id, userId: users[1].id },
-      { scheduleId: schedules[2].id, userId: users[2].id },
     ],
   });
 
@@ -146,62 +133,6 @@ async function main() {
     data: [
       { userId: users[0].id, shiftId: shiftList[0].id },
       { userId: users[1].id, shiftId: shiftList[1].id },
-      { userId: users[2].id, shiftId: shiftList[2].id },
-    ],
-  });
-
-  await prisma.attendance.createMany({
-    data: [
-      {
-        userId: users[0].id,
-        shiftId: shiftList[0].id,
-        date: new Date(),
-        status: AttendanceStatus.PRESENT,
-      },
-      {
-        userId: users[1].id,
-        shiftId: shiftList[1].id,
-        date: new Date(),
-        status: AttendanceStatus.LATE,
-      },
-      {
-        userId: users[2].id,
-        shiftId: shiftList[2].id,
-        date: new Date(),
-        status: AttendanceStatus.ABSENT,
-      },
-    ],
-  });
-
-  await prisma.shiftChangeRequest.createMany({
-    data: [
-      {
-        userId: users[1].id,
-        requestedById: users[0].id,
-        oldShiftId: shiftList[0].id,
-        newShiftId: shiftList[1].id,
-        reason: "Family matters",
-        startDate: new Date(),
-        status: ShiftChangeStatus.PENDING,
-      },
-      {
-        userId: users[2].id,
-        requestedById: users[0].id,
-        oldShiftId: shiftList[1].id,
-        newShiftId: shiftList[2].id,
-        reason: "Schedule adjustment",
-        startDate: new Date(),
-        status: ShiftChangeStatus.APPROVED,
-      },
-      {
-        userId: users[1].id,
-        requestedById: users[0].id,
-        oldShiftId: shiftList[2].id,
-        newShiftId: shiftList[0].id,
-        reason: "Medical reason",
-        startDate: new Date(),
-        status: ShiftChangeStatus.REJECTED,
-      },
     ],
   });
 

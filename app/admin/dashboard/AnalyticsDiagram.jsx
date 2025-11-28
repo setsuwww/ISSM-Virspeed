@@ -61,10 +61,10 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
   }, [parsedAttendances, start, end]);
 
   const series = [
-    { key: "present", color: "#3b82f6", label: "Present" },
+    { key: "present", color: "#7bf1a8", label: "Present" },
     { key: "late", color: "#ffdf20", label: "Late" },
     { key: "absent", color: "#ffa2a2", label: "Absent" },
-    { key: "permission", color: "#7bf1a8", label: "Permission" },
+    { key: "permission", color: "#3b82f6", label: "Permission" },
   ];
 
   return (

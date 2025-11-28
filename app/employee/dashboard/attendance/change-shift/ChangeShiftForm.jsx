@@ -11,8 +11,8 @@ import { apiFetchData } from "@/_lib/fetch"
 import ContentForm from '@/_components/common/ContentForm';
 import { ContentInformation } from '@/_components/common/ContentInformation';
 import { shiftStyles } from "@/_constants/shiftConstants"
+import { capitalize } from "@/_function/globalFunction"
 
-// Konversi tanggal ke ISO lokal tanpa geser timezone (hindari bug UTC -7 jam)
 function toLocalISOString(dateStr) {
   if (!dateStr) return null
   const date = new Date(dateStr + "T00:00:00")
@@ -20,7 +20,6 @@ function toLocalISOString(dateStr) {
   return date.toISOString()
 }
 
-// Format YYYY-MM-DD
 function toDateOnlyIso(s) {
   if (!s) return null
   const d = new Date(s)
@@ -58,15 +57,12 @@ export default function ChangeShiftForm({ employees = [] }) {
       const payload = {
         targetUserId: Number(target.id),
         newShiftId: target.shiftId,
-        startDate: toLocalISOString(startDate),   // ✅ FIXED
-        endDate: endDate ? toLocalISOString(endDate) : null,  // ✅ FIXED
+        startDate: toLocalISOString(startDate),  
+        endDate: endDate ? toLocalISOString(endDate) : null, 
         reason: reason.trim(),
       }
 
-      await apiFetchData({
-        url: "/shifts/user-side-change",
-        method: "post",
-        data: payload,
+      await apiFetchData({ url: "/shifts/user-side-change", method: "post", data: payload,
         successMessage: "Shift change request submitted successfully.",
         errorMessage: "Failed to submit shift change request.",
       })
@@ -75,20 +71,15 @@ export default function ChangeShiftForm({ employees = [] }) {
       setStartDate(todayIso)
       setEndDate(todayIso)
       setReason("")
-    } catch (err) {
-      console.error("Submit error:", err)
-    } finally {
-      setLoading(false)
-    }
+    } 
+    catch (err) {console.error("Submit error:", err)} 
+    finally { setLoading(false)}
   }
 
   return (
     <ContentForm>
       <ContentForm.Header>
-        <ContentInformation
-          heading="Change shift form"
-          subheading="Send a change shift request to another employee"
-        />
+        <ContentInformation heading="Change shift form" subheading="Send a change shift request to another employee"/>
       </ContentForm.Header>
 
       <ContentForm.Body>
@@ -98,16 +89,11 @@ export default function ChangeShiftForm({ employees = [] }) {
         >
           <div className="space-y-2">
             <Label>Select Employee</Label>
-            <Select
-              value={String(selectedUser)}
-              onValueChange={(v) => setSelectedUser(String(v))}
-              disabled={loading}
-            >
+            <Select value={String(selectedUser)} onValueChange={(v) => setSelectedUser(String(v))} disabled={loading}>
               <SelectTrigger className="border-slate-200">
                 <SelectValue>
-                  {selectedUser ? (
-                    (() => {
-                      const emp = employees.find((e) => String(e.id) === String(selectedUser))
+                  {selectedUser ? ((() => {
+                    const emp = employees.find((e) => String(e.id) === String(selectedUser))
                       if (!emp) return "Choose an employee"
                       return (
                         <div className="flex items-center text-left space-x-2">
@@ -119,10 +105,7 @@ export default function ChangeShiftForm({ employees = [] }) {
                           </span>
                         </div>
                       )
-                    })()
-                  ) : (
-                    "Choose an employee"
-                  )}
+                    })()) : ("Choose an employee")}
                 </SelectValue>
               </SelectTrigger>
 
@@ -139,7 +122,7 @@ export default function ChangeShiftForm({ employees = [] }) {
                       </div>
                       <div className="flex flex-col p-1">
                         <span className="text-xs text-slate-600">
-                          {emp.name} - {emp.shift?.name || "No Shift"}
+                          {emp.name} - {capitalize(emp.shift?.type) || "No Shift"}
                         </span>
                         <span className="text-xs text-slate-400">{emp.email}</span>
                       </div>

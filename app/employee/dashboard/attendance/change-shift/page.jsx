@@ -8,15 +8,14 @@ export const revalidate = 30
 export default async function Page() {
   const user = await getCurrentUser()
 
-  if (!user) {
-    return <p className="text-center text-rose-500">Unauthorized</p>
-  }
-  const id = user.id;
-
   const employees = await prisma.user.findMany({
-    where: { role: "EMPLOYEE", NOT: { id: parseInt(id) }},
+    where: {
+      role: "EMPLOYEE",
+      divisionId: user.divisionId,  
+      NOT: { id: user.id }
+    },
     include: { shift: true },
-    orderBy: { name: "asc" },
+    orderBy: { name: "asc" }
   })
 
   const requests = await prisma.shiftChangeRequest.findMany({
