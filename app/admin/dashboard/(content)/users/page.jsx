@@ -51,16 +51,14 @@ export default async function Page({ searchParams }) {
           type: u.shift.type,
         } : null;
 
-    const divisionShift =
-      !userShift && u.division?.shifts?.length
+    const divisionShift = !userShift && u.division?.shifts?.length
         ? {
             label: `${u.division.shifts[0].name} - (Division)`,
             start: u.division.shifts[0].startTime, end: u.division.shifts[0].endTime,
             type: "DIVISION"
           } : null;
 
-    const divisionTime =
-      !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
+    const divisionTime = !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
         ? {
             label: u.division.name,
             start: u.division.startTime, end: u.division.endTime,
