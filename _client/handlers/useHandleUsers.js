@@ -3,8 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import { deleteUsers, deleteUserWithId, getUserWithId } from "@/_server/userAction";
-import { exportUser } from "@/_function/exports/exportUser";
+import { deleteUsers, deleteUserWithId } from "@/_server/userAction";
 
 import { useToast } from "@/_context/Toast-Provider";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
@@ -83,14 +82,8 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     }, [router]
   );
 
-  const onExportPDF = useCallback(
-    (data) => { exportUser(data);
-      toast.success("PDF exported.");
-    }, [toast]
-  );
-
   return {
     toggleSelect, selectAll, isAllSelected, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser, onExportPDF,
+    handleEditUser, handleDeleteUser
   };
 }

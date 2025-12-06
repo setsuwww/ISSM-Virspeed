@@ -34,7 +34,6 @@ export function useUsersHooks(initialData) {
     toggleSelect, selectAll,
     isAllSelected, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,
-    onExportPDF,
   } = useHandleUsers({ filteredData, selectedIds, setSelectedIds })
 
   return {
@@ -42,6 +41,6 @@ export function useUsersHooks(initialData) {
     selectedIds, selectedIdsSet, isAllSelected, filteredData,
     handleSearchChange, handleRoleFilterChange, handleShiftFilterChange,
     toggleSelect, selectAll, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser, onExportPDF
+    handleEditUser, handleDeleteUser,
   };
 }

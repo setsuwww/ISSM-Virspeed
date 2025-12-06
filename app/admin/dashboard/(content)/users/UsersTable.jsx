@@ -1,6 +1,7 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { UsersActionHeader } from "./UsersActionHeader";
 import { UsersRow } from "./UsersRow";
@@ -14,18 +15,17 @@ export default function UsersTable({ data }) {
     roleFilter, handleRoleFilterChange, shiftFilter, handleShiftFilterChange,
     filteredData, selectedIds, selectedIdsSet, isAllSelected,
     toggleSelect, selectAll, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser, onExportPDF
+    handleEditUser, handleDeleteUser,
   } = useUsersHooks(data);
 
   return (
     <div className="rounded-md space-y-4">
       <UsersActionHeader
+        filteredData={filteredData}
         search={search} onSearchChange={handleSearchChange}
         roleFilter={roleFilter} onRoleFilterChange={handleRoleFilterChange}
         shiftFilter={shiftFilter} onShiftFilterChange={handleShiftFilterChange}
-        selectedCount={selectedIds.length} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
-        onExportPDF={() => onExportPDF(filteredData)}
-        filteredData={filteredData}
+        selectedCount={selectedIds.length} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}   
       />
 
       <Table>
