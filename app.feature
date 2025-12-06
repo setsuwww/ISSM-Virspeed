@@ -1,3 +1,3 @@
-laporan absen perbulan, format excel, & pdf 
-laporan absen pershift
-laporan pertukaran shift
+report absen perbulan, format excel, & pdf 
+report absensi dan presensi pershift
+report history pertukaran shift

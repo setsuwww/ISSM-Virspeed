@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma";
-import { DivisionShiftsCards } from "../../users/attendances/AttendancesCard";
+import { DivisionShiftsCards } from "../../users/(manage)/attendances/AttendancesCard";
 
 export default async function DivisionPage({ params }) {
   const divisionId = parseInt(params.id);

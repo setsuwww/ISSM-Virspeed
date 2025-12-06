@@ -12,7 +12,7 @@ import { capitalize } from "@/_function/globalFunction";
 import { roleStyles } from "@/_constants/roleConstants";
 import { format } from "date-fns";
 
-import { EmployeesSwitchModal } from "../../../users/employees/EmployeesSwitchModal";
+import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 import EmptyStates from "@/_components/common/EmptyStates";
 
 export default function UserShiftTable({ data }) {
