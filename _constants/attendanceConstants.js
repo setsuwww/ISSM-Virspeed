@@ -27,6 +27,19 @@ export const requestStatusDisplay = {
   REJECTED: "Rejected",
 };
 
+export const statusStyleKey = {
+  PENDING: "Pending",
+  PENDING_ADMIN: "Pending",
+  PENDING_TARGET: "Pending",
+
+  APPROVED: "Accepted",
+  REJECTED: "Rejected",
+
+  ABSENT: "Absent",
+  LATE: "Late",
+  PERMISSION: "Permission",
+};
+
 export function getDisplayStatus(status) {
   return requestStatusDisplay[status] || status;
 }
@@ -38,7 +51,7 @@ export const statusColorsClass = {
     head: "text-rose-800",
     text: "text-rose-600", 
     subtext: "text-rose-400", 
-    border: "bg-rose-50 border-rose-600" 
+    border: "bg-rose-50 border-rose-100/50 text-rose-400" 
   },
   LATE: { 
     bgDot: "bg-yellow-400", 
@@ -46,7 +59,7 @@ export const statusColorsClass = {
     head: "text-yellow-800",
     text: "text-yellow-600", 
     subtext: "text-yellow-400", 
-    border: "bg-yellow-50 border-yellow-600" 
+    border: "bg-yellow-50 border-yellow-100/50 text-yellow-400" 
   },
   PERMISSION: { 
     bgDot: "bg-blue-400", 
@@ -54,6 +67,6 @@ export const statusColorsClass = {
     head: "text-blue-800",
     text: "text-blue-600", 
     subtext: "text-blue-400", 
-    border: "bg-blue-50 border-blue-600"  
+    border: "bg-blue-50 border-blue-100/50 text-blue-400"  
   },
 };

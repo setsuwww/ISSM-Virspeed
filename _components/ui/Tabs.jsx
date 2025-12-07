@@ -62,7 +62,7 @@ function TabsTrigger({
         mode === "link" &&
           cn(
             "text-slate-500 hover:text-slate-800 bg-transparent",
-            "data-[state=active]:text-yellow-600 data-[state=active]:bg-yellow-50 px-4",
+            "data-[state=active]:text-yellow-600 px-4 py-8",
             "rounded-md",
 
             "after:absolute after:left-0 after:right-0 after:-bottom-[1px]",

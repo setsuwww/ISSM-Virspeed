@@ -1,35 +1,43 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Button } from "@/_components/ui/Button"
-import RequestsTableRow from "./RequestsTableRow"
+import RequestsDataTable from "./RequestsDataTable"
 
 export default function RequestsTabs({
-  shiftRequests = [],
-  permissionRequests = [],
+  permissionRequests = [], changeShiftRequests = [], earlyCheckoutRequests = [], leaveRequests = [],
   mode,
 }) {
   const router = useRouter()
-
   const isHistory = mode === "history"
 
-  const toggleMode = () => {
-    const newMode = isHistory ? "pending" : "history"
-    router.push(`?mode=${newMode}`)
-  }
+  const toggleMode = () => { router.push(`?mode=${isHistory ? "pending" : "history"}`) }
+
+  const tabs = [
+    { key: "permission", label: "Permission", data: permissionRequests },
+    { key: "changeshift", label: "Change Shift", data: changeShiftRequests },
+    { key: "early", label: "Early Check-out", data: earlyCheckoutRequests },
+    { key: "leave", label: "Leave", data: leaveRequests },
+  ]
 
   return (
-    <Tabs defaultValue="shift" className="w-full">
+    <Tabs defaultValue="permission" className="w-full">
       <div className="flex items-center justify-between">
-        <TabsList>
-          <TabsTrigger value="shift" className="px-4 py-4 flex items-center justify-center whitespace-nowrap">
-            Shift Changes
-          </TabsTrigger>
-          <TabsTrigger value="permission" className="px-4 py-4 flex items-center justify-center whitespace-nowrap">
-            Permissions
-          </TabsTrigger>
+        <TabsList mode="link" className="space-x-2">
+          {tabs.map((t) => (
+            <TabsTrigger key={t.key} mode="link" value={t.key} className="py-1.5 whitespace-nowrap">
+              <div className="flex items-center space-x-2">
+                <span>{t.label}</span>
+
+                {t.data?.length > 0 && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-xs bg-yellow-50 text-yellow-600">
+                    {t.data.length}
+                  </span>
+                )}
+              </div>
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <Button variant="outline" onClick={toggleMode} className="border-slate-200 shadow-xs">
@@ -38,60 +46,11 @@ export default function RequestsTabs({
         </Button>
       </div>
 
-      <TabsContent value="shift" className="mt-6">
-        {shiftRequests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-slate-400">
-              {isHistory ? "No shift change history" : "No pending shift change requests"}
-            </p>
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Requester</TableHead>
-                <TableHead>Responser</TableHead>
-                <TableHead>Shift Change</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Period</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {shiftRequests.map((request) => (
-                <RequestsTableRow key={request.id} {...request} requestType="shift" />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </TabsContent>
-
-      <TabsContent value="permission" className="mt-6">
-        {permissionRequests.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-slate-400">
-              {isHistory ? "No permission history" : "No pending permission requests"}
-            </p>
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Requested By</TableHead>
-                <TableHead>Shift</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sent on</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {permissionRequests.map((request) => (
-                <RequestsTableRow key={request.id} {...request} requestType="permission" />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </TabsContent>
+      {tabs.map((t) => (
+        <TabsContent key={t.key} value={t.key} className="mt-6">
+          <RequestsDataTable type={t.key} items={t.data} isHistory={isHistory} />
+        </TabsContent>
+      ))}
     </Tabs>
   )
 }

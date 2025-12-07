@@ -8,30 +8,20 @@ export async function createSchedule(formData) {
   try {
     const { title, description, frequency, startDate, startTime, endDate, endTime, userIds } = formData
 
-    if (!title || !userIds?.length || !startDate || !endDate) {
-      throw new Error("Missing required fields")
-    }
+    if (!title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
 
-    const validUsers = await prisma.user.findMany({
-      where: { id: { in: userIds.map(Number) } },
-    })
+    const validUsers = await prisma.user.findMany({ where: { id: { in: userIds.map(Number) } }})
 
-    if (validUsers.length !== userIds.length) {
-      const missing = userIds.filter((id) => !validUsers.some((u) => u.id === Number(id)))
+    if (validUsers.length !== userIds.length) { const missing = userIds.filter((id) => !validUsers.some((u) => u.id === Number(id)))
       throw new Error(`Some users not found: ${missing.join(", ")}`)
     }
 
     const schedule = await prisma.schedule.create({
       data: {
-        title,
-        description,
-        frequency,
-        startDate: new Date(startDate),
-        startTime,
-        endDate: new Date(endDate),
-        endTime,
-        users: {
-          create: validUsers.map((u) => ({
+        title, description, frequency,
+        startDate: new Date(startDate), startTime,
+        endDate: new Date(endDate), endTime,
+        users: { create: validUsers.map((u) => ({
             user: { connect: { id: u.id } },
           })),
         },
@@ -42,41 +32,27 @@ export async function createSchedule(formData) {
 
     return { success: true, data: schedule }
   }
-  catch (error) {
-    console.error("Error creating schedule:", error)
-    return { success: false, message: error.message || "Failed to create schedule" }
-  }
+  catch (error) { return { success: false, message: error.message || "Failed to create schedule" }}
 }
 
 export async function updateSchedule(data) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
 
-  if (!data || typeof data !== "object") {
-    throw new Error("Invalid or missing data object")
-  }
+  if (!data || typeof data !== "object") { throw new Error("Invalid or missing data object")}
 
   const { id, title, description, frequency, startDate, startTime, endDate, endTime, userIds } = data
+  if (!id || !title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
 
-  if (!id || !title || !userIds?.length || !startDate || !endDate)
-    throw new Error("Missing required fields")
-
-  const validUsers = await prisma.user.findMany({
-    where: { id: { in: userIds.map(Number) } },
-  })
+  const validUsers = await prisma.user.findMany({ where: { id: { in: userIds.map(Number) } }})
 
   const updated = await prisma.schedule.update({
     where: { id: Number(id) },
     data: {
-      title,
-      description,
-      frequency: frequency || "ONCE",
-      startDate: new Date(startDate),
-      startTime,
-      endDate: new Date(endDate),
-      endTime,
-      users: {
-        deleteMany: {},
+      title, description, frequency: frequency || "ONCE",
+      startDate: new Date(startDate), startTime,
+      endDate: new Date(endDate), endTime,
+      users: { deleteMany: {},
         create: validUsers.map((u) => ({
           user: { connect: { id: u.id } },
         })),
@@ -85,7 +61,6 @@ export async function updateSchedule(data) {
   })
 
   revalidatePath("/admin/dashboard/schedules")
-
   return { success: true, message: "Schedule updated successfully" }
 }
 
@@ -95,9 +70,7 @@ export async function deleteScheduleById(id) {
 
   if (!id) throw new Error("Missing schedule ID")
 
-  await prisma.schedule.delete({
-    where: { id: Number(id) },
-  })
+  await prisma.schedule.delete({ where: { id: Number(id) },})
 
   revalidatePath("/admin/dashboard/schedules")
   return { success: true, message: "Schedule deleted successfully" }
@@ -118,10 +91,8 @@ export async function deleteSchedules(ids = []) {
 
     revalidatePath("/admin/dashboard/schedules")
     return { success: true, message: "Schedules deleted successfully" }
-  } catch (error) {
-    console.error("❌ Error deleting schedules:", error)
-    return { success: false, message: "Failed to delete schedules" }
-  }
+  } 
+  catch (error) { return { success: false, message: "Failed to delete schedules" }}
 }
 
 

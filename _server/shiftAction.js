@@ -27,108 +27,14 @@ export async function updateShiftChangeStatus(id, action, actorRole) {
   return { success: true, data: updated };
 }
 
-export async function updateShiftChangeRequestStatus(requestId, newStatus, reason = null) {
-  const cleanId = Number(String(requestId).replace(/^(shift-)/, ""));
-  if (isNaN(cleanId)) throw new Error("Invalid ID");
-
-  try {
-    const request = await prisma.shiftChangeRequest.findUnique({
-      where: { id: cleanId },
-      select: {
-        id: true,
-        userId: true,
-        targetUserId: true,
-        oldShiftId: true,
-        targetShiftId: true,
-        status: true,
-        startDate: true,
-        endDate: true,
-      },
-    });
-
-    if (!request) throw new Error("Request not found");
-
-    if (newStatus === "APPROVED") {
-      const todayStart = dayjs().startOf("day");
-      const startDate = request.startDate ? dayjs(request.startDate).startOf("day") : null;
-
-      if (startDate && startDate.isSameOrBefore(todayStart)) {
-        if (!request.targetUserId) throw new Error("Target user not found");
-
-        await prisma.$transaction([
-          prisma.user.update({
-            where: { id: request.userId },
-            data: { shiftId: request.targetShiftId },
-          }),
-          prisma.user.update({
-            where: { id: request.targetUserId },
-            data: { shiftId: request.oldShiftId },
-          }),
-        ]);
-      }
-    }
-
-    const updated = await prisma.shiftChangeRequest.update({
-      where: { id: cleanId },
-      data: {
-        status: newStatus,
-        ...(reason ? { rejectReason: reason } : {}),
-      },
-    });
-
-    return { success: true, data: updated };
-  } catch (error) {
-    console.error("Error updating shift change request:", error);
-    return { success: false, message: error.message };
-  }
-}
-
-export async function updatePermissionStatus(requestId, newStatus, reason = null) {
-  const cleanId = Number(String(requestId).replace(/^(perm-)/, ""));
-  if (isNaN(cleanId)) throw new Error("Invalid permission ID");
-
-  try {
-    const attendance = await prisma.attendance.findUnique({
-      where: { id: cleanId },
-    });
-
-    if (!attendance) throw new Error("Permission request not found");
-
-    const mappedStatus = newStatus.toUpperCase();
-    const validStatuses = ["PENDING", "APPROVED", "REJECTED"];
-    if (!validStatuses.includes(mappedStatus)) {
-      throw new Error(`Invalid approval status: ${newStatus}`);
-    }
-
-    const updated = await prisma.attendance.update({
-      where: { id: cleanId },
-      data: {
-        approval: mappedStatus,
-        ...(reason ? { adminReason: reason } : {}),
-      },
-    });
-
-    return { success: true, data: updated };
-  } catch (error) {
-    console.error("Error updating permission:", error);
-    return { success: false, message: error.message };
-  }
-}
-
 export async function resetExpiredShiftChanges(todayOverride = null) {
   const todayStart = (todayOverride || dayjs()).startOf("day").toDate();
 
   const expiredRequests = await prisma.shiftChangeRequest.findMany({
-    where: {
-      status: "APPROVED",
-      endDate: { lt: todayStart },
-    },
+    where: { status: "APPROVED", endDate: { lt: todayStart }},
     select: {
-      id: true,
-      userId: true,
-      targetUserId: true,
-      oldShiftId: true,
-      targetShiftId: true,
+      id: true, userId: true,
+      targetUserId: true, oldShiftId: true, targetShiftId: true,
     },
   });
 
@@ -140,9 +46,7 @@ export async function resetExpiredShiftChanges(todayOverride = null) {
       prisma.user.findUnique({ where: { id: req.targetUserId }, select: { shiftId: true } }),
     ]);
 
-    if (user?.shiftId !== req.targetShiftId && targetUser?.shiftId !== req.oldShiftId) {
-      continue;
-    }
+    if (user?.shiftId !== req.targetShiftId && targetUser?.shiftId !== req.oldShiftId) { continue }
 
     await prisma.$transaction([
       prisma.user.update({
@@ -158,7 +62,6 @@ export async function resetExpiredShiftChanges(todayOverride = null) {
         data: { status: "PENDING" },
       }),
     ]);
-
     reverted++;
   }
 
@@ -176,13 +79,9 @@ export async function startingShiftUpdate(todayOverride = null) {
       OR: [{ endDate: { gte: today } }, { endDate: null }],
     },
     select: {
-      id: true,
-      userId: true,
-      targetUserId: true,
-      oldShiftId: true,
-      targetShiftId: true,
-      startDate: true,
-      endDate: true,
+      id: true, userId: true, targetUserId: true,
+      oldShiftId: true, targetShiftId: true,
+      startDate: true, endDate: true,
     },
   });
 

@@ -9,36 +9,26 @@ export async function createDivision(data) {
     const newDivision = await prisma.division.create({
       data: {
         name: data.name,
-        location: data.location,
-        longitude: data.longitude,
-        latitude: data.latitude,
-        radius: data.radius,
-        type: data.type,
-        status: data.status,
-        startTime: data.startTime,
-        endTime: data.endTime,
+        location: data.location, longitude: data.longitude, latitude: data.latitude, radius: data.radius,
+        type: data.type, status: data.status,
+        startTime: data.startTime, endTime: data.endTime,
       },
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true, division: newDivision }
-  } catch (error) {
-    console.error("❌ Error creating division:", error)
-    return { success: false, message: "Failed to create division" }
-  }
+  } 
+  catch (error) { return { success: false, message: "Failed to create division" }}
 }
 
 export async function updateDivisionStatus(id, newStatus) {
   try {
     await prisma.division.update({
-      where: { id },
-      data: { status: newStatus },
+      where: { id }, data: { status: newStatus },
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true }
-  } catch (error) {
-    console.error("❌ Error updating status:", error)
-    return { success: false }
-  }
+  } 
+  catch (error) { return { success: false }}
 }
 
 export async function bulkDeleteDivisions(ids) {
@@ -48,10 +38,8 @@ export async function bulkDeleteDivisions(ids) {
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true }
-  } catch (error) {
-    console.error("❌ Error bulk deleting:", error)
-    return { success: false }
-  }
+  } 
+  catch (error) { return { success: false }}
 }
 
 export async function bulkToggleSelectedDivision({ ids, isActive }) {
@@ -63,10 +51,8 @@ export async function bulkToggleSelectedDivision({ ids, isActive }) {
 
     revalidatePath("/admin/dashboard/users/divisions");
     return { success: true };
-  } catch (error) {
-    console.error("❌ Bulk update failed:", error);
-    return { success: false };
-  }
+  } 
+  catch (error) { return { success: false }}
 }
 
 export async function bulkToggle({ activateType, deactivateType, isActive }) {
@@ -95,18 +81,10 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
     }
 
     revalidatePath("/admin/dashboard/users/divisions");
+    return { success: true, message: "Global toggle updated."};
 
-    return {
-      success: true,
-      message: "Global toggle updated.",
-    };
-
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message || "Unknown error",
-    };
-  }
+  } 
+  catch (error) { return { success: false, error: error.message || "Unknown error"}}
 }
 
 
@@ -117,9 +95,7 @@ export async function updateDivision(id, data) {
       type, status, startTime, endTime,
     } = data
 
-    if (!name || !location) {
-      return { success: false, message: "Name and location are required" }
-    }
+    if (!name || !location) return { success: false, message: "Name and location are required" }
 
     const updatedDivision = await prisma.division.update({
       where: { id: Number(id) },
@@ -128,8 +104,7 @@ export async function updateDivision(id, data) {
         longitude: longitude ? parseFloat(longitude) : null, latitude: latitude ? parseFloat(latitude) : null,
         radius: radius ? parseFloat(radius) : null,
         type, status,
-        startTime: timeToMinutes(startTime) ?? null, 
-        endTime: timeToMinutes(endTime) ?? null,
+        startTime: timeToMinutes(startTime) ?? null, endTime: timeToMinutes(endTime) ?? null,
         updatedAt: new Date(),
       },
     })
@@ -137,10 +112,8 @@ export async function updateDivision(id, data) {
     revalidatePath("/admin/dashboard/users/divisions")
 
     return { success: true, data: updatedDivision }
-  } catch (error) {
-    console.error("❌ Division update error:", error)
-    return { success: false, message: error.message || "Failed to update division" }
-  }
+  } 
+  catch (error) { return { success: false, message: error.message || "Failed to update division" }}
 }
 
 export async function deleteDivision(id) {

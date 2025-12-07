@@ -61,7 +61,7 @@ export async function updateUser(data) {
 
     return { success: true };
   } 
-  catch (error) { console.error(error);
+  catch (error) {
     return { error: "Failed to update user." };
   }
 }
@@ -73,7 +73,7 @@ export async function deleteUsers(ids) {
 
     revalidatePath("/admin/users")
     return { success: true }
-  } catch (error) { console.error(error)
+  } catch (error) {
     throw new Error("Failed to delete users.")
   }
 }

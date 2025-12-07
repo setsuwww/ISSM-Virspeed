@@ -46,7 +46,7 @@ export default function AttendancesApprovalPartials({
           )}
         </div>
 
-        <Badge className={`text-xs border-0 ${statusColorsClass[status]?.bgDot || "bg-slate-200"}`}>
+        <Badge className={`text-xs px-2 py-0.5 border ${statusColorsClass[status]?.border || "bg-slate-200"}`}>
           {users.length} Person
         </Badge>
       </div>

@@ -5,7 +5,6 @@ import { useActionHelper } from "@/_stores/common/useActionHelper";
 
 import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle } from "@/_server/divisionAction";
 
-import { exportDivision } from "@/_function/exports/exportDivision";
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 
 export function useHandleDivisions({
@@ -85,11 +84,6 @@ export function useHandleDivisions({
 
   const onEdit = (id) => router.push(`/admin/dashboard/users/divisions/${id}/edit`);
 
-  const handleExportPDF = () =>
-    withTry(() => exportDivision(filteredData),
-      "PDF exported.", "Failed to export PDF."
-    );
-
   return {
     toggleSelect,
     toggleSelectAll,
@@ -103,6 +97,5 @@ export function useHandleDivisions({
     onBulkUpdate,
 
     onEdit,
-    handleExportPDF,
   };
 }

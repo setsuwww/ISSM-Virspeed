@@ -5,11 +5,11 @@ import { updateShiftChangeStatus } from "@/_server/shiftAction"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/Dialog"
 import { Button } from "@/_components/ui/Button"
-import { CircleUserRound, File } from "lucide-react"
+import { CircleUserRound } from "lucide-react"
 import { Badge } from "@/_components/ui/Badge"
 import { capitalize } from "@/_function/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attedancesStyles } from "@/_constants/attendanceConstants"
+import { attedancesStyles, getDisplayStatus, statusStyleKey } from "@/_constants/attendanceConstants"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
@@ -18,8 +18,9 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
   const [rows, setRows] = useState(requests)
 
   const handleAction = (id, action) => {
-    startTransition(async () => { await updateShiftChangeStatus(id, action, "TARGET")
-      setRows((prev) =>prev.map((r) => r.id === id ? { ...r, status: action === "ACCEPT" ? "PENDING_ADMIN" : "REJECTED" } : r))
+    startTransition(async () => {
+      await updateShiftChangeStatus(id, action, "TARGET")
+      setRows((prev) => prev.map((r) => r.id === id ? { ...r, status: action === "ACCEPT" ? "PENDING_ADMIN" : "REJECTED" } : r))
     })
   }
   const filtered = rows.filter((r) => r.targetUserId === currentUserId && r.status === "PENDING_TARGET")
@@ -28,7 +29,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
     <div className="rounded-md overflow-hidden">
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Shift Change page" subheading="Send a request for shift change every employee"/>
+          <ContentInformation heading="Shift Change page" subheading="Send a request for shift change every employee" />
         </ContentForm.Header>
 
         <ContentForm.Body>
@@ -36,8 +37,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
             <TableHeader className="bg-slate-50">
               <TableRow>
                 <TableHead>Requester</TableHead>
-                <TableHead>From</TableHead>
-                <TableHead>To</TableHead>
+                <TableHead>From - To</TableHead>
                 <TableHead>Message</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Action</TableHead>
@@ -57,7 +57,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="bg-slate-200 p-2 rounded-full">
-                          <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1}/>
+                          <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
                         </div>
                         <div>
                           <div className="font-medium text-slate-800">
@@ -71,15 +71,21 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     </TableCell>
 
                     <TableCell>
-                      <Badge className={`border-none ${shiftStyles[req.oldShift?.type]}`}>
-                        {req.oldShift?.name || "-"}
-                      </Badge>
-                    </TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-col">
+                          <Badge className={`border-none ${shiftStyles[req.oldShift?.type]}`}>
+                            {req.oldShift?.name || "-"}
+                          </Badge>
+                        </div>
 
-                    <TableCell>
-                      <Badge className={`border-none ${shiftStyles[req.targetShift?.type]}`}>
-                        {req.targetShift?.name || "-"}
-                      </Badge>
+                        <span className="text-xs text-gray-500 px-1">→</span>
+
+                        <div className="flex flex-col">
+                          <Badge className={`border-none ${shiftStyles[req.targetShift?.type]}`}>
+                            {req.targetShift?.name || "-"}
+                          </Badge>
+                        </div>
+                      </div>
                     </TableCell>
 
                     <TableCell>
@@ -101,8 +107,8 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     </TableCell>
 
                     <TableCell>
-                      <Badge className={`${attedancesStyles[capitalize(req.status.replace("_", " "))]}`}>
-                        {capitalize(req.status.replace("_", " "))}
+                      <Badge className={`${attedancesStyles[statusStyleKey[req.status]]}`}>
+                        {getDisplayStatus(req.status)}
                       </Badge>
                     </TableCell>
 

@@ -10,7 +10,7 @@ import RequestStatusChangerToggle from "./RequestStatusChangerToggle"
 import RequestRejectedAlert from "./RequestRejectedAlert"
 import RenderUserInfo from "./element/renderUserInfo"
 import RenderShiftInfo from "./element/renderShiftInfo"
-import { updateShiftChangeRequestStatus, updatePermissionStatus } from "@/_server/shiftAction"
+import { updateShiftChangeRequestStatus, updatePermissionRequestStatus } from "@/_server/requestAction"
 import { FileText } from "lucide-react"
 
 export default function RequestsTableRow({
@@ -38,7 +38,7 @@ export default function RequestsTableRow({
       try {
         const res = requestType === "shift"
           ? await updateShiftChangeRequestStatus(actualId, newStatus, reason)
-          : await updatePermissionStatus(actualId, newStatus, reason)
+          : await updatePermissionRequestStatus(actualId, newStatus, reason)
 
         if (res?.success) {
           setCurrentStatus(newStatus)
@@ -60,6 +60,14 @@ export default function RequestsTableRow({
     setRejectReason("")
   }, [rejectReason, handleStatusChange])
 
+  const internalType = useMemo(() => {
+    if (requestType === "changeshift") return "shift"
+    if (requestType === "permission") return "permission"
+    if (requestType === "early") return "early"
+    if (requestType === "leave") return "leave"
+    return requestType
+  }, [requestType])
+
   return (
     <>
       <TableRow>
@@ -67,10 +75,8 @@ export default function RequestsTableRow({
           <RenderUserInfo person={requestedBy} />
         </TableCell>
 
-        {requestType === "shift" && (
-          <TableCell>
-            <RenderUserInfo person={user} />
-          </TableCell>
+        {internalType === "shift" && (
+          <TableCell><RenderUserInfo person={user} /></TableCell>
         )}
 
         <TableCell className="max-w-xs">
@@ -88,9 +94,6 @@ export default function RequestsTableRow({
             <Dialog>
               <DialogTrigger asChild>
                 <div className="flex items-center text-left space-x-1 text-slate-400">
-                  {requestType === "shift" && (
-                    <FileText size={16} />
-                  )}
                   <p className="line-clamp-3 text-sm cursor-pointer">
                     {reason}...
                   </p>
@@ -123,7 +126,7 @@ export default function RequestsTableRow({
         </TableCell>
 
         <TableCell className="text-slate-400 whitespace-nowrap text-sm">
-          {requestType === "shift" ? (
+          {internalType === "shift" ? (
             <div>
               <p className="text-teal-500">{startDate || "-"}</p>
               <p className="text-rose-500">{endDate || "-"}</p>

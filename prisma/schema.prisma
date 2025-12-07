@@ -46,6 +46,12 @@ enum ApprovalStatus {
   REJECTED
 }
 
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -110,7 +116,9 @@ model User {
 
   shiftRequests        ShiftChangeRequest[] @relation("RequestedUser")     
   createdRequests      ShiftChangeRequest[] @relation("RequestedByAdmin")  
-  targetShiftRequests  ShiftChangeRequest[] @relation("TargetUser")        
+  targetShiftRequests  ShiftChangeRequest[] @relation("TargetUser")
+  leaveRequests     LeaveRequest[]
+  approvedLeaves    LeaveRequest[] @relation("LeaveApprovedBy")   
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -235,5 +243,27 @@ model ShiftChangeRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model LeaveRequest {
+  id            Int         @id @default(autoincrement())
+
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+
+  approvedBy    User?       @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  approvedById  Int?
+
+  reason        String
+  adminReason   String?
+
+  startDate     DateTime
+  endDate       DateTime
+
+  status        LeaveStatus @default(PENDING)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 
 

@@ -125,8 +125,10 @@ export default async function Page({ searchParams }) {
 
         <ContentForm.Body>
           <RequestsTabs
-            shiftRequests={shift}
+            changeShiftRequests={shift}
             permissionRequests={attendance}
+            earlyCheckoutRequests={[]}
+            leaveRequests={[]}
             mode={mode}
           />
         </ContentForm.Body>

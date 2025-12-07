@@ -26,7 +26,7 @@ export default function RenderShiftInfo({
   return (
     <div className="flex flex-col items-start justify-start gap-1 text-left">
       <div className="flex items-center space-x-1">
-        <span className="font-semibold text-teal-400">From :</span>
+        <span className="font-semibold text-slate-400">From :</span>
         <Badge
           className={`border-none px-2 py-0.5 text-xs font-medium ${
             shiftStyles[oldShift?.type] || "bg-slate-100 text-slate-700"
@@ -36,7 +36,7 @@ export default function RenderShiftInfo({
         </Badge>
       </div>
       <div className="flex items-center space-x-1">
-        <span className="font-semibold text-rose-400">To :</span>
+        <span className="font-semibold text-slate-400">To :</span>
         <Badge
           className={`border-none px-2 py-0.5 text-xs font-medium ${
             shiftStyles[targetShift?.type] || "bg-slate-100 text-slate-700"

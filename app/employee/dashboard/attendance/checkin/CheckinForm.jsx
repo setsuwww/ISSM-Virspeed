@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import { Clock, LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/_components/ui/Card"
-import { userSendCheckIn, userSendCheckOut, userSendPermissionRequest } from "@/_server/attendanceAction"
+import { userSendCheckIn, userSendCheckOut, userSendPermissionRequest } from "@/_server/employee-action/attendanceAction"
 import { apiFetchData } from "@/_lib/fetch"
 import { Button } from "@/_components/ui/Button"
 import { ContentInformation } from '@/_components/common/ContentInformation';
