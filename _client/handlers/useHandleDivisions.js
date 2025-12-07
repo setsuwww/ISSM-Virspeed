@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
 
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle } from "@/_server/divisionAction";
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle } from "@/_server/admin-action/divisionAction";
 
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 

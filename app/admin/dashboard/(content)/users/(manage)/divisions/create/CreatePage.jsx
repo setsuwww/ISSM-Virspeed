@@ -15,7 +15,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants"
 import { capitalize, timeToMinutes } from "@/_function/globalFunction"
 import { Loader } from "lucide-react"
-import { createDivision } from "@/_server/divisionAction"
+import { createDivision } from "@/_server/admin-action/divisionAction"
 
 export default function CreateDivisionForm() {
   const router = useRouter()

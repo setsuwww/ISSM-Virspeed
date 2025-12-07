@@ -14,7 +14,7 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { updateSchedule } from "@/_server/scheduleAction"
+import { updateSchedule } from "@/_server/admin-action/scheduleAction"
 import { useToast } from "@/_context/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"

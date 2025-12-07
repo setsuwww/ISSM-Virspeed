@@ -1,5 +1,5 @@
 import SidebarServer from "@/_components/AdminSidebarServer"
-import '@/_styles/globals.css'
+import '@/_styles/admin.css'
 import { ReactQueryProvider } from '@/_context/Query-Provider';
 import { ToastProvider } from '@/_context/Toast-Provider';
 import { ConfirmDialog } from "@/_components/ui/Confirm";

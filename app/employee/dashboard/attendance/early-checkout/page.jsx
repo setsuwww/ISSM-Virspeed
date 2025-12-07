@@ -5,8 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/_components/ui/Card"
 import { Label } from "@/_components/ui/Label"
 import { Button } from "@/_components/ui/Button"
 import { toast } from "sonner"
-import { Calendar, FilePenLine } from "lucide-react"
-import { userSendLeaveRequest } from "@/_server/attendanceAction"
+import { Calendar } from "lucide-react"
+import { userSendLeaveRequest } from "@/_server/employee-action/attendanceAction"
 
 export default function LeaveForm() {
   const [startDate, setStartDate] = useState("")

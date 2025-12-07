@@ -87,7 +87,6 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
   catch (error) { return { success: false, error: error.message || "Unknown error"}}
 }
 
-
 export async function updateDivision(id, data) {
   try {
     const {

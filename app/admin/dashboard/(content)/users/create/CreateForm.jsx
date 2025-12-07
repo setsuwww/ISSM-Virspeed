@@ -15,7 +15,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
-import { createUser } from "@/_server/userAction.js"
+import { createUser } from "@/_server/admin-action/userAction.js"
 import { capitalize, formatIntToTime } from "@/_function/globalFunction"
 import { roleOptions } from "@/_constants/roleConstants"
 import { Loader } from 'lucide-react';

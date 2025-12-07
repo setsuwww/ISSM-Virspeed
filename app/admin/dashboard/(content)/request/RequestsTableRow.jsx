@@ -10,8 +10,8 @@ import RequestStatusChangerToggle from "./RequestStatusChangerToggle"
 import RequestRejectedAlert from "./RequestRejectedAlert"
 import RenderUserInfo from "./element/renderUserInfo"
 import RenderShiftInfo from "./element/renderShiftInfo"
-import { updateShiftChangeRequestStatus, updatePermissionRequestStatus } from "@/_server/requestAction"
-import { FileText } from "lucide-react"
+
+import { updateShiftChangeRequestStatus, updatePermissionRequestStatus } from "@/_server/admin-action/requestAction"
 
 export default function RequestsTableRow({
   id, requestedBy, user,
@@ -89,6 +89,17 @@ export default function RequestsTableRow({
           />
         </TableCell>
 
+        <TableCell className="text-slate-400 whitespace-nowrap text-sm">
+          {internalType === "shift" ? (
+            <div>
+              <p className="text-green-500/70">{startDate || "-"}</p>
+              <p className="text-red-500/70">{endDate || "-"}</p>
+            </div>
+          ) : (
+            date || "-"
+          )}
+        </TableCell>
+
         <TableCell className="max-w-[120px]">
           {reason ? (
             <Dialog>
@@ -110,9 +121,7 @@ export default function RequestsTableRow({
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-          ) : (
-            <span className="text-sm text-slate-400">-</span>
-          )}
+          ) : (<span className="text-sm text-slate-400">-</span>)}
         </TableCell>
 
         <TableCell>
@@ -125,16 +134,6 @@ export default function RequestsTableRow({
           />
         </TableCell>
 
-        <TableCell className="text-slate-400 whitespace-nowrap text-sm">
-          {internalType === "shift" ? (
-            <div>
-              <p className="text-teal-500">{startDate || "-"}</p>
-              <p className="text-rose-500">{endDate || "-"}</p>
-            </div>
-          ) : (
-            date || "-"
-          )}
-        </TableCell>
       </TableRow>
 
       <RequestRejectedAlert

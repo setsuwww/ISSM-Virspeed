@@ -3,7 +3,7 @@
 import { prisma } from "@/_lib/prisma"
 import { revalidatePath } from "next/cache"
 
-export async function updateUserProfile(data) {
+export async function updateProfile(data) {
   const { id, name, email, divisionId, shiftId } = data
 
   try {
@@ -15,7 +15,7 @@ export async function updateUserProfile(data) {
     revalidatePath("/admin/profiles")
     return { success: true, user: updated }
   } catch (err) {
-    console.error("updateUserProfile error:", err)
+    console.error("updateProfile error:", err)
     return { success: false, message: "Gagal memperbarui profil" }
   }
 }

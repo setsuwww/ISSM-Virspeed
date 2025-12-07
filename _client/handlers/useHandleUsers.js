@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import { deleteUsers, deleteUserWithId } from "@/_server/userAction";
+import { deleteUsers, deleteUserWithId } from "@/_server/admin-action/userAction";
 
 import { useToast } from "@/_context/Toast-Provider";
 import { useActionHelper } from "@/_stores/common/useActionHelper";

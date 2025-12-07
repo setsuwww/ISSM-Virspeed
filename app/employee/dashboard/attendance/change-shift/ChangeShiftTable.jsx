@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { updateShiftChangeStatus } from "@/_server/shiftAction"
+import { updateShiftChangeStatus } from "@/_server/admin-action/shiftAction"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/Dialog"
 import { Button } from "@/_components/ui/Button"

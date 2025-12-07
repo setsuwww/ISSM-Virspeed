@@ -1,6 +1,6 @@
 import EmployeeSidebarServer from "@/_components/EmployeeSidebarServer"
 import { Toaster } from "sonner"
-import '@/_styles/globals.css'
+import '@/_styles/employees.css'
 import DashboardHeader from './DashboardHeader';
 
 import { getScheduleCount } from "@/_lib/partials/getScheduleCount";

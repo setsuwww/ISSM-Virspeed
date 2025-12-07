@@ -12,7 +12,7 @@ import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { capitalize } from "@/_function/globalFunction";
 import { roleOptions } from "@/_constants/roleConstants";
-import { updateUser } from "@/_server/userAction.js";
+import { updateUser } from "@/_server/admin-action/userAction.js";
 import { Loader } from 'lucide-react';
 
 export default function EditForm({ user, divisions, shifts }) {

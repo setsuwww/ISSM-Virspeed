@@ -6,7 +6,7 @@ import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 import { useToast } from "@/_context/Toast-Provider"
-import { createSchedule } from "@/_server/scheduleAction"
+import { createSchedule } from "@/_server/admin-action/scheduleAction"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"

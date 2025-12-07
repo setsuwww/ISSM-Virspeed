@@ -14,7 +14,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
 import { minutesToTime, capitalize } from "@/_function/globalFunction";
 
-import { updateDivision } from "@/_server/divisionAction";
+import { updateDivision } from "@/_server/admin-action/divisionAction";
 import { useToast } from "@/_context/Toast-Provider";
 
 export default function EditDivisionForm({ division }) {
