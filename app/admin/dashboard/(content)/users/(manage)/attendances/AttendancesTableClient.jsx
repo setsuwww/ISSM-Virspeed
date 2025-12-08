@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleUserRound } from "lucide-react"
+import { CalendarFold, CircleUserRound } from "lucide-react"
 import { useState, useEffect, useTransition } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -68,7 +68,6 @@ export default function AttendancesTableClient() {
                 <TableHead>Date</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Check In - Check Out</TableHead>
-                <TableHead>Shift</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Reason</TableHead>
               </TableRow>
@@ -78,7 +77,14 @@ export default function AttendancesTableClient() {
               {sortedData.length > 0 ? (
                 sortedData.map((att) => (
                   <TableRow key={att.id}>
-                    <TableCell>{safeFormat(att.date, "dd-MM-yyyy")}</TableCell>
+                    <TableCell className="font-number text-slate-600 font-semibold tracking-wide">
+                      <div className="flex items-center space-x-2">
+                        <div className="bg-slate-200 p-1 rounded-full">
+                          <CalendarFold className="h-4 w-4 text-slate-600" strokeWidth={1} />
+                        </div>
+                        <span>{safeFormat(att.date, "dd-MM-yyyy")}</span>
+                      </div>
+                    </TableCell>
 
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -86,8 +92,13 @@ export default function AttendancesTableClient() {
                           <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm text-slate-700 font-semibold">
+                          <span className="flex items-center text-sm text-slate-700 font-semibold">
                             {att.user?.name}
+                            {att.shift ? (
+                              <Badge className={`bg-transparent border-none ml-2 ${shiftStyles[att.shift.type] ?? "bg-gray-100 text-gray-700"}`}>
+                                {capitalize(att.shift.type)}
+                              </Badge>
+                            ) : (<span className="text-sm text-gray-400">-</span>)}
                           </span>
                           <span className="text-xs text-slate-400">
                             {att.user?.email}
@@ -97,22 +108,13 @@ export default function AttendancesTableClient() {
                     </TableCell>
 
                     <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-slate-600 tracking-wide">{safeFormat(att.checkInTime, "hh:mm a").toUpperCase()}</span>
-                        <span className="text-sm text-slate-600 tracking-wide">{safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}</span>
+                      <div className="font-number flex items-center space-x-2 text-sm text-slate-600">
+                        <span>{safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} - {safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}</span>
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      {att.shift ? (
-                        <Badge className={`px-2 py-0.5 border-none rounded-md ${shiftStyles[att.shift.type] ?? "bg-gray-100 text-gray-700"}`}>
-                          {capitalize(att.shift.name)}
-                        </Badge>
-                      ) : (<span className="text-sm text-gray-400">-</span>)}
-                    </TableCell>
-
-                    <TableCell>
-                      <Badge className={`border-none ${attedancesStyles[capitalize(att.status)]}`}>
+                      <Badge className={`${attedancesStyles[capitalize(att.status)]} bg-white border border-slate-200 text-sm px-2 py-0.5 gap-2 rounded-sm `}>
                         {capitalize(att.status)}
                       </Badge>
                     </TableCell>

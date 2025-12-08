@@ -42,7 +42,7 @@ export default async function Page({ searchParams }) {
       status: a.status === "PERMISSION" ? `${a.status} (${a.approval || "PENDING"})` : a.status,
       reason: a.reason || "—",
       adminNote: a.adminReason || "-",
-      checkInTime: a.checkInTime || "-", checkOutTime: a.checkOutTime || "-",
+      checkInTime: a.checkInTime || " ", checkOutTime: a.checkOutTime || " ",
     }))
 
   return (
