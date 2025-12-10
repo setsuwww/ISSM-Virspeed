@@ -14,7 +14,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
     data, filteredData,
     divisionFilter, setDivisionFilter,
     toggleSelect, deleteSelected,
-    deleteAll, exportCSV,
+    deleteAll,
     onSwitch, onDelete,
   } = useEmployeesHooks(users, shifts);
 
@@ -25,7 +25,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
       <EmployeesActionHeader
         search={search} setSearch={setSearch}
         selected={selected} onDeleteSelected={deleteSelected}
-        onDeleteAll={deleteAll} onExport={exportCSV}
+        onDeleteAll={deleteAll} filteredData={filteredData}
         divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
         divisions={divisions}
         shifts={shifts}

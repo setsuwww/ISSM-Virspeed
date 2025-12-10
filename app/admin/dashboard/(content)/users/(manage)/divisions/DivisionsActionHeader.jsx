@@ -4,13 +4,18 @@ import { Trash2, FolderInput } from "lucide-react"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
+
+import { exportPDF } from "@/_function/exports/division/exportPDF"
+import { exportWord } from "@/_function/exports/division/exportWord"
+import { exportExcel } from "@/_function/exports/division/exportExcel"
 
 export const DivisionsActionHeader = ({
   search, onSearchChange,
   typeFilter, onTypeFilterChange,
   statusFilter, onStatusFilterChange,
   selectedCount, onDeleteSelected,
-  onDeleteAll, onExportPDF,
+  onDeleteAll,
   filteredData,
   searchInputRef,
 }) => {
@@ -60,12 +65,29 @@ export const DivisionsActionHeader = ({
           Delete All
         </Button>
 
-        <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600"
-          onClick={() => onExportPDF(filteredData)}
-        >
-          <FolderInput size={16} />
-          Export
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+              <FolderInput size={16} />Export
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
+              PDF
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+              Word (.docx)
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
+              Excel (.xlsx)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

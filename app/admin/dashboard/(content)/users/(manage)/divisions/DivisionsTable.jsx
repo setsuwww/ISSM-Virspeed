@@ -29,7 +29,6 @@ export default function DivisionsTable({ data }) {
     selectedIds, toggleSelect, toggleSelectAll,
     handleDeleteSelected,
     handleDeleteAll,
-    handleExportPDF,
     onEdit, onDelete, onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   } = useDivisionsHooks(data)
 
@@ -90,7 +89,6 @@ export default function DivisionsTable({ data }) {
           typeFilter={typeFilter} onTypeFilterChange={setTypeFilter}
           statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
           onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
-          onExportPDF={handleExportPDF}
           filteredData={filteredData}
         />
 

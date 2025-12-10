@@ -1,71 +1,39 @@
-import {
-  Document, Packer, Paragraph, Table, TableRow, TableCell,
-  TextRun, AlignmentType, ImageRun
-} from "docx";
-import { saveAs } from "file-saver";
+import { exportWordTemplate } from "../utils/ExportWordTemplate";
 
-export async function exportWord(divisions = [], logoBase64) {
-  if (!divisions.length) return;
+export function exportWord(divisions = []) {
+  if (!divisions || divisions.length === 0) return;
 
   const columns = [
-    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At", "Signature"
+    { header: "No", key: "no", width: 6 },
+    { header: "Name", key: "name", width: 25 },
+    { header: "Location", key: "location", width: 18 },
+    { header: "Type", key: "type", width: 10 },
+    { header: "Status", key: "status", width: 12 },
+    { header: "Latitude", key: "latitude", width: 14 },
+    { header: "Longitude", key: "longitude", width: 14 },
+    { header: "Radius", key: "radius", width: 10 },
+    { header: "Start Time", key: "startTime", width: 12 },
+    { header: "End Time", key: "endTime", width: 12 },
+    { header: "Created At", key: "createdAt", width: 16 },
   ];
 
-  const rows = divisions.map((d) => [
-    d.name ?? "-",
-    d.location ?? "-",
-    d.type ?? "-",
-    d.status ?? "-",
-    d.startTime ? `${d.startTime}:00` : "-",
-    d.endTime ? `${d.endTime}:00` : "-",
-    new Date(d.createdAt).toLocaleDateString("id-ID"),
-    ""
-  ]);
+  const data = divisions.map((d) => ({
+    name: d.name,
+    location: d.location,
+    type: d.type,
+    status: d.status,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    radius: d.radius,
+    startTime: d.startTime,
+    endTime: d.endTime,
+    createdAt: new Date(d.createdAt).toLocaleDateString("id-ID"),
+  }));
 
-  const logoBuffer = await fetch(logoBase64).then((r) => r.arrayBuffer());
-
-  const header = new Paragraph({
-    alignment: AlignmentType.CENTER,
-    children: [
-      new ImageRun({
-        data: logoBuffer,
-        transformation: { width: 60, height: 60 }
-      }),
-      new TextRun({
-        text: "\nDivision Report",
-        bold: true,
-        size: 32
-      })
-    ]
+  exportWordTemplate({
+    title: "Division Report",
+    sheetName: "Divisions",
+    columns,
+    data,
   });
-
-  const tableRows = [
-    new TableRow({
-      children: columns.map((c) =>
-        new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: c, bold: true })] })] })
-      )
-    }),
-    ...rows.map((r) =>
-      new TableRow({
-        children: r.map((cell) => new TableCell({ children: [new Paragraph(String(cell))] }))
-      })
-    )
-  ];
-
-  const doc = new Document({
-    sections: [
-      {
-        children: [
-          header,
-          new Paragraph(" "),
-          new Table({
-            rows: tableRows
-          })
-        ]
-      }
-    ]
-  });
-
-  const blob = await Packer.toBlob(doc);
-  saveAs(blob, "division_report.docx");
 }

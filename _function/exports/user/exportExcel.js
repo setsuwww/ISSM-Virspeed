@@ -1,6 +1,7 @@
 import { exportExcelTemplate } from "../utils/ExportExcelTemplate";
 
 export function exportExcel(users = []) {
+  if (!users || users.length === 0) return;
   const today = new Date().toLocaleDateString("id-ID");
 
   const columns = [

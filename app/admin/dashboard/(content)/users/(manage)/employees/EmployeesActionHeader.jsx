@@ -9,11 +9,17 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { Badge } from "@/_components/ui/Badge"
 import { cn } from "@/_lib/utils"
 import { divisionStyles } from '@/_constants/divisionConstants';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
+
+
+import { exportPDF } from "@/_function/exports/employee/exportPDF";
+import { exportWord } from "@/_function/exports/employee/exportWord";
+import { exportExcel } from "@/_function/exports/employee/exportExcel";
 
 export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   search, setSearch,
-  selected, onDeleteSelected, onDeleteAll, onExport,
-  divisionFilter, setDivisionFilter,
+  selected, onDeleteSelected, onDeleteAll,
+  divisionFilter, setDivisionFilter, filteredData,
   divisions = [],
 }) {
   const [openDivision, setOpenDivision] = useState(false)
@@ -99,9 +105,29 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
         <Button variant="ghost" size="sm" className="bg-rose-50 text-rose-500 hover:bg-rose-100" onClick={onDeleteAll}>
           <Trash2 className="w-4 h-4 mr-1" /> Delete All
         </Button>
-        <Button variant="ghost" size="sm" className="bg-teal-100/50 text-teal-600 hover:bg-teal-100" onClick={onExport}>
-          <FolderInput className="w-4 h-4 mr-1" /> Export
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+              <FolderInput size={16} />Export
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
+              PDF
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+              Word (.docx)
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
+              Excel (.xlsx)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

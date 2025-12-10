@@ -1,6 +1,7 @@
 import { exportWordTemplate } from "../utils/ExportWordTemplate";
 
 export function exportWord(users = []) {
+  if (!users || users.length === 0) return;
   const today = new Date().toLocaleDateString("id-ID");
 
   const columns = [

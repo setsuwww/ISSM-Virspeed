@@ -1,6 +1,7 @@
 import { exportPDFTemplate } from "../utils/ExportPDFTemplate";
 
 export function exportPDF(users = []) {
+  if (!users || users.length === 0) return;
   const today = new Date().toLocaleDateString("id-ID");
 
   const columns = [

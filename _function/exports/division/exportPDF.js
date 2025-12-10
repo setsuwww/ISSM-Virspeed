@@ -1,39 +1,39 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { exportPDFTemplate } from "../utils/ExportPDFTemplate";
 
-export function exportPDF(divisions = [], logoBase64) {
-  if (!divisions.length) return;
+export function exportPDF(divisions = []) {
+  if (!divisions || divisions.length === 0) return;
 
   const columns = [
-    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At", "Signature"
+    { header: "No", key: "no", width: 6 },
+    { header: "Name", key: "name", width: 25 },
+    { header: "Location", key: "location", width: 18 },
+    { header: "Type", key: "type", width: 10 },
+    { header: "Status", key: "status", width: 12 },
+    { header: "Latitude", key: "latitude", width: 14 },
+    { header: "Longitude", key: "longitude", width: 14 },
+    { header: "Radius", key: "radius", width: 10 },
+    { header: "Start Time", key: "startTime", width: 12 },
+    { header: "End Time", key: "endTime", width: 12 },
+    { header: "Created At", key: "createdAt", width: 16 },
   ];
 
-  const rows = divisions.map((d) => [
-    d.name ?? "-",
-    d.location ?? "-",
-    d.type ?? "-",
-    d.status ?? "-",
-    d.startTime ? `${d.startTime}:00` : "-",
-    d.endTime ? `${d.endTime}:00` : "-",
-    new Date(d.createdAt).toLocaleDateString("id-ID"),
-    ""
-  ]);
+  const data = divisions.map((d) => ({
+    name: d.name,
+    location: d.location,
+    type: d.type,
+    status: d.status,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    radius: d.radius,
+    startTime: d.startTime,
+    endTime: d.endTime,
+    createdAt: new Date(d.createdAt).toLocaleDateString("id-ID"),
+  }));
 
-  const doc = new jsPDF();
-
-  doc.addImage(logoBase64, "PNG", 14, 10, 20, 20);
-  doc.setFontSize(16);
-  doc.text("Division Report", doc.internal.pageSize.getWidth() / 2, 20, { align: "center" });
-
-  autoTable(doc, {
-    startY: 38,
-    head: [columns],
-    body: rows,
-    theme: "grid",
-    styles: { fontSize: 9, cellPadding: 3 },
-    headStyles: { fillColor: [33, 150, 243], textColor: 255 }
+  exportPDFTemplate({
+    title: "Division Report",
+    sheetName: "Divisions",
+    columns,
+    data,
   });
-
-  const today = new Date().toISOString().slice(0, 10);
-  doc.save(`division_${today}.pdf`);
 }

@@ -1,48 +1,39 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import { exportExcelTemplate } from "../utils/ExportExcelTemplate";
 
-export async function exportExcel(divisions = [], logoBase64) {
-  if (!divisions.length) return;
+export function exportExcel(divisions = []) {
+  if (!divisions || divisions.length === 0) return;
 
   const columns = [
-    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At", "Signature"
+    { header: "No", key: "no", width: 6 },
+    { header: "Name", key: "name", width: 25 },
+    { header: "Location", key: "location", width: 18 },
+    { header: "Type", key: "type", width: 10 },
+    { header: "Status", key: "status", width: 12 },
+    { header: "Latitude", key: "latitude", width: 14 },
+    { header: "Longitude", key: "longitude", width: 14 },
+    { header: "Radius", key: "radius", width: 10 },
+    { header: "Start Time", key: "startTime", width: 12 },
+    { header: "End Time", key: "endTime", width: 12 },
+    { header: "Created At", key: "createdAt", width: 16 },
   ];
 
-  const rows = divisions.map((d) => [
-    d.name ?? "-",
-    d.location ?? "-",
-    d.type ?? "-",
-    d.status ?? "-",
-    d.startTime ? `${d.startTime}:00` : "-",
-    d.endTime ? `${d.endTime}:00` : "-",
-    new Date(d.createdAt).toLocaleDateString("id-ID"),
-    ""
-  ]);
+  const data = divisions.map((d) => ({
+    name: d.name,
+    location: d.location,
+    type: d.type,
+    status: d.status,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    radius: d.radius,
+    startTime: d.startTime,
+    endTime: d.endTime,
+    createdAt: new Date(d.createdAt).toLocaleDateString("id-ID"),
+  }));
 
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Division Report");
-
-  const img = workbook.addImage({
-    base64: logoBase64,
-    extension: "png"
+  exportExcelTemplate({
+    title: "Division Report",
+    sheetName: "Divisions",
+    columns,
+    data,
   });
-
-  sheet.addImage(img, {
-    tl: { col: 0, row: 0 },
-    ext: { width: 140, height: 60 }
-  });
-
-  sheet.addRow([]);
-  sheet.addRow([]);
-  sheet.addRow([]);
-
-  sheet.addRow(columns);
-  rows.forEach((r) => sheet.addRow(r));
-
-  sheet.columns.forEach((col) => {
-    col.width = 18;
-  });
-
-  const buffer = await workbook.xlsx.writeBuffer();
-  saveAs(new Blob([buffer]), "division.xlsx");
 }
