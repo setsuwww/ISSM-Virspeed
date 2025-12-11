@@ -1,10 +1,10 @@
 "use server"
 
-import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
-import { signToken } from "@/_lib/auth"
 import { redirect } from "next/navigation"
+import { prisma } from "@/_lib/prisma"
+import { signToken } from "@/_lib/auth"
 import { removeAuthCookie } from "@/_lib/auth"
 
 export async function AuthAction(prevState, formData) {

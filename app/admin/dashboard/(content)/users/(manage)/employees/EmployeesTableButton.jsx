@@ -8,8 +8,8 @@ export default function EmployeesTableButton() {
 
   return (
     <div className="flex items-center space-x-2">
-        <Button variant="outline" onClick={() => router.push("/admin/dashboard/users/attendances")}>Attendance</Button>
-        <Button variant="primary" onClick={() => router.push("/admin/dashboard/users/create")}>Add Employees</Button>
+      <Button variant="outline" onClick={() => router.push("/admin/dashboard/users/attendances")}>Attendance</Button>
+      <Button variant="primary" onClick={() => router.push("/admin/dashboard/users/create")}>Add Employees</Button>
     </div>
   )
 }

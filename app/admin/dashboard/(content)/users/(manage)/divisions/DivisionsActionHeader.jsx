@@ -47,7 +47,7 @@ export const DivisionsActionHeader = ({
         </Select>
 
         <Input ref={searchInputRef} value={search} onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search division..." className="w-full sm:w-64 py-2" typeSearch={true}
+          placeholder="Search division..." className="w-full sm:w-64 py-2" typeSearch
         />
       </div>
 

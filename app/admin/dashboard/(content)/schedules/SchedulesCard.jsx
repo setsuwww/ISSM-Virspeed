@@ -31,7 +31,6 @@ export default function SchedulesCard({ data }) {
     deleteAll,
     handleEditSchedule,
     handleDeleteSchedule,
-    onExportPDF,
   } = useHandleSchedules({
     selectedIds,
     setSelectedIds,
@@ -43,10 +42,9 @@ export default function SchedulesCard({ data }) {
     <div className="space-y-4">
       <SchedulesActionHeader
         search={search} setSearch={setSearch}
-        filterFrequency={filterFrequency} onFilterFrequencyChange={setFilterFrequency}
+        filterFrequency={filterFrequency} onFilterFrequencyChange={setFilterFrequency} filteredData={filteredData}
         selectedCount={selectedIds.length} totalCount={filteredData.length}
         onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
-        onExportPDF={() => onExportPDF(filteredData)}
       />
 
       {filteredData.length === 0 ? (

@@ -1,15 +1,22 @@
+"use client";
+
 import { FolderInput, Trash2 } from "lucide-react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
+
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
+
+import { exportPDF } from "@/_function/exports/schedule/exportPDF";
+import { exportWord } from "@/_function/exports/schedule/exportWord";
+import { exportExcel } from "@/_function/exports/schedule/exportExcel";
 
 export default function SchedulesActionHeader({
   search, setSearch,
   selectedCount,
   onDeleteSelected, onDeleteAll,
-  onExportPDF,
-  filterFrequency, onFilterFrequencyChange
+  filterFrequency, onFilterFrequencyChange, filteredData
 }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -30,7 +37,7 @@ export default function SchedulesActionHeader({
         </Select>
 
         <Input value={search} onChange={(e) => setSearch(e.target.value)} className="min-w-[180px] max-w-[250px] w-auto"
-          placeholder="Search schedules..." typeSearch={true}
+          placeholder="Search schedules..." typeSearch
         />
       </div>
 
@@ -48,11 +55,29 @@ export default function SchedulesActionHeader({
           <Trash2 size={16} /> Delete All
         </Button>
 
-        <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600"
-          onClick={onExportPDF}
-        >
-          <FolderInput size={16} /> Export
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+              <FolderInput size={16} />Export
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
+              PDF
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+              Word (.docx)
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
+              Excel (.xlsx)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

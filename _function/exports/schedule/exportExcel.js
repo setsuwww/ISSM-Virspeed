@@ -1,48 +1,33 @@
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+"use client"
 
-export async function exportExcel(divisions = [], logoBase64) {
-  if (!divisions.length) return;
+import { exportExcelTemplate } from "../utils/ExportExcelTemplate";
+
+export function exportExcel(schedules = []) {
+  if (!schedules || schedules.length === 0) return;
 
   const columns = [
-    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At", "Signature"
+    { header: "No", key: "no", width: 6 },
+    { header: "Title", key: "title", width: 22 },
+    { header: "Frequency", key: "frequency", width: 14 },
+    { header: "Start Date", key: "startDate", width: 16 },
+    { header: "End Date", key: "endDate", width: 16 },
+    { header: "Time", key: "time", width: 18 },
+    { header: "Created At", key: "createdAt", width: 18 },
   ];
 
-  const rows = divisions.map((d) => [
-    d.name ?? "-",
-    d.location ?? "-",
-    d.type ?? "-",
-    d.status ?? "-",
-    d.startTime ? `${d.startTime}:00` : "-",
-    d.endTime ? `${d.endTime}:00` : "-",
-    new Date(d.createdAt).toLocaleDateString("id-ID"),
-    ""
-  ]);
+  const data = schedules.map((s) => ({
+    title: s.title,
+    frequency: s.frequency,
+    startDate: new Date(s.startDate).toLocaleDateString("id-ID"),
+    endDate: new Date(s.endDate).toLocaleDateString("id-ID"),
+    time: s.startTime + " - " + s.endTime,
+    createdAt: new Date(s.createdAt).toLocaleDateString("id-ID"),
+  }));
 
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Division Report");
-
-  const img = workbook.addImage({
-    base64: logoBase64,
-    extension: "png"
+  exportExcelTemplate({
+    title: "Schedule Report",
+    sheetName: "Schedule Report",
+    columns,
+    data
   });
-
-  sheet.addImage(img, {
-    tl: { col: 0, row: 0 },
-    ext: { width: 140, height: 60 }
-  });
-
-  sheet.addRow([]);
-  sheet.addRow([]);
-  sheet.addRow([]);
-
-  sheet.addRow(columns);
-  rows.forEach((r) => sheet.addRow(r));
-
-  sheet.columns.forEach((col) => {
-    col.width = 18;
-  });
-
-  const buffer = await workbook.xlsx.writeBuffer();
-  saveAs(new Blob([buffer]), "division.xlsx");
 }

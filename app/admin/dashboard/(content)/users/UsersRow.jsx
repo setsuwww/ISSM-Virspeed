@@ -1,14 +1,14 @@
 "use client"
 
 import React, { useMemo } from "react"
-import { format } from "date-fns"
 import { CircleUserRound } from "lucide-react"
+import { format } from "date-fns"
 
 import { TableCell, TableRow } from "@/_components/ui/Table"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import { Badge } from "@/_components/ui/Badge"
 
-import { UsersActionButton } from "./UsersActionButton"
+import { LockedAction, UsersActionButton } from "./UsersActionButton"
 
 export const UsersRow = React.memo(function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyles }) {
   const handleToggle = () => onToggleSelect(user.id)
@@ -58,7 +58,10 @@ export const UsersRow = React.memo(function UsersRow({ user, isSelected, onToggl
       </TableCell>
 
       <TableCell>
-        <UsersActionButton userId={user.id} onEdit={onEdit} onDelete={onDelete}/>
+        {user.isActionLocked 
+          ? (<LockedAction />) 
+          : (<UsersActionButton userId={user.id} onEdit={onEdit} onDelete={onDelete}/>)
+        }
       </TableCell>
     </TableRow>
   )

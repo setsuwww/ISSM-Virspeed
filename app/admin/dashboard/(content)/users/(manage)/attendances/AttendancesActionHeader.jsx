@@ -1,34 +1,35 @@
-"use client";
+"use client"
 
+import React from "react";
 import { FolderInput } from "lucide-react";
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu";
 
-import React from "react";
+import { exportPDF } from "@/_function/exports/attendance/exportPDF";
+import { exportWord } from "@/_function/exports/attendance/exportWord";
+import { exportExcel } from "@/_function/exports/attendance/exportExcel";
 
 export const AttendancesActionHeader = React.memo(({
   selectedDate, onDateChange,
-  shiftFilter, onShiftFilterChange,
+  filterShift, onFilterShiftChange,
   dateSortOrder, onDateSortChange,
 
   filteredData,
-
-  onExportPDF,
-  onExportExcel,
-  onExportWord,
 }) => {
+
   return (
     <div className="flex items-center justify-between gap-3 flex-wrap">
 
       <div className="flex items-center gap-3 flex-wrap">
 
-        <Input type="date" value={selectedDate} onChange={(e) => onDateChange(e.target.value)}
-          className="w-auto px-3 py-2" typeSearch={true}
+        <Input type="date" typeSearch
+          value={selectedDate} onChange={(e) => onDateChange(e.target.value)}
+          className="w-auto px-3 py-2"
         />
 
-        <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
+        <Select value={filterShift} onValueChange={onFilterShiftChange}>
           <SelectTrigger className="w-auto px-3 whitespace-nowrap">
             <span className="font-semibold text-slate-600 mr-1">Shift:</span>
             <SelectValue placeholder="All" />
@@ -68,15 +69,15 @@ export const AttendancesActionHeader = React.memo(({
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuLabel>Export As</DropdownMenuLabel>
 
-            <DropdownMenuItem onClick={() => onExportPDF(filteredData)}>
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
               PDF
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => onExportWord(filteredData)}>
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => onExportExcel(filteredData)}>
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

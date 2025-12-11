@@ -13,11 +13,11 @@ export default function RequestsDataTable({ type, items, isHistory }) {
     },
     early: {
       empty: isHistory ? "No early checkout history" : "No pending early checkout requests",
-      columns: ["User", "Shift", "Reason", "Status", "Requested At"],
+      columns: ["Requested By", "Shift", "Reason", "Status", "Requested At"],
     },
     leave: {
       empty: isHistory ? "No leave history" : "No pending leave requests",
-      columns: ["User", "Reason", "Status", "Date Range"],
+      columns: ["Requested By", "Reason", "Status", "Date Range"],
     },
   }
 

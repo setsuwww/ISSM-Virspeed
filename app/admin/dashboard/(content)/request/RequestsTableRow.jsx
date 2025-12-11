@@ -96,7 +96,10 @@ export default function RequestsTableRow({
               <p className="text-red-500/70">{endDate || "-"}</p>
             </div>
           ) : (
-            date || "-"
+            <div>
+              <p className="text-green-500/70">{startDate || "-"}</p>
+              <p className="text-red-500/70">{endDate || "-"}</p>
+            </div>
           )}
         </TableCell>
 

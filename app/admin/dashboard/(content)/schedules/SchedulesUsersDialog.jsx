@@ -51,7 +51,7 @@ export default function ScheduleUsersDialog({ schedules, users }) {
         <span className="text-xs font-medium text-slate-600">{users.length} Users</span>
       </div>
 
-      <button className="text-xs text-sky-500 hover:underline" onClick={() => setOpen(true)}>
+      <button className="text-xs text-sky-500 hover:text-sky-700" onClick={() => setOpen(true)}>
         View details
       </button>
 

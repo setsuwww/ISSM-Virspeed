@@ -11,7 +11,6 @@ import { cn } from "@/_lib/utils"
 import { divisionStyles } from '@/_constants/divisionConstants';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-
 import { exportPDF } from "@/_function/exports/employee/exportPDF";
 import { exportWord } from "@/_function/exports/employee/exportWord";
 import { exportExcel } from "@/_function/exports/employee/exportExcel";
@@ -94,7 +93,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
         </Popover>
 
         <Input placeholder="Search employees..." value={search} onChange={(e) => setSearch(e.target.value)}
-          className="w-1/3 min-w-[160px]" typeSearch={true}
+          className="w-1/3 min-w-[160px]" typeSearch
         />
       </div>
 

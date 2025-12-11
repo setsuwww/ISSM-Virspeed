@@ -3,9 +3,10 @@
 import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { ChevronDown, Grip, Menu, X, Users, Clock, LayoutDashboard, User, CircleUserRound, Building2 } from "lucide-react"
+import { ChevronDown, Menu, X, Users, Clock, LayoutDashboard, User, CircleUserRound, Building2 } from "lucide-react"
 import { roleStyles } from "@/_constants/roleConstants"
 import clsx from "clsx"
+import { Logo } from "./common/Logo"
 import Image from "next/image"
 
 const subLinkBase = "block my-0.5 text-sm px-3 py-1.5 transition-colors font-medium rounded-md"
@@ -111,8 +112,7 @@ export function Sidebar({ user }) {
   const [minimized, setMinimized] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const formattedRole =
-    user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1).toLowerCase()
+  const formattedRole = user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1).toLowerCase()
 
   return (
     <>
@@ -137,17 +137,19 @@ export function Sidebar({ user }) {
         )}
         >
           {!minimized && (
-            <div className="flex items-center space-x-2">
-              <Image src="/icons/liveon.png" width={20} height={20} alt="Liveon icon"/>
-              <div className="text-xl font-bold text-sky-800">Liveon.</div>
-            </div>
+            <Logo />
           )}
           <button onClick={() => setMinimized(!minimized)}
-            className="text-slate-400 hover:text-slate-500 transition-all bg-slate-50 border border-slate-200 rounded-md p-2"
+            className={clsx("text-slate-400 hover:text-slate-500 transition-all bg-slate-50 border border-slate-200 rounded-md",
+              minimized ? "p-0" : "p-2"
+            )}
           >
             {minimized
-              ? (<Grip size={20} className="rotate-90 transition-transform" />)
-              : (<ChevronDown size={20} className="-rotate-90 transition-transform" />)
+              ? (
+              <div className="p-1 bg-gradient-to-br from-gray-950 to-gray-700 rounded-md">
+                <Image src="/icons/liveon.png" width={30} height={30} alt="Liveon icon" />
+              </div>
+              ) : (<ChevronDown size={20} className="-rotate-90 transition-transform" />)
             }
           </button>
         </div>

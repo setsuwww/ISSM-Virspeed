@@ -12,7 +12,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 async function getRequests(mode = "pending") {
   const isHistory = mode === "history"
 
-  const [shiftRequests, attendanceRequests] = await Promise.all([
+  const [shiftRequests, attendanceRequests, leaveRequests] = await Promise.all([
     prisma.shiftChangeRequest.findMany({
       where: isHistory
         ? { status: { notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } }
@@ -48,6 +48,28 @@ async function getRequests(mode = "pending") {
         shift: { select: { type: true } },
       },
     }),
+
+    prisma.leaveRequest.findMany({
+      where: isHistory
+        ? { status: { not: "PENDING" } }
+        : { status: "PENDING" },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        reason: true,
+        adminReason: true,
+        startDate: true,
+        endDate: true,
+        status: true,
+        createdAt: true,
+        user: {
+          select: { name: true, email: true, division: { select: { name: true } } }
+        },
+        approvedBy: {
+          select: { name: true, email: true }
+        }
+      }
+    })
   ])
 
   return {
@@ -101,12 +123,34 @@ async function getRequests(mode = "pending") {
       date: safeFormat(r.date, "d MMMM yyyy"),
       status: r.approval === "PENDING" ? "PENDING" : r.approval || "UNKNOWN",
     })),
+
+    leave: leaveRequests.map((r) => ({
+      id: `leave-${r.id}`,
+
+      requestedBy: {
+        name: r.user?.name || "-",
+        email: r.user?.email || "-",
+        division: r.user?.division?.name || "-",
+      },
+
+      user: null,
+
+      info: `${safeFormat(r.startDate, "d MMMM yyyy")} → ${safeFormat(r.endDate, "d MMMM yyyy")}`,
+      typeShift: "LEAVE",
+
+      reason: r.reason || "-",
+      date: safeFormat(r.createdAt, "d MMMM yyyy"),
+      startDate: safeFormat(r.startDate, "d MMMM yyyy"),
+      endDate: safeFormat(r.endDate, "d MMMM yyyy"),
+
+      status: r.status,
+    }))
   }
 }
 
 export default async function Page({ searchParams }) {
   const mode = searchParams?.mode || "pending"
-  const { shift, attendance } = await getRequests(mode)
+  const { shift, attendance, leave } = await getRequests(mode)
 
   return (
     <section>
@@ -128,7 +172,7 @@ export default async function Page({ searchParams }) {
             changeShiftRequests={shift}
             permissionRequests={attendance}
             earlyCheckoutRequests={[]}
-            leaveRequests={[]}
+            leaveRequests={leave}
             mode={mode}
           />
         </ContentForm.Body>

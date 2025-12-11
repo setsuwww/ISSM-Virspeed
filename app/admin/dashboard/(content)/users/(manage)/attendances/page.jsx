@@ -18,9 +18,7 @@ async function getShifts() {
       division: { select: { id: true, name: true } },
       users: {
         select: {
-          id: true,
-          name: true,
-          email: true,
+          id: true, name: true, email: true,
           attendances: {
             where: { date: { gte: startOfDay, lte: endOfDay } },
             select: { status: true, approval: true },
@@ -33,16 +31,10 @@ async function getShifts() {
   })
 
   return shifts.map((shift) => ({
-    id: shift.id,
-    name: shift.name,
-    type: shift.type,
-    divisionName: shift.division?.name || "-",
-    startTime: minutesToTime(shift.startTime),
-    endTime: minutesToTime(shift.endTime),
+    id: shift.id, name: shift.name, type: shift.type, divisionName: shift.division?.name || "-",
+    startTime: minutesToTime(shift.startTime), endTime: minutesToTime(shift.endTime),
     users: shift.users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      id: user.id, name: user.name, email: user.email,
       attendanceStatus:
         user.attendances[0]?.status && ["ABSENT", "LATE", "PERMISSION"].includes(user.attendances[0].status)
           ? user.attendances[0].status

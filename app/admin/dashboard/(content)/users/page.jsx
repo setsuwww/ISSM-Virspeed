@@ -44,6 +44,8 @@ export default async function Page({ searchParams }) {
   if (page > totalPages && totalPages > 0) return notFound();
 
   const tableData = users.map((u) => {
+    const isAdmin = u.role.toLowerCase() === "admin"
+    
     const userShift = u.shift
       ? {
           label: capitalize(u.shift.name || u.shift.type),
@@ -74,6 +76,7 @@ export default async function Page({ searchParams }) {
       role: capitalize(u.role),
       shift: shiftLabel, shiftTime, shiftType: finalShift ? finalShift.type : null,
       createdAt: u.createdAt.toISOString(), updatedAt: u.updatedAt.toISOString(),
+      isActionLocked: isAdmin,
     };
   });
 

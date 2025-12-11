@@ -1,71 +1,33 @@
-import {
-  Document, Packer, Paragraph, Table, TableRow, TableCell,
-  TextRun, AlignmentType, ImageRun
-} from "docx";
-import { saveAs } from "file-saver";
+"use client"
 
-export async function exportWord(divisions = [], logoBase64) {
-  if (!divisions.length) return;
+import { exportWordTemplate } from "../utils/ExportWordTemplate";
+
+export function exportWord(schedules = []) {
+  if (!schedules || schedules.length === 0) return;
 
   const columns = [
-    "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At", "Signature"
+    { header: "No", key: "no", width: 6 },
+    { header: "Title", key: "title", width: 22 },
+    { header: "Frequency", key: "frequency", width: 14 },
+    { header: "Start Date", key: "startDate", width: 16 },
+    { header: "End Date", key: "endDate", width: 16 },
+    { header: "Time", key: "time", width: 18 },
+    { header: "Created At", key: "createdAt", width: 18 },
   ];
 
-  const rows = divisions.map((d) => [
-    d.name ?? "-",
-    d.location ?? "-",
-    d.type ?? "-",
-    d.status ?? "-",
-    d.startTime ? `${d.startTime}:00` : "-",
-    d.endTime ? `${d.endTime}:00` : "-",
-    new Date(d.createdAt).toLocaleDateString("id-ID"),
-    ""
-  ]);
+  const data = schedules.map((s) => ({
+    title: s.title,
+    frequency: s.frequency,
+    startDate: new Date(s.startDate).toLocaleDateString("id-ID"),
+    endDate: new Date(s.endDate).toLocaleDateString("id-ID"),
+    time: s.startTime + " - " + s.endTime,
+    createdAt: new Date(s.createdAt).toLocaleDateString("id-ID"),
+  }));
 
-  const logoBuffer = await fetch(logoBase64).then((r) => r.arrayBuffer());
-
-  const header = new Paragraph({
-    alignment: AlignmentType.CENTER,
-    children: [
-      new ImageRun({
-        data: logoBuffer,
-        transformation: { width: 60, height: 60 }
-      }),
-      new TextRun({
-        text: "\nDivision Report",
-        bold: true,
-        size: 32
-      })
-    ]
+  exportWordTemplate({
+    title: "Schedule Report",
+    sheetName: "Schedule Report",
+    columns,
+    data
   });
-
-  const tableRows = [
-    new TableRow({
-      children: columns.map((c) =>
-        new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: c, bold: true })] })] })
-      )
-    }),
-    ...rows.map((r) =>
-      new TableRow({
-        children: r.map((cell) => new TableCell({ children: [new Paragraph(String(cell))] }))
-      })
-    )
-  ];
-
-  const doc = new Document({
-    sections: [
-      {
-        children: [
-          header,
-          new Paragraph(" "),
-          new Table({
-            rows: tableRows
-          })
-        ]
-      }
-    ]
-  });
-
-  const blob = await Packer.toBlob(doc);
-  saveAs(blob, "division_report.docx");
 }

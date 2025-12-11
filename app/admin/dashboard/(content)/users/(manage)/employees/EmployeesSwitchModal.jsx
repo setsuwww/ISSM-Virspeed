@@ -102,7 +102,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         <div className="relative mb-2">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
           <Input className="pl-8" placeholder="Search by name or email…" 
-            value={search} onChange={(e) => setSearch(e.target.value)} typeSearch={true}
+            value={search} onChange={(e) => setSearch(e.target.value)} typeSearch
           />
         </div>
 

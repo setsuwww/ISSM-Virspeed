@@ -6,7 +6,6 @@ import { useCallback } from "react";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
 import { useToast } from "@/_context/Toast-Provider";
 import { deleteScheduleById, deleteSchedules } from "@/_server/admin-action/scheduleAction";
-import { exportSchedule } from "../../_function/exports/exportSchedule";
 
 import { confirmMessages } from "@/_constants/static/handleScheduleMessage";
 
@@ -84,17 +83,10 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
     (id) => router.push(`/admin/dashboard/schedules/${id}/edit`), [router]
   );
 
-  const onExportPDF = useCallback(
-    (data) => { exportSchedule(data);
-      toast.success("PDF exported successfully.");
-    }, [toast]
-  );
-
   return {
     toggleSelect, selectAll,
     deleteSelected, deleteAll,
     handleEditSchedule,
     handleDeleteSchedule,
-    onExportPDF,
   };
 }

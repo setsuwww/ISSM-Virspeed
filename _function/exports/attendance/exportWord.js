@@ -1,6 +1,8 @@
-import { exportExcelTemplate } from "../utils/ExportExcelTemplate"
+import { exportWordTemplate } from "../utils/ExportWordTemplate"
 
-export const exportExcel = (attendances) => {
+export const exportWord = (attendances) => {
+  if (!attendances || attendances.length === 0) return;
+  
   const columns = [
     { header: "No", key: "no", width: 6 },
     { header: "Date", key: "date", width: 15 },
@@ -14,17 +16,17 @@ export const exportExcel = (attendances) => {
   ]
 
   const rows = attendances.map(att => ({
-    date: att.date,
+    date: new Date(att.date).toLocaleDateString("id-ID"),
     name: att.user?.name,
     email: att.user?.email,
     shift: att.shift?.name ?? "-",
-    checkIn: att.checkInTime,
-    checkOut: att.checkOutTime,
+    checkIn: att.checkInTime || "-",
+    checkOut: att.checkOutTime || "-",
     status: att.status,
     reason: att.reason ?? "-",
-  }))
+  }));
 
-  exportExcelTemplate({
+  exportWordTemplate({
     title: "Attendance Report",
     sheetName: "Attendances",
     columns,
