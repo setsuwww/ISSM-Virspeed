@@ -9,7 +9,7 @@ export default function RequestsDataTable({ type, items, isHistory }) {
     },
     changeshift: {
       empty: isHistory ? "No shift change history" : "No pending shift change requests",
-      columns: ["Requester", "Responser", "Shifts change", "Change period", "Reason", "Status",],
+      columns: ["Requester", "Responser", "Shifts change", "Period", "Reason", "Status",],
     },
     early: {
       empty: isHistory ? "No early checkout history" : "No pending early checkout requests",
@@ -17,7 +17,7 @@ export default function RequestsDataTable({ type, items, isHistory }) {
     },
     leave: {
       empty: isHistory ? "No leave history" : "No pending leave requests",
-      columns: ["Requested By", "Reason", "Status", "Date Range"],
+      columns: ["Requested By", "Shift", "Period", "Send At", "Reason", "Status"],
     },
   }
 
