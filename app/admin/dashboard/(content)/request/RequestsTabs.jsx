@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
 import { Button } from "@/_components/ui/Button"
-import RequestsDataTable from "./RequestsDataTable"
+import RequestsDataTable from "./RequestsTable"
 
 export default function RequestsTabs({
   permissionRequests = [], changeShiftRequests = [], earlyCheckoutRequests = [], leaveRequests = [],
