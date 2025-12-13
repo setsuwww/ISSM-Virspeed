@@ -3,21 +3,20 @@ import { notFound } from "next/navigation"
 import { getCurrentUser } from "@/_lib/auth"
 import HistoryTable from "./HistoryTable"
 import { ContentInformation } from "@/_components/common/ContentInformation"
-import ContentForm from '@/_components/common/ContentForm';
+import ContentForm from "@/_components/common/ContentForm"
+import { format } from "date-fns"
 
 export const revalidate = 60
 
 async function getAttendanceHistory(userId, order) {
   return prisma.attendance.findMany({
     where: { userId },
-    select: {
-      id: true, date: true,
-      status: true, reason: true, adminReason: true,
-      approval: true,
-      shift: { select: { type: true, name: true } },
-      checkInTime: true, checkOutTime: true,
-    },
     orderBy: { date: order },
+    select: {
+      id: true, date: true, status: true, approval: true, reason: true, adminReason: true,
+      checkInTime: true, checkOutTime: true,
+      shift: { select: { type: true, name: true }},
+    },
   })
 }
 
@@ -26,20 +25,20 @@ export default async function Page({ searchParams }) {
   if (!user) return notFound()
 
   const order = searchParams?.order === "asc" ? "asc" : "desc"
-
   const attendance = await getAttendanceHistory(user.id, order)
 
   const tableData = attendance.map(a => ({
     id: a.id,
-    rawDate: a.date,
-    shift: `${a.shift?.type || "-"} - ${a.shift?.name}`,
-    status: a.status === "PERMISSION"
-      ? `${a.status} (${a.approval || "PENDING"})`
-      : a.status,
-    reason: a.reason || "—",
-    adminNote: a.adminReason || "-",
-    checkInTime: a.checkInTime || " ",
-    checkOutTime: a.checkOutTime || " ",
+    dateLabel: format(a.date, "dd MMM yyyy"),
+    dateSort: format(a.date, "EEEE, dd MMMM yyyy"),
+    shiftType: a.shift?.type ?? "OFF",
+    shiftName: a.shift?.name ?? "—",
+    status: a.status,
+    approval: a.approval,
+    reason: a.reason ?? "—",
+    adminNote: a.adminReason ?? null,
+    checkInTime: a.checkInTime ? format(a.checkInTime, "HH:mm") : null,
+    checkOutTime: a.checkOutTime ? format(a.checkOutTime, "HH:mm") : null,
   }))
 
   return (
@@ -47,7 +46,7 @@ export default async function Page({ searchParams }) {
       <ContentForm.Header>
         <ContentInformation
           heading="Your Attendance History"
-          subheading="Review all your attendance, lateness, and permission records below"
+          subheading="Review all your attendance records"
         />
       </ContentForm.Header>
 

@@ -38,10 +38,9 @@ export default function ScheduleList({ schedules }) {
         return (
           <div
             key={item.id}
-            className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm px-3 py-3 flex items-center gap-4"
+            className="w-full rounded-2xl border border-slate-100 bg-white shadow-xs px-3 py-3 flex items-center gap-4"
           >
 
-            {/* Date Box */}
             <div className="flex flex-col space-y-1 items-center justify-center w-16 h-16 bg-slate-200/40 rounded-lg">
               <span className="text-red-600 text-2xl font-semibold leading-none">
                 {day}
@@ -52,7 +51,7 @@ export default function ScheduleList({ schedules }) {
             </div>
 
             {/* Divider */}
-            <div className="w-px h-10 bg-slate-300 rounded-full" />
+            <div className="w-[0.5px] h-10 bg-slate-300 rounded-full" />
 
             {/* Main Info */}
             <div className="flex flex-col flex-1">
@@ -96,11 +95,11 @@ export default function ScheduleList({ schedules }) {
                   Remember Me
                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+                <hr className="my-1.5 h-[0.5px] border border-slate-100 bg-slate-100" />
 
                 <DropdownMenuItem
                   onClick={() => handleDelete(item.id)}
-                  className="text-red-600 focus:text-red-600"
+                  className="text-red-600 focus:text-red-600 focus:bg-red-50"
                 >
                   Delete
                 </DropdownMenuItem>
