@@ -29,7 +29,7 @@ export default async function Page({ searchParams }) {
 
   const tableData = attendance.map(a => ({
     id: a.id,
-    dateLabel: format(a.date, "dd MMM yyyy"),
+    dateLabel: format(a.date, "dd MMMM"),
     dateSort: format(a.date, "EEEE, dd MMMM yyyy"),
     shiftType: a.shift?.type ?? "OFF",
     shiftName: a.shift?.name ?? "—",

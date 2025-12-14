@@ -55,18 +55,18 @@ function TabsTrigger({
           cn(
             "inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5",
             "rounded-md text-slate-700 hover:bg-slate-100",
-            "data-[state=active]:bg-white data-[state=active]:text-sky-600",
+            "data-[state=active]:bg-white data-[state=active]:text-indigo-600",
             "data-[state=active]:border data-[state=active]:border-slate-300 data-[state=active]:shadow-sm",
           ),
 
         mode === "link" &&
           cn(
             "text-slate-500 hover:text-slate-800 bg-transparent",
-            "data-[state=active]:text-yellow-600 px-4 py-8",
+            "data-[state=active]:text-indigo-600 px-4 py-8",
             "rounded-md",
 
             "after:absolute after:left-0 after:right-0 after:-bottom-[1px]",
-            "after:h-[1px] after:bg-yellow-500 after:scale-x-0",
+            "after:h-[1px] after:bg-indigo-500 after:scale-x-0",
             "after:transition-transform after:duration-300 after:origin-center after:rounded-full",
             "data-[state=active]:after:scale-x-100"
           ),

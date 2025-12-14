@@ -29,7 +29,7 @@ export default function TabsShiftHours({ shifts }) {
               </div>
             </div>
 
-            <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-sky-600 text-sm font-medium group-hover:bg-sky-100 transition">
+            <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-indigo-600 text-sm font-medium group-hover:bg-indigo-100 transition">
               {shift.users.length}
             </div>
           </div>

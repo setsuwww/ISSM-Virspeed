@@ -62,8 +62,8 @@ export default function HistoryTable({ data, initialOrder }) {
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <Badge className={`flex items-center gap-x-2 ${shiftStyles[att.shiftType]}`}>
+                <div className="flex items-center">
+                  <Badge className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}>
                     {shiftDots[att.shiftType]}
                     <span>{capitalize(att.shiftType)}</span>
                   </Badge>
@@ -72,9 +72,8 @@ export default function HistoryTable({ data, initialOrder }) {
 
               <TableCell>
                 <div className="flex gap-2">
-                  <Badge className={attedancesStyles[att.status]}>
+                  <Badge variant="outline" className={`${attedancesStyles[att.status]}`}>
                     {att.status}
-
                   </Badge>
 
                   {att.approval && (

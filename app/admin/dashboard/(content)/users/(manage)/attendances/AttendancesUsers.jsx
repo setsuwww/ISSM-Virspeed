@@ -15,7 +15,7 @@ export default function AttendancesUsersView({ selectedStatus, shifts, allUsers,
         <DialogHeader className="mb-6">
           <DialogTitle className="flex flex-col">
             <div className="flex items-center space-x-2">
-              <div className="p-3 bg-sky-100 rounded-full">
+              <div className="p-3 bg-amber-100 rounded-full">
                 <User size={26} />
               </div>
               <div className="flex flex-col">
@@ -57,13 +57,13 @@ export default function AttendancesUsersView({ selectedStatus, shifts, allUsers,
                         </div>
 
                         <div className="flex flex-col items-end">
-                          <Badge className={`border-none ${attedancesStyles[capitalize(u.attendanceStatus)]}`}>
+                          <Badge className={`border-none ${attedancesStyles[u.attendanceStatus]}`}>
                             {capitalize(u.attendanceStatus)}
                           </Badge>
 
                           {u.attendanceStatus === "PERMISSION" && (
                             <span className="text-xs mt-1">
-                              <Badge className={`border-0 px-2 py-0.5 ${ attedancesStyles[capitalize(u.approval)] || ""}`}>
+                              <Badge className={`border-0 px-2 py-0.5 ${ attedancesStyles[u.approval] || ""}`}>
                                 {capitalize(u.approval) || "Pending"}
                               </Badge>
                             </span>

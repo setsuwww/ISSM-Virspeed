@@ -37,9 +37,9 @@ const variantStyles = {
     parentIcon: "bg-slate-100",
   },
   warning: {
-    border: "border-yellow-500",
-    icon: <AlertTriangle className="w-7 h-7 text-yellow-500" />,
-    parentIcon: "bg-yellow-100",
+    border: "border-indigo-500",
+    icon: <AlertTriangle className="w-7 h-7 text-indigo-500" />,
+    parentIcon: "bg-indigo-100",
   },
   success: {
     border: "border-teal-500",

@@ -1,8 +1,8 @@
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
-import { AttendancesCard } from "./AttendancesCard"
-import AttendancesTableClient from "./AttendancesTableClient"
+import { AttendancesCard } from "./AttendancesCardStats"
+import AttendancesTableClient from "./AttendancesTable"
 import { prisma } from "@/_lib/prisma"
 import { minutesToTime } from "@/_function/globalFunction"
 

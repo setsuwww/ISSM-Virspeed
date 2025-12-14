@@ -2,14 +2,17 @@
 
 import React, { useState } from "react"
 import { FolderInput, Trash2, Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/_lib/utils"
+
+import { Badge } from "@/_components/ui/Badge"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Popover, PopoverTrigger, PopoverContent } from "@/_components/ui/Popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/_components/ui/Command"
-import { Badge } from "@/_components/ui/Badge"
-import { cn } from "@/_lib/utils"
-import { divisionStyles } from '@/_constants/divisionConstants';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
+
+import { divisionStyles } from '@/_constants/divisionConstants';
 
 import { exportPDF } from "@/_function/exports/employee/exportPDF";
 import { exportWord } from "@/_function/exports/employee/exportWord";
@@ -19,6 +22,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   search, setSearch,
   selected, onDeleteSelected, onDeleteAll,
   divisionFilter, setDivisionFilter, filteredData,
+  shiftFilter, onShiftFilterChange,
   divisions = [],
 }) {
   const [openDivision, setOpenDivision] = useState(false)
@@ -35,6 +39,19 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   return (
     <div className="flex flex-wrap justify-between items-center gap-2">
       <div className="flex items-center gap-2 w-full md:w-2/3">
+        <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
+          <SelectTrigger className="w-auto px-3 whitespace-nowrap">
+            <span className="font-semibold text-slate-600 mr-1">Shift:</span>
+            <SelectValue placeholder="All" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="MORNING">Morning</SelectItem>
+            <SelectItem value="AFTERNOON">Afternoon</SelectItem>
+            <SelectItem value="EVENING">Evening</SelectItem>
+          </SelectContent>
+        </Select>
+
         <Popover open={openDivision} onOpenChange={setOpenDivision}>
           <PopoverTrigger asChild>
             <Button variant="outline" role="combobox" aria-expanded={openDivision}
@@ -49,7 +66,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           </PopoverTrigger>
           <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>
             <Command>
-              <div className="flex items-center justify-between px-2 py-2 border-b border-slate-200">
+              <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200">
                 <CommandInput placeholder="Search division..." withBorder={false} />
                 <div className="flex gap-1">
                   {["WFO", "WFA"].map((type) => (
@@ -112,7 +129,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+            <DropdownMenuLabel>Export As :</DropdownMenuLabel>
 
             <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
               PDF

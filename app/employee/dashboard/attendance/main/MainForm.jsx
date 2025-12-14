@@ -104,20 +104,7 @@ export default function CheckinForm() {
         ]}
       />
 
-      <Card className="border border-slate-200 shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <div className="p-2 bg-slate-100 rounded-full text-slate-700">
-              <Clock size={22} />
-            </div>
-            <ContentInformation
-              heading="Quick Actions"
-              subheading="Perform your attendance actions"
-              autoMargin={false}
-            />
-          </CardTitle>
-        </CardHeader>
-
+      <Card className="border border-slate-200 shadow-sm pt-4">
         <CardContent className="space-y-5">
           <ContentInformation heading="Your Presence" subheading="Click once at cards below to send your status" />
           <MainActionCard icon={<LogIn />}
@@ -138,7 +125,7 @@ export default function CheckinForm() {
           </div>
 
           <ContentInformation heading="Send Request" subheading="Change your internal shift / attendance" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${showPermission ? "pb-2" : "pb-4"}`}>
             <MainActionCard icon={<Plane />}
               title={showPermission ? "Cancel Permission" : "Request Permission"} 
               description="Ask for leave or permission" color="blue"
@@ -152,14 +139,14 @@ export default function CheckinForm() {
           </div>
 
           {showPermission && (
-            <div className="border border-dashed border-amber-300 bg-amber-50/50 p-4 rounded-xl space-y-3">
+            <div className="border border-dashed border-amber-300 bg-amber-50/50 p-4 mb-4 rounded-xl space-y-3">
               <Label>
                 Reason <span className="text-rose-500">*</span>
               </Label>
 
               <input value={reason} onChange={(e) => setReason(e.target.value)}
                 placeholder="Enter your reason..."
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 text-sm"
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-100 focus:outline focus:outline-indigo-50 focus:border-indigo-200 text-sm"
               />
 
               <div className="flex gap-2">

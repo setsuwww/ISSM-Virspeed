@@ -36,7 +36,7 @@ export default function AttendancesApprovalPartials({
               <span className="px-2 py-1 rounded-md bg-teal-50 text-teal-600">
                 A : {approvalCounts.accepted}
               </span>
-              <span className="px-2 py-1 rounded-md bg-yellow-50 text-yellow-600">
+              <span className="px-2 py-1 rounded-md bg-amber-50 text-amber-600">
                 P : {approvalCounts.pending}
               </span>
               <span className="px-2 py-1 rounded-md bg-rose-50 text-rose-600">

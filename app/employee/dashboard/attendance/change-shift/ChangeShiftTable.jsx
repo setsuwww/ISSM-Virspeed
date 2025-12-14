@@ -1,17 +1,20 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { CircleUserRound } from "lucide-react"
+
 import { updateShiftChangeStatus } from "@/_server/admin-action/shiftAction"
+
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/Dialog"
 import { Button } from "@/_components/ui/Button"
-import { CircleUserRound } from "lucide-react"
 import { Badge } from "@/_components/ui/Badge"
-import { capitalize } from "@/_function/globalFunction"
-import { shiftStyles } from "@/_constants/shiftConstants"
-import { attedancesStyles, getDisplayStatus, statusStyleKey } from "@/_constants/attendanceConstants"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
+
+import { shiftStyles } from "@/_constants/shiftConstants"
+import { attedancesStyles, getDisplayStatus, normalizeRequestStatus } from "@/_constants/attendanceConstants"
+import { wordsLimit } from "@/_function/globalFunction"
 
 export default function ChangeShiftTable({ requests = [], currentUserId }) {
   const [isPending, startTransition] = useTransition()
@@ -37,7 +40,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
             <TableHeader className="bg-slate-50">
               <TableRow>
                 <TableHead>Requester</TableHead>
-                <TableHead>From - To</TableHead>
+                <TableHead>From → To</TableHead>
                 <TableHead>Message</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Action</TableHead>
@@ -73,7 +76,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="flex flex-col">
-                          <Badge className={`border-none ${shiftStyles[req.oldShift?.type]}`}>
+                          <Badge className={`text-sm border-none px-3 py-1 ${shiftStyles[req.oldShift?.type]}`}>
                             {req.oldShift?.name || "-"}
                           </Badge>
                         </div>
@@ -81,7 +84,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                         <span className="text-xs text-gray-500 px-1">→</span>
 
                         <div className="flex flex-col">
-                          <Badge className={`border-none ${shiftStyles[req.targetShift?.type]}`}>
+                          <Badge className={`text-sm border-none px-3 py-1 ${shiftStyles[req.targetShift?.type]}`}>
                             {req.targetShift?.name || "-"}
                           </Badge>
                         </div>
@@ -91,8 +94,8 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     <TableCell>
                       <Dialog>
                         <DialogTrigger asChild>
-                          <div className="max-w-[160px] line-clamp-3 truncate text-sm text-slate-500 cursor-pointer hover:underline" title={req.reason}>
-                            {req.reason || "-"}
+                          <div className="line-clamp-3 truncate text-sm text-slate-500 cursor-pointer hover:underline" title={req.reason}>
+                            {wordsLimit(req.reason || "-", 3)}
                           </div>
                         </DialogTrigger>
                         <DialogContent className="max-w-lg">
@@ -107,7 +110,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     </TableCell>
 
                     <TableCell>
-                      <Badge className={`${attedancesStyles[statusStyleKey[req.status]]}`}>
+                      <Badge className={attedancesStyles[normalizeRequestStatus(req.status)]}>
                         {getDisplayStatus(req.status)}
                       </Badge>
                     </TableCell>

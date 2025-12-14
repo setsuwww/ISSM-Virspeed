@@ -13,6 +13,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
     selected, setSelected,
     data, filteredData,
     divisionFilter, setDivisionFilter,
+    shiftFilter, onShiftFilterChange,
     toggleSelect, deleteSelected,
     deleteAll,
     onSwitch, onDelete,
@@ -27,6 +28,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         selected={selected} onDeleteSelected={deleteSelected}
         onDeleteAll={deleteAll} filteredData={filteredData}
         divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
+        shiftFilter={shiftFilter} onShiftFilterChange={onShiftFilterChange}
         divisions={divisions}
         shifts={shifts}
       />

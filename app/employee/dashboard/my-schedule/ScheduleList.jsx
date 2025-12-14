@@ -80,7 +80,7 @@ export default function ScheduleList({ schedules }) {
 
             {/* Actions */}
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <button className="p-1 rounded-full hover:bg-slate-100">
                   <MoreVertical className="w-5 h-5 text-slate-600" />
                 </button>

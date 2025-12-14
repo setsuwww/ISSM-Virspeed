@@ -8,20 +8,22 @@ export const metadata = {
 import { Toaster } from "sonner"
 import DashboardHeader from './DashboardHeader';
 
-import { getScheduleCount } from "@/_lib/partials/getScheduleCount";
 import SidebarBase from "@/_components/sidebar/SidebarBase";
 import { employeeMenu } from "@/_components/sidebar/content/employee.menu";
 
 import { getCurrentUser } from "@/_lib/auth";
+import { getScheduleCount } from "@/_lib/partials/getScheduleCount";
+import { getChangeShiftCount } from '@/_lib/partials/getChangeShiftCount';
 
 export default async function DashboardLayout({ children }) {
 
   const scheduleCount = await getScheduleCount()
+  const csCount = await getChangeShiftCount()
   const user = await getCurrentUser()
 
   return (
     <div className="flex h-screen">
-      <SidebarBase menu={employeeMenu(scheduleCount)} user={user} />
+      <SidebarBase menu={employeeMenu(csCount, scheduleCount)} user={user} />
 
       <div className="flex-1 flex flex-col"> 
         <Toaster position="top-right" richColors expand duration={3000} closeButton toastOptions={{

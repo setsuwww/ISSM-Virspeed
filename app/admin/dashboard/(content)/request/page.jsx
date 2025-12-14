@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic"
 export const runtime = "nodejs"
-export const revalidate = 20
 
 import { prisma } from "@/_lib/prisma"
 
@@ -29,7 +28,6 @@ async function getRequests(mode = "pending") {
   const isHistory = mode === "history"
 
   const [shiftRequests, attendanceRequests, leaveRequests] = await Promise.all([
-
     prisma.shiftChangeRequest.findMany({
       where: isHistory
         ? { status: { notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } }
@@ -94,7 +92,7 @@ async function getRequests(mode = "pending") {
   ])
 
   const shift = shiftRequests.map((r) => ({
-    id: `shift-${r.id}`,
+    id: r.id,
     requestedBy: {
       name: r.requestedBy?.name || "-",
       email: r.requestedBy?.email || "-",
@@ -127,7 +125,7 @@ async function getRequests(mode = "pending") {
     const workHours = getWorkHours(r.shift, r.user?.division)
 
     return {
-      id: `perm-${r.id}`,
+      id: r.id,
       requestedBy: {
         name: r.user?.name || "-",
         email: r.user?.email || "-",
@@ -150,7 +148,7 @@ async function getRequests(mode = "pending") {
     const workHours = getWorkHours(r.user?.shift, r.user?.division)
 
     return {
-      id: `leave-${r.id}`,
+      id: r.id,
       requestedBy: {
         name: r.user?.name || "-",
         email: r.user?.email || "-",
@@ -170,7 +168,9 @@ async function getRequests(mode = "pending") {
 }
 
 export default async function Page({ searchParams }) {
-  const mode = searchParams?.mode || "pending"
+  const params = await searchParams;
+  const mode = params?.mode ?? "pending";
+
   const { shift, attendance, leave } = await getRequests(mode)
 
   return (

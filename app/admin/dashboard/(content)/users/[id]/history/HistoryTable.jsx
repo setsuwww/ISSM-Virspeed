@@ -98,7 +98,7 @@ export default function UserHistoryTable({ history }) {
               </TableCell>
 
               <TableCell>
-                <Badge className={attedancesStyles[capitalize(h.status)]}>
+                <Badge className={attedancesStyles[h.status]}>
                   {capitalize(h.status)}
                 </Badge>
               </TableCell>

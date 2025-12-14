@@ -58,7 +58,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         <DialogHeader>
           <DialogTitle>
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-sky-100 rounded-full">
+              <div className="p-3 bg-indigo-100 rounded-full">
                 <CalendarSync size={26} />
               </div>
               <div className="flex flex-col">
@@ -121,8 +121,8 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
                   <Checkbox checked={selectedId === u.id} onCheckedChange={() => setSelectedId(u.id)}/>
 
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-sky-100 transition">
-                      <CircleUserRound className="text-slate-400 group-hover:text-sky-600" />
+                    <div className="p-2 bg-slate-100 rounded-lg group-hover:bg-indigo-100 transition">
+                      <CircleUserRound className="text-slate-400 group-hover:text-indigo-600" />
                     </div>
 
                     <div className="w-full flex items-center justify-between">

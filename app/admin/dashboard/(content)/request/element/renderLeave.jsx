@@ -58,11 +58,10 @@ export default function RenderLeave({ r, onStatusChange, onReject }) {
 
       <TableCell>
         <RequestStatusChangerToggle
-          requestId={r.id}
-          status={r.status}
+          id={r.id}
+          status={r.approval ?? "PENDING"}
+          type="LEAVE"
           disabled={false}
-          onReject={() => onReject?.(r.id)}
-          onStatusChange={(newStatus) => onStatusChange?.(r.id, newStatus)}
         />
       </TableCell>
     </>

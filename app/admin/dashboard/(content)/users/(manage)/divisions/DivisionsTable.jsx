@@ -96,7 +96,7 @@ export default function DivisionsTable({ data }) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40px] text-center">
+                <TableHead className="w-[40px] flex items-center">
                   <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={toggleSelectAll} />
                 </TableHead>
                 <TableHead>Name</TableHead>
@@ -114,7 +114,7 @@ export default function DivisionsTable({ data }) {
               ) : (
                 filteredData.map((division) => (
                   <TableRow key={division.id}>
-                    <TableCell className="text-center">
+                    <TableCell className="w-[20px] text-center">
                       <Checkbox checked={selectedIds.includes(division.id)} onCheckedChange={() => toggleSelect(division.id)} />
                     </TableCell>
 
@@ -142,7 +142,7 @@ export default function DivisionsTable({ data }) {
 
                     <TableCell>
                       <div className="flex items-center gap-2 text-slate-600">
-                        <div className="p-2 text-yellow-700 bg-yellow-500/15 rounded-full">
+                        <div className="p-2 text-amber-700 bg-amber-500/15 rounded-full">
                           <AlarmClock size={14} strokeWidth={1.5} />
                         </div>
                         <span>

@@ -2,7 +2,7 @@ import { QrCode, Clock, RefreshCcw, Calendar, User } from "lucide-react"
 
 export const iconMap = { QrCode, Clock, RefreshCcw, Calendar, User }
 
-export const employeeMenu = (scheduleCount) => [
+export const employeeMenu = (changeShiftCount, scheduleCount) => [
   {
     type: "link",
     label: "Attendances",
@@ -19,7 +19,8 @@ export const employeeMenu = (scheduleCount) => [
     type: "link",
     label: "Change Shift",
     href: "/employee/dashboard/attendance/change-shift",
-    icon: "RefreshCcw"
+    icon: "RefreshCcw",
+    badge: changeShiftCount
   },
   {
     type: "link",

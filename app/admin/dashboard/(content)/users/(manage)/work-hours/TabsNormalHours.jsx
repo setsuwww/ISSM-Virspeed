@@ -17,7 +17,7 @@ export default function TabsNormalHours({ divisions }) {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="p-2 rounded-full bg-yellow-100/50 text-yellow-600">
+              <div className="p-2 rounded-full bg-indigo-100/50 text-indigo-600">
                 <Clock size={18} />
               </div>
               <div>

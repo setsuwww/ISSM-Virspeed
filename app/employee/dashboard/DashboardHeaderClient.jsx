@@ -18,36 +18,33 @@ export default function DashboardHeaderClient({ user }) {
   const handleLogout = () => {
     startTransition(async () => {
       const res = await LogoutAuthAction()
-      if (res.success) { window.location.href = "/auth/login"} 
-      else { alert(res.message)}
+      if (res.success) { window.location.href = "/auth/login" }
+      else { alert(res.message) }
     })
   }
 
   return (
-    <header className="w-full flex items-center justify-between border-b border-slate-200 px-6 py-4 bg-white">
+    <header className="w-full flex items-center justify-between border-b border-slate-200 px-6 py-5 bg-white">
       <div>
         <div className="flex items-center gap-3 text-slate-600">
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-sky-100 text-sky-700 font-semibold text-lg">
             {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
           </div>
 
-          <div className="flex flex-col">
-            <h1 className="text-lg md:text-xl font-semibold flex items-center space-x-1">
-              <span><span className="text-sky-700">{capitalize(user?.name ?? "User")}’s</span> Dashboard</span>
-              <Badge className={shiftStyles[user.shift?.type]}>{capitalize(user.shift?.type)}</Badge>
-            </h1>
-            <span className="text-sm text-slate-400">{user?.email ?? "user@gmail.com"}</span>
-          </div>
+          <h1 className="text-md md:text-lg font-semibold flex items-center space-x-1">
+            <span><span className="text-sky-700">{capitalize(user?.name ?? "User")}’s</span> Dashboard</span>
+            <Badge className={shiftStyles[user.shift?.type]}>{capitalize(user.shift?.type)}</Badge>
+          </h1>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="flex items-center space-x-2 text-sm font-semibold text-slate-400">
+        <div className="flex items-center space-x-2 text-sm font-medium text-slate-400">
           <CalendarDays size={14} className="text-sky-500" />
           <span>{today}</span>
         </div>
 
-        <button onClick={handleLogout} disabled={isPending} className="text-sm flex items-center font-semibold space-x-1 px-3 py-1.5 rounded-lg text-rose-500 border border-slate-200 transition-colors disabled:opacity-60">
+        <button onClick={handleLogout} disabled={isPending} className="text-sm flex items-center font-medium space-x-1 px-3 py-1.5 rounded-lg text-rose-500 border border-slate-200 transition-colors disabled:opacity-60">
           <LogOut size={14} />
           <span className="text-slate-600">
             {isPending ? "Logging out..." : "Logout"}

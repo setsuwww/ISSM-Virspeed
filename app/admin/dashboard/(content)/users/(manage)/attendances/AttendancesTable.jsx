@@ -115,7 +115,7 @@ export default function AttendancesTableClient() {
                   </TableCell>
 
                   <TableCell>
-                    <Badge className={`${attedancesStyles[capitalize(att.status)]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
+                    <Badge className={`${attedancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
                       {capitalize(att.status)}
                     </Badge>
                   </TableCell>

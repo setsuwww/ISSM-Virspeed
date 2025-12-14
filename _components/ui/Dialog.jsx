@@ -14,12 +14,12 @@ const variantStyles = {
     title: "text-slate-700",
   },
   info: {
-    border: "border-sky-500",
-    title: "text-sky-700",
+    border: "border-indigo-500",
+    title: "text-indigo-700",
   },
   warning: {
-    border: "border-yellow-500",
-    title: "text-yellow-700",
+    border: "border-indigo-500",
+    title: "text-indigo-700",
   },
   success: {
     border: "border-teal-500",

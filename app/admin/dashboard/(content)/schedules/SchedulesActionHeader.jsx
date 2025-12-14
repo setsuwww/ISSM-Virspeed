@@ -63,7 +63,7 @@ export default function SchedulesActionHeader({
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+            <DropdownMenuLabel>Export As :</DropdownMenuLabel>
 
             <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
               PDF

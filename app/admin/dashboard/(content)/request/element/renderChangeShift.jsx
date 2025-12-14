@@ -63,11 +63,10 @@ export default function RenderChangeShift({ r }) {
 
       <TableCell>
         <RequestStatusChangerToggle
-          requestId={r.id}
-          status={r.status}
+          id={r.id}
+          status={r.approval ?? "PENDING"}
+          type="CHANGE-SHIFT"
           disabled={false}
-          onReject={() => onReject?.(r.id)}
-          onStatusChange={(newStatus) => onStatusChange?.(r.id, newStatus)}
         />
       </TableCell>
     </>

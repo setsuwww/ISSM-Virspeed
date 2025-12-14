@@ -35,7 +35,7 @@ function SelectTrigger({
       data-size={size}
       className={cn(
         "group border-slate-200/90 data-[placeholder]:text-slate-500 [&_svg:not([class*='text-'])]:text-slate-500",
-        "focus-visible:border-sky-300 focus-visible:ring-sky-100",
+        "focus-visible:border-indigo-300 focus-visible:ring-indigo-100",
         "aria-invalid:ring-rose-300 aria-invalid:border-rose-500",
         "flex w-fit items-center justify-between gap-2 rounded-md border bg-white px-3 py-2 text-sm",
         "whitespace-nowrap transition-[color,box-shadow] outline-none",

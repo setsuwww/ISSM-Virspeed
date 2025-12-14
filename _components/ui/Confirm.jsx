@@ -13,10 +13,10 @@ const variantStyles = {
     titleColor: "text-rose-600",
   },
   warning: {
-    icon: <AlertTriangle className="text-yellow-500" size={20} />,
+    icon: <AlertTriangle className="text-indigo-500" size={20} />,
     title: "Warning",
-    iconBgColor: "bg-yellow-100 text-yellow-600 p-3 rounded-full",
-    titleColor: "text-yellow-600",
+    iconBgColor: "bg-indigo-100 text-indigo-600 p-3 rounded-full",
+    titleColor: "text-indigo-600",
   },
   success: {
     icon: <CheckCircle className="text-teal-500" size={20} />,
@@ -25,10 +25,10 @@ const variantStyles = {
     titleColor: "text-teal-600",
   },
   info: {
-    icon: <Info className="text-sky-500" size={20} />,
+    icon: <Info className="text-indigo-500" size={20} />,
     title: "Information",
-    iconBgColor: "bg-sky-100 text-sky-600 p-3 rounded-full",
-    titleColor: "text-sky-600",
+    iconBgColor: "bg-indigo-100 text-indigo-600 p-3 rounded-full",
+    titleColor: "text-indigo-600",
   },
 };
 
@@ -54,7 +54,7 @@ export function ConfirmDialog() {
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={cancel}>Cancel</Button>
           <Button
-            className="bg-sky-100 text-sky-700 hover:bg-sky-200"
+            className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
             onClick={confirm}
           >
             Confirm

@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react"
 import { statusColorsClass } from "@/_constants/attendanceConstants"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
-import AttendancesUsersView from "./AttendancesUsersView"
+import AttendancesUsersView from "./AttendancesUsers"
 
 export function AttendancesCard({ shifts = [] }) {
   const [selectedStatus, setSelectedStatus] = useState(null)
@@ -53,7 +53,7 @@ export function AttendancesCard({ shifts = [] }) {
         <span className="px-2 py-1 rounded-md bg-teal-50 text-teal-600">
           A = Accepted
         </span>
-        <span className="px-2 py-1 rounded-md bg-yellow-50 text-yellow-600">
+        <span className="px-2 py-1 rounded-md bg-amber-50 text-amber-600">
           P = Pending
         </span>
         <span className="px-2 py-1 rounded-md bg-rose-50 text-rose-600">

@@ -79,7 +79,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
         <div className="flex items-center gap-2">
           {Object.keys(PRESET_RANGES).map((k) => (
             <Button key={k} size="sm" variant="outline"
-              className={k === rangeKey ? "text-sky-700 bg-sky-100 border-sky-200 hover:bg-sky-200" : ""}
+              className={k === rangeKey ? "text-indigo-700 bg-indigo-50 border-indigo-200/60 hover:bg-indigo-100/80" : ""}
               onClick={() => setRangeKey(k)}
             >
               {PRESET_RANGES[k].label}

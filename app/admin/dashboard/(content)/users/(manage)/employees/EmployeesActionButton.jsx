@@ -6,10 +6,10 @@ import { Button } from "@/_components/ui/Button";
 export const EmployeesActionButton = ({ onHistory, onSwitch, onEdit, onDelete }) => {
   return (
     <div className="flex items-center space-x-2">
-      <Button size="icon" variant="outline" onClick={onHistory}>
+      <Button size="icon" variant="ghost" onClick={onHistory}>
         <Eye strokeWidth={1.5} />
       </Button>
-      <Button size="icon" variant="outline" onClick={onSwitch}>
+      <Button size="icon" variant="ghost" onClick={onSwitch}>
         <RefreshCcw strokeWidth={1.5} />
       </Button>
       <Button size="sm" variant="outline" onClick={onEdit}>

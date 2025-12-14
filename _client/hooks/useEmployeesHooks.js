@@ -23,6 +23,7 @@ export function useEmployeesHooks(users, shifts) {
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState([]);
   const [divisionFilter, setDivisionFilter] = useState("all");
+  const [shiftFilter, onShiftFilterChange] = useState("all");
 
   useEffect(() => {
     setData((users || []).filter((u) => u.role === "EMPLOYEE"));
@@ -38,9 +39,13 @@ export function useEmployeesHooks(users, shifts) {
         divisionFilter === "all" ||
         u.division?.id === Number(divisionFilter);
 
-      return matchSearch && matchDivision;
+      const matchShift =
+        shiftFilter === "all" ||
+        u.shift?.type === shiftFilter;
+
+      return matchSearch && matchDivision && matchShift;
     });
-  }, [data, search, divisionFilter]);
+  }, [data, search, divisionFilter, shiftFilter]);
 
   const toggleSelect = useCallback(
     (id) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]), []
@@ -62,7 +67,7 @@ export function useEmployeesHooks(users, shifts) {
 
   const exportCSV = useCallback(() => {
     const csv = buildCSV([["ID", "Name", "Email", "Role"],
-      ...filteredData.map((u) => [u.id, u.name, u.email, u.role]),
+    ...filteredData.map((u) => [u.id, u.name, u.email, u.role]),
     ]);
 
     const blob = new Blob([csv], { type: "text/csv" });
@@ -75,24 +80,28 @@ export function useEmployeesHooks(users, shifts) {
   }, [filteredData]);
 
   const onSwitch = useCallback(async (id, newActiveState) => {
-    try { await api.patch(`/users/${id}`, { active: newActiveState });
+    try {
+      await api.patch(`/users/${id}`, { active: newActiveState });
       setData((prev) => prev.map((u) => u.id === id ? { ...u, active: newActiveState } : u));
-    } 
-    catch {alert(MSG.UPDATE_FAIL);}
+    }
+    catch { alert(MSG.UPDATE_FAIL); }
   }, []);
 
   const onDelete = useCallback(async (id) => {
     if (!askConfirm(MSG.CONFIRM_DELETE_ONE)) return;
 
-    try { await api.delete(`/users/${id}`);
+    try {
+      await api.delete(`/users/${id}`);
       setData((prev) => prev.filter((u) => u.id !== id));
-    } 
-    catch {alert(MSG.DELETE_FAIL);}
+    }
+    catch { alert(MSG.DELETE_FAIL); }
   }, []);
 
   return {
     search, setSearch, selected, setSelected,
-    data, filteredData, divisionFilter, setDivisionFilter,
+    data, filteredData, 
+    divisionFilter, setDivisionFilter,
+    shiftFilter, onShiftFilterChange,
     toggleSelect, deleteSelected, deleteAll,
     exportCSV,
     onSwitch, onDelete,

@@ -1,11 +1,11 @@
 export const statusPriority = ["ABSENT", "LATE", "PERMISSION"];
 
 export const attedancesStyles = {
-  PRESENT: "text-teal-600 bg-teal-100 border-teal-300/50",
-  LATE: "text-yellow-600 bg-yellow-100 border-yellow-300/50",
-  PERMISSION: "text-blue-600 bg-blue-100 border-blue-300/50",
-  ABSENT: "text-rose-600 bg-rose-100 border-rose-300/50",
-  ALPHA: "text-slate-600 bg-slate-100 border-slate-300/50",
+  PRESENT: "text-teal-600 bg-teal-100/50 border-teal-300/50",
+  LATE: "text-yellow-600 bg-yellow-100/50 border-yellow-300/50",
+  PERMISSION: "text-blue-600 bg-blue-100/50 border-blue-300/50",
+  ABSENT: "text-rose-600 bg-rose-100/50 border-rose-300/50",
+  ALPHA: "text-slate-600 bg-slate-100/50 border-slate-300/50",
 
   APPROVED: "text-white bg-teal-500 border-teal-500",
   REJECTED: "text-white bg-rose-500 border-rose-500",
@@ -46,11 +46,11 @@ export const attendanceActionTheme = {
 }
 
 export const dotStatusColor = {
-  PENDING: "bg-yellow-500",
-  PENDING_TARGET: "bg-yellow-500",
-  PENDING_ADMIN: "bg-yellow-500",
-  APPROVED: "bg-teal-500",
-  REJECTED: "bg-rose-500",
+  PENDING: "bg-yellow-400",
+  PENDING_TARGET: "bg-yellow-400",
+  PENDING_ADMIN: "bg-yellow-400",
+  APPROVED: "bg-teal-400",
+  REJECTED: "bg-rose-400",
 };
 
 export const requestStatusDisplay = {
@@ -66,13 +66,20 @@ export const statusStyleKey = {
   PENDING_ADMIN: "Pending",
   PENDING_TARGET: "Pending",
 
-  APPROVED: "Accepted",
+  APPROVED: "Approved",
   REJECTED: "Rejected",
 
   ABSENT: "Absent",
   LATE: "Late",
   PERMISSION: "Permission",
 };
+
+export function normalizeRequestStatus(status) {
+  if (status === "PENDING_ADMIN" || status === "PENDING_TARGET") {
+    return "PENDING"
+  }
+  return status
+}
 
 export function getDisplayStatus(status) {
   return requestStatusDisplay[status] || status;
