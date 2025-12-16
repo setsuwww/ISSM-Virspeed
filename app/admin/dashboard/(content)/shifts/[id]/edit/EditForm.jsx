@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
-import ContentForm from "@/_components/content/ContentForm";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import ContentForm from "@/_components/common/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { apiFetchData } from "@/_function/helpers/fetch";
+import { apiFetchData } from "@/_lib/fetch";
 import { timeToMinutes, intToTime } from "@/_function/globalFunction";
 import { capitalize } from "@/_function/globalFunction";
 import { Loader } from "lucide-react";

@@ -4,17 +4,24 @@ import { Trash2, FolderInput } from "lucide-react";
 import { Input } from "@/_components/ui/Input";
 import { Button } from "@/_components/ui/Button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
+
 import React from "react";
+
+import { exportPDF } from "@/_function/exports/user/exportPDF";
+import { exportWord } from "@/_function/exports/user/exportWord";
+import { exportExcel } from "@/_function/exports/user/exportExcel";
 
 export const UsersActionHeader = React.memo(({
     search, onSearchChange,
     roleFilter, onRoleFilterChange,
     shiftFilter, onShiftFilterChange,
     selectedCount, onDeleteSelected, onDeleteAll,
-    onExportPDF, filteredData, searchInputRef,
+    filteredData, searchInputRef,
   }) => {
     return (
       <div className="flex items-center justify-between gap-2 flex-wrap">
+        
         <div className="flex items-center gap-2">
           <Select value={roleFilter} onValueChange={onRoleFilterChange}>
             <SelectTrigger className="w-auto px-3 whitespace-nowrap">
@@ -47,21 +54,45 @@ export const UsersActionHeader = React.memo(({
           />
         </div>
 
+        {/* Right side actions */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="text-rose-500" onClick={onDeleteSelected} disabled={selectedCount === 0}>
+          <Button variant="ghost" size="sm" className="text-rose-500"
+            onClick={onDeleteSelected} disabled={selectedCount === 0}
+          >
             Delete Selected
           </Button>
 
-          <Button variant="ghost" size="sm" className="bg-rose-50 hover:bg-rose-100 text-rose-500" onClick={onDeleteAll}>
-            <Trash2 size={18} strokeWidth={2} />
-            Delete All
+          <Button variant="ghost" size="sm" className="bg-rose-50 hover:bg-rose-100 text-rose-500"
+            onClick={onDeleteAll}
+          >
+            <Trash2 size={18} strokeWidth={2} />Delete All
           </Button>
 
-          <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600" onClick={() => onExportPDF(filteredData)}>
-            <FolderInput size={16} />
-            Export
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+                <FolderInput size={16} />Export
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuLabel>Export As :</DropdownMenuLabel>
+
+              <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
+                PDF
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+                Word (.docx)
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
+                Excel (.xlsx)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
       </div>
     );
   }

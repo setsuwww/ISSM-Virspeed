@@ -10,7 +10,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/_components/ui/Popove
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/_components/ui/Command"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/_components/ui/Dialog"
 import { Badge } from "@/_components/ui/Badge"
-import { ContentInformation } from "@/_components/content/ContentInformation"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 
 export default function InputAssignUserShift({ users }) {
   const { addEvent } = useScheduleStore()

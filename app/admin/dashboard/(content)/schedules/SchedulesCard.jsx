@@ -9,11 +9,11 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 
 import SchedulesActionHeader from "./SchedulesActionHeader";
 import ScheduleUsersDialog from "./SchedulesUsersDialog";
-import { useHandleSchedules } from "@/_function/handlers/useHandleSchedules";
+import { useHandleSchedules } from "@/_client/handlers/useHandleSchedules";
 import { capitalize } from "@/_function/globalFunction";
 import { frequencyStyles } from "@/_constants/scheduleConstants";
-import EmptyStates from "@/_components/content/EmptyStates";
-import { useSchedulesHooks } from "@/_function/hooks/useSchedulesHooks";
+import EmptyStates from "@/_components/common/EmptyStates";
+import { useSchedulesHooks } from "@/_client/hooks/useSchedulesHooks";
 
 export default function SchedulesCard({ data }) {
   const router = useRouter();
@@ -31,7 +31,6 @@ export default function SchedulesCard({ data }) {
     deleteAll,
     handleEditSchedule,
     handleDeleteSchedule,
-    onExportPDF,
   } = useHandleSchedules({
     selectedIds,
     setSelectedIds,
@@ -43,10 +42,9 @@ export default function SchedulesCard({ data }) {
     <div className="space-y-4">
       <SchedulesActionHeader
         search={search} setSearch={setSearch}
-        filterFrequency={filterFrequency} onFilterFrequencyChange={setFilterFrequency}
+        filterFrequency={filterFrequency} onFilterFrequencyChange={setFilterFrequency} filteredData={filteredData}
         selectedCount={selectedIds.length} totalCount={filteredData.length}
         onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
-        onExportPDF={() => onExportPDF(filteredData)}
       />
 
       {filteredData.length === 0 ? (
@@ -81,7 +79,7 @@ export default function SchedulesCard({ data }) {
                 </div>
 
                 <div className="pt-2 pb-6 px-4 space-y-2">
-                  <p className="text-xs font-base text-slate-400">
+                  <p className="text-xs text-slate-400">
                     {schedule.description}
                   </p>
 

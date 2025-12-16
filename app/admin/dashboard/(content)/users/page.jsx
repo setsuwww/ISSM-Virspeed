@@ -4,8 +4,8 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import UsersTable from "./UsersTable";
 
-import ContentForm from "@/_components/content/ContentForm";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import ContentForm from "@/_components/common/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize } from "@/_function/globalFunction";
 import { minutesToTime } from "@/_function/globalFunction";
@@ -44,6 +44,8 @@ export default async function Page({ searchParams }) {
   if (page > totalPages && totalPages > 0) return notFound();
 
   const tableData = users.map((u) => {
+    const isAdmin = u.role.toLowerCase() === "admin"
+    
     const userShift = u.shift
       ? {
           label: capitalize(u.shift.name || u.shift.type),
@@ -51,16 +53,14 @@ export default async function Page({ searchParams }) {
           type: u.shift.type,
         } : null;
 
-    const divisionShift =
-      !userShift && u.division?.shifts?.length
+    const divisionShift = !userShift && u.division?.shifts?.length
         ? {
             label: `${u.division.shifts[0].name} - (Division)`,
             start: u.division.shifts[0].startTime, end: u.division.shifts[0].endTime,
             type: "DIVISION"
           } : null;
 
-    const divisionTime =
-      !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
+    const divisionTime = !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
         ? {
             label: u.division.name,
             start: u.division.startTime, end: u.division.endTime,
@@ -76,6 +76,7 @@ export default async function Page({ searchParams }) {
       role: capitalize(u.role),
       shift: shiftLabel, shiftTime, shiftType: finalShift ? finalShift.type : null,
       createdAt: u.createdAt.toISOString(), updatedAt: u.updatedAt.toISOString(),
+      isActionLocked: isAdmin,
     };
   });
 

@@ -10,11 +10,11 @@ const buttonVariants = cva([
   {
     variants: { variant: {
         default: "bg-gradient-to-b from-slate-800 to-slate-600 text-white shadow-xs hover:from-slate-900 hover:to-slate-700 hover:inset-shadow-slate-600 focus:ring-slate-400",
-        destructive:"bg-rose-500 text-white shadow-xs hover:bg-rose-700 focus:ring-rose-300",
+        destructive:"bg-red-500 text-white shadow-xs hover:bg-red-700 focus:ring-red-300",
         positive:"bg-teal-500 text-white shadow-xs hover:bg-teal-700 focus:ring-teal-400",
         outline:"border border-slate-300/50 text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:ring-slate-200",
-        primary: "bg-sky-600 border border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700",
-        secondary:"font-medium text-sky-600 border border-slate-300 bg-[#ffffff46] rounded-md shadow-xs hover:bg-slate-50 hover:border-sky-200",
+        primary: "bg-indigo-600 border border-indigo-600 text-white hover:bg-indigo-700 hover:border-indigo-700",
+        secondary:"font-medium text-indigo-600 border border-slate-300 bg-[#ffffff46] rounded-md shadow-xs hover:bg-slate-50 hover:border-indigo-200",
         ghost:"bg-slate-100 text-slate-600 hover:bg-slate-200",
         link: "p-0",
       }, 
@@ -22,7 +22,7 @@ const buttonVariants = cva([
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-8 text-sky-700 hover:text-sky-900",
+        icon: "size-8 text-indigo-700 hover:text-indigo-900",
       },
     },
     defaultVariants: {

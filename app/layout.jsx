@@ -1,5 +1,5 @@
-import { ToastProvider } from "@/_components/client/Toast-Provider"
-import "@/_styles/globals.css"
+import { ToastProvider } from "@/_context/Toast-Provider"
+import "@/_styles/admin.css"
 
 export const metadata = {
   title: "Livesystem",

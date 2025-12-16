@@ -6,7 +6,12 @@ _A modern shift and attendance management system built with Next.js, Shadcn/UI, 
 ## Overview
 
 **Information System Shift Management** adalah aplikasi web yang dirancang untuk membantu perusahaan dalam mengatur jadwal kerja, manajemen shift, dan kehadiran karyawan secara efisien.  
-Sistem ini dibuat dengan **Next.js (App Router)** di sisi frontend/backend, menggunakan **Shadcn/UI** untuk komponen antarmuka yang elegan, dan **MySQL** sebagai basis data utama.
+Sistem ini dibuat dengan **Next.js (App Router)** di sisi frontend/backend, menggunakan **Shadcn/UI** untuk komponen antarmuka yang elegan, dan **MySQL** sebagai basis data utama. buat aplikasi ini lebih besar dan berskala tinggi, dengan mengupgrade stack, 
+
+Authjs, Nextjs typescript, 
+Shadcn tailwindcss, 
+Zustand, TanStack Query, 
+Prisma, PostgreSQL, FastAPI, Docker
 
 ---
 

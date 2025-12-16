@@ -46,6 +46,12 @@ enum ApprovalStatus {
   REJECTED
 }
 
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -98,11 +104,11 @@ model User {
   password String
   role     Role   @default(USER)
 
-  divisionId Int?
-  shiftId  Int?
+  divisionId  Int?
+  shiftId     Int?
 
-  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
-  shift  Shift?  @relation("ShiftUsers", fields: [shiftId], references: [id])
+  division Division?  @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  shift  Shift?       @relation("ShiftUsers", fields: [shiftId], references: [id])
 
   schedules          SchedulesOnUsers[]
   customShifts       UserShiftAssignment[]
@@ -110,7 +116,9 @@ model User {
 
   shiftRequests        ShiftChangeRequest[] @relation("RequestedUser")     
   createdRequests      ShiftChangeRequest[] @relation("RequestedByAdmin")  
-  targetShiftRequests  ShiftChangeRequest[] @relation("TargetUser")        
+  targetShiftRequests  ShiftChangeRequest[] @relation("TargetUser")
+  leaveRequests        LeaveRequest[]
+  approvedLeaves       LeaveRequest[] @relation("LeaveApprovedBy")   
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -160,11 +168,10 @@ model Schedule {
   startTime   String?
   endDate     DateTime?
   endTime     String?
-  divisionId    Int?
+  divisionId  Int?
 
   division  Division? @relation(fields: [divisionId], references: [id])
-  
-  users   SchedulesOnUsers[]
+  users     SchedulesOnUsers[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,23 +182,24 @@ model SchedulesOnUsers {
   scheduleId Int
   userId     Int
 
-  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, userId])
 }
 
 model Attendance {
-  id           Int              @id @default(autoincrement())
-  date         DateTime
-  status       AttendanceStatus @default(ABSENT)
-  approval     ApprovalStatus?  
-  reason       String?
-  adminReason  String?
-  checkInTime  DateTime?
-  checkOutTime DateTime?
-  userId       Int
-  shiftId      Int
+  id                  Int              @id @default(autoincrement())
+  date                DateTime
+  status              AttendanceStatus @default(ABSENT)
+  approval            ApprovalStatus?  
+  reason              String?
+  adminReason         String?
+  checkInTime         DateTime?
+  checkOutTime        DateTime?
+  earlyCheckoutReason String?
+  userId              Int
+  shiftId             Int
 
   user  User  @relation(fields: [userId], references: [id])
   shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
@@ -235,5 +243,27 @@ model ShiftChangeRequest {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model LeaveRequest {
+  id            Int         @id @default(autoincrement())
+
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+
+  approvedBy    User?       @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  approvedById  Int?
+
+  reason        String
+  adminReason   String?
+
+  startDate     DateTime
+  endDate       DateTime
+
+  status        LeaveStatus @default(PENDING)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 
 

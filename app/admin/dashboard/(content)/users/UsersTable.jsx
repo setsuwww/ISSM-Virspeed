@@ -1,12 +1,13 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { UsersActionHeader } from "./UsersActionHeader";
 import { UsersRow } from "./UsersRow";
 import { roleStyles } from "@/_constants/roleConstants";
-import { useUsersHooks } from "@/_function/hooks/useUsersHooks";
-import EmptyStates from "@/_components/content/EmptyStates";
+import { useUsersHooks } from "@/_client/hooks/useUsersHooks";
+import EmptyStates from "@/_components/common/EmptyStates";
 
 export default function UsersTable({ data }) {
   const {
@@ -14,18 +15,17 @@ export default function UsersTable({ data }) {
     roleFilter, handleRoleFilterChange, shiftFilter, handleShiftFilterChange,
     filteredData, selectedIds, selectedIdsSet, isAllSelected,
     toggleSelect, selectAll, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser, onExportPDF
+    handleEditUser, handleDeleteUser,
   } = useUsersHooks(data);
 
   return (
     <div className="rounded-md space-y-4">
       <UsersActionHeader
+        filteredData={filteredData}
         search={search} onSearchChange={handleSearchChange}
         roleFilter={roleFilter} onRoleFilterChange={handleRoleFilterChange}
         shiftFilter={shiftFilter} onShiftFilterChange={handleShiftFilterChange}
-        selectedCount={selectedIds.length} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
-        onExportPDF={() => onExportPDF(filteredData)}
-        filteredData={filteredData}
+        selectedCount={selectedIds.length} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}   
       />
 
       <Table>

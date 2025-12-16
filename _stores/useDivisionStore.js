@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { apiFetchData } from "@/_function/helpers/fetch"
+import { apiFetchData } from "@/_lib/fetch"
 
 export const useDivisionStore = create((set, get) => ({
   allActive: false, pendingStatus: null, confirmOpen: false, loading: true,

@@ -1,0 +1,138 @@
+"use client"
+
+import { useState, useEffect, useTransition, useMemo } from "react"
+import { CalendarFold, CircleUserRound } from "lucide-react"
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
+import { Badge } from "@/_components/ui/Badge"
+import EmptyStates from "@/_components/common/EmptyStates"
+import { ContentInformation } from "@/_components/common/ContentInformation"
+import { AttendancesActionHeader } from "./AttendancesActionHeader"
+
+import { shiftStyles } from "@/_constants/shiftConstants"
+import { attedancesStyles } from "@/_constants/attendanceConstants"
+
+import { safeFormat, capitalize } from "@/_function/globalFunction"
+import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"
+
+export default function AttendancesTableClient() {
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
+  const [sortOrder, setSortOrder] = useState("desc")
+  const [filterShift, setFilterShift] = useState("ALL")
+  const [data, setData] = useState([])
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() => {
+    startTransition(async () => {
+      const result = await getAttendancesByDate(date)
+      setData(result)
+    })
+  }, [date])
+
+  const filteredData = useMemo(() => {
+    return data.filter(att => {
+      if (filterShift === "ALL") return true
+      return att.shift?.type === filterShift
+    })
+  }, [data, filterShift])
+
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a, b) => {
+      const aDate = new Date(a.date)
+      const bDate = new Date(b.date)
+      return sortOrder === "asc" ? aDate - bDate : bDate - aDate
+    })
+  }, [filteredData, sortOrder])
+
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-between my-6 gap-4">
+        <ContentInformation
+          heading="List Attendances"
+          subheading="Manage and review all attendance records"
+        />
+
+        <AttendancesActionHeader 
+          selectedDate={date} onDateChange={setDate}
+          filterShift={filterShift} onFilterShiftChange={setFilterShift}
+          dateSortOrder={sortOrder} onDateSortChange={setSortOrder}
+          filteredData={sortedData}
+        />
+      </div>
+
+      {isPending ? (<div className="text-center py-6 text-slate-500">Loading...</div>) 
+      : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Check In - Check Out</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Reason</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {sortedData.length > 0 ? (
+              sortedData.map(att => (
+                <TableRow key={att.id}>
+                  <TableCell className="font-number text-slate-600 font-semibold tracking-wide">
+                    <div className="flex items-center space-x-2">
+                      <div className="bg-slate-200 p-1 rounded-full">
+                        <CalendarFold className="h-4 w-4 text-slate-600" strokeWidth={1} />
+                      </div>
+                      <span>{safeFormat(att.date, "dd-MM-yyyy")}</span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-slate-200 p-2 rounded-full">
+                        <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="flex items-center text-sm text-slate-700 font-semibold">
+                          {att.user?.name}
+                          {att.shift ? (
+                            <Badge className={`bg-transparent border-none ml-2 ${shiftStyles[att.shift.type]}`}>
+                              {capitalize(att.shift.type)}
+                            </Badge>
+                          ) : "-"}
+                        </span>
+
+                        <span className="text-xs text-slate-400">{att.user?.email}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="font-number text-sm text-slate-600">
+                      {safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} -{" "}
+                      {safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <Badge className={`${attedancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
+                      {capitalize(att.status)}
+                    </Badge>
+                  </TableCell>
+
+                  <TableCell>{att.reason ?? "-"}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4 text-slate-500">
+                  <EmptyStates />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
+    </>
+  )
+}

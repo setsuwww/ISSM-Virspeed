@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CircleUserRound } from "lucide-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 
 import { capitalize } from "@/_function/globalFunction";
-import { apiFetchData } from "@/_function/helpers/fetch";
+import { apiFetchData } from "@/_lib/fetch";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
+import { UserCircle } from "phosphor-react";
 
 export function ShiftsView({ data }) {
   const router = useRouter();
@@ -71,8 +71,8 @@ export function ShiftsView({ data }) {
               </TableCell>
 
               <TableCell>
-                <Link href={`/admin/dashboard/shifts/${shift.id}/users`} className="text-sky-500 hover:underline flex items-center gap-x-1">
-                  <CircleUserRound strokeWidth={1.5} size={15} /> {shift.usersCount} Users
+                <Link href={`/admin/dashboard/shifts/${shift.id}/users`} className="flex items-center space-x-1 text-sky-500">
+                  <UserCircle strokeWidth={1} size={24} color="#00bcff" weight="duotone" /> <span>{shift.usersCount} Users</span>
                 </Link>
               </TableCell>
               <TableCell className="space-x-2">

@@ -34,7 +34,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
   const rightActionClass = "flex items-center text-sm font-semibold rounded-lg bg-white/50 border border-slate-300/70 text-slate-600 transition-colors py-1.5"
 
   return (
-    <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+    <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4 py-1">
       <div>
         <h1 className="text-xl font-bold text-slate-700">
           {title || formatLabel(visibleSegments[visibleSegments.length - 1] || "Home")}

@@ -1,6 +1,6 @@
-import ContentForm from "@/_components/content/ContentForm";
+import ContentForm from "@/_components/common/ContentForm";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
-import { ContentInformation } from "@/_components/content/ContentInformation";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 import { ShiftsView } from "./ShiftsView";
 import { prisma } from "@/_lib/prisma";
 

@@ -24,7 +24,7 @@ function TableHeader({
 }) {
   return (
     <thead data-slot="table-header" className={cn(
-        "[&_tr]:border-b border-slate-100/50 bg-slate-50 shadow-xs",
+        "[&_tr]:border-b border-slate-100/50 bg-slate-50",
         className
       )}
       {...props}
@@ -69,7 +69,7 @@ function TableRow({
     <tr
       data-slot="table-row"
       className={cn(
-        "data-[state=selected]:bg-slate-100 border-b border-slate-200 transition-colors",
+        "data-[state=selected]:bg-slate-100 border-b border-slate-200/70 transition-colors",
         className
       )}
       {...props}
@@ -85,7 +85,7 @@ function TableHead({
     <th
       data-slot="table-head"
       className={cn(
-        "h-10 px-3 text-left align-middle whitespace-nowrap uppercase tracking-tight text-slate-500/80 text-sm font-semibold",
+        "h-10 px-3 text-left align-middle whitespace-nowrap tracking-tight text-slate-500/80 text-sm font-semibold",
         className
       )}
       {...props}

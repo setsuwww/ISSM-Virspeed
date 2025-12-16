@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useUserStore } from "@/_stores/useUserStore"
-import { updateUserProfile, updateShiftTime } from "@/_components/server/profileAction"
+import { updateProfile, updateShiftTime } from "@/_server/profileAction"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { toast } from "sonner"
@@ -41,7 +41,7 @@ export function ProfileView({ user }) {
   if (!user) return <p className="text-slate-500 text-center py-8">Tidak ada data user.</p>
 
   const handleSaveProfile = async () => {
-    const res = await updateUserProfile({ id: user.id, ...form })
+    const res = await updateProfile({ id: user.id, ...form })
     if (res.success) {
       setUser(res.user)
       toast.success("Profil berhasil diperbarui")

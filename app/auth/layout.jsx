@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Livesystem",
+  title: "Liveon",
 };
 
 export default function AuthLayout({

@@ -14,7 +14,7 @@ export const shiftIcons = {
 
 function PingDot({ color }) {
   return (
-    <span className="relative flex h-2 w-2 ml-1">
+    <span className="relative flex h-2 w-2">
       <span
         className={`absolute inline-flex h-full w-full rounded-full opacity-20 scale-175 ${color}`}
       ></span>
