@@ -12,8 +12,8 @@ import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
 import { apiFetchData } from "@/_lib/fetch";
-import { timeToMinutes, intToTime } from "@/_function/globalFunction";
-import { capitalize } from "@/_function/globalFunction";
+import { timeToMinutes, minutesToTime, capitalize } from "@/_function/globalFunction";
+import {  } from "@/_function/globalFunction";
 import { Loader } from "lucide-react";
 
 export default function EditShiftForm({ shift, divisions }) {
@@ -21,8 +21,8 @@ export default function EditShiftForm({ shift, divisions }) {
 
   const [type, setType] = useState(shift?.type || "MORNING");
   const [name, setName] = useState(shift?.name || "");
-  const [startTime, setStartTime] = useState(shift?.startTime ? intToTime(shift.startTime) : "");
-  const [endTime, setEndTime] = useState(shift?.endTime ? intToTime(shift.endTime) : "");
+  const [startTime, setStartTime] = useState(shift?.startTime ? minutesToTime(shift.startTime) : "");
+  const [endTime, setEndTime] = useState(shift?.endTime ? minutesToTime(shift.endTime) : "");
   const [divisionId, setDivisionId] = useState(String(shift?.divisionId || "NONE"));
   const [loading, setLoading] = useState(false);
 
@@ -30,8 +30,8 @@ export default function EditShiftForm({ shift, divisions }) {
     if (shift) {
       setType(shift.type || "MORNING");
       setName(shift.name || "");
-      setStartTime(shift.startTime ? intToTime(shift.startTime) : "");
-      setEndTime(shift.endTime ? intToTime(shift.endTime) : "");
+      setStartTime(shift.startTime ? minutesToTime(shift.startTime) : "");
+      setEndTime(shift.endTime ? minutesToTime(shift.endTime) : "");
       setDivisionId(String(shift.divisionId || "NONE"));
     }
   }, [shift]);

@@ -1,19 +1,16 @@
 "use client"
 
-import React, { useMemo } from "react"
+import { memo } from "react"
 import { CircleUserRound } from "lucide-react"
-import { format } from "date-fns"
 
 import { TableCell, TableRow } from "@/_components/ui/Table"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import { Badge } from "@/_components/ui/Badge"
 
-import { LockedAction, UsersActionButton } from "./UsersActionButton"
+import UsersActionButton, { LockedAction } from "./UsersActionButton"
 
-export const UsersRow = React.memo(function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyles }) {
+function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyles }) {
   const handleToggle = () => onToggleSelect(user.id)
-  const formatedCreatedDate = useMemo(() => format(new Date(user.createdAt), "dd MMMM yyyy"), [user.createdAt])
-  const formatedUpdatedDate = useMemo(() => format(new Date(user.updatedAt), "dd MMMM yyyy"), [user.updatedAt])
 
   return (
     <TableRow>
@@ -53,8 +50,8 @@ export const UsersRow = React.memo(function UsersRow({ user, isSelected, onToggl
       </TableCell>
 
       <TableCell className="flex flex-col">
-        <span className="text-sm font-semibold text-slate-600">{formatedCreatedDate}</span>
-        <span className="text-xs text-slate-400">{formatedUpdatedDate}</span>
+        <span className="text-sm font-semibold text-slate-600">{user.createdAt}</span>
+        <span className="text-xs text-slate-400">{user.updatedAt}</span>
       </TableCell>
 
       <TableCell>
@@ -65,4 +62,6 @@ export const UsersRow = React.memo(function UsersRow({ user, isSelected, onToggl
       </TableCell>
     </TableRow>
   )
-})
+}
+
+export default memo(UsersRow)

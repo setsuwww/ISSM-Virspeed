@@ -18,7 +18,7 @@ export function SidebarLink({ href, icon: Icon, children, minimized, badge = 0})
       )}
     >
       <div className="relative">
-        <Icon className="text-sky-500 shrink-0" size={18} />
+        <Icon className="text-indigo-500 shrink-0" size={18} />
 
         {badge > 0 && minimized && (
           <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">

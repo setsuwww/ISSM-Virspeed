@@ -7,20 +7,24 @@ import UsersTable from "./UsersTable";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
-import { capitalize } from "@/_function/globalFunction";
-import { minutesToTime } from "@/_function/globalFunction";
+import { capitalize, safeFormat, minutesToTime } from "@/_function/globalFunction";
 
 const PAGE_SIZE = 10;
 export const revalidate = 60;
 
 async function getUsers(page = 1) {
-  return prisma.user.findMany({ skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
+  return prisma.user.findMany({
+    skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
     orderBy: { createdAt: "desc" },
-    select: { id: true, name: true, email: true, role: true,
+    select: {
+      id: true, name: true, email: true, role: true,
       createdAt: true, updatedAt: true,
       shift: { select: { name: true, type: true, startTime: true, endTime: true } },
-      division: { select: { name: true, startTime: true, endTime: true,
-          shifts: { select: { name: true, startTime: true, endTime: true },
+      division: {
+        select: {
+          name: true, startTime: true, endTime: true,
+          shifts: {
+            select: { name: true, startTime: true, endTime: true },
             where: { isActive: true },
           },
         },
@@ -44,41 +48,46 @@ export default async function Page({ searchParams }) {
   if (page > totalPages && totalPages > 0) return notFound();
 
   const tableData = users.map((u) => {
-    const isAdmin = u.role.toLowerCase() === "admin"
-    
-    const userShift = u.shift
-      ? {
-          label: capitalize(u.shift.name || u.shift.type),
-          start: u.shift.startTime, end: u.shift.endTime,
-          type: u.shift.type,
-        } : null;
+    const isAdmin = u.role === "ADMIN"
+
+    const userShift = u.shift && {
+      label: capitalize(u.shift.name || u.shift.type),
+      start: u.shift.startTime,
+      end: u.shift.endTime,
+      type: u.shift.type,
+    }
 
     const divisionShift = !userShift && u.division?.shifts?.length
         ? {
-            label: `${u.division.shifts[0].name} - (Division)`,
-            start: u.division.shifts[0].startTime, end: u.division.shifts[0].endTime,
-            type: "DIVISION"
-          } : null;
+          label: `${u.division.shifts[0].name} - (Division)`,
+          start: u.division.shifts[0].startTime,
+          end: u.division.shifts[0].endTime,
+          type: "DIVISION",
+        } : null
 
     const divisionTime = !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
         ? {
-            label: u.division.name,
-            start: u.division.startTime, end: u.division.endTime,
-            type: "DIVISION_TIME"
-          } : null;
+          label: u.division.name,
+          start: u.division.startTime,
+          end: u.division.endTime,
+          type: "DIVISION_TIME",
+        } : null
 
-    const finalShift = userShift || divisionShift || divisionTime;
-    const shiftLabel = finalShift ? finalShift.label : "—";
-    const shiftTime = finalShift ? `${minutesToTime(finalShift.start)} - ${minutesToTime(finalShift.end)}` : "—";
+    const finalShift = userShift || divisionShift || divisionTime
 
     return {
-      id: u.id, name: u.name, email: u.email,
+      id: u.id,
+      name: u.name,
+      email: u.email,
       role: capitalize(u.role),
-      shift: shiftLabel, shiftTime, shiftType: finalShift ? finalShift.type : null,
-      createdAt: u.createdAt.toISOString(), updatedAt: u.updatedAt.toISOString(),
+      shift: finalShift?.label ?? "—",
+      shiftTime: finalShift ? `${minutesToTime(finalShift.start)} - ${minutesToTime(finalShift.end)}` : "—",
+      shiftType: finalShift?.type ?? null,
+      createdAt: safeFormat(u.createdAt, "dd MMMM yyyy"),
+      updatedAt: safeFormat(u.updatedAt, "dd MMMM yyyy"),
       isActionLocked: isAdmin,
-    };
-  });
+    }
+  })
 
   return (
     <section>
@@ -92,7 +101,7 @@ export default async function Page({ searchParams }) {
 
         <ContentForm.Body>
           <UsersTable data={tableData} />
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users"/>
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users" />
         </ContentForm.Body>
       </ContentForm>
     </section>

@@ -1,5 +1,3 @@
-"use client"
-
 import { Trash2, FolderInput } from "lucide-react"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
@@ -10,7 +8,7 @@ import { exportPDF } from "@/_function/exports/division/exportPDF"
 import { exportWord } from "@/_function/exports/division/exportWord"
 import { exportExcel } from "@/_function/exports/division/exportExcel"
 
-export const DivisionsActionHeader = ({
+export default function DivisionsActionHeader({
   search, onSearchChange,
   typeFilter, onTypeFilterChange,
   statusFilter, onStatusFilterChange,
@@ -18,7 +16,7 @@ export const DivisionsActionHeader = ({
   onDeleteAll,
   filteredData,
   searchInputRef,
-}) => {
+}) {
   return (
     <div className="flex items-center justify-between gap-2 flex-wrap">
       <div className="flex items-center gap-2 flex-wrap">

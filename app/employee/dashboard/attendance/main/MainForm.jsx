@@ -46,6 +46,14 @@ export default function CheckinForm() {
 
   const handleCheckIn = () => startTransition(async () => {
     try {
+      const precheck = await userSendCheckIn(null)
+
+      if (precheck?.requireLocation === false) {
+        if (precheck.toast) toast.warning(precheck.toast)
+        else toast.success("Checked in successfully")
+        return
+      }
+
       if (!navigator.geolocation) {
         toast.error("Browser kamu tidak mendukung geolocation.")
         return
@@ -65,12 +73,12 @@ export default function CheckinForm() {
       }
 
       const result = await userSendCheckIn(coords)
+
       if (result?.error) toast.error(result.error)
+      else if (result?.toast) toast.warning(result.toast)
       else toast.success("Checked in successfully")
-    } catch (err) {
-      console.error("Location error:", err)
-      toast.error("Gagal mendapatkan lokasi. Pastikan GPS aktif dan izin lokasi diberikan.")
-    }
+
+    } catch (err) {toast.error("Gagal mendapatkan lokasi. Pastikan GPS aktif.")}
   })
 
   const handleCheckOut = () => startTransition(async () => {
@@ -97,11 +105,11 @@ export default function CheckinForm() {
     <div className="p-8 space-y-8">
       <ContentInformation heading="Your Statistic" subheading="Views your attendance" />
       <MainStats items={[
-          { icon: <CheckCircle2 />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
-          { icon: <XCircle />, label: "Absent", value: stats?.ABSENT ?? 0, tone: "rose" },
-          { icon: <AlertTriangle />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "amber" },
-          { icon: <Circle />, label: "Late", value: stats?.LATE ?? 0, tone: "slate" },
-        ]}
+        { icon: <CheckCircle2 />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
+        { icon: <XCircle />, label: "Absent", value: stats?.ABSENT ?? 0, tone: "rose" },
+        { icon: <AlertTriangle />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "amber" },
+        { icon: <Circle />, label: "Late", value: stats?.LATE ?? 0, tone: "slate" },
+      ]}
       />
 
       <Card className="border border-slate-200 shadow-sm pt-4">
@@ -127,7 +135,7 @@ export default function CheckinForm() {
           <ContentInformation heading="Send Request" subheading="Change your internal shift / attendance" />
           <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${showPermission ? "pb-2" : "pb-4"}`}>
             <MainActionCard icon={<Plane />}
-              title={showPermission ? "Cancel Permission" : "Request Permission"} 
+              title={showPermission ? "Cancel Permission" : "Request Permission"}
               description="Ask for leave or permission" color="blue"
               onClick={() => setShowPermission(v => !v)}
             />

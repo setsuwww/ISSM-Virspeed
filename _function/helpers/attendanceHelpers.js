@@ -53,7 +53,57 @@ export function isUserWithinLocation(division, currentCoords) {
   return distance <= division.radius
 }
 
-function getDistanceMeters(pointA, pointB) {
+export function evaluateAttendancePolicy({ division, currentCoords }) {
+  if (!division) {
+    return {
+      allowed: false,
+      save: false,
+      message: "Division not found",
+    }
+  }
+
+  if (division.status === "INACTIVE") {
+    return {
+      allowed: true,
+      save: false,
+      toast: "Success send Checkin, but you're division is off already.",
+    }
+  }
+
+  if (division.type === "WFA") {
+    return {
+      allowed: true,
+      save: true,
+      ignoreLocation: true,
+    }
+  }
+
+  if (division.type === "WFO") {
+    const isValidLocation = isUserWithinLocation(division, currentCoords)
+
+    if (!isValidLocation) {
+      return {
+        allowed: false,
+        save: false,
+        message: "You're so far from office or place your work, get closer and retry to send",
+      }
+    }
+
+    return {
+      allowed: true,
+      save: true,
+      ignoreLocation: false,
+    }
+  }
+
+  return {
+    allowed: false,
+    save: false,
+    message: "Konfigurasi divisi tidak valid",
+  }
+}
+
+export function getDistanceMeters(pointA, pointB) {
   const earthRadius = 6371000 // meter
   const lat1 = (pointA.lat * Math.PI) / 180
   const lat2 = (pointB.lat * Math.PI) / 180

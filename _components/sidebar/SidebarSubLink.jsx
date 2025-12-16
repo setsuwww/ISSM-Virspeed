@@ -13,7 +13,7 @@ export function SidebarSubLink({ href, children, minimized }) {
 
   return (
     <Link href={href} className={clsx(subLinkBase,
-      isActive ? "text-sky-600 font-semibold bg-sky-500/10"
+      isActive ? "text-indigo-600 font-semibold bg-indigo-500/10"
         : "text-slate-400 hover:text-slate-600 transition-colors"
     )}>
       {children}

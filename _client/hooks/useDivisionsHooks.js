@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useHandleDivisions } from "../handlers/useHandleDivisions";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -39,9 +39,20 @@ export function useDivisionsHooks(initialData) {
   const {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
-    onEdit, onDelete,
+    onEdit, onDelete, 
     onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
+
+  
+  const handleActivateSelected = useCallback(
+    () => onBulkUpdate(selectedIds, "ACTIVE"),
+    [onBulkUpdate, selectedIds]
+  )
+
+  const handleInactivateSelected = useCallback(
+    () => onBulkUpdate(selectedIds, "INACTIVE"),
+    [onBulkUpdate, selectedIds]
+  )
 
   return {
     mutate, search, setSearch,
@@ -51,7 +62,7 @@ export function useDivisionsHooks(initialData) {
 
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
-    onEdit, onDelete,
+    onEdit, onDelete, handleActivateSelected, handleInactivateSelected,
     onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   };
 }

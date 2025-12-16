@@ -16,18 +16,15 @@ const MSG = {
   DELETE_FAIL: "Failed to delete user",
 };
 
-const buildCSV = (rows) => rows.map((row) => row.join(",")).join("\n");
-
 export function useEmployeesHooks(users, shifts) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]);
-  const [data, setData] = useState([]);
   const [divisionFilter, setDivisionFilter] = useState("all");
   const [shiftFilter, onShiftFilterChange] = useState("all");
 
-  useEffect(() => {
-    setData((users || []).filter((u) => u.role === "EMPLOYEE"));
-  }, [users]);
+  const data = useMemo(() => (users || []).filter((u) => u.role === "EMPLOYEE"),
+    [users]
+  );
 
   const filteredData = useMemo(() => {
     return data.filter((u) => {
@@ -47,37 +44,21 @@ export function useEmployeesHooks(users, shifts) {
     });
   }, [data, search, divisionFilter, shiftFilter]);
 
-  const toggleSelect = useCallback(
-    (id) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]), []
-  );
+  const toggleSelect = (id) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]);
 
-  const deleteSelected = useCallback(() => {
+  const deleteSelected = () => {
     if (!selected.length) return alert(MSG.NO_SELECTED);
     if (!askConfirm(MSG.CONFIRM_DELETE_SELECTED)) return;
 
     setData((prev) => prev.filter((u) => !selected.includes(u.id)));
     setSelected([]);
-  }, [selected]);
+  };
 
-  const deleteAll = useCallback(() => {
+  const deleteAll = () => {
     if (!askConfirm(MSG.CONFIRM_DELETE_ALL)) return;
     setData([]);
     setSelected([]);
-  }, []);
-
-  const exportCSV = useCallback(() => {
-    const csv = buildCSV([["ID", "Name", "Email", "Role"],
-    ...filteredData.map((u) => [u.id, u.name, u.email, u.role]),
-    ]);
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "employees.csv";
-    a.click();
-  }, [filteredData]);
+  };
 
   const onSwitch = useCallback(async (id, newActiveState) => {
     try {
@@ -99,7 +80,7 @@ export function useEmployeesHooks(users, shifts) {
 
   return {
     search, setSearch, selected, setSelected,
-    data, filteredData, 
+    data, filteredData,
     divisionFilter, setDivisionFilter,
     shiftFilter, onShiftFilterChange,
     toggleSelect, deleteSelected, deleteAll,

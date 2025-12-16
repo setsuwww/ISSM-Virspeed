@@ -26,9 +26,9 @@ export function useUsersHooks(initialData) {
     });
   }, [initialData, search, roleFilter, shiftFilter]);
 
-  const handleSearchChange = useCallback((v) => setSearch(v), []);
-  const handleRoleFilterChange = useCallback((v) => setRoleFilter(v), []);
-  const handleShiftFilterChange = useCallback((v) => setShiftFilter(v), []);
+  const handleSearchChange = (v) => setSearch(v);
+  const handleRoleFilterChange = (v) => setRoleFilter(v);
+  const handleShiftFilterChange = (v) => setShiftFilter(v);
 
   const {
     toggleSelect, selectAll,

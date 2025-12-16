@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
 
@@ -13,24 +14,37 @@ export function useHandleDivisions({
   const router = useRouter();
   const { withConfirm, withTry } = useActionHelper();
 
-  const toggleSelect = (id) => setSelectedIds((prev) =>
-    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-  );
+  const toggleSelect = useCallback((id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }, [setSelectedIds]);
 
-  const toggleSelectAll = (checked) => setSelectedIds(checked ? filteredData.map((d) => d.id) : []);
+  const toggleSelectAll = useCallback((checked) => {
+    setSelectedIds(checked ? filteredData.map((d) => d.id) : []);
+  }, [filteredData, setSelectedIds]);
 
-  const onToggleStatus = async (division) =>
-    withTry(() => toggleDivisionStatus(division.id),
-      `Division "${division.name}" status updated.`, "Failed to update division status."
-    ).then(() => mutate?.());
+  const onToggleStatus = useCallback(async (division) => {
+    await withTry(
+      () => toggleDivisionStatus(division.id),
+      `Division "${division.name}" status updated.`,
+      "Failed to update division status."
+    );
+    mutate?.();
+  }, [withTry, mutate]);
 
-  const onDelete = async (id, name) =>
+  const onEdit = useCallback((id) => {
+    router.push(`/admin/dashboard/users/divisions/${id}/edit`);
+  }, [router]);
+
+  const onDelete = useCallback(async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
       () => withTry(() => deleteDivision(id),
         "Division successfully removed.", "Failed to delete division."
       ),
       confirmMessages.deleteOne(name).variant
-    ).then(() => mutate?.());
+    ).then(() => mutate?.()), 
+  [withTry, mutate]);
 
   const handleDeleteSelected = async () => {
     if (!selectedIds.length) return toast.error("No divisions selected.");
@@ -38,9 +52,10 @@ export function useHandleDivisions({
     const { message, variant } = confirmMessages.deleteSelected(selectedIds.length);
 
     await withConfirm(message,
-      async () => { await withTry(() => Promise.all(selectedIds.map(deleteDivision)),
-        `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
-      );
+      async () => {
+        await withTry(() => Promise.all(selectedIds.map(deleteDivision)),
+          `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
+        );
         setSelectedIds([]);
         mutate?.();
       },
@@ -52,7 +67,8 @@ export function useHandleDivisions({
     const { message, variant } = confirmMessages.deleteAll;
 
     await withConfirm(message,
-      async () => {await withTry(deleteAllDivisions,
+      async () => {
+        await withTry(deleteAllDivisions,
           "All divisions removed.", "Failed to delete all divisions."
         );
         mutate?.();
@@ -62,9 +78,9 @@ export function useHandleDivisions({
 
   const onBulkGlobalUpdate = async (isActive) => {
     await withTry(() => bulkToggle({
-          activateType: "WFA", deactivateType: "WFO",
-          isActive,
-        }),
+      activateType: "WFA", deactivateType: "WFO",
+      isActive,
+    }),
       "Bulk status updated.", "Failed to update global toggle."
     );
     mutate?.();
@@ -75,14 +91,12 @@ export function useHandleDivisions({
 
     await withConfirm(message,
       () => withTry(() => bulkToggleSelectedDivision({
-              ids, isActive: mode === "ACTIVE",
-            }),
-          `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
-        ), variant
+        ids, isActive: mode === "ACTIVE",
+      }),
+        `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
+      ), variant
     ).then(() => mutate?.());
   };
-
-  const onEdit = (id) => router.push(`/admin/dashboard/users/divisions/${id}/edit`);
 
   return {
     toggleSelect,

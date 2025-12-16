@@ -1,9 +1,7 @@
-"use client"
-
 import { Badge } from "@/_components/ui/Badge"
 import { ChevronUp, ChevronDown } from "lucide-react"
 
-export function DivisionsStatusBadge({ status, onToggle }) {
+export default function DivisionsStatusBadge({ status, onToggle }) {
   const isActive = status === "ACTIVE"
 
   return (

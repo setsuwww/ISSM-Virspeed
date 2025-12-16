@@ -207,6 +207,9 @@ model Attendance {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  divisionType LocationType
+  divisionStatus LocationStatus
+
   @@unique([userId, shiftId, date])
 }
 

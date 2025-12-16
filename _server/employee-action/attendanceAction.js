@@ -2,29 +2,63 @@
 
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
-import { determineAttendanceStatus, isUserWithinLocation } from "@/_function/helpers/attendanceHelpers"
+import { determineAttendanceStatus } from "@/_function/helpers/attendanceHelpers"
 import dayjs from "@/_lib/day"
+
+import { evaluateAttendancePolicy } from "@/_function/helpers/attendanceHelpers"
 
 export async function userSendCheckIn(currentCoords) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
 
-  const today = dayjs().startOf("day").toDate()
-
-  const shift = await prisma.shift.findUnique({ where: { id: user.shiftId },
+  const shift = await prisma.shift.findUnique({
+    where: { id: user.shiftId },
     include: { division: true },
   })
 
-  if (shift?.division?.type === "WFO") { const allowed = isUserWithinLocation(shift.division, currentCoords)
-    if (!allowed) { return { error: "Kamu berada di luar jangkauan" }}
+  if (!shift || !shift.division) {
+    return { error: "Shift atau divisi tidak ditemukan" }
+  }
+
+  const division = shift.division
+
+  if (!currentCoords) {
+    const policy = evaluateAttendancePolicy({ division })
+
+    return {
+      success: true,
+      requireLocation: policy.ignoreLocation !== true,
+      toast: policy.toast,
+      saved: false,
+    }
+  }
+
+  const policy = evaluateAttendancePolicy({
+    division,
+    currentCoords,
+  })
+
+  if (!policy.allowed) {
+    return { error: policy.message }
+  }
+
+  if (!policy.save) {
+    return {
+      success: true,
+      toast: policy.toast,
+      saved: false,
+    }
   }
 
   const status = await determineAttendanceStatus(user.shiftId)
 
+  const today = dayjs().startOf("day").toDate()
+
   await prisma.attendance.upsert({
     where: {
       userId_shiftId_date: {
-        userId: user.id, shiftId: user.shiftId ?? 0,
+        userId: user.id,
+        shiftId: user.shiftId,
         date: today,
       },
     },
@@ -33,14 +67,17 @@ export async function userSendCheckIn(currentCoords) {
       status,
     },
     create: {
-      userId: user.id, shiftId: user.shiftId ?? 0,
-      date: today, status,
+      userId: user.id,
+      shiftId: user.shiftId,
+      date: today,
+      status,
       checkInTime: new Date(),
     },
   })
 
-  return { success: true }
+  return { success: true, saved: true }
 }
+
 
 export async function userSendCheckOut() {
   const user = await getCurrentUser()

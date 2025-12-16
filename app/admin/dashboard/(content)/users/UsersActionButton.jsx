@@ -11,7 +11,7 @@ export function LockedAction() {
   );
 }
 
-export const UsersActionButton = ({ userId, onEdit, onDelete }) => {
+export default function UsersActionButton({ userId, onEdit, onDelete }) {
   return (
     <div className="flex items-center gap-2">
       <Button size="sm" variant="outline" onClick={() => onEdit(userId)}>

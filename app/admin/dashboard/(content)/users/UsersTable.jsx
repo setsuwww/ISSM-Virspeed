@@ -3,8 +3,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 
 import { Checkbox } from "@/_components/ui/Checkbox";
-import { UsersActionHeader } from "./UsersActionHeader";
-import { UsersRow } from "./UsersRow";
+import UsersActionHeader from "./UsersActionHeader";
+import UsersRow from "./UsersRow";
 import { roleStyles } from "@/_constants/roleConstants";
 import { useUsersHooks } from "@/_client/hooks/useUsersHooks";
 import EmptyStates from "@/_components/common/EmptyStates";

@@ -11,7 +11,6 @@ export const wordsLimit = (text, words = 10, end = "...") => {
   return arr.slice(0, words).join(" ") + end;
 }
 
-
 export const safeToISOString = (v) => {
   const d = v ? new Date(v) : null;
   return d && !isNaN(d) ? d.toISOString() : null;
