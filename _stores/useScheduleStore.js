@@ -2,25 +2,14 @@ import { create } from "zustand"
 
 export const useScheduleStore = create((set, get) => ({
   form: {
-    title: "",
-    description: "",
-    frequency: "ONCE",
+    title: "", description: "", frequency: "ONCE",
   },
-  events: [],
-  loading: false,
-  mode: "create", // "create" | "edit"
-  scheduleId: null,
+  events: [], loading: false, mode: "create", scheduleId: null,
 
-  setFormField: (field, value) =>
-    set((state) => ({
-      form: { ...state.form, [field]: value },
-    })),
-
+  setFormField: (field, value) => set((state) => ({form: { ...state.form, [field]: value }})),
   setEvents: (events) => set({ events }),
   addEvent: (event) => set((state) => ({ events: [...state.events, event] })),
-  removeEvent: (index) =>
-    set((state) => ({ events: state.events.filter((_, i) => i !== index) })),
-
+  removeEvent: (index) => set((state) => ({ events: state.events.filter((_, i) => i !== index) })),
   setLoading: (value) => set({ loading: value }),
   setMode: (mode) => set({ mode }),
   setScheduleId: (id) => set({ scheduleId: id }),
@@ -28,10 +17,7 @@ export const useScheduleStore = create((set, get) => ({
   resetForm: () =>
     set({
       form: { title: "", description: "", frequency: "ONCE" },
-      events: [],
-      loading: false,
-      mode: "create",
-      scheduleId: null,
+      events: [], loading: false, mode: "create", scheduleId: null,
     }),
 
   loadFromSchedule: (schedule) =>
@@ -50,10 +36,8 @@ export const useScheduleStore = create((set, get) => ({
           users: schedule?.users || [],
         },
       ],
-      scheduleId: schedule?.id ?? null,
-      mode: "edit",
+      scheduleId: schedule?.id ?? null, mode: "edit",
     }),
 
-  totalAssignedUsers: () =>
-    get().events.reduce((acc, e) => acc + e.users.length, 0),
+  totalAssignedUsers: () => get().events.reduce((acc, e) => acc + e.users.length, 0),
 }))

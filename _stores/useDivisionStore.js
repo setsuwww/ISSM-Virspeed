@@ -2,10 +2,7 @@ import { create } from "zustand"
 import { apiFetchData } from "@/_lib/fetch"
 
 export const useDivisionStore = create((set, get) => ({
-  allActive: false,
-  pendingStatus: null,
-  confirmOpen: false,
-  loading: true,
+  allActive: false, pendingStatus: null, confirmOpen: false, loading: true,
 
   fetchConfig: async () => {
     try {
@@ -14,8 +11,7 @@ export const useDivisionStore = create((set, get) => ({
         useCache: true,
       })
       set({ allActive: data.allWfaActive, loading: false })
-    } 
-    catch (err) { set({ loading: false })}
+    } catch (err) { set({ loading: false })}
   },
 
   handleBulkToggle: () => { const newStatus = !get().allActive
@@ -34,13 +30,8 @@ export const useDivisionStore = create((set, get) => ({
 
       await onBulkUpdate?.({ activateType: "WFA", deactivateType: "WFO",
         isActive: pendingStatus,
-      })
-
-      mutate?.()
-    } 
-    catch (err) {
-      console.error(err)
-    }
+      }); mutate?.()
+    } catch (err) { console.error(err)}
   },
 
   closeDialog: () => set({ confirmOpen: false }),
