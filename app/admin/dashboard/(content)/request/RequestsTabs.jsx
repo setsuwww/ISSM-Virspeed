@@ -17,7 +17,7 @@ export default function RequestsTabs({
   const tabs = [
     { key: "permission", label: "Permission", data: permissionRequests },
     { key: "changeshift", label: "Change Shift", data: changeShiftRequests },
-    { key: "earlycheckout", label: "Early Checkout", data: earlyCheckoutRequests },
+    { key: "early", label: "Early Checkout", data: earlyCheckoutRequests },
     { key: "leave", label: "Leave Request", data: leaveRequests },
   ]
 

@@ -114,11 +114,12 @@ model User {
   customShifts       UserShiftAssignment[]
   attendances        Attendance[]
 
-  shiftRequests        ShiftChangeRequest[] @relation("RequestedUser")     
-  createdRequests      ShiftChangeRequest[] @relation("RequestedByAdmin")  
-  targetShiftRequests  ShiftChangeRequest[] @relation("TargetUser")
-  leaveRequests        LeaveRequest[]
-  approvedLeaves       LeaveRequest[] @relation("LeaveApprovedBy")   
+  earlyCheckoutRequests   EarlyCheckoutRequest[]
+  shiftRequests           ShiftChangeRequest[] @relation("RequestedUser")     
+  createdRequests         ShiftChangeRequest[] @relation("RequestedByAdmin")  
+  targetShiftRequests     ShiftChangeRequest[] @relation("TargetUser")
+  leaveRequests           LeaveRequest[]
+  approvedLeaves          LeaveRequest[] @relation("LeaveApprovedBy")   
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -207,10 +208,52 @@ model Attendance {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  divisionType LocationType
-  divisionStatus LocationStatus
+  earlyCheckoutRequests   EarlyCheckoutRequest[]
+  divisionType            LocationType?
+  divisionStatus          LocationStatus?
 
   @@unique([userId, shiftId, date])
+}
+
+model EarlyCheckoutRequest {
+  id           Int @id @default(autoincrement())
+
+  userId       Int
+  attendanceId Int?
+
+  reason       String
+  status       ApprovalStatus @default(PENDING)
+  adminReason  String?
+
+  requestedAt DateTime @default(now())
+  reviewedAt  DateTime?
+
+  user        User        @relation(fields: [userId], references: [id])
+  attendance  Attendance? @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([attendanceId])
+}
+
+model LeaveRequest {
+  id            Int         @id @default(autoincrement())
+
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+
+  approvedBy    User?       @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  approvedById  Int?
+
+  reason        String
+  adminReason   String?
+
+  startDate     DateTime
+  endDate       DateTime
+
+  status        LeaveStatus @default(PENDING)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model ShiftChangeRequest {
@@ -247,26 +290,7 @@ model ShiftChangeRequest {
   updatedAt DateTime @updatedAt
 }
 
-model LeaveRequest {
-  id            Int         @id @default(autoincrement())
 
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int
-
-  approvedBy    User?       @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
-  approvedById  Int?
-
-  reason        String
-  adminReason   String?
-
-  startDate     DateTime
-  endDate       DateTime
-
-  status        LeaveStatus @default(PENDING)
-
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
 
 
 

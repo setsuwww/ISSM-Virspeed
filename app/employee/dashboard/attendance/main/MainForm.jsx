@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
-import { Clock, LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/_components/ui/Card"
-import { userSendCheckIn, userSendCheckOut, userSendPermissionRequest } from "@/_server/employee-action/attendanceAction"
+import { LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
+import { Card, CardContent } from "@/_components/ui/Card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
+
+import { userSendCheckIn, userSendEarlyCheckout, userSendCheckOut, userSendPermissionRequest } from "@/_server/employee-action/attendanceAction"
 import { apiFetchData } from "@/_lib/fetch"
 import { Button } from "@/_components/ui/Button"
 import { ContentInformation } from '@/_components/common/ContentInformation';
@@ -17,6 +19,8 @@ export default function CheckinForm() {
   const [user, setUser] = useState(null)
   const [stats, setStats] = useState(null)
   const [reason, setReason] = useState("")
+  const [showEarlyModal, setShowEarlyModal] = useState(false)
+  const [earlyReason, setEarlyReason] = useState("")
   const [showPermission, setShowPermission] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
@@ -49,8 +53,12 @@ export default function CheckinForm() {
       const precheck = await userSendCheckIn(null)
 
       if (precheck?.requireLocation === false) {
-        if (precheck.toast) toast.warning(precheck.toast)
+        const result = await userSendCheckIn({ skipLocation: true })
+
+        if (result?.error) toast.error(result.error)
+        else if (result?.toast) toast.warning(result.toast)
         else toast.success("Checked in successfully")
+
         return
       }
 
@@ -78,7 +86,7 @@ export default function CheckinForm() {
       else if (result?.toast) toast.warning(result.toast)
       else toast.success("Checked in successfully")
 
-    } catch (err) {toast.error("Gagal mendapatkan lokasi. Pastikan GPS aktif.")}
+    } catch (err) { toast.error("Gagal mendapatkan lokasi. Pastikan GPS aktif.") }
   })
 
   const handleCheckOut = () => startTransition(async () => {
@@ -128,7 +136,7 @@ export default function CheckinForm() {
 
             <MainActionCard icon={<AlertTriangle />}
               title="Early Check Out" description="Checkout before scheduled time" color="amber"
-              onClick={handleCheckOut} loading={isPending}
+              onClick={() => setShowEarlyModal(true)} loading={isPending} 
             />
           </div>
 
@@ -171,6 +179,51 @@ export default function CheckinForm() {
           )}
         </CardContent>
       </Card>
+      <Dialog open={showEarlyModal} onOpenChange={setShowEarlyModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Early Check Out</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            <Label>
+              Reason <span className="text-rose-500">*</span>
+            </Label>
+            <textarea
+              value={earlyReason}
+              onChange={(e) => setEarlyReason(e.target.value)}
+              placeholder="Explain why you need early checkout..."
+              className="w-full min-h-[90px] rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-100"
+            />
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setShowEarlyModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              disabled={!earlyReason.trim() || isPending}
+              onClick={() =>
+                startTransition(async () => {
+                  const result = await userSendEarlyCheckout(earlyReason)
+
+                  if (result?.error) {
+                    toast.error(result.error)
+                    return
+                  }
+
+                  toast.success("Early checkout request sent")
+                  setEarlyReason("")
+                  setShowEarlyModal(false)
+                })
+              }
+            >
+              Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

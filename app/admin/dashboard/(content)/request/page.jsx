@@ -27,7 +27,7 @@ export function getWorkHours(shift, division) {
 async function getRequests(mode = "pending") {
   const isHistory = mode === "history"
 
-  const [shiftRequests, attendanceRequests, leaveRequests] = await Promise.all([
+  const [ shiftRequests, permissionRequests, earlyCheckoutRequests, leaveRequests ] = await Promise.all([
     prisma.shiftChangeRequest.findMany({
       where: isHistory
         ? { status: { notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } }
@@ -51,6 +51,7 @@ async function getRequests(mode = "pending") {
       where: isHistory
         ? { status: "PERMISSION", approval: { not: "PENDING" } }
         : { status: "PERMISSION", approval: "PENDING" },
+      orderBy: { date: "desc" },
       select: {
         id: true,
         date: true,
@@ -63,9 +64,41 @@ async function getRequests(mode = "pending") {
             division: { select: { name: true, startTime: true, endTime: true } },
           },
         },
-        shift: { select: { name: true, type: true, startTime: true, endTime: true } },
+        shift: {
+          select: { name: true, type: true, startTime: true, endTime: true },
+        },
       },
-      orderBy: { date: "desc" }
+    }),
+
+    prisma.earlyCheckoutRequest.findMany({
+      where: isHistory
+        ? { status: { not: "PENDING" } }
+        : { status: "PENDING" },
+      orderBy: { requestedAt: "desc" },
+      select: {
+        id: true,
+        reason: true,
+        status: true,
+        adminReason: true,
+        requestedAt: true,
+        reviewedAt: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+            division: { select: { name: true, startTime: true, endTime: true } },
+          },
+        },
+        attendance: {
+          select: {
+            date: true,
+            checkOutTime: true,
+            shift: {
+              select: { name: true, type: true, startTime: true, endTime: true },
+            },
+          },
+        },
+      },
     }),
 
     prisma.leaveRequest.findMany({
@@ -83,13 +116,14 @@ async function getRequests(mode = "pending") {
             name: true,
             email: true,
             division: { select: { name: true, startTime: true, endTime: true } },
-            shift: { select: { name: true, type: true, startTime: true, endTime: true } }   // TAMBAHKAN INI
-          }
+            shift: { select: { name: true, type: true, startTime: true, endTime: true } },
+          },
         },
-        approvedBy: { select: { name: true, email: true } }
-      }
-    })
+        approvedBy: { select: { name: true, email: true } },
+      },
+    }),
   ])
+
 
   const shift = shiftRequests.map((r) => ({
     id: r.id,
@@ -109,8 +143,6 @@ async function getRequests(mode = "pending") {
       name: r.targetShift?.name || "-",
       type: r.targetShift?.type || "-",
     },
-    info: `${r.oldShift?.name || "?"} (${r.oldShift?.type || "-"}) → ${r.targetShift?.name || "?"} (${r.targetShift?.type || "-"})`,
-    typeShift: r.targetShift?.type || r.oldShift?.type || "-",
     reason: r.reason || "-",
     startDate: safeFormat(r.startDate, "d MMMM yyyy"),
     endDate: safeFormat(r.endDate, "d MMMM yyyy"),
@@ -121,7 +153,7 @@ async function getRequests(mode = "pending") {
         : r.status,
   }))
 
-  const attendance = attendanceRequests.map((r) => {
+  const attendance = permissionRequests.map((r) => {
     const workHours = getWorkHours(r.shift, r.user?.division)
 
     return {
@@ -137,10 +169,33 @@ async function getRequests(mode = "pending") {
       },
       workHours,
       reason: r.reason || "-",
-      info: r.shift?.type || "-",
-      typeShift: r.shift?.type || "-",
       date: safeFormat(r.date, "d MMMM yyyy"),
       status: r.approval || "UNKNOWN",
+    }
+  })
+
+  const earlyCheckout = earlyCheckoutRequests.map((r) => {
+    const workHours = getWorkHours(
+      r.attendance?.shift,
+      r.user?.division
+    )
+
+    return {
+      id: r.id,
+      requestedBy: {
+        name: r.user?.name || "-",
+        email: r.user?.email || "-",
+        division: r.user?.division?.name || "-",
+      },
+      shift: {
+        name: r.attendance?.shift?.name || "-",
+        type: r.attendance?.shift?.type || "-",
+      },
+      workHours,
+      checkoutTime: safeFormat(r.attendance?.checkOutTime, "HH:mm"),
+      reason: r.reason || "-",
+      date: safeFormat(r.attendance?.date, "d MMMM yyyy"),
+      status: r.status,
     }
   })
 
@@ -157,34 +212,38 @@ async function getRequests(mode = "pending") {
       shift: r.user?.shift || null,
       workHours,
       reason: r.reason || "-",
-      date: safeFormat(r.createdAt, "d MMMM yyyy"),
       startDate: safeFormat(r.startDate, "d MMMM yyyy"),
       endDate: safeFormat(r.endDate, "d MMMM yyyy"),
+      date: safeFormat(r.createdAt, "d MMMM yyyy"),
       status: r.status,
     }
   })
 
-  return { shift, attendance, leave }
+  return { shift, attendance, earlyCheckout, leave }
 }
 
 export default async function Page({ searchParams }) {
-  const params = await searchParams;
-  const mode = params?.mode ?? "pending";
+  const params = await searchParams
+  const mode = params?.mode ?? "pending"
 
-  const { shift, attendance, leave } = await getRequests(mode)
+  const { shift, attendance, earlyCheckout, leave } = await getRequests(mode)
 
   return (
     <section>
       <DashboardHeader
         title="Requests"
-        subtitle={mode === "history" ? "All requests history" : "Manage pending requests by type"}
+        subtitle={
+          mode === "history"
+            ? "All requests history"
+            : "Manage pending requests by type"
+        }
       />
 
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation
             heading={mode === "history" ? "Request History" : "Pending Requests"}
-            subheading="Switch between Shift Change and Permission requests"
+            subheading="Switch between request types"
             show={false}
           />
         </ContentForm.Header>
@@ -193,7 +252,7 @@ export default async function Page({ searchParams }) {
           <RequestsTabs
             changeShiftRequests={shift}
             permissionRequests={attendance}
-            earlyCheckoutRequests={[]}
+            earlyCheckoutRequests={earlyCheckout}
             leaveRequests={leave}
             mode={mode}
           />

@@ -78,6 +78,37 @@ export async function userSendCheckIn(currentCoords) {
   return { success: true, saved: true }
 }
 
+export async function userSendEarlyCheckout(reason) {
+  const user = await getCurrentUser()
+  if (!user || !user.shiftId) return { error: "Unauthorized" }
+  if (!reason.trim()) return { error: "Reason is required" }
+
+  const today = dayjs().startOf("day").toDate()
+
+  const attendance = await prisma.attendance.findUnique({
+    where: {
+      userId_shiftId_date: {
+        userId: user.id,
+        shiftId: user.shiftId,
+        date: today,
+      },
+    },
+  })
+
+  if (!attendance) {
+    return { error: "Attendance not found" }
+  }
+
+  await prisma.earlyCheckoutRequest.create({
+    data: {
+      userId: user.id,
+      attendanceId: attendance.id,
+      reason,
+    },
+  })
+
+  return { success: true }
+}
 
 export async function userSendCheckOut() {
   const user = await getCurrentUser()
@@ -154,38 +185,6 @@ export async function userSendLeaveRequest({ startDate, endDate, reason }) {
       userId: user.id,
       startDate: start,
       endDate: end,
-      reason,
-      status: "PENDING",
-    },
-  })
-
-  return { success: true }
-}
-
-export async function userSendEarlyCheckoutRequest(reason) {
-  const user = await getCurrentUser()
-  if (!user) throw new Error("Unauthorized")
-
-  if (!reason.trim()) {
-    return { error: "Reason required" }
-  }
-
-  const today = dayjs().startOf("day").toDate()
-
-  await prisma.earlyCheckoutRequest.upsert({
-    where: {
-      userId_date: {
-        userId: user.id,
-        date: today,
-      },
-    },
-    update: {
-      reason,
-      status: "PENDING",
-    },
-    create: {
-      userId: user.id,
-      date: today,
       reason,
       status: "PENDING",
     },
