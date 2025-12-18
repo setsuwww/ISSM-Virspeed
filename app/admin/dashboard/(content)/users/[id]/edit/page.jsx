@@ -27,14 +27,6 @@ export default async function Page({ params }) {
     }),
   ]);
 
-  if (!user) {
-    return (
-      <div className="p-6">
-        <h1 className="text-xl font-semibold text-rose-500">User not found</h1>
-      </div>
-    );
-  }
-
   const safeUser = JSON.parse(JSON.stringify(user));
   const safeShifts = JSON.parse(JSON.stringify(shifts));
   const safeDivisions = JSON.parse(JSON.stringify(divisions));

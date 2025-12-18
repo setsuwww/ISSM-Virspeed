@@ -17,8 +17,8 @@ function StatItem({ icon, label, value, tone = "slate" }) {
   const tones = {
     teal: { icon: "bg-teal-50 text-teal-600 border-teal-100" },
     rose: { icon: "bg-rose-50 text-rose-600 border-rose-100" },
-    amber: { icon: "bg-amber-50 text-amber-600 border-amber-100" },
-    slate: { icon: "bg-slate-50 text-slate-600 border-slate-100" },
+    blue: { icon: "bg-blue-50 text-blue-600 border-blue-100" },
+    yellow: { icon: "bg-yellow-50 text-yellow-600 border-yellow-100" },
   }
 
   const t = tones[tone] ?? tones.slate

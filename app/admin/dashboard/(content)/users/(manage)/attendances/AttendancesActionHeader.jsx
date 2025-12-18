@@ -60,7 +60,7 @@ export const AttendancesActionHeader = React.memo(({
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-teal-500 rounded-md hover:bg-teal-700">
+            <Button className="bg-lime-500 rounded-md hover:bg-lime-700">
               <FolderInput size={16} />
               Export
             </Button>

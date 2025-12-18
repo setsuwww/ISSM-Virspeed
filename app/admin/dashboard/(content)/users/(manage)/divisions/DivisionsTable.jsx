@@ -35,12 +35,14 @@ export default function DivisionsTable({ data }) {
     handleBulkToggle, confirmBulkToggle, closeDialog,
   } = useDivisionStore()
 
-  useEffect(() => {fetchConfig()}, [fetchConfig])
-  if (loading) { return (
-    <p className="flex items-center gap-x-1 text-sm text-slate-500">
-      <Loader size={14} className="animate-spin" /> Loading division...
-    </p>
-  )}
+  useEffect(() => { fetchConfig() }, [fetchConfig])
+  if (loading) {
+    return (
+      <p className="flex items-center gap-x-1 text-sm text-slate-500">
+        <Loader size={14} className="animate-spin" /> Loading division...
+      </p>
+    )
+  }
 
   return (
     <>
@@ -68,10 +70,10 @@ export default function DivisionsTable({ data }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px]">
+              <TableHead className="flex items-center justify-center text-center w-[40px]">
                 <Checkbox checked={filteredData.length > 0 &&
-                    selectedIds.length === filteredData.length
-                  }
+                  selectedIds.length === filteredData.length
+                }
                   onCheckedChange={toggleSelectAll}
                 />
               </TableHead>
@@ -93,9 +95,11 @@ export default function DivisionsTable({ data }) {
               </TableRow>
             ) : (
               filteredData.map((division) => (
-                <DivisionRow key={division.id} division={division}
-                  checked={selectedIds.includes(division.id)}
-                  onCheck={() => toggleSelect(division.id)} 
+                <DivisionRow
+                  key={division.id}
+                  division={division}
+                  isSelected={selectedIds.includes(division.id)}
+                  onSelect={() => toggleSelect(division.id)}
                   onToggleStatus={onToggleStatus}
                   onEdit={onEdit}
                   onDelete={onDelete}

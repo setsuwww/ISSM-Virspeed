@@ -6,7 +6,7 @@ import ContentForm from "@/_components/common/ContentForm"
 import UserHistoryTable from "./HistoryTable"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
-import { minutesToTime } from '@/_function/globalFunction';
+import { minutesToTime, safeFormat } from '@/_function/globalFunction';
 
 const PAGE_SIZE = 10
 
@@ -46,7 +46,8 @@ export default async function UserHistoryPage({ params, searchParams }) {
 
   const serializedHistory = history.map((h) => ({
     ...h,
-    date: h.date.toISOString(),
+    day: safeFormat(h.date, "EEEE"),
+    dmy: safeFormat(h.date, "dd MMMM yyyy"),
     checkInTime: h.checkInTime ? h.checkInTime.toISOString() : null,
     checkOutTime: h.checkOutTime ? h.checkOutTime.toISOString() : null,
     createdAt: h.createdAt.toISOString(),

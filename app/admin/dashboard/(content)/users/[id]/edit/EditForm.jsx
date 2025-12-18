@@ -15,7 +15,7 @@ import { roleOptions } from "@/_constants/roleConstants";
 import { updateUser } from "@/_server/admin-action/userAction.js";
 import { Loader } from 'lucide-react';
 
-export default function EditForm({ user, divisions, shifts }) {
+export default function EditForm({ user, divisions }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

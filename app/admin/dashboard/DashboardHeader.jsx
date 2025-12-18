@@ -5,7 +5,7 @@ import { LogOut, Inbox } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import useSWR from "swr"
-import { LogoutAuthAction } from "@/app/auth/login/action"
+import { LogoutAuthAction } from "../../auth/login/action"
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 

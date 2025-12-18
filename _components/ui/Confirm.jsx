@@ -9,27 +9,34 @@ const variantStyles = {
   danger: {
     icon: <Trash2 className="text-rose-500" size={20} />,
     title: "Danger",
-    iconBgColor: "bg-rose-100 text-rose-600 p-3 rounded-full",
+    iconBgColor: "bg-rose-100 text-rose-600 hover:bg-rose-200 hover:text-rose-700",
     titleColor: "text-rose-600",
   },
   warning: {
-    icon: <AlertTriangle className="text-indigo-500" size={20} />,
+    icon: <AlertTriangle className="text-yellow-500" size={20} />,
     title: "Warning",
-    iconBgColor: "bg-indigo-100 text-indigo-600 p-3 rounded-full",
-    titleColor: "text-indigo-600",
+    iconBgColor: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200 hover:text-yellow-700",
+    titleColor: "text-yellow-600",
   },
   success: {
     icon: <CheckCircle className="text-teal-500" size={20} />,
     title: "Success",
-    iconBgColor: "bg-teal-100 text-teal-600 p-3 rounded-full",
+    iconBgColor: "bg-teal-100 text-teal-600 hover:bg-teal-200 hover:text-teal-700",
     titleColor: "text-teal-600",
   },
   info: {
     icon: <Info className="text-indigo-500" size={20} />,
     title: "Information",
-    iconBgColor: "bg-indigo-100 text-indigo-600 p-3 rounded-full",
+    iconBgColor: "bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700",
     titleColor: "text-indigo-600",
   },
+};
+
+const dialogVariantMap = {
+  danger: "danger",
+  warning: "warning",
+  success: "success",
+  info: "info",
 };
 
 export function ConfirmDialog() {
@@ -38,13 +45,13 @@ export function ConfirmDialog() {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && cancel()}>
-      <DialogContent className="sm:max-w-lg" variant="none">
+      <DialogContent className="sm:max-w-lg" variant={dialogVariantMap[variant] ?? "none"}>
         <DialogHeader>
 
           <DialogTitle className="sr-only">{v.title}</DialogTitle>
 
           <div className="flex items-center space-x-2">
-            <div className={v.iconBgColor}>{v.icon}</div>
+            <div className={`p-3 rounded-full ${v.iconBgColor}`}>{v.icon}</div>
             <h1 className={`text-lg font-semibold ${v.titleColor}`}>{v.title}</h1>
           </div>
         </DialogHeader>
@@ -53,8 +60,7 @@ export function ConfirmDialog() {
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={cancel}>Cancel</Button>
-          <Button
-            className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          <Button className={`${v.iconBgColor}`}
             onClick={confirm}
           >
             Confirm

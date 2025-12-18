@@ -78,7 +78,7 @@ export default function UserShiftTable({ data }) {
           >
             Delete Selected
           </Button>
-          <Button size="sm" variant="ghost" className="bg-rose-50 text-rose-500 hover:bg-rose-100"
+          <Button size="sm" variant="ghost" className="bg-rose-50/70 text-rose-500 hover:bg-rose-100"
             onClick={handleDeleteAll}
           >
             <Trash2 size={18} strokeWidth={2} />

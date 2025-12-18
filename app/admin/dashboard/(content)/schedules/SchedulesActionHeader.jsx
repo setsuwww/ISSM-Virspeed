@@ -49,7 +49,7 @@ export default function SchedulesActionHeader({
           Delete Selected
         </Button>
 
-        <Button variant="ghost" size="sm" className="bg-rose-50 hover:bg-rose-100 text-rose-500"
+        <Button variant="ghost" size="sm" className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
           onClick={onDeleteAll}
         >
           <Trash2 size={16} /> Delete All
@@ -57,7 +57,7 @@ export default function SchedulesActionHeader({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+            <Button variant="ghost" size="sm" className="bg-lime-100/50 hover:bg-lime-100 text-lime-600">
               <FolderInput size={16} />Export
             </Button>
           </DropdownMenuTrigger>

@@ -6,7 +6,7 @@ export const useConfirmStore = create((set, get) => ({
   variant: "warning",
   resolver: null,
 
-  ask: (message, variant = "warning") => {
+  ask: (message, variant) => {
     return new Promise((resolve) => {
       set({
         open: true,

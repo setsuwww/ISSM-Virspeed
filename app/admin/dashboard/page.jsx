@@ -1,25 +1,23 @@
-// app/admin/dashboard/page.jsx
-import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined } from "lucide-react";
-
-import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
-import { DashboardStats } from "@/app/admin/dashboard/DashboardStats";
-import { ContentInformation } from "@/_components/common/ContentInformation";
-import AnalyticsDiagram from "./AnalyticsDiagram"; // <- client component
 import { prisma } from "@/_lib/prisma";
+import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined } from "lucide-react";
+import { ContentInformation } from "@/_components/common/ContentInformation";
+
+import { DashboardHeader } from "./DashboardHeader";
+import { DashboardStats } from "./DashboardStats";
+
+import AnalyticsDiagram from "./AnalyticsDiagram";
 import FastActions from "./page-action";
 
+
 export default async function AdminDashboardPage() {
-  // Stats count
   const totalUsers = await prisma.user.count();
   const morningEmployees = await prisma.user.count({ where: { shift: { type: "MORNING" } } });
   const afternoonEmployees = await prisma.user.count({ where: { shift: { type: "AFTERNOON" } } });
   const eveningEmployees = await prisma.user.count({ where: { shift: { type: "EVENING" } } });
 
-  // Raw attendance last 30 days
   const endDate = new Date();
   const startDate = new Date();
-  startDate.setDate(endDate.getDate() - 29); // 30 days total (including today)
-  // normalize to 00:00:00 for start
+  startDate.setDate(endDate.getDate() - 29);
   startDate.setHours(0, 0, 0, 0);
 
   const rawAttendances = await prisma.attendance.findMany({

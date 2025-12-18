@@ -10,12 +10,10 @@ import { Badge } from "@/_components/ui/Badge"
 import UsersActionButton, { LockedAction } from "./UsersActionButton"
 
 function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyles }) {
-  const handleToggle = () => onToggleSelect(user.id)
-
   return (
     <TableRow>
       <TableCell>
-        <Checkbox checked={isSelected} onCheckedChange={handleToggle} />
+        <Checkbox checked={isSelected} onCheckedChange={() => onToggleSelect(user.id)} />
       </TableCell>
 
       <TableCell>
@@ -40,10 +38,10 @@ function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyl
         <div className="flex items-center gap-2">
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-slate-600">
-              {user.shift ?? "OFF"}
+              {user.shift}
             </span>
             <span className="text-xs text-slate-400">
-              {user.shiftTime ?? "OFF"}
+              {user.shiftTime}
             </span>
           </div>
         </div>

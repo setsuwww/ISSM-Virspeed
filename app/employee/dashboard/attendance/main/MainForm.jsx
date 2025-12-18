@@ -4,16 +4,16 @@ import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import { LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
 import { Card, CardContent } from "@/_components/ui/Card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
 
 import { userSendCheckIn, userSendEarlyCheckout, userSendCheckOut, userSendPermissionRequest } from "@/_server/employee-action/attendanceAction"
 import { apiFetchData } from "@/_lib/fetch"
-import { Button } from "@/_components/ui/Button"
 import { ContentInformation } from '@/_components/common/ContentInformation';
-import { Label } from '@/_components/ui/Label';
 import LoadingStates from '@/_components/common/LoadingStates';
+
 import { MainActionCard } from "./MainActionCard"
 import { MainStats } from "./MainStats"
+import { InputEarlyCODialog } from "./InputEarlyCODialog"
+import { InputPermissionDialog } from "./InputPermissionDialog"
 
 export default function CheckinForm() {
   const [user, setUser] = useState(null)
@@ -115,8 +115,8 @@ export default function CheckinForm() {
       <MainStats items={[
         { icon: <CheckCircle2 />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
         { icon: <XCircle />, label: "Absent", value: stats?.ABSENT ?? 0, tone: "rose" },
-        { icon: <AlertTriangle />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "amber" },
-        { icon: <Circle />, label: "Late", value: stats?.LATE ?? 0, tone: "slate" },
+        { icon: <AlertTriangle />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "blue" },
+        { icon: <Circle />, label: "Late", value: stats?.LATE ?? 0, tone: "yellow" },
       ]}
       />
 
@@ -136,7 +136,7 @@ export default function CheckinForm() {
 
             <MainActionCard icon={<AlertTriangle />}
               title="Early Check Out" description="Checkout before scheduled time" color="amber"
-              onClick={() => setShowEarlyModal(true)} loading={isPending} 
+              onClick={() => setShowEarlyModal(true)} loading={isPending}
             />
           </div>
 
@@ -155,102 +155,37 @@ export default function CheckinForm() {
           </div>
 
           {showPermission && (
-            <div className="border border-dashed border-amber-300 bg-amber-50/50 p-4 mb-4 rounded-xl space-y-3">
-              <Label>
-                Reason <span className="text-rose-500">*</span>
-              </Label>
-
-              <input value={reason} onChange={(e) => setReason(e.target.value)}
-                placeholder="Enter your reason..."
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-100 focus:outline focus:outline-indigo-50 focus:border-indigo-200 text-sm"
-              />
-
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setShowPermission(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handlePermission} disabled={!reason.trim() || isPending}
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
-                >
-                  Submit
-                </Button>
-              </div>
-            </div>
+            <InputPermissionDialog
+              reason={reason}
+              loading={isPending}
+              onChangeReason={setReason}
+              onCancel={() => setShowPermission(false)}
+              onSubmit={handlePermission}
+            />
           )}
         </CardContent>
       </Card>
-      <Dialog open={showEarlyModal} onOpenChange={setShowEarlyModal}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Early Check Out</DialogTitle>
-          </DialogHeader>
+      <InputEarlyCODialog
+        open={showEarlyModal}
+        loading={isPending}
+        reason={earlyReason}
+        onChangeReason={setEarlyReason}
+        onClose={() => setShowEarlyModal(false)}
+        onSubmit={() =>
+          startTransition(async () => {
+            const result = await userSendEarlyCheckout(earlyReason)
 
-          <div className="space-y-3">
-            <Label>
-              Reason <span className="text-rose-500">*</span>
-            </Label>
-            <textarea
-              value={earlyReason}
-              onChange={(e) => setEarlyReason(e.target.value)}
-              placeholder="Explain why you need early checkout..."
-              className="w-full min-h-[90px] rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-amber-100"
-            />
-          </div>
+            if (result?.error) {
+              toast.error(result.error)
+              return
+            }
 
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setShowEarlyModal(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-amber-600 hover:bg-amber-700 text-white"
-              disabled={!earlyReason.trim() || isPending}
-              onClick={() =>
-                startTransition(async () => {
-                  const result = await userSendEarlyCheckout(earlyReason)
-
-                  if (result?.error) {
-                    toast.error(result.error)
-                    return
-                  }
-
-                  toast.success("Early checkout request sent")
-                  setEarlyReason("")
-                  setShowEarlyModal(false)
-                })
-              }
-            >
-              Submit
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            toast.success("Early checkout request sent")
+            setEarlyReason("")
+            setShowEarlyModal(false)
+          })
+        }
+      />
     </div>
   )
 }
-
-function StatCard({ icon, label, value, tone }) {
-  const tones = {
-    teal: "bg-teal-50 text-teal-600 border-teal-100",
-    rose: "bg-rose-50 text-rose-600 border-rose-100",
-    amber: "bg-amber-50 text-amber-600 border-amber-100",
-    slate: "bg-slate-50 text-slate-600 border-slate-100",
-  }
-
-  return (
-    <Card className="border border-slate-200 shadow-sm">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={`p-3 rounded-xl border ${tones[tone]}`}>
-          {icon}
-        </div>
-
-        <div className="flex flex-col">
-          <span className="text-sm text-slate-500">{label}</span>
-          <span className="text-3xl font-semibold text-slate-800">
-            {value}
-          </span>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-

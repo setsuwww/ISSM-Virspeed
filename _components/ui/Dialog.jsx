@@ -9,17 +9,13 @@ const DialogVariantContext = React.createContext("info")
 const useDialogVariant = () => React.useContext(DialogVariantContext)
 
 const variantStyles = {
-  none: {
-    border: "border-slate-200",
+  info: {
+    border: "border-slate-500",
     title: "text-slate-700",
   },
-  info: {
-    border: "border-indigo-500",
-    title: "text-indigo-700",
-  },
   warning: {
-    border: "border-indigo-500",
-    title: "text-indigo-700",
+    border: "border-yellow-500",
+    title: "text-yellow-700",
   },
   success: {
     border: "border-teal-500",

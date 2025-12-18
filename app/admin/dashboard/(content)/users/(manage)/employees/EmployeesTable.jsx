@@ -16,7 +16,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
     shiftFilter, onShiftFilterChange,
     toggleSelect, deleteSelected,
     deleteAll,
-    onSwitch, onDelete,
+    onHistory, onSwitch, onEdit, onDelete,
   } = useEmployeesHooks(users, shifts);
 
   const router = useRouter();
@@ -53,9 +53,9 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         <TableBody>
           {filteredData.map((user) => (
             <EmployeesRow key={user.id} user={user} selected={selected} toggleSelect={toggleSelect}
-              onHistory={() => router.push(`/admin/dashboard/users/${user.id}/history`)}
+              onHistory={() => onHistory(user.id)}
               onSwitch={onSwitch}
-              onEdit={() => router.push(`/admin/dashboard/users/${user.id}/edit`)}
+              onEdit={() => onEdit(user.id)}
               onDelete={() => onDelete(user.id)}
             />
           ))}

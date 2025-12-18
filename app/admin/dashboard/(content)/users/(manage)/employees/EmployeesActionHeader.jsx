@@ -23,7 +23,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   selected, onDeleteSelected, onDeleteAll,
   divisionFilter, setDivisionFilter, filteredData,
   shiftFilter, onShiftFilterChange,
-  divisions = [],
+  divisions,
 }) {
   const [openDivision, setOpenDivision] = useState(false)
   const [statusFilter, setStatusFilter] = useState([])
@@ -118,12 +118,12 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
         <Button variant="ghost" size="sm" className="text-rose-500" onClick={onDeleteSelected} disabled={!selected.length}>
           Delete Selected
         </Button>
-        <Button variant="ghost" size="sm" className="bg-rose-50 text-rose-500 hover:bg-rose-100" onClick={onDeleteAll}>
+        <Button variant="ghost" size="sm" className="bg-rose-50/70 text-rose-500 hover:bg-rose-100" onClick={onDeleteAll}>
           <Trash2 className="w-4 h-4 mr-1" /> Delete All
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="bg-teal-100/50 hover:bg-teal-100 text-teal-600">
+            <Button variant="ghost" size="sm" className="bg-lime-100/50 hover:bg-lime-100 text-lime-600">
               <FolderInput size={16} />Export
             </Button>
           </DropdownMenuTrigger>
