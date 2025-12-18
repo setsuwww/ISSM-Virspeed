@@ -26,7 +26,10 @@ export default function ClientPage() {
         </div>
       </div>
 
-      <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>Add Schedule</Button>
+      <div className='flex items-center space-x-2'>
+        {/*<Button variant="outline" onClick={() => router.push("/admin/dashboard/schedules/create")}>My Schedule</Button>*/}
+        <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>Add Schedule</Button>
+      </div>
     </div>
   )
 }

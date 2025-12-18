@@ -68,7 +68,7 @@ const LoginPage = () => {
         </Button>
 
         <div className="text-center text-xs italic text-slate-400 font-semibold">
-          <span>Liveshift presented</span>
+          <span>Lintasarta presented</span>
         </div>
       </form>
 

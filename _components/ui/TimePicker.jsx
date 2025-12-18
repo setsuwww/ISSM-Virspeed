@@ -11,7 +11,6 @@ export function TimePicker({
   const [hour, setHour] = React.useState("00")
   const [minute, setMinute] = React.useState("00")
 
-  // Sync kalau value ada (format: "HH:mm")
   React.useEffect(() => {
     if (value) {
       const [h, m] = value.split(":")

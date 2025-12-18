@@ -86,7 +86,7 @@ export default function CheckinForm() {
       else if (result?.toast) toast.warning(result.toast)
       else toast.success("Checked in successfully")
 
-    } catch (err) { toast.error("Gagal mendapatkan lokasi. Pastikan GPS aktif.") }
+    } catch (err) { toast.error("Checked in failed, your shift was end!") }
   })
 
   const handleCheckOut = () => startTransition(async () => {

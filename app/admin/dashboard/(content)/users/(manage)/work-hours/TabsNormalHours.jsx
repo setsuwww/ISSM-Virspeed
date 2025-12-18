@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, MoreVertical, Eye, Pencil, Trash2 } from "lucide-react";
+import { Clock, MoreVertical, Trash2 } from "lucide-react";
 
 import UsersModal from "./UsersModal";
-import { Card } from "@/_components/ui/Card";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/_components/ui/Dropdown-menu";
 
 import { minutesToTime } from "@/_function/globalFunction";
@@ -58,7 +57,6 @@ export default function TabsNormalHours({ divisions }) {
                       setSelected(division);
                     }}
                   >
-                    <Eye size={14} className="mr-2" />
                     Details
                   </DropdownMenuItem>
 
@@ -68,7 +66,6 @@ export default function TabsNormalHours({ divisions }) {
                       router.push(`/admin/dashboard/divisions/${division.id}/edit`);
                     }}
                   >
-                    <Pencil size={14} className="mr-2" />
                     Edit
                   </DropdownMenuItem>
 
@@ -76,10 +73,9 @@ export default function TabsNormalHours({ divisions }) {
                     className="text-rose-600 focus:text-rose-600"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // handleDelete(division.id)
                     }}
                   >
-                    <Trash2 size={14} className="mr-2" />
+                    <Trash2 size={14} className="mr-1" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

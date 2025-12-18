@@ -11,7 +11,7 @@ export function exportExcel(users = []) {
     { header: "Role", key: "role", width: 14 },
     { header: "Shift", key: "shift", width: 28 },
     { header: "Time", key: "shiftTime", width: 18 },
-    { header: "Created At", key: "createdAt", width: 16 },
+    { header: title ? "A" : "B", key: "createdAt", width: 16 },
   ];
 
   const data = users.map((u) => ({

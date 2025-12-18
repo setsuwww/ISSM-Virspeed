@@ -1,7 +1,7 @@
 import { exportExcelTemplate } from "../utils/ExportExcelTemplate";
 
 export function exportExcel(employees = []) {
-  if (!employees || employees.length === 0) return;
+  if (!employees.length) return;
 
   const columns = [
     { header: "No", key: "no", width: 6 },
@@ -20,13 +20,12 @@ export function exportExcel(employees = []) {
     name: u.name,
     email: u.email,
     role: u.role?.toUpperCase() ?? "-",
-
     shiftType: u.shift?.type ?? "-",
     shiftName: u.shift?.name ?? "-",
-    shiftTime: u.shift ? `${u.shift.startTime} - ${u.shift.endTime}` : "-",
-
+    shiftTime: u.shift
+      ? `${u.shift.startTime} - ${u.shift.endTime}`
+      : "-",
     division: u.division?.name ?? "-",
-
     createdAt: new Date(u.createdAt).toLocaleDateString("id-ID"),
     updatedAt: new Date(u.updatedAt).toLocaleDateString("id-ID"),
   }));

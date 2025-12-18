@@ -6,6 +6,7 @@ import { TableCell } from "@/_components/ui/Table"
 import { capitalize, wordsLimit } from "@/_function/globalFunction"
 
 import RequestStatusChangerToggle from "../RequestStatusChanger"
+import { shiftDots } from "@/_constants/shiftConstants"
 
 export default function RenderLeave({ r }) {
   return (
@@ -26,11 +27,16 @@ export default function RenderLeave({ r }) {
       </TableCell>
 
       <TableCell>
-        <div className="text-sm font-semibold text-slate-600">
-          {capitalize(r.shift?.name)}
-        </div>
-        <div className="text-xs text-slate-400">
-          {r.workHours?.label}
+        <div className="flex items-center space-x-3">
+          {shiftDots[r.shift?.type]}
+
+          <div className="flex flex-col text-sm text-slate-600">
+            <p className="font-semibold">{capitalize(r.shift?.name)}</p>
+
+            <p className="text-xs text-slate-400">
+              <span>{r.workHours.label}</span>
+            </p>
+          </div>
         </div>
       </TableCell>
 
@@ -46,7 +52,7 @@ export default function RenderLeave({ r }) {
       </TableCell>
 
       <TableCell>
-        <span className="bg-blue-50/50 text-blue-600 px-2 border border-blue-200/50 rounded-md text-xs">
+        <span className="bg-blue-50/50 text-blue-600 px-2 border border-blue-200/50 rounded-md text-sm">
           {r.date}
         </span>
       </TableCell>

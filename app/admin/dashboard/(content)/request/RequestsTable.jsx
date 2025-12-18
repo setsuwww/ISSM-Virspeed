@@ -5,7 +5,7 @@ export default function RequestsDataTable({ type, items, isHistory }) {
   const config = {
     permission: {
       empty: isHistory ? "No permission history" : "No pending permission requests",
-      columns: ["Requested By", "Shift", "Send at", "Reason", "Status"],
+      columns: ["Requested By", "Shift", "Reason", "Send at", "Status"],
     },
     changeshift: {
       empty: isHistory ? "No shift change history" : "No pending shift change requests",
@@ -13,11 +13,11 @@ export default function RequestsDataTable({ type, items, isHistory }) {
     },
     early: {
       empty: isHistory ? "No early checkout history" : "No pending early checkout requests",
-      columns: ["Requested By", "Shift", "Reason", "Status", "Requested At"],
+      columns: ["Requested By", "Shift", "Reason", "Send At", "Status",],
     },
     leave: {
       empty: isHistory ? "No leave history" : "No pending leave requests",
-      columns: ["Requested By", "Shift", "Period", "Send At", "Reason", "Status"],
+      columns: ["Requested By", "Shift", "Period", "Reason", "Send At", "Status"],
     },
   }
 

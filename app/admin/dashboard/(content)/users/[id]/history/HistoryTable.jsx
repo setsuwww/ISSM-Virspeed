@@ -16,11 +16,12 @@ import { shiftDots } from "@/_constants/shiftConstants";
 import { capitalize } from "@/_function/globalFunction";
 
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { Clock, ClipboardClock } from "lucide-react";
+import { enUS } from "date-fns/locale";
+import { ClipboardClock } from "lucide-react";
 
 import HistoryActionHeader from "./HistoryActionHeader";
 import { useUserAttendanceHistoryHooks } from "@/_client/hooks/useUserAttendanceHistoryHooks";
+import { Clock } from "phosphor-react";
 
 export default function UserHistoryTable({ history }) {
   const {
@@ -66,8 +67,7 @@ export default function UserHistoryTable({ history }) {
             </TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Shift</TableHead>
-            <TableHead>Check In</TableHead>
-            <TableHead>Check Out</TableHead>
+            <TableHead>Check In - Check Out</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -113,21 +113,34 @@ export default function UserHistoryTable({ history }) {
               </TableCell>
 
               <TableCell>
-                {h.checkInTime ? (
-                  <div className="flex items-center gap-2 text-teal-600">
-                    <Clock className="h-4 w-4" />
-                    {format(new Date(h.checkInTime), "HH:mm", { locale: id })}
-                  </div>
-                ) : "-"}
-              </TableCell>
+                <div className="font-number flex items-center space-x-2 tracking-tight">
+                  {h.checkInTime && (
+                    <div className="flex items-center gap-1 text-teal-600">
+                      <Clock size={18} color="#009689" weight="duotone" />
+                      {format(new Date(h.checkInTime), "hh:mm a", { locale: enUS })}
+                    </div>
+                  )}
 
-              <TableCell>
-                {h.checkOutTime ? (
-                  <div className="flex items-center gap-2 text-rose-600">
-                    <Clock className="h-4 w-4" />
-                    {format(new Date(h.checkOutTime), "HH:mm", { locale: id })}
-                  </div>
-                ) : "-"}
+                  {h.status !== "PERMISSION" ? (
+                    <span>-</span>
+                  ) : (
+                    <span className="bg-slate-100 text-slate-400">Permission</span>
+                  )}
+
+                  {h.checkOutTime && (
+                    <div className="flex items-center gap-1 text-rose-600">
+                      <Clock size={18} color="#ec003f" weight="duotone" />
+                      {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
+
+                      {h.isEarlyCheckout && (
+                        <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full">
+                          Early Checkout
+                        </span>
+                      )}
+                    </div>
+
+                  )}
+                </div>
               </TableCell>
 
               <TableCell>

@@ -15,6 +15,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attedancesStyles, getDisplayStatus, normalizeRequestStatus } from "@/_constants/attendanceConstants"
 import { wordsLimit } from "@/_function/globalFunction"
+import { CheckCircle, XCircle } from "phosphor-react"
 
 export default function ChangeShiftTable({ requests = [], currentUserId }) {
   const [isPending, startTransition] = useTransition()
@@ -56,7 +57,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                 </TableRow>
               ) : (
                 filtered.map((req) => (
-                  <TableRow key={req.id} className="hover:bg-slate-50 transition-colors duration-150">
+                  <TableRow key={req.id} className="transition-colors duration-150">
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="bg-slate-200 p-2 rounded-full">
@@ -118,14 +119,16 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     <TableCell>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" disabled={isPending} onClick={() => handleAction(req.id, "ACCEPT")}
-                          className="text-teal-600 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-100"
+                          className="text-sm text-teal-600 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-100"
                         >
+                          <CheckCircle size={32} color="#009689" weight="duotone" />
                           Accept
                         </Button>
 
                         <Button size="sm" variant="outline" disabled={isPending} onClick={() => handleAction(req.id, "REJECT")}
-                          className="text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-100"
+                          className="text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-100"
                         >
+                          <XCircle size={32} color="#ec003f" weight="duotone" />
                           Reject
                         </Button>
                       </div>

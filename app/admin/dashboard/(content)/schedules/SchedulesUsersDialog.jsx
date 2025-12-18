@@ -38,7 +38,7 @@ export default function ScheduleUsersDialog({ users }) {
           ))}
 
           {extraCount > 0 && (
-            <div className="w-8 h-8 rounded-full bg-slate-200/60 text-xs text-slate-400 flex items-center justify-center border border-white">
+            <div className="w-8 h-8 rounded-full backdrop-blur-sm bg-slate-200/60 text-xs text-slate-400 flex items-center justify-center border border-white">
               +{extraCount}
             </div>
           )}

@@ -195,6 +195,7 @@ async function getRequests(mode = "pending") {
       checkoutTime: safeFormat(r.attendance?.checkOutTime, "HH:mm"),
       reason: r.reason || "-",
       date: safeFormat(r.attendance?.date, "d MMMM yyyy"),
+      requestedAt: safeFormat(r.requestedAt, "d MMMM yyyy, HH:mm"),
       status: r.status,
     }
   })

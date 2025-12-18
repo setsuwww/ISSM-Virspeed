@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 
 export const capitalize = (s) => typeof s === "string" && s.length ? s[0].toUpperCase() + s.slice(1).toLowerCase() : "";
 
@@ -18,7 +18,7 @@ export const safeToISOString = (v) => {
 
 export const safeFormat = (v, fmt) => {
   const d = v ? new Date(v) : null;
-  return d && !isNaN(d) ? format(d, fmt, { locale: id }) : "-";
+  return d && !isNaN(d) ? format(d, fmt, { locale: enUS }) : "-";
 };
 
 export function formatIntToTime(hI) {

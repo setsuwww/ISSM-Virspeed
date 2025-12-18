@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Clock, MoreVertical, Eye, Pencil, Trash2 } from "lucide-react";
 
 import UsersModal from "./UsersModal";
-import { Card } from "@/_components/ui/Card";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/_components/ui/Dropdown-menu";
 
 import { minutesToTime } from "@/_function/globalFunction";
@@ -17,7 +16,7 @@ export default function TabsShiftHours({ shifts }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
       {shifts.map((shift) => (
-        <Card key={shift.id} onClick={() => setSelected(shift)} className="cursor-pointer group rounded-xl border border-slate-200 p-4">
+        <div key={shift.id} onClick={() => setSelected(shift)} className="cursor-pointer group rounded-xl border border-slate-200 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className={`p-2 rounded-md ${shiftStyles[shift.type]}`}>
@@ -55,7 +54,7 @@ export default function TabsShiftHours({ shifts }) {
                       setSelected(shift);
                     }}
                   >
-                    <Eye size={14} className="mr-2" />
+                    <Eye size={14} />
                     Details
                   </DropdownMenuItem>
 
@@ -64,17 +63,17 @@ export default function TabsShiftHours({ shifts }) {
                       e.stopPropagation();
                     }}
                   >
-                    <Pencil size={14} className="mr-2" />
+                    <Pencil size={14} />
                     Edit
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
-                    className="text-rose-600 focus:text-rose-600"
+                    className="hover:bg-rose-50 focus:bg-rose-50 text-rose-600 focus:text-rose-600"
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
-                    <Trash2 size={14} className="mr-2" />
+                    <Trash2 size={14} className="text-rose-600 focus:text-rose-600" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -97,7 +96,7 @@ export default function TabsShiftHours({ shifts }) {
               </div>
             )}
           </div>
-        </Card>
+        </div>
       ))}
 
       {selected && (

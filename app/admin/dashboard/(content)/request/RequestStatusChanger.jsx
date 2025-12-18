@@ -6,7 +6,12 @@ import { ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/_components/ui/Button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/_components/ui/Dropdown-menu";
 
-import { updatePermissionRequestStatus, updateShiftChangeRequestStatus } from "@/_server/admin-action/requestAction";
+import { 
+  updateEarlyCheckoutRequestStatus, 
+  updateLeaveRequestStatus, 
+  updatePermissionRequestStatus, 
+  updateShiftChangeRequestStatus 
+} from "@/_server/admin-action/requestAction";
 
 const statusUI = {
   PENDING: { label: "Pending", dot: "bg-yellow-400", ping: true },
