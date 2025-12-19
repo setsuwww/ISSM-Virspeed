@@ -1,43 +1,87 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { BEEFAST_BASE64 } from '@/_constants/base64/base64';
 
-export function exportPDFTemplate({ title, columns, data }) {
-  const doc = new jsPDF("p", "pt");
+export function exportPDFTemplate({
+  title = "USERS REPORT",
+  columns = [],
+  data = [],
+  companyName = "PT Aplikanusa Lintasarta || Gedung Lintasarta, Jl. TB Simatupang Raya No.16, Jakarta Selatan 12430",
+  exportedBy = "Admin",
+  location = "Jakarta",
+  logoBase64 = BEEFAST_BASE64,
+}) {
+  if (!data.length) return;
+
+  const doc = new jsPDF("landscape", "pt", "A4");
   const pageWidth = doc.internal.pageSize.getWidth();
+  const today = new Date().toLocaleDateString("id-ID");
   const margin = 40;
 
-  doc.setFontSize(18);
-  const titleTextWidth = doc.getTextWidth(title);
-  doc.text(title, (pageWidth - titleTextWidth) / 2, 50);
+  // === LOGO ===
+  if (logoBase64) {
+    const imgWidth = 90;
+    const imgHeight = 90;
+    doc.addImage(logoBase64, "PNG", margin, 30, imgWidth, imgHeight);
+  }
 
-  const dateStr = `Generated: ${new Date().toLocaleDateString("id-ID")}`;
+  // === HEADER COMPANY NAME ===
+  doc.setFontSize(15);
+  doc.setFont(undefined, "bold");
+  doc.text("BEEFAST", margin + 120, 40);
+
+  // === COMPANY ADDRESS ===
   doc.setFontSize(10);
-  const dateWidth = doc.getTextWidth(dateStr);
-  doc.text(dateStr, (pageWidth - dateWidth) / 2, 70);
+  doc.setFont(undefined, "normal");
+  const addressLines = doc.splitTextToSize(companyName, 380);
+  doc.text(addressLines, margin + 120, 60);
 
-  const startY = 90;
+  // === EXPORT DATE ===
+  doc.setFontSize(9);
+  doc.setFont(undefined, "italic");
+  doc.text(`Tanggal Export: ${today}`, margin + 120, 90);
+
+  // === DIVIDER LINE ===
+  doc.line(margin, 120, pageWidth - margin, 120);
+
+  // === TITLE ===
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text(title, pageWidth / 2, 150, { align: "center" });
+
+  // === TABLE ===
+  const startY = 180;
+  const body = data.map((r, i) => [
+    i + 1,
+    ...columns.slice(1).map((c) => r[c.key] ?? "")
+  ]);
+
   autoTable(doc, {
     startY,
-    head: [columns.map(c => c.header)],
-    body: data.map((r, i) => [i + 1, ...columns.slice(1).map(c => r[c.key] ?? "—")]),
-    styles: { fontSize: 9 },
-    headStyles: { fillColor: [5, 47, 74], textColor: [255, 255, 255] },
+    head: [columns.map((c) => c.header)],
+    body,
+    styles: { fontSize: 9, cellPadding: 4 },
+    headStyles: {
+      fillColor: [229, 231, 235],
+      textColor: [0, 0, 0],
+      fontStyle: "bold",
+    },
     theme: "grid",
   });
 
-  const finalY = doc.lastAutoTable.finalY || startY + 20;
-  const footerY = finalY + 20;
-  const signLineY = footerY + 60;
+  // === FOOTER ===
+  const finalY = doc.lastAutoTable.finalY + 40;
 
-  const signText = "_________, _____________________";
-  const signLine = "........................................................";
+  doc.setFontSize(10);
+  doc.setFont(undefined, "normal");
+  doc.text(`${location}, ${today}`, pageWidth - margin, finalY, {
+    align: "right",
+  });
 
-  const signTextWidth = doc.getTextWidth(signText);
-  const signLineWidth = doc.getTextWidth(signLine);
+  doc.setFont(undefined, "bold");
+  doc.text(exportedBy, pageWidth - margin, finalY + 50, {
+    align: "right",
+  });
 
-  doc.setFontSize(11);
-  doc.text(signText, pageWidth - margin - signTextWidth, footerY);
-  doc.text(signLine, pageWidth - margin - signLineWidth, signLineY);
-
-  doc.save(`${title.replace(/\s+/g, "_")}.pdf`);
+  doc.save(`${title.replace(/\s+/g, "_")}_${today.replace(/\//g, "-")}.pdf`);
 }

@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children, action }) {
       <div className="flex-1 flex flex-col">
         {action}
 
-        <main className="flex-1 overflow-y-auto p-[13px] bg-slate-100">
+        <main className="flex-1 overflow-y-auto px-[15px] py-[12px] bg-slate-100">
           <ReactQueryProvider>
             <ToastProvider><ConfirmDialog />
               {children}
