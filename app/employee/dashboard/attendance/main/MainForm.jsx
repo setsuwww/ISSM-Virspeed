@@ -35,7 +35,7 @@ export default function CheckinForm() {
         setUser(data)
 
         const statsData = await apiFetchData({
-          url: `/attendance/stats?userId=${data.id}`,
+          url: `/attendance/employee-stats?userId=${data.id}`,
           successMessage: null,
           errorMessage: "Failed to load stats",
         })

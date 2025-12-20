@@ -34,7 +34,39 @@ export default async function AdminDashboardPage() {
     orderBy: { date: "asc" },
   });
 
-  // serialize dates to ISO for client
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+
+  async function getShiftStats(shiftType) {
+    const rows = await prisma.attendance.groupBy({
+      by: ["status"],
+      where: {
+        date: {
+          gte: todayStart,
+          lte: todayEnd,
+        },
+        shift: {
+          type: shiftType,
+        },
+      },
+      _count: {
+        status: true,
+      },
+    });
+
+    return rows.reduce((acc, r) => {
+      acc[r.status] = r._count.status;
+      return acc;
+    }, {});
+  }
+
+  const morningStats = await getShiftStats("MORNING");
+  const afternoonStats = await getShiftStats("AFTERNOON");
+  const eveningStats = await getShiftStats("EVENING");
+
   const attendanceRaw = rawAttendances.map((a) => ({
     date: a.date.toISOString(),
     status: a.status,
@@ -47,22 +79,22 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <DashboardStats dark={true} link="/admin/dashboard/shifts" title="Total Users"
           value={`${totalUsers} Users`} valueColor="text-yellow-400"
-          icon={<Clock strokeWidth={2} />}
+          icon={<Clock strokeWidth={2} />} 
           color="bg-slate-500 text-white"
         />
 
         <DashboardStats title="Morning Shifts" value={String(morningEmployees)}
-          icon={<Sun strokeWidth={2} />}
+          icon={<Sun strokeWidth={2} />} badges={morningStats}
           color="bg-gradient-to-br from-yellow-100 to-yellow-50 text-yellow-600"
         />
 
         <DashboardStats title="Afternoon Shifts" value={String(afternoonEmployees)}
-          icon={<SunMoon strokeWidth={2} />}
+          icon={<SunMoon strokeWidth={2} />} badges={afternoonStats}
           color="bg-gradient-to-br from-orange-100 to-orange-50 text-orange-600"
         />
 
         <DashboardStats title="Evening Shifts" value={String(eveningEmployees)}
-          icon={<Moon strokeWidth={2} />}
+          icon={<Moon strokeWidth={2} />} badges={eveningStats}
           color="bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600"
         />
       </div>

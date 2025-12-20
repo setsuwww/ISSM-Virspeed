@@ -16,8 +16,8 @@ export default function HistoryTable({ data, initialOrder }) {
   const sortedData = useMemo(() => {
     return [...data].sort((a, b) =>
       order === "asc"
-        ? a.dateSort.localeCompare(b.dateSort)
-        : b.dateSort.localeCompare(a.dateSort)
+        ? a.dateValue - b.dateValue
+        : b.dateValue - a.dateValue
     )
   }, [data, order])
 
@@ -56,7 +56,7 @@ export default function HistoryTable({ data, initialOrder }) {
                   </div>
                   <div>
                     <p className="font-semibold">{att.dateLabel}</p>
-                    <p className="text-xs text-slate-400">{att.dateSort}</p>
+                    <p className="text-xs text-slate-400">{att.dateFull}</p>
                   </div>
                 </div>
               </TableCell>
