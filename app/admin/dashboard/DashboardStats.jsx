@@ -52,11 +52,11 @@ function DashboardStatsComponent({
           {caption && (<span className="mr-2">{caption}</span>)}
           <span className={valueColor}>{value}</span>
 
-          <div className="flex gap-x-1">
+          <span className="flex gap-x-1">
             {renderBadge("A", badges?.ABSENT, "bg-red-100/60 text-red-700")}
             {renderBadge("L", badges?.LATE, "bg-yellow-100/60 text-yellow-700")}
             {renderBadge("P", badges?.PERMISSION, "bg-blue-100/60 text-blue-700")}
-          </div>
+          </span>
         </p>
       </div>
     </div>

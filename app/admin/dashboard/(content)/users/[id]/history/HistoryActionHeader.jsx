@@ -1,100 +1,115 @@
 "use client";
 
-import { Trash2, FolderInput, Filter } from "lucide-react";
+import { Filter, FolderInput, Trash2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/_components/ui/Input";
 import { Button } from "@/_components/ui/Button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-} from "@/_components/ui/Dropdown-menu";
+import { ButtonGroup } from "@/_components/ui/Button-group";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 
-import { exportPDF } from "@/_function/exports/user/exportPDF";
-import { exportWord } from "@/_function/exports/user/exportWord";
-import { exportExcel } from "@/_function/exports/user/exportExcel";
+import { exportPDF } from "@/_function/exports/employee/history/exportPDF";
+import { exportWord } from "@/_function/exports/employee/history/exportWord";
+import { exportExcel } from "@/_function/exports/employee/history/exportExcel";
 
 export default function HistoryActionHeader({
-  search,
-  onSearchChange,
-
-  selectedCount,
-  onRemoveSelected,
-  onRemoveAll,
-
-  filteredData,
-  searchInputRef,
+  status, filteredData,
+  search, onSearchChange,
+  selectedCount, 
+  onRemoveSelected, onRemoveAll,
 }) {
-  return (
-    <div className="flex items-center justify-between gap-2 flex-wrap mb-4">
+  const router = useRouter();
+  const params = useSearchParams();
 
-      <div className="flex items-center gap-2 w-full sm:w-auto">
-        <div className="relative w-full sm:w-64">
-          <Filter
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <Input
-            ref={searchInputRef}
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="dd-MMMM-yyyy"
-            className="pl-9 py-2 text-sm" typeSearch
+  const setParam = (key, value) => {
+    const sp = new URLSearchParams(params.toString());
+
+    if (value && value !== "all") sp.set(key, value);
+    else sp.delete(key);
+
+    sp.delete("page");
+    router.replace(`?${sp.toString()}`, { scroll: false });
+  };
+
+  return (
+    <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div className="flex items-center gap-2 flex-wrap">
+        <ButtonGroup>
+          <Button size="sm" variant="outline" onClick={() => setParam("range", "1w")}>
+            1 Week
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setParam("range", "1m")}>
+            1 Month
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setParam("range", "1y")}>
+            1 Year
+          </Button>
+        </ButtonGroup>
+
+        <Select value={params.get("status") ?? "all"} onValueChange={(v) => setParam("status", v)}>
+          <SelectTrigger size="sm" className="w-auto">
+            <span className="font-semibold text-slate-600 mr-1">Status:</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="PRESENT">Present</SelectItem>
+            <SelectItem value="LATE">Late</SelectItem>
+            <SelectItem value="PERMISSION">Permission</SelectItem>
+            <SelectItem value="ABSENT">Absent</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={params.get("sort") ?? "desc"} onValueChange={(v) => setParam("sort", v)}>
+          <SelectTrigger size="sm" className="w-auto">
+            <span className="font-semibold text-slate-600 mr-1">Sort:</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="desc">Newest</SelectItem>
+            <SelectItem value="asc">Oldest</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="relative w-64">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <Input value={search} onChange={(e) => onSearchChange(e.target.value)}
+            size="sm" className="pl-9" typeSearch placeholder="Search date..."
           />
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-rose-500"
-          disabled={selectedCount === 0}
-          onClick={onRemoveSelected}
+        <Button size="sm" variant="ghost" className="text-rose-500"
+          disabled={selectedCount === 0} onClick={onRemoveSelected}
         >
           Delete Selected
         </Button>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
+        <Button size="sm" variant="ghost" className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
           onClick={onRemoveAll}
         >
-          <Trash2 size={18} /> Delete All
+          <Trash2 size={16} />
+          Delete All
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-lime-100/50 hover:bg-lime-100 text-lime-600"
-            >
-              <FolderInput size={16} /> Export
+            <Button size="sm" variant="ghost" className="bg-lime-100/50 hover:bg-lime-100 text-lime-600">
+              <FolderInput size={16} />
+              Export
             </Button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuLabel>Export As :</DropdownMenuLabel>
-
-            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
-              PDF
-            </DropdownMenuItem>
-
-            {/* <DropdownMenuItem onClick={() => exportWord(filteredData)}>
-              Word (.docx)
-            </DropdownMenuItem> */}
-
-            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
-              Excel (.xlsx)
-            </DropdownMenuItem>
+            <DropdownMenuLabel>Export As</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>PDF</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>Word</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>Excel</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
     </div>
   );
 }

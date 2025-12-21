@@ -73,9 +73,9 @@ export const AttendancesActionHeader = React.memo(({
               PDF
             </DropdownMenuItem>
 
-            {/* <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
               Word (.docx)
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
 
             <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)

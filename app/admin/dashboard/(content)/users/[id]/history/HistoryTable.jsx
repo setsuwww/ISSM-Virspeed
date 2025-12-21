@@ -25,45 +25,38 @@ import { Clock } from "phosphor-react";
 
 export default function UserHistoryTable({ history }) {
   const {
-    search,
-    setSearch,
+    search, setSearch,
+    status, setStatus,
+    sort, setSort,
 
-    filteredData,
-    selectedIds,
+    filteredData, selectedIds,
 
-    toggleSelect,
-    toggleSelectAll,
-
-    removeSelected,
-    removeAll,
-    exportData,
+    toggleSelect, toggleSelectAll,
+    removeSelected, removeAll,
   } = useUserAttendanceHistoryHooks(history);
 
   const allIds = filteredData.map((h) => h.id);
-  const isAllSelected =
-    allIds.length > 0 && selectedIds.length === allIds.length;
+  const isAllSelected = allIds.length > 0 && selectedIds.length === allIds.length;
 
   return (
     <div className="space-y-4">
-      {/* ACTION HEADER */}
       <HistoryActionHeader
         search={search}
         onSearchChange={setSearch}
+        status={status}
+        onStatusChange={setStatus}
+        sort={sort}
+        onSortChange={setSort}
         selectedCount={selectedIds.length}
-        onExport={() => exportData(filteredData)}
         onRemoveSelected={removeSelected}
         onRemoveAll={removeAll}
       />
 
-      {/* TABLE */}
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Checkbox
-                checked={isAllSelected}
-                onCheckedChange={(v) => toggleSelectAll(v, allIds)}
-              />
+              <Checkbox checked={isAllSelected} onCheckedChange={(v) => toggleSelectAll(v, allIds)} />
             </TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Shift</TableHead>
@@ -121,11 +114,10 @@ export default function UserHistoryTable({ history }) {
                     </div>
                   )}
 
-                  {h.status !== "PERMISSION" ? (
-                    <span>-</span>
-                  ) : (
-                    <span className="bg-slate-100 text-slate-400">Permission</span>
-                  )}
+                  {h.status !== "PERMISSION"
+                    ? (<span>-</span>)
+                    : (<span className="bg-slate-100 text-slate-400">Permission</span>)
+                  }
 
                   {h.checkOutTime && (
                     <div className="flex items-center gap-1 text-rose-600">

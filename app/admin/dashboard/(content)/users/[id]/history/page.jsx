@@ -10,19 +10,35 @@ import { minutesToTime, safeFormat } from "@/_function/globalFunction";
 
 const PAGE_SIZE = 10;
 
-async function getHistory(userId, page = 1) {
-  return await prisma.attendance.findMany({
-    where: { userId },
+function resolveDateRange(range) {
+  const now = new Date();
+  if (range === "1w") now.setDate(now.getDate() - 7);
+  if (range === "1m") now.setMonth(now.getMonth() - 1);
+  if (range === "1y") now.setFullYear(now.getFullYear() - 1);
+  return now;
+}
+
+async function getHistory(userId, page, searchParams) {
+  const { range, status, sort } = searchParams;
+
+  const where = {
+    userId,
+    ...(range && {
+      date: { gte: resolveDateRange(range) },
+    }),
+    ...(status && { status }),
+  };
+
+  return prisma.attendance.findMany({
+    where,
     skip: (page - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
+    orderBy: { date: sort === "asc" ? "asc" : "desc" },
     include: {
       shift: true,
-      earlyCheckoutRequests: true, // <--- include early checkout
-      user: {
-        select: { id: true, name: true, email: true },
-      },
+      earlyCheckoutRequests: true,
+      user: { select: { id: true, name: true, email: true } },
     },
-    orderBy: { date: "desc" },
   });
 }
 
@@ -44,12 +60,11 @@ export default async function UserHistoryPage({ params, searchParams }) {
   const page = Number(searchParams?.page) || 1;
 
   const [history, total, profile] = await Promise.all([
-    getHistory(Number(id), page),
+    getHistory(Number(id), page, searchParams),
     getHistoryCount(Number(id)),
     getUserProfile(Number(id)),
   ]);
 
-  // Mapping attendance + menambahkan flag early checkout
   const serializedHistory = history.map((h) => {
     const isEarlyCheckout = !!h.earlyCheckoutRequests?.some(
       (r) => r.status === "APPROVED"
@@ -65,10 +80,10 @@ export default async function UserHistoryPage({ params, searchParams }) {
       updatedAt: h.updatedAt.toISOString(),
       shift: h.shift
         ? {
-            ...h.shift,
-            startTime: minutesToTime(h.shift.startTime),
-            endTime: minutesToTime(h.shift.endTime),
-          }
+          ...h.shift,
+          startTime: minutesToTime(h.shift.startTime),
+          endTime: minutesToTime(h.shift.endTime),
+        }
         : null,
       isEarlyCheckout,
     };
