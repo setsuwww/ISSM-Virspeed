@@ -27,15 +27,15 @@ export function useUserAttendanceHistoryHooks(history = []) {
     if (search) {
       const q = search.toLowerCase();
       result = result.filter((h) =>
-        `${h.day}-${h.month}-${h.year} ${h.dmy}`.toLowerCase().includes(q)
+        `${h.day} ${h.dmy}`.toLowerCase().includes(q)
       );
     }
 
-    result.sort((a, b) => {
-      const da = new Date(a.date).getTime();
-      const db = new Date(b.date).getTime();
-      return sort === "desc" ? db - da : da - db;
-    });
+    result.sort((a, b) =>
+      sort === "desc"
+        ? new Date(b.date) - new Date(a.date)
+        : new Date(a.date) - new Date(b.date)
+    );
 
     return result;
   }, [data, search, status, sort]);
@@ -47,10 +47,8 @@ export function useUserAttendanceHistoryHooks(history = []) {
     setStatus,
     sort,
     setSort,
-
     filteredData,
     selectedIds,
-
     toggleSelect,
     toggleSelectAll,
     removeSelected,

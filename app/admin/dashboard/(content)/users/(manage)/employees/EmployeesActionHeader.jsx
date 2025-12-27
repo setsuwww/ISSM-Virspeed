@@ -131,15 +131,15 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuLabel>Export As :</DropdownMenuLabel>
 
-            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>
+            <DropdownMenuItem className="focus:text-red-500" onClick={() => exportPDF(filteredData)}>
               PDF
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => exportWord(filteredData)}>
+            <DropdownMenuItem className="focus:text-blue-500" onClick={() => exportWord(filteredData)}>
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>
+            <DropdownMenuItem className="focus:text-green-500" onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -8,8 +8,8 @@ export const metadata = {
 import { Toaster } from "sonner"
 import DashboardHeader from './DashboardHeader';
 
-import SidebarBase from "@/_components/sidebar/SidebarBase";
-import { employeeMenu } from "@/_components/sidebar/content/employee.menu";
+import SidebarBase from "@/_components/common/sidebar/SidebarBase";
+import { employeeMenu } from "@/_components/common/sidebar/content/employee.menu";
 
 import { getCurrentUser } from "@/_lib/auth";
 import { getScheduleCount } from "@/_lib/partials/getScheduleCount";

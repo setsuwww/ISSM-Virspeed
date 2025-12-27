@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { CircleUserRound } from "lucide-react"
 
 import { iconMap } from "./content/iconMap"
-import { Logo } from "../common/Logo"
+import { Logo } from "../Logo"
 
 import { SidebarLink } from "./SidebarLink"
 import { SidebarCollapsible } from "./SidebarCollapsible"

@@ -31,7 +31,7 @@ export default function RequestsTabs({
                 <span>{t.label}</span>
 
                 {t.data?.length > 0 && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-xs bg-yellow-50 text-yellow-600">
+                  <span className={`text-[10px] px-2 py-0.5 rounded-xs ${isHistory ? "bg-yellow-50 text-yellow-600" : "bg-sky-50 text-sky-700"}`}>
                     {t.data.length}
                   </span>
                 )}

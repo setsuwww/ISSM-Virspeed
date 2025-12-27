@@ -2,14 +2,7 @@
 
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/_components/ui/Table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 
 import { attedancesStyles } from "@/_constants/attendanceConstants";
 import { shiftDots } from "@/_constants/shiftConstants";
@@ -18,10 +11,10 @@ import { capitalize } from "@/_function/globalFunction";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { ClipboardClock } from "lucide-react";
+import { Clock } from "phosphor-react";
 
 import HistoryActionHeader from "./HistoryActionHeader";
 import { useUserAttendanceHistoryHooks } from "@/_client/hooks/useUserAttendanceHistoryHooks";
-import { Clock } from "phosphor-react";
 
 export default function UserHistoryTable({ history }) {
   const {
@@ -29,10 +22,13 @@ export default function UserHistoryTable({ history }) {
     status, setStatus,
     sort, setSort,
 
-    filteredData, selectedIds,
+    filteredData,
+    selectedIds,
 
-    toggleSelect, toggleSelectAll,
-    removeSelected, removeAll,
+    toggleSelect,
+    toggleSelectAll,
+    removeSelected,
+    removeAll,
   } = useUserAttendanceHistoryHooks(history);
 
   const allIds = filteredData.map((h) => h.id);
@@ -47,6 +43,7 @@ export default function UserHistoryTable({ history }) {
         onStatusChange={setStatus}
         sort={sort}
         onSortChange={setSort}
+        filteredData={filteredData}
         selectedCount={selectedIds.length}
         onRemoveSelected={removeSelected}
         onRemoveAll={removeAll}
@@ -56,7 +53,10 @@ export default function UserHistoryTable({ history }) {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Checkbox checked={isAllSelected} onCheckedChange={(v) => toggleSelectAll(v, allIds)} />
+              <Checkbox
+                checked={isAllSelected}
+                onCheckedChange={(v) => toggleSelectAll(v, allIds)}
+              />
             </TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Shift</TableHead>
@@ -76,61 +76,54 @@ export default function UserHistoryTable({ history }) {
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <div className="bg-slate-200 p-2 rounded-full">
                     <ClipboardClock className="h-5 w-5 text-slate-600" />
                   </div>
-                  <span className="flex flex-col">
-                    <span className="font-semibold text-slate-600">
-                      {h.day}
-                    </span>
-                    <span className="text-sm text-slate-400">
-                      {h.dmy}
-                    </span>
-                  </span>
+                  <div>
+                    <div className="font-semibold text-slate-600">{h.day}</div>
+                    <div className="text-sm text-slate-400">{h.dmy}</div>
+                  </div>
                 </div>
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center gap-3">
                   {shiftDots[h.shift?.type]}
-                  <span>
+                  <div>
                     <div className="text-sm font-semibold text-slate-600">
                       {capitalize(h.shift?.type) ?? "-"}
                     </div>
                     <div className="text-xs text-slate-400">
                       {h.shift?.startTime} - {h.shift?.endTime}
                     </div>
-                  </span>
+                  </div>
                 </div>
               </TableCell>
 
               <TableCell>
-                <div className="font-number flex items-center space-x-2 tracking-tight">
+                <div className="flex items-center gap-3 font-number">
                   {h.checkInTime && (
-                    <div className="flex items-center gap-1 text-teal-600">
-                      <Clock size={18} color="#009689" weight="duotone" />
+                    <span className="flex items-center gap-1 text-teal-600">
+                      <Clock size={16} />
                       {format(new Date(h.checkInTime), "hh:mm a", { locale: enUS })}
-                    </div>
+                    </span>
                   )}
 
-                  {h.status !== "PERMISSION"
-                    ? (<span>-</span>)
-                    : (<span className="bg-slate-100 text-slate-400">Permission</span>)
-                  }
+                  <span>-</span>
 
                   {h.checkOutTime && (
-                    <div className="flex items-center gap-1 text-rose-600">
-                      <Clock size={18} color="#ec003f" weight="duotone" />
-                      {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
-
+                    <>
+                      <span className="flex items-center gap-1 text-rose-600">
+                        <Clock size={16} />
+                        {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
+                      </span>
                       {h.isEarlyCheckout && (
                         <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full">
                           Early Checkout
                         </span>
                       )}
-                    </div>
-
+                    </>
                   )}
                 </div>
               </TableCell>
@@ -144,6 +137,6 @@ export default function UserHistoryTable({ history }) {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </div >
   );
 }

@@ -9,8 +9,8 @@ import { ReactQueryProvider } from '@/_context/Query-Provider';
 import { ToastProvider } from '@/_context/Toast-Provider';
 import { ConfirmDialog } from "@/_components/ui/Confirm";
 
-import SidebarBase from '@/_components/sidebar/SidebarBase';
-import { adminMenu } from '@/_components/sidebar/content/admin.menu';
+import SidebarBase from '@/_components/common/sidebar/SidebarBase';
+import { adminMenu } from '@/_components/common/sidebar/content/admin.menu';
 
 import { getCurrentUser } from '@/_lib/auth';
 

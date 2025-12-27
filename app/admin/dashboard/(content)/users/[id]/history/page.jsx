@@ -99,32 +99,15 @@ export default async function UserHistoryPage({ params, searchParams }) {
     <section>
       <DashboardHeader
         title={`Attendance History`}
-        subtitle={
-          profile
-            ? `History : ${profile.name} (${profile.email})`
-            : "User"
-        }
+        subtitle={ profile ? `${profile.name} (${profile.email})` : "User"} useColor
       />
 
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation
-            heading="Attendance Records"
-            subheading="Detail check-in & check-out"
+            heading={ profile ? `${profile.name}` : "User"}
+            subheading={ profile ? `${profile.name}'s Attendance history detail` : "User"}
           />
-          {profile && (
-            <div className="mb-6 p-3 flex items-center space-x-2 rounded-lg bg-slate-50 border border-slate-200 shadow-xs">
-              <div className="p-2 bg-slate-200 text-slate-600 rounded-lg">
-                <CircleUserRound strokeWidth={1.5} size={30} />
-              </div>
-              <div className="flex flex-col">
-                <h2 className="text-md font-semibold text-slate-600">
-                  {profile.name}
-                </h2>
-                <p className="text-sm text-slate-400">{profile.email}</p>
-              </div>
-            </div>
-          )}
         </ContentForm.Header>
 
         <ContentForm.Body>

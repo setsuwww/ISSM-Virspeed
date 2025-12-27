@@ -24,7 +24,7 @@ async function main() {
   const divisions = await prisma.division.createMany({
     data: [
       {
-        name: "PT. Aplikanusa Lintasarta",
+        name: "Finance",
         location: "Jakarta Selatan",
         type: LocationType.WFO,
         status: LocationStatus.ACTIVE,
@@ -35,8 +35,8 @@ async function main() {
         endTime: 17 * 60,
       },
       {
-        name: "PT. Lintasarta",
-        location: "Branch, Yogyakarta",
+        name: "IT Support",
+        location: "Branch, Jakarta Selatan",
         type: LocationType.WFA,
         status: LocationStatus.ACTIVE,
         longitude: 107.61,
@@ -82,8 +82,25 @@ async function main() {
     { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
     { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
     { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
+    { name: "Harry", email: "harry@next.com", role: Role.EMPLOYEE },
     { name: "Iris", email: "iris@next.com", role: Role.EMPLOYEE },
     { name: "John", email: "john@next.com", role: Role.EMPLOYEE },
+    { name: "Katherine", email: "katherine@next.com", role: Role.EMPLOYEE },
+    { name: "Levi", email: "levi@next.com", role: Role.EMPLOYEE },
+    { name: "Monica", email: "monica@next.com", role: Role.EMPLOYEE },
+    { name: "Noah", email: "noah@next.com", role: Role.EMPLOYEE },
+    { name: "Odelio", email: "odelio@next.com", role: Role.EMPLOYEE },
+    { name: "Prilly", email: "prilly@next.com", role: Role.EMPLOYEE },
+    { name: "Quenzi", email: "quenzi@next.com", role: Role.EMPLOYEE },
+    { name: "Ryan", email: "ryan@next.com", role: Role.EMPLOYEE },
+    { name: "Stevan", email: "stevan@next.com", role: Role.EMPLOYEE },
+    { name: "Thomas", email: "thomas@next.com", role: Role.EMPLOYEE },
+    { name: "Umar", email: "umar@next.com", role: Role.EMPLOYEE },
+    { name: "Veline", email: "veline@next.com", role: Role.EMPLOYEE },
+    { name: "Wayne", email: "wayne@next.com", role: Role.EMPLOYEE },
+    { name: "Xiulin", email: "xiulin@next.com", role: Role.EMPLOYEE },
+    { name: "Yohannes", email: "yohannes@next.com", role: Role.EMPLOYEE },
+    { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
   ];
 
   const users = [];

@@ -56,13 +56,9 @@ const LoginPage = () => {
           <AuthLink href="/forgot-password" link="Forgot Password?" />
         </div>
 
-        <Button type="submit" disabled={pending} className="w-full text-base font-semibold inset-shadow-sky-200 from-sky-600 to-sky-500 hover:inset-shadow-sky-300 hover:from-sky-700 hover:to-sky-600">
+        <Button type="submit" disabled={pending} className="w-full text-base font-semibold bg-yellow-500 hover:bg-yellow-700 py-2">
           {pending 
-            ? (
-                <div className="flex items-center space-x-1 gap-x-1">
-                  <Loader className="animate-spin"/>Logging in...
-                </div>
-              ) 
+            ? (<div className="flex items-center space-x-1 gap-x-1"><Loader className="animate-spin"/>Logging in...</div>) 
             : "Login"
           }
         </Button>

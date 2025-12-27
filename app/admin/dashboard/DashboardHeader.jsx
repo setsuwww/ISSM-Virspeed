@@ -9,7 +9,7 @@ import { LogoutAuthAction } from "../../auth/login/action"
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-export const DashboardHeader = React.memo(function DashboardHeader({ title, subtitle }) {
+export const DashboardHeader = React.memo(function DashboardHeader({ title, subtitle, useColor = false }) {
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
@@ -39,7 +39,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
         <h1 className="text-xl font-bold text-slate-700">
           {title || formatLabel(visibleSegments[visibleSegments.length - 1] || "Home")}
         </h1>
-        <p className="text-sm text-slate-500">{subtitle}</p>
+        <p className={`${useColor ? "text-sky-500" : "text-slate-500"} text-sm `}>{subtitle}</p>
       </div>
 
       <div className="flex items-center space-x-4">
