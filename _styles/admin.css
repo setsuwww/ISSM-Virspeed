@@ -64,5 +64,5 @@
   @apply min-w-[36px] h-9 flex items-center justify-center rounded-xl border text-sm font-medium transition;
 }
 .pagination-btn.active {
-  @apply bg-sky-600 text-white border-sky-600;
+  @apply bg-indigo-600 text-white border-indigo-600;
 }
