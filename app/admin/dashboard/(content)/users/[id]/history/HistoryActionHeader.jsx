@@ -61,7 +61,7 @@ export default function HistoryActionHeader({
             onChange={(e) => onSearchChange(e.target.value)}
             size="sm"
             className="pl-9"
-            placeholder="Search date..."
+            placeholder="Search date..." typeSearch
           />
         </div>
       </div>
