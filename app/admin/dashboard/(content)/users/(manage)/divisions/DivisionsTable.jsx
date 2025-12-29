@@ -36,13 +36,6 @@ export default function DivisionsTable({ data }) {
   } = useDivisionStore()
 
   useEffect(() => { fetchConfig() }, [fetchConfig])
-  if (loading) {
-    return (
-      <p className="flex items-center gap-x-1 text-sm text-slate-500">
-        <Loader size={14} className="animate-spin" /> Loading division...
-      </p>
-    )
-  }
 
   return (
     <>
