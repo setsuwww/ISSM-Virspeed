@@ -9,7 +9,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize, safeFormat, minutesToTime } from "@/_function/globalFunction";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 export const revalidate = 60;
 
 async function getUsers(page = 1) {

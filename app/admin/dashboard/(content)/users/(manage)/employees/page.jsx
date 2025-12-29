@@ -7,7 +7,7 @@ import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_function/globalFunction";
 import EmployeesTableButton from "./EmployeesTableButton";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 async function getEmployees(page = 1) {
   return prisma.user.findMany({ where: { role: "EMPLOYEE", shiftId: { not: null }},
@@ -48,7 +48,7 @@ async function getFilterData() {
   return { divisions, shifts };
 }
 
-export const revalidate = 30;
+export const revalidate = 60;
 
 export default async function EmployeesPage({ searchParams }) {
   const page = Number(searchParams?.page) || 1;
@@ -91,7 +91,7 @@ export default async function EmployeesPage({ searchParams }) {
 
         <ContentForm.Body>
           <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts}/>
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/employees"/>
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees"/>
         </ContentForm.Body>
       </ContentForm>
     </section>

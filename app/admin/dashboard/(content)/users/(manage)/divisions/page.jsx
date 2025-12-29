@@ -6,7 +6,7 @@ import DivisionsTable from "./DivisionsTable"
 import { prisma } from "@/_lib/prisma"
 import { minutesToTime } from "@/_function/globalFunction"
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 5
 
 export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1

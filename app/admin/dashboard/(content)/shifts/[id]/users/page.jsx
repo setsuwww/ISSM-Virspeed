@@ -15,7 +15,7 @@ export const revalidate = 60;
 export default async function ShiftUsersPage({ params, searchParams }) {
   const shiftId = parseInt(params.id);
   const page = Number(searchParams?.page) || 1;
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 5;
 
 const [shift, totalUsers] = await Promise.all([
   prisma.shift.findUnique({ where: { id: shiftId },

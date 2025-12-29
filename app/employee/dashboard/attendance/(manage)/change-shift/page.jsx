@@ -3,7 +3,7 @@ import ChangeShiftForm from "./ChangeShiftForm"
 import ChangeShiftTable from "./ChangeShiftTable"
 import { getCurrentUser } from "@/_lib/auth"
 
-export const revalidate = 30
+export const revalidate = 60
 
 export default async function Page() {
   const user = await getCurrentUser()
