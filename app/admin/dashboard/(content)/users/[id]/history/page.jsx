@@ -8,7 +8,7 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime, safeFormat } from "@/_function/globalFunction";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 function resolveDateRange(range) {
   const now = new Date();

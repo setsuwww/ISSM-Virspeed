@@ -9,7 +9,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize, safeFormat, minutesToTime } from "@/_function/globalFunction";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 export const revalidate = 60;
 
 async function getUsers(page = 1) {
@@ -51,7 +51,7 @@ export default async function Page({ searchParams }) {
     const isAdmin = u.role === "ADMIN"
 
     const userShift = u.shift && {
-      label: capitalize(u.shift.name || u.shift.type),
+      label: u.shift.name || capitalize(u.shift.type),
       start: u.shift.startTime,
       end: u.shift.endTime,
       type: u.shift.type,

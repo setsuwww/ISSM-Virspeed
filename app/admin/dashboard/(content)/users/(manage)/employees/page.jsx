@@ -7,7 +7,7 @@ import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_function/globalFunction";
 import EmployeesTableButton from "./EmployeesTableButton";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 async function getEmployees(page = 1) {
   return prisma.user.findMany({ where: { role: "EMPLOYEE", shiftId: { not: null }},

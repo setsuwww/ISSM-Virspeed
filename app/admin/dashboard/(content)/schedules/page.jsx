@@ -6,7 +6,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import ClientPage from "./page-client";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 export async function getSchedules({ page = 1, search = "", frequency, shift }) {
   return await prisma.schedule.findMany({
