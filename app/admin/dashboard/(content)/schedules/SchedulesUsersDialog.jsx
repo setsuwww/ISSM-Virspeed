@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog";
+import { getInitial } from "@/_function/globalFunction";
 
 const colors = [
   "bg-rose-600",
@@ -21,8 +22,6 @@ export default function ScheduleUsersDialog({ users }) {
 
   const limitedUsers = users.slice(0, 4);
   const extraCount = users.length - 4;
-
-  const getInitial = (name) => name?.charAt(0)?.toUpperCase() || "?";
 
   return (
     <div className="flex items-center justify-between w-full mt-2">

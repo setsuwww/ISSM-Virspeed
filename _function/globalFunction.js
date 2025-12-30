@@ -48,3 +48,5 @@ export function minutesToTime(min) {
   const m = (min % 60).toString().padStart(2, "0")
   return `${h}:${m}`
 }
+
+export const getInitial = (name) => name?.charAt(0)?.toUpperCase() || "?";

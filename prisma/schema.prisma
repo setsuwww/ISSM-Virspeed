@@ -189,6 +189,19 @@ model SchedulesOnUsers {
   @@unique([scheduleId, userId])
 }
 
+model ScheduleReminder {
+  id          Int      @id @default(autoincrement())
+  scheduleId  Int
+  userId      Int
+  remindAt    DateTime
+  createdAt   DateTime @default(now())
+
+  schedule Schedule   @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, userId])
+}
+
 model Attendance {
   id                  Int              @id @default(autoincrement())
   date                DateTime
