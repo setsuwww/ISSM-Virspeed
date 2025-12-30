@@ -111,6 +111,7 @@ model User {
   shift  Shift?       @relation("ShiftUsers", fields: [shiftId], references: [id])
 
   schedules          SchedulesOnUsers[]
+  reminders          ScheduleReminder[]
   customShifts       UserShiftAssignment[]
   attendances        Attendance[]
 
@@ -173,6 +174,8 @@ model Schedule {
 
   division  Division? @relation(fields: [divisionId], references: [id])
   users     SchedulesOnUsers[]
+  reminders  ScheduleReminder[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
