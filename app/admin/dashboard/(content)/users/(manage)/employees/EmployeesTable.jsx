@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { EmployeesActionHeader } from "./EmployeesActionHeader";
@@ -18,8 +17,6 @@ export default function EmployeesTable({ users, divisions, shifts }) {
     deleteAll,
     onHistory, onSwitch, onEdit, onDelete,
   } = useEmployeesHooks(users, shifts);
-
-  const router = useRouter();
 
   return (
     <div className="space-y-4">
@@ -43,7 +40,6 @@ export default function EmployeesTable({ users, divisions, shifts }) {
             </TableHead>
             <TableHead>Employees</TableHead>
             <TableHead>Shifts</TableHead>
-            <TableHead>Role</TableHead>
             <TableHead>Division</TableHead>
             <TableHead>Created & Updated</TableHead>
             <TableHead>Action</TableHead>

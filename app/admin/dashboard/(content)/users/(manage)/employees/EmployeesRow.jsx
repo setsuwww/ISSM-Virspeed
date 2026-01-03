@@ -47,13 +47,8 @@ export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, t
         </div>
       </TableCell>
       <TableCell>
-        <Badge className="px-2 py-0.5 text-xs font-semibold text-teal-600 bg-teal-100/50 border-teal-300/50">
-          {capitalize(user.role)}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Badge className="bg-sky-50 text-sky-700 border-sky-100">
-          {capitalize(user.division?.name)}
+        <Badge className="bg-blue-50 text-blue-700 border-sky-100">
+          {user.division?.name}
         </Badge>
       </TableCell>
       <TableCell>

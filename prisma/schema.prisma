@@ -229,6 +229,7 @@ model Attendance {
   divisionStatus          LocationStatus?
 
   @@unique([userId, shiftId, date])
+  @@index([userId, date])
 }
 
 model EarlyCheckoutRequest {

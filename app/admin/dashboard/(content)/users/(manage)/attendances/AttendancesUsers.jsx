@@ -15,7 +15,7 @@ export default function AttendancesUsersView({ selectedStatus, shifts, allUsers,
         <DialogHeader className="mb-6">
           <DialogTitle className="flex flex-col">
             <div className="flex items-center space-x-2">
-              <div className="p-3 bg-amber-100 rounded-full">
+              <div className="p-3 bg-slate-200 text-slate-600 rounded-full">
                 <User size={26} />
               </div>
               <div className="flex flex-col">
