@@ -1,17 +1,13 @@
-async function getLeaveRequests(mode) {
-  return prisma.leaveRequest.findMany({
-    where: {
-      status: mode === "history" ? { not: "PENDING" } : "PENDING",
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      reason: true,
-      startDate: true,
-      endDate: true,
-      status: true,
-      createdAt: true,
-      user: { select: { name: true, email: true } },
-    },
-  })
+import { safeFormat } from "@/_function/globalFunction"
+
+export function mapLeave(r) {
+  return {
+    id: r.id,
+    name: r.user.name,
+    email: r.user.email,
+    startDate: safeFormat(r.startDate, "dd/MM/yyyy"),
+    endDate: safeFormat(r.endDate, "dd/MM/yyyy"),
+    reason: r.reason ?? "-",
+    status: r.status,
+  }
 }

@@ -1,15 +1,20 @@
 import { safeFormat } from "@/_function/globalFunction"
-import { getWorkHours } from "../../page"
+import { minutesToTime } from "@/_function/globalFunction"
 
-export function mapPermissionRequests(data) {
-  return data.map(r => ({
+export function mapPermission(r) {
+  return {
     id: r.id,
-    user: r.user?.name ?? "-",
-    division: r.user?.division?.name ?? "-",
+    name: r.user.name,
+    email: r.user.email,
+    division: r.user.division?.name ?? "-",
     shift: r.shift?.name ?? "-",
-    workHours: getWorkHours(r.shift, r.user?.division),
+    shiftTime: r.shift
+      ? `${minutesToTime(r.shift.startTime)} - ${minutesToTime(
+          r.shift.endTime
+        )}`
+      : "-",
+    date: safeFormat(r.date, "dd/MM/yyyy"),
     reason: r.reason ?? "-",
-    date: safeFormat(r.date, "d MMMM yyyy"),
-    status: r.approval,
-  }))
+    approval: r.approval,
+  }
 }

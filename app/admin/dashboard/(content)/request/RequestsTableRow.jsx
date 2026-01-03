@@ -2,10 +2,10 @@
 
 import { TableRow } from "@/_components/ui/Table"
 
-import RenderPermission from "./element/renderPermission"
-import RenderChangeShift from "./element/renderChangeShift"
-import RenderEarlyCheckout from "./element/renderEarlyCheckout"
-import RenderLeave from "./element/renderLeave"
+import RenderPermission from "./page/renderPermission"
+import RenderChangeShift from "./page/renderChangeShift"
+import RenderEarlyCheckout from "./page/renderEarlyCheckout"
+import RenderLeave from "./page/renderLeave"
 
 export default function RequestsTableRow({ requestType, onStatusChange, onReject, ...r }) {
   const components = {

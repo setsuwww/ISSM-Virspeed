@@ -1,14 +1,25 @@
 import { safeFormat } from "@/_function/globalFunction"
 
-export function mapShiftRequests(data) {
-  return data.map(r => ({
+export function mapShiftChange(r) {
+  return {
     id: r.id,
-    requestedBy: r.requestedBy?.name ?? "-",
-    user: r.targetUser?.name ?? "-",
-    oldShift: r.oldShift?.name ?? "-",
-    targetShift: r.targetShift?.name ?? "-",
-    reason: r.reason ?? "-",
+    requestedBy: {
+      name: r.requestedBy?.name || "-",
+      email: r.requestedBy?.email || "-",
+    },
+    user: {
+      name: r.targetUser?.name || "-",
+      email: r.targetUser?.email || "-",
+    },
+    oldShift: r.oldShift ?? null,
+    targetShift: r.targetShift ?? null,
+    reason: r.reason || "-",
+    startDate: safeFormat(r.startDate, "d MMMM yyyy"),
+    endDate: safeFormat(r.endDate, "d MMMM yyyy"),
     date: safeFormat(r.createdAt, "d MMMM yyyy"),
-    status: r.status.startsWith("PENDING") ? "PENDING" : r.status,
-  }))
+    status:
+      r.status === "PENDING_ADMIN" || r.status === "PENDING_TARGET"
+        ? "PENDING"
+        : r.status,
+  }
 }

@@ -1,15 +1,12 @@
-async function getEarlyCheckoutRequests(mode) {
-  return prisma.earlyCheckoutRequest.findMany({
-    where: {
-      status: mode === "history" ? { not: "PENDING" } : "PENDING",
-    },
-    orderBy: { requestedAt: "desc" },
-    select: {
-      id: true,
-      reason: true,
-      status: true,
-      requestedAt: true,
-      user: { select: { name: true, email: true } },
-    },
-  })
+import { safeFormat } from "@/_function/globalFunction"
+
+export function mapEarlyCheckout(r) {
+  return {
+    id: r.id,
+    name: r.user.name,
+    email: r.user.email,
+    date: safeFormat(r.date, "dd/MM/yyyy"),
+    reason: r.reason ?? "-",
+    status: r.status,
+  }
 }
