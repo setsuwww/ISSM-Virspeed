@@ -35,7 +35,7 @@ export default function UsersTable({ data }) {
               <Checkbox checked={isAllSelected} onCheckedChange={selectAll} />
             </TableHead>
             <TableHead>Username</TableHead>
-            <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Work Hours</TableHead>
             <TableHead>Created & Updated</TableHead>
             <TableHead>Actions</TableHead>

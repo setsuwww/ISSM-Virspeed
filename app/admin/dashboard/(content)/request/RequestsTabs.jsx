@@ -12,7 +12,7 @@ export default function RequestsTabs({
   const router = useRouter()
   const isHistory = mode === "history"
 
-  const toggleMode = () => {router.push(`?mode=${isHistory ? "pending" : "history"}`)}
+  const toggleMode = () => { router.push(`?mode=${isHistory ? "pending" : "history"}`) }
 
   const tabs = [
     { key: "permission", label: "Permission", data: permissionRequests },
@@ -40,7 +40,7 @@ export default function RequestsTabs({
           ))}
         </TabsList>
 
-        <Button variant="outline" onClick={toggleMode} className="border-slate-200 shadow-xs">
+        <Button variant="outline" onClick={toggleMode}>
           <span className="font-semibold text-slate-600">Request:</span>
           <span className="text-slate-400">
             {isHistory ? "Finished" : "Pending"}
@@ -50,7 +50,7 @@ export default function RequestsTabs({
 
       {tabs.map((t) => (
         <TabsContent key={t.key} value={t.key} className="mt-6">
-          <RequestsDataTable type={t.key} items={t.data} isHistory={isHistory}/>
+          <RequestsDataTable type={t.key} items={t.data} isHistory={isHistory} />
         </TabsContent>
       ))}
     </Tabs>

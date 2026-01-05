@@ -14,7 +14,7 @@ import { adminMenu } from '@/_components/common/sidebar/content/admin.menu';
 
 import { getCurrentUser } from '@/_lib/auth';
 
-export default async function DashboardLayout({ children, action }) {
+export default async function DashboardLayout({ children }) {
 
   const user = await getCurrentUser()
 
@@ -23,8 +23,6 @@ export default async function DashboardLayout({ children, action }) {
       <SidebarBase menu={adminMenu} user={user} />
 
       <div className="flex-1 flex flex-col">
-        {action}
-
         <main className="flex-1 overflow-y-auto px-[15px] py-[12px] bg-slate-100">
           <ReactQueryProvider>
             <ToastProvider><ConfirmDialog />
