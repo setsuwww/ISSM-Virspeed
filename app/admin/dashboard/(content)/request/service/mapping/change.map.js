@@ -1,7 +1,9 @@
 import { safeFormat } from "@/_function/globalFunction"
 
-export function mapShiftChange(r) {
-  return {
+export function mapShiftChange(data = []) {
+  if (!Array.isArray(data)) return []
+
+  return data.map(r => ({
     id: r.id,
     requestedBy: {
       name: r.requestedBy?.name || "-",
@@ -11,8 +13,14 @@ export function mapShiftChange(r) {
       name: r.targetUser?.name || "-",
       email: r.targetUser?.email || "-",
     },
-    oldShift: r.oldShift ?? null,
-    targetShift: r.targetShift ?? null,
+    oldShift: {
+      name: r.oldShift?.name || "-",
+      type: r.oldShift?.type || "-",
+    },
+    targetShift: {
+      name: r.targetShift?.name || "-",
+      type: r.targetShift?.type || "-",
+    },
     reason: r.reason || "-",
     startDate: safeFormat(r.startDate, "d MMMM yyyy"),
     endDate: safeFormat(r.endDate, "d MMMM yyyy"),
@@ -21,5 +29,5 @@ export function mapShiftChange(r) {
       r.status === "PENDING_ADMIN" || r.status === "PENDING_TARGET"
         ? "PENDING"
         : r.status,
-  }
+  }))
 }

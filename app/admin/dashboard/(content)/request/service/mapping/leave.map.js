@@ -1,13 +1,26 @@
 import { safeFormat } from "@/_function/globalFunction"
+import { getWorkHours } from "../request.service"
 
-export function mapLeave(r) {
-  return {
-    id: r.id,
-    name: r.user.name,
-    email: r.user.email,
-    startDate: safeFormat(r.startDate, "dd/MM/yyyy"),
-    endDate: safeFormat(r.endDate, "dd/MM/yyyy"),
-    reason: r.reason ?? "-",
-    status: r.status,
-  }
+export function mapLeave(data = []) {
+  if (!Array.isArray(data)) return []
+
+  return data.map(r => {
+    const workHours = getWorkHours(r.user?.shift, r.user?.division)
+
+    return {
+      id: r.id,
+      requestedBy: {
+        name: r.user?.name || "-",
+        email: r.user?.email || "-",
+        division: r.user?.division?.name || "-",
+      },
+      shift: r.user?.shift || null,
+      workHours,
+      reason: r.reason || "-",
+      startDate: safeFormat(r.startDate, "d MMMM yyyy"),
+      endDate: safeFormat(r.endDate, "d MMMM yyyy"),
+      date: safeFormat(r.createdAt, "d MMMM yyyy"),
+      status: r.status,
+    }
+  })
 }

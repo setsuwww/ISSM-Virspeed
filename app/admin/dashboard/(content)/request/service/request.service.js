@@ -1,38 +1,15 @@
-"use server"
+import { minutesToTime } from "@/_function/globalFunction"
 
-import {
-  getShiftChangeRequests,
-  getPermissionRequests,
-  getEarlyCheckoutRequests,
-  getLeaveRequests,
-} from "./request.module"
-
-import { mapShiftChange } from "./mapping/change.map"
-import { mapPermission } from "./mapping/permission.map"
-import { mapEarlyCheckout } from "./mapping/early.map"
-import { mapLeave } from "./mapping/leave.map"
-
-export async function handleRequests(mode) {
-  const isHistory = mode === "history"
-
-  const 
-    [
-      shiftRequests,
-      permissionRequests,
-      earlyCheckoutRequests,
-      leaveRequests
-    ] = await Promise.all([
-        getShiftChangeRequests(isHistory),
-        getPermissionRequests(isHistory),
-        getEarlyCheckoutRequests(isHistory),
-        getLeaveRequests(isHistory),
-      ]
-    )
+export function getWorkHours(shift, division) {
+  const start = shift?.startTime ?? division?.startTime ?? null
+  const end = shift?.endTime ?? division?.endTime ?? null
 
   return {
-    shift: shiftRequests.map(mapShiftChange),
-    permission: permissionRequests.map(mapPermission),
-    early: earlyCheckoutRequests.map(mapEarlyCheckout),
-    leave: leaveRequests.map(mapLeave),
+    startTime: start,
+    endTime: end,
+    label:
+      start != null && end != null
+        ? `${minutesToTime(start)} - ${minutesToTime(end)}`
+        : "-",
   }
 }

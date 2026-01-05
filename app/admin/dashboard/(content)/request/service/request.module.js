@@ -1,19 +1,12 @@
 import { prisma } from "@/_lib/prisma"
 
-export async function getShiftChangeRequests(isHistory) {
+export async function fetchShiftRequests(isHistory) {
   return prisma.shiftChangeRequest.findMany({
     where: isHistory
-      ? {
-          status: {
-            notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"],
-          },
-        }
-      : {
-          status: {
-            in: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"],
-          },
-        },
+      ? { status: { notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } }
+      : { status: { in: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } },
     orderBy: { createdAt: "desc" },
+    take: 20,
     select: {
       id: true,
       reason: true,
@@ -21,34 +14,21 @@ export async function getShiftChangeRequests(isHistory) {
       createdAt: true,
       startDate: true,
       endDate: true,
-      requestedBy: {
-        select: { name: true, email: true },
-      },
-      targetUser: {
-        select: { name: true, email: true },
-      },
-      oldShift: {
-        select: { name: true, type: true },
-      },
-      targetShift: {
-        select: { name: true, type: true },
-      },
+      requestedBy: { select: { name: true, email: true } },
+      targetUser: { select: { name: true, email: true } },
+      oldShift: { select: { name: true, type: true } },
+      targetShift: { select: { name: true, type: true } },
     },
   })
 }
 
-export async function getPermissionRequests(isHistory) {
+export async function fetchPermissionRequests(isHistory) {
   return prisma.attendance.findMany({
-    where: {
-      status: "PERMISSION",
-      OR: isHistory
-        ? [
-            { approval: { not: "PENDING" } },
-            { approval: null },
-          ]
-        : [{ approval: "PENDING" }],
-    },
+    where: isHistory
+      ? { status: "PERMISSION", approval: { not: "PENDING" } }
+      : { status: "PERMISSION", approval: "PENDING" },
     orderBy: { date: "desc" },
+    take: 20,
     select: {
       id: true,
       date: true,
@@ -58,35 +38,23 @@ export async function getPermissionRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: {
-            select: { name: true, startTime: true, endTime: true },
-          },
+          division: { select: { name: true, startTime: true, endTime: true } },
         },
       },
       shift: {
-        select: {
-          name: true,
-          type: true,
-          startTime: true,
-          endTime: true,
-        },
+        select: { name: true, type: true, startTime: true, endTime: true },
       },
     },
   })
 }
 
-export async function getEarlyCheckoutRequests(isHistory) {
+export async function fetchEarlyCheckoutRequests(isHistory) {
   return prisma.earlyCheckoutRequest.findMany({
     where: isHistory
-      ? {
-          status: {
-            not: "PENDING",
-          },
-        }
-      : {
-          status: "PENDING",
-        },
+      ? { status: { not: "PENDING" } }
+      : { status: "PENDING" },
     orderBy: { requestedAt: "desc" },
+    take: 20,
     select: {
       id: true,
       reason: true,
@@ -98,9 +66,7 @@ export async function getEarlyCheckoutRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: {
-            select: { name: true, startTime: true, endTime: true },
-          },
+          division: { select: { name: true, startTime: true, endTime: true } },
         },
       },
       attendance: {
@@ -108,12 +74,7 @@ export async function getEarlyCheckoutRequests(isHistory) {
           date: true,
           checkOutTime: true,
           shift: {
-            select: {
-              name: true,
-              type: true,
-              startTime: true,
-              endTime: true,
-            },
+            select: { name: true, type: true, startTime: true, endTime: true },
           },
         },
       },
@@ -121,17 +82,9 @@ export async function getEarlyCheckoutRequests(isHistory) {
   })
 }
 
-export async function getLeaveRequests(isHistory) {
+export async function fetchLeaveRequests(isHistory) {
   return prisma.leaveRequest.findMany({
-    where: isHistory
-      ? {
-          status: {
-            not: "PENDING",
-          },
-        }
-      : {
-          status: "PENDING",
-        },
+    where: isHistory ? { status: { not: "PENDING" } } : { status: "PENDING" },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -144,22 +97,11 @@ export async function getLeaveRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: {
-            select: { name: true, startTime: true, endTime: true },
-          },
-          shift: {
-            select: {
-              name: true,
-              type: true,
-              startTime: true,
-              endTime: true,
-            },
-          },
+          division: { select: { name: true, startTime: true, endTime: true } },
+          shift: { select: { name: true, type: true, startTime: true, endTime: true } },
         },
       },
-      approvedBy: {
-        select: { name: true, email: true },
-      },
+      approvedBy: { select: { name: true, email: true } },
     },
   })
 }

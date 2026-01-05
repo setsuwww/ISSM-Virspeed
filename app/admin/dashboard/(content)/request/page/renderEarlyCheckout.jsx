@@ -10,7 +10,7 @@ export default function RenderEarlyCheckout({ r }) {
   return (
     <>
       <TableCell>
-        <div className="flex items-center gap-3 py-2">
+        <div className="flex items-center gap-3">
           <div className="bg-slate-200 p-2 rounded-full">
             <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
           </div>
