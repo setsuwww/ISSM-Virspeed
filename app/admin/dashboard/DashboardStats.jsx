@@ -22,7 +22,7 @@ function DashboardStatsComponent({
       <div className="flex items-center space-x-1 ml-2">
         <span
           key={label}
-          className={`h-6 px-1.5 rounded-sm text-[10px] font-semibold flex items-center justify-center gap-[2px] ${className}`}
+          className={`h-6 px-1.5 rounded-sm text-[10px] font-semibold flex items-center justify-center gap-0.5 ${className}`}
         >
           {label} : {value} 
         </span>
