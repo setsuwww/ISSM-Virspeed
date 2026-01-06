@@ -53,6 +53,11 @@ async function getShifts() {
           id: true,
           name: true,
           email: true,
+          shift: {
+            select: {
+              type: true,
+            }
+          }
         },
       },
     },
@@ -73,6 +78,7 @@ async function getShifts() {
         id: user.id,
         name: user.name,
         email: user.email,
+        shiftType: user.shift.type ?? "Normal",
         attendanceStatus:
           attendance?.status &&
           ["ABSENT", "LATE", "PERMISSION"].includes(attendance.status)

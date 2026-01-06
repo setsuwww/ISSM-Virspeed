@@ -6,7 +6,7 @@ import { Badge } from "@/_components/ui/Badge"
 import { Button } from "@/_components/ui/Button"
 import { ArrowUpDown, ArrowDownUp, CalendarDays } from "lucide-react"
 
-import { attedancesStyles } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/attendanceConstants"
 import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
 import { capitalize } from "@/_function/globalFunction"
 
@@ -72,12 +72,12 @@ export default function HistoryTable({ data, initialOrder }) {
 
               <TableCell>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className={`${attedancesStyles[att.status]}`}>
+                  <Badge variant="outline" className={`${attendancesStyles[att.status]}`}>
                     {att.status}
                   </Badge>
 
                   {att.approval && (
-                    <Badge className={attedancesStyles[att.approval]}>
+                    <Badge className={attendancesStyles[att.approval]}>
                       {att.approval}
                     </Badge>
                   )}

@@ -8,7 +8,7 @@ export default function AttendancesApprovalPartials({
   status, users, approvalCounts, statusColorsClass, onClick,
 }) {
   return (
-    <div onClick={onClick} className="relative bg-white border border-slate-200 p-4 rounded-lg shadow-xs cursor-pointer hover:scale-105 transition-all">
+    <div onClick={onClick} className="relative bg-white border border-slate-200 p-4 rounded-lg shadow-xs cursor-pointer transition-all">
       {users.length > 0 && (
         <span className="absolute -top-1 -right-1 w-3 h-3 flex items-center justify-center">
           <span className={`absolute w-full h-full rounded-full animate-ping opacity-75 ${

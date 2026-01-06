@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react"
 import { statusColorsClass } from "@/_constants/attendanceConstants"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
-import AttendancesUsersView from "./AttendancesUsers"
+import AttendancesUsers from "./AttendancesUsers"
 
 export function AttendancesCard({ shifts = [] }) {
   const [selectedStatus, setSelectedStatus] = useState(null)
@@ -71,7 +71,7 @@ export function AttendancesCard({ shifts = [] }) {
         ))}
       </div>
 
-      <AttendancesUsersView
+      <AttendancesUsers
         selectedStatus={selectedStatus}
         shifts={shifts}
         allUsers={allUsers}

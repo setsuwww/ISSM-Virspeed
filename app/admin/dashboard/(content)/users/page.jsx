@@ -59,7 +59,7 @@ export default async function Page({ searchParams }) {
 
     const divisionShift = !userShift && u.division?.shifts?.length
         ? {
-          label: `${u.division.shifts[0].name} - (Division)`,
+          label: `${u.division.shifts[0].name} - (Normal)`,
           start: u.division.shifts[0].startTime,
           end: u.division.shifts[0].endTime,
           type: "DIVISION",

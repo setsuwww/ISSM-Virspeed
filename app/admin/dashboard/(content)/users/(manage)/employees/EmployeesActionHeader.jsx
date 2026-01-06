@@ -110,7 +110,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
         </Popover>
 
         <Input placeholder="Search employees..." value={search} onChange={(e) => setSearch(e.target.value)}
-          className="w-1/3 min-w-[160px]" typeSearch
+          className="w-1/3 min-w-40" typeSearch
         />
       </div>
 
@@ -119,7 +119,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           Delete Selected
         </Button>
         <Button variant="ghost" size="sm" className="bg-rose-50/70 text-rose-500 hover:bg-rose-100" onClick={onDeleteAll}>
-          <Trash2 className="w-4 h-4 mr-1" /> Delete All
+          <Trash2 className="w-4 h-4" /> Delete All
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

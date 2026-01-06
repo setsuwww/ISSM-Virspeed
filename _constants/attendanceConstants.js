@@ -1,6 +1,6 @@
 export const statusPriority = ["ABSENT", "LATE", "PERMISSION"];
 
-export const attedancesStyles = {
+export const attendancesStyles = {
   PRESENT: "text-teal-600 bg-teal-100/50 border-teal-300/50",
   LATE: "text-yellow-600 bg-yellow-100/50 border-yellow-300/50",
   PERMISSION: "text-blue-600 bg-blue-100/50 border-blue-300/50",

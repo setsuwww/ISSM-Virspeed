@@ -10,7 +10,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attedancesStyles } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/attendanceConstants"
 
 import { safeFormat, capitalize } from "@/_function/globalFunction"
 import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"
@@ -115,7 +115,7 @@ export default function AttendancesTableClient() {
                   </TableCell>
 
                   <TableCell>
-                    <Badge className={`${attedancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
+                    <Badge className={`${attendancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
                       {capitalize(att.status)}
                     </Badge>
                   </TableCell>

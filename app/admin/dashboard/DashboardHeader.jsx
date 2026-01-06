@@ -5,6 +5,8 @@ import { LogOut, Inbox } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import useSWR from "swr"
+
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
 import { LogoutAuthAction } from "../../auth/login/action"
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
@@ -60,15 +62,20 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
         </nav>
 
         <div className="flex items-center gap-x-2">
-          <Link href="/admin/dashboard/request" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
-            <Inbox size={20} strokeWidth={2} />
-            {hasNotifications && (
-              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75"></span>
-                <span className="animate-pulse relative inline-flex rounded-full h-2 w-2 bg-sky-600"></span>
-              </span>
-            )}
-          </Link>
+          <Tooltip>
+            <Link href="/admin/dashboard/request" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
+              <TooltipTrigger><Inbox size={20} strokeWidth={2} /></TooltipTrigger>
+              <TooltipContent>
+                <p>Request Inbox</p>
+              </TooltipContent>
+              {hasNotifications && (
+                <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75"></span>
+                  <span className="animate-pulse relative inline-flex rounded-full h-2 w-2 bg-sky-600"></span>
+                </span>
+              )}
+            </Link>
+          </Tooltip>
 
           <button onClick={handleLogout} disabled={isPending}
             className={`hover:text-rose-500 px-4 gap-x-1 ${rightActionClass} hover:bg-white hover:border-slate-300/90 disabled:opacity-50`}

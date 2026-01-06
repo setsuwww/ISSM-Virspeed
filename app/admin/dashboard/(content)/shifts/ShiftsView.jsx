@@ -11,6 +11,7 @@ import { capitalize } from "@/_function/globalFunction";
 import { apiFetchData } from "@/_lib/fetch";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 import { UserCircle } from "phosphor-react";
+import ShiftsActionHeader from './ShiftsActionHeader';
 
 export function ShiftsView({ data }) {
   const router = useRouter();
@@ -29,7 +30,8 @@ export function ShiftsView({ data }) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
+      <ShiftsActionHeader />
       <Table>
         <TableHeader>
           <TableRow>

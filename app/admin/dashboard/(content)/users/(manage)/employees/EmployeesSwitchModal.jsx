@@ -67,20 +67,18 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         {/* Header */}
         <div className="border-b px-6 py-5 shrink-0">
           <DialogHeader>
-            <DialogTitle>
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-indigo-100">
-                  <CalendarSync className="h-6 w-6 text-indigo-600" />
-                </div>
-
-                <div className="flex flex-col gap-0.5">
-                  <h1 className="text-xl font-semibold">Swap shift</h1>
-                  <p className="text-sm text-slate-500">
-                    Swap employee shift one by one
-                  </p>
-                </div>
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-indigo-100">
+                <CalendarSync className="h-6 w-6 text-indigo-600" />
               </div>
-            </DialogTitle>
+
+              <div className="flex flex-col gap-0.5">
+                <h1 className="text-xl font-semibold">Swap shift</h1>
+                <p className="text-sm text-slate-500">
+                  Swap employee shift one by one
+                </p>
+              </div>
+            </div>
           </DialogHeader>
         </div>
 
@@ -132,7 +130,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
 
           {/* Users list */}
           <section className="flex flex-1 flex-col overflow-hidden">
-            <ScrollArea className="flex-1 rounded-xl border bg-white p-3">
+            <ScrollArea className="max-h-100 rounded-xl border bg-white p-3">
               {loadingUsers ? (
                 <div className="flex items-center justify-center gap-2 py-10 text-xs text-slate-400">
                   <Loader className="h-4 w-4 animate-spin" />
