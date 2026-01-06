@@ -83,17 +83,17 @@ export default async function AdminDashboardPage() {
           color="bg-slate-500 text-white"
         />
 
-        <DashboardStats title="Morning Shifts" value={String(morningEmployees)}
+        <DashboardStats title="Morning Shifts" value={`${String(morningEmployees)} Users`}
           icon={<Sun strokeWidth={2} />} badges={morningStats}
           color="bg-gradient-to-br from-yellow-100 to-yellow-50 text-yellow-600"
         />
 
-        <DashboardStats title="Afternoon Shifts" value={String(afternoonEmployees)}
+        <DashboardStats title="Afternoon Shifts" value={`${String(afternoonEmployees)} Users`}
           icon={<SunMoon strokeWidth={2} />} badges={afternoonStats}
           color="bg-gradient-to-br from-orange-100 to-orange-50 text-orange-600"
         />
 
-        <DashboardStats title="Evening Shifts" value={String(eveningEmployees)}
+        <DashboardStats title="Evening Shifts" value={`${String(eveningEmployees)} Users`}
           icon={<Moon strokeWidth={2} />} badges={eveningStats}
           color="bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600"
         />

@@ -176,7 +176,6 @@ model Schedule {
   users     SchedulesOnUsers[]
   reminders  ScheduleReminder[]
 
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

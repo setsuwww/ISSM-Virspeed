@@ -16,7 +16,7 @@ import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
 import { createUser } from "@/_server/admin-action/userAction.js"
-import { capitalize, formatIntToTime } from "@/_function/globalFunction"
+import { capitalize, formatIntToTime, minutesToTime } from "@/_function/globalFunction"
 import { roleOptions } from "@/_constants/roleConstants"
 import { Loader } from 'lucide-react';
 
@@ -166,7 +166,7 @@ export default function CreateForm({ divisions, shifts }) {
               {form.workMode === "WORK_HOURS" && defaultdivisionHour && (
                 <div className="p-3 rounded-md bg-white/30 border text-sm">
                   <p>
-                    <strong className="text-slate-600">Division Hours : </strong> {formatIntToTime(defaultdivisionHour.startTime)} - {formatIntToTime(defaultdivisionHour.endTime)}
+                    <strong className="text-slate-600">Division Hours : </strong> {minutesToTime(defaultdivisionHour.startTime)} - {minutesToTime(defaultdivisionHour.endTime)}
                   </p>
                 </div>
               )}

@@ -21,7 +21,7 @@ export default function UsersModal({ open, onClose, title, users }) {
             <p className="text-sm text-slate-500">No users found.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-[320px] px-2 pb-4">
+          <ScrollArea className="max-h-80 px-2 pb-4">
             <ul className="space-y-1 px-4 pb-2">
               {users.map((u) => (
                 <li key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition border border-slate-200/60">
