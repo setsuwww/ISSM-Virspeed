@@ -12,7 +12,7 @@ import LoadingStates from '@/_components/common/LoadingStates';
 
 import { MainActionCard } from "./MainActionCard"
 import { MainStats } from "./MainStats"
-import { InputEarlyCODialog } from "./InputEarlyCODialog"
+import { InputEarlyCODialog } from "./InputEarlyCheckoutDialog"
 import { InputPermissionDialog } from "./InputPermissionDialog"
 
 export default function CheckinForm() {
@@ -165,11 +165,8 @@ export default function CheckinForm() {
           )}
         </CardContent>
       </Card>
-      <InputEarlyCODialog
-        open={showEarlyModal}
-        loading={isPending}
-        reason={earlyReason}
-        onChangeReason={setEarlyReason}
+      <InputEarlyCODialog open={showEarlyModal} loading={isPending}
+        reason={earlyReason} onChangeReason={setEarlyReason}
         onClose={() => setShowEarlyModal(false)}
         onSubmit={() =>
           startTransition(async () => {

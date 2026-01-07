@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
+import { CalendarDays } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
-import { Button } from "@/_components/ui/Button"
-import { ArrowUpDown, ArrowDownUp, CalendarDays } from "lucide-react"
+
+import HistoryActionHeader from "./HistoryActionHeader"
 
 import { attendancesStyles } from "@/_constants/attendanceConstants"
 import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
@@ -12,28 +13,33 @@ import { capitalize } from "@/_function/globalFunction"
 
 export default function HistoryTable({ data, initialOrder }) {
   const [order, setOrder] = useState(initialOrder)
+  const [statusFilter, setStatusFilter] = useState("all")
+  const [search, setSearch] = useState("")
+  const searchInputRef = useRef(null)
 
-  const sortedData = useMemo(() => {
-    return [...data].sort((a, b) =>
-      order === "asc"
-        ? a.dateValue - b.dateValue
-        : b.dateValue - a.dateValue
-    )
-  }, [data, order])
+  const filteredSortedData = useMemo(() => {
+    return data
+      .filter(att =>
+        statusFilter === "all" ? true : att.status === statusFilter
+      )
+      .filter(att =>
+        search ? att.dateLabel.toLowerCase().includes(search.toLowerCase()) : true
+      )
+      .sort((a, b) =>
+        order === "asc"
+          ? a.dateValue - b.dateValue
+          : b.dateValue - a.dateValue
+      )
+  }, [data, order, statusFilter, search])
 
   return (
     <div className="space-y-3">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOrder(o => (o === "asc" ? "desc" : "asc"))}
-        className="flex items-center gap-2"
-      >
-        {order === "asc"
-          ? <ArrowUpDown className="w-4 h-4" />
-          : <ArrowDownUp className="w-4 h-4" />}
-        Sort by date
-      </Button>
+      <HistoryActionHeader
+        order={order} onToggleOrder={() => setOrder(o => (o === "asc" ? "desc" : "asc"))}
+        statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
+        search={search} onSearchChange={setSearch}
+        searchInputRef={searchInputRef}
+      />
 
       <Table>
         <TableHeader className="bg-slate-50">
@@ -47,7 +53,7 @@ export default function HistoryTable({ data, initialOrder }) {
         </TableHeader>
 
         <TableBody>
-          {sortedData.map(att => (
+          {filteredSortedData.map(att => (
             <TableRow key={att.id}>
               <TableCell>
                 <div className="flex items-center gap-3">

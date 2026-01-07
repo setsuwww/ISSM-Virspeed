@@ -13,7 +13,7 @@ import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attedancesStyles, getDisplayStatus, normalizeRequestStatus } from "@/_constants/attendanceConstants"
+import { attendancesStyles, getDisplayStatus, normalizeRequestStatus } from "@/_constants/attendanceConstants"
 import { wordsLimit } from "@/_function/globalFunction"
 import { CheckCircle, XCircle } from "phosphor-react"
 
@@ -111,7 +111,7 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     </TableCell>
 
                     <TableCell>
-                      <Badge className={attedancesStyles[normalizeRequestStatus(req.status)]}>
+                      <Badge className={attendancesStyles[normalizeRequestStatus(req.status)]}>
                         {getDisplayStatus(req.status)}
                       </Badge>
                     </TableCell>
