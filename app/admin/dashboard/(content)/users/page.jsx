@@ -58,20 +58,20 @@ export default async function Page({ searchParams }) {
     }
 
     const divisionShift = !userShift && u.division?.shifts?.length
-        ? {
-          label: `${u.division.shifts[0].name} - (Normal)`,
-          start: u.division.shifts[0].startTime,
-          end: u.division.shifts[0].endTime,
-          type: "DIVISION",
-        } : null
+      ? {
+        label: `${u.division.shifts[0].name} - (Normal)`,
+        start: u.division.shifts[0].startTime,
+        end: u.division.shifts[0].endTime,
+        type: "DIVISION",
+      } : null
 
     const divisionTime = !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
-        ? {
-          label: u.division.name,
-          start: u.division.startTime,
-          end: u.division.endTime,
-          type: "DIVISION_TIME",
-        } : null
+      ? {
+        label: u.division.name,
+        start: u.division.startTime,
+        end: u.division.endTime,
+        type: "DIVISION_TIME",
+      } : null
 
     const finalShift = userShift || divisionShift || divisionTime
 

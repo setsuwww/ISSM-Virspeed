@@ -99,14 +99,14 @@ export default async function UserHistoryPage({ params, searchParams }) {
     <section>
       <DashboardHeader
         title={`Attendance History`}
-        subtitle={ profile ? `${profile.name} (${profile.email})` : "User"} useColor
+        subtitle={profile ? `${profile.name} (${profile.email})` : "User"} useColor
       />
 
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation
-            heading={ profile ? `${profile.name}` : "User"}
-            subheading={ profile ? `${profile.name}'s Attendance history detail` : "User"}
+            heading={profile ? `${profile.name}` : "User"}
+            subheading={profile ? `${profile.name}'s Attendance history detail` : "User"}
           />
         </ContentForm.Header>
 

@@ -10,7 +10,8 @@ import EmployeesTableButton from "./EmployeesTableButton";
 const PAGE_SIZE = 10;
 
 async function getEmployees(page = 1) {
-  return prisma.user.findMany({ where: { role: "EMPLOYEE", shiftId: { not: null }},
+  return prisma.user.findMany({
+    where: { role: "EMPLOYEE", shiftId: { not: null } },
     skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
     orderBy: { createdAt: "desc" },
     select: {
@@ -22,14 +23,14 @@ async function getEmployees(page = 1) {
           startTime: true, endTime: true,
         },
       },
-      division: { select: { id: true, name: true, type: true }},
+      division: { select: { id: true, name: true, type: true } },
     },
   });
 }
 
 async function getEmployeeCount() {
   return prisma.user.count({
-    where: { role: "EMPLOYEE", shiftId: { not: null }},
+    where: { role: "EMPLOYEE", shiftId: { not: null } },
   });
 }
 
@@ -63,10 +64,11 @@ export default async function EmployeesPage({ searchParams }) {
     createdAt: u.createdAt.toISOString(),
     updatedAt: u.updatedAt.toISOString(),
     shift: u.shift
-      ? { ...u.shift,
-          startTime: minutesToTime(u.shift.startTime),
-          endTime: minutesToTime(u.shift.endTime),
-        }
+      ? {
+        ...u.shift,
+        startTime: minutesToTime(u.shift.startTime),
+        endTime: minutesToTime(u.shift.endTime),
+      }
       : null,
   }));
 
@@ -90,8 +92,8 @@ export default async function EmployeesPage({ searchParams }) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts}/>
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees"/>
+          <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts} />
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees" />
         </ContentForm.Body>
       </ContentForm>
     </section>

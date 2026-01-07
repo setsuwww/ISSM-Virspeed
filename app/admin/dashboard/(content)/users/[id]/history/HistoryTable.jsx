@@ -14,7 +14,7 @@ import { ClipboardClock } from "lucide-react";
 import { Clock } from "phosphor-react";
 
 import HistoryActionHeader from "./HistoryActionHeader";
-import { useUserAttendanceHistoryHooks } from "@/_client/hooks/useUserAttendanceHistoryHooks";
+import { useUserAttendanceHistoryHooks } from "@/_client/hooks/admin/useUserAttendanceHistoryHooks";
 
 export default function UserHistoryTable({ history }) {
   const {

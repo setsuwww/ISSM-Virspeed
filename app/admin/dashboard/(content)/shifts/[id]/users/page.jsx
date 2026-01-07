@@ -17,32 +17,33 @@ export default async function ShiftUsersPage({ params, searchParams }) {
   const page = Number(searchParams?.page) || 1;
   const PAGE_SIZE = 10;
 
-const [shift, totalUsers] = await Promise.all([
-  prisma.shift.findUnique({ where: { id: shiftId },
-    select: {
-      id: true, type: true,
-      users: {
-        where: { role: "EMPLOYEE" },
-        select: { id: true }
+  const [shift, totalUsers] = await Promise.all([
+    prisma.shift.findUnique({
+      where: { id: shiftId },
+      select: {
+        id: true, type: true,
+        users: {
+          where: { role: "EMPLOYEE" },
+          select: { id: true }
+        },
       },
-    },
-  }),
-  prisma.user.count({ where: { shiftId, role: "EMPLOYEE" } }),
-]);
+    }),
+    prisma.user.count({ where: { shiftId, role: "EMPLOYEE" } }),
+  ]);
 
   if (!shift) return <div className="p-4">Shift not found</div>;
 
-const usersData = await prisma.user.findMany({
-  where: { shiftId, role: "EMPLOYEE" }, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
-  select: {
-    id: true, name: true, email: true, role: true,
-    createdAt: true, updatedAt: true,
-  },
-});
+  const usersData = await prisma.user.findMany({
+    where: { shiftId, role: "EMPLOYEE" }, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
+    select: {
+      id: true, name: true, email: true, role: true,
+      createdAt: true, updatedAt: true,
+    },
+  });
 
   const usersDataMapped = usersData.map(u => ({
     ...u, shift: shift.type,
-  })); 
+  }));
 
   const totalPages = Math.ceil(totalUsers / PAGE_SIZE);
   const title = capitalize(shift.type);

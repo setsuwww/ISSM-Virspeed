@@ -61,16 +61,16 @@ enum AttendanceStatus {
 }
 
 enum ShiftChangeStatus {
-  PENDING          
-  PENDING_TARGET   
-  PENDING_ADMIN    
+  PENDING
+  PENDING_TARGET
+  PENDING_ADMIN
   APPROVED
   REJECTED
 }
 
 model SystemConfig {
-  id           Int     @id @default(autoincrement())
-  allWfaActive Boolean @default(false)
+  id           Int      @id @default(autoincrement())
+  allWfaActive Boolean  @default(false)
   updatedAt    DateTime @updatedAt
 }
 
@@ -86,8 +86,8 @@ model Division {
   startTime Int?
   endTime   Int?
   parentId  Int?
-  parent    Division?        @relation("DivisionHierarchy", fields: [parentId], references: [id])
-  branches  Division[]       @relation("DivisionHierarchy")
+  parent    Division?      @relation("DivisionHierarchy", fields: [parentId], references: [id])
+  branches  Division[]     @relation("DivisionHierarchy")
 
   users     User[]
   shifts    Shift[]
@@ -104,23 +104,23 @@ model User {
   password String
   role     Role   @default(USER)
 
-  divisionId  Int?
-  shiftId     Int?
+  divisionId Int?
+  shiftId    Int?
 
-  division Division?  @relation(fields: [divisionId], references: [id], onDelete: SetNull)
-  shift  Shift?       @relation("ShiftUsers", fields: [shiftId], references: [id])
+  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  shift    Shift?    @relation("ShiftUsers", fields: [shiftId], references: [id])
 
-  schedules          SchedulesOnUsers[]
-  reminders          ScheduleReminder[]
-  customShifts       UserShiftAssignment[]
-  attendances        Attendance[]
+  schedules    SchedulesOnUsers[]
+  reminders    ScheduleReminder[]
+  customShifts UserShiftAssignment[]
+  attendances  Attendance[]
 
-  earlyCheckoutRequests   EarlyCheckoutRequest[]
-  shiftRequests           ShiftChangeRequest[] @relation("RequestedUser")     
-  createdRequests         ShiftChangeRequest[] @relation("RequestedByAdmin")  
-  targetShiftRequests     ShiftChangeRequest[] @relation("TargetUser")
-  leaveRequests           LeaveRequest[]
-  approvedLeaves          LeaveRequest[] @relation("LeaveApprovedBy")   
+  earlyCheckoutRequests EarlyCheckoutRequest[]
+  shiftRequests         ShiftChangeRequest[]   @relation("RequestedUser")
+  createdRequests       ShiftChangeRequest[]   @relation("RequestedByAdmin")
+  targetShiftRequests   ShiftChangeRequest[]   @relation("TargetUser")
+  leaveRequests         LeaveRequest[]
+  approvedLeaves        LeaveRequest[]         @relation("LeaveApprovedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -137,13 +137,13 @@ model Shift {
   divisionId Int?
   division   Division? @relation(fields: [divisionId], references: [id])
 
-  users              User[]                @relation("ShiftUsers")
-  assignments        UserShiftAssignment[]
-  attendances        Attendance[]
+  users       User[]                @relation("ShiftUsers")
+  assignments UserShiftAssignment[]
+  attendances Attendance[]
 
-  oldShiftRequests     ShiftChangeRequest[] @relation("OldShift")
-  newShiftRequests     ShiftChangeRequest[] @relation("NewShift")
-  targetShiftRequests  ShiftChangeRequest[] @relation("TargetShift")
+  oldShiftRequests    ShiftChangeRequest[] @relation("OldShift")
+  newShiftRequests    ShiftChangeRequest[] @relation("NewShift")
+  targetShiftRequests ShiftChangeRequest[] @relation("TargetShift")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -171,10 +171,11 @@ model Schedule {
   endDate     DateTime?
   endTime     String?
   divisionId  Int?
+  isActive    Boolean       @default(true)
 
-  division  Division? @relation(fields: [divisionId], references: [id])
+  division  Division?          @relation(fields: [divisionId], references: [id])
   users     SchedulesOnUsers[]
-  reminders  ScheduleReminder[]
+  reminders ScheduleReminder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -185,21 +186,21 @@ model SchedulesOnUsers {
   scheduleId Int
   userId     Int
 
-  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, userId])
 }
 
 model ScheduleReminder {
-  id          Int      @id @default(autoincrement())
-  scheduleId  Int
-  userId      Int
-  remindAt    DateTime
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  scheduleId Int
+  userId     Int
+  remindAt   DateTime
+  createdAt  DateTime @default(now())
 
-  schedule Schedule   @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, userId])
 }
@@ -208,7 +209,7 @@ model Attendance {
   id                  Int              @id @default(autoincrement())
   date                DateTime
   status              AttendanceStatus @default(ABSENT)
-  approval            ApprovalStatus?  
+  approval            ApprovalStatus?
   reason              String?
   adminReason         String?
   checkInTime         DateTime?
@@ -223,90 +224,85 @@ model Attendance {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  earlyCheckoutRequests   EarlyCheckoutRequest[]
-  divisionType            LocationType?
-  divisionStatus          LocationStatus?
+  earlyCheckoutRequests EarlyCheckoutRequest[]
+  divisionType          LocationType?
+  divisionStatus        LocationStatus?
 
   @@unique([userId, shiftId, date])
   @@index([userId, date])
 }
 
 model EarlyCheckoutRequest {
-  id           Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   userId       Int
   attendanceId Int?
 
-  reason       String
-  status       ApprovalStatus @default(PENDING)
-  adminReason  String?
+  reason      String
+  status      ApprovalStatus @default(PENDING)
+  adminReason String?
 
-  requestedAt DateTime @default(now())
+  requestedAt DateTime  @default(now())
   reviewedAt  DateTime?
 
-  user        User        @relation(fields: [userId], references: [id])
-  attendance  Attendance? @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id])
+  attendance Attendance? @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([attendanceId])
 }
 
 model LeaveRequest {
-  id            Int         @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
-  approvedBy    User?       @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
-  approvedById  Int?
+  approvedBy   User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  approvedById Int?
 
-  reason        String
-  adminReason   String?
+  reason      String
+  adminReason String?
 
-  startDate     DateTime
-  endDate       DateTime
+  startDate DateTime
+  endDate   DateTime
 
-  status        LeaveStatus @default(PENDING)
-
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model ShiftChangeRequest {
-  id              Int       @id @default(autoincrement())
-
-  user            User      @relation("RequestedUser", fields: [userId], references: [id])
-  userId          Int
-
-  requestedBy     User      @relation("RequestedByAdmin", fields: [requestedById], references: [id])
-  requestedById   Int
-
-  targetUser      User?     @relation("TargetUser", fields: [targetUserId], references: [id])
-  targetUserId    Int?
-
-  oldShift        Shift?    @relation("OldShift", fields: [oldShiftId], references: [id])
-  oldShiftId      Int?
-
-  newShift        Shift?    @relation("NewShift", fields: [newShiftId], references: [id])
-  newShiftId      Int?
-
-  targetShift     Shift?    @relation("TargetShift", fields: [targetShiftId], references: [id])
-  targetShiftId   Int?
-
-  reason          String
-  rejectReason    String?
-  startDate       DateTime
-  endDate         DateTime?
-  status          ShiftChangeStatus @default(PENDING_TARGET)
-
-  verifiedByTarget Boolean  @default(false)
-  verifiedByAdmin  Boolean  @default(false)
+  status LeaveStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model ShiftChangeRequest {
+  id Int @id @default(autoincrement())
 
+  user   User @relation("RequestedUser", fields: [userId], references: [id])
+  userId Int
 
+  requestedBy   User @relation("RequestedByAdmin", fields: [requestedById], references: [id])
+  requestedById Int
 
+  targetUser   User? @relation("TargetUser", fields: [targetUserId], references: [id])
+  targetUserId Int?
 
+  oldShift   Shift? @relation("OldShift", fields: [oldShiftId], references: [id])
+  oldShiftId Int?
+
+  newShift   Shift? @relation("NewShift", fields: [newShiftId], references: [id])
+  newShiftId Int?
+
+  targetShift   Shift? @relation("TargetShift", fields: [targetShiftId], references: [id])
+  targetShiftId Int?
+
+  reason       String
+  rejectReason String?
+  startDate    DateTime
+  endDate      DateTime?
+  status       ShiftChangeStatus @default(PENDING_TARGET)
+
+  verifiedByTarget Boolean @default(false)
+  verifiedByAdmin  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

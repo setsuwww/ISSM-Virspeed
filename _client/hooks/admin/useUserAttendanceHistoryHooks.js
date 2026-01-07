@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useHandleUserAttendanceHistory } from "../handlers/useHandleUserAttendaceHistory";
+import { useHandleUserAttendanceHistory } from "../../handlers/admin/useHandleUserAttendaceHistory";
 
 export function useUserAttendanceHistoryHooks(history = []) {
   const [search, setSearch] = useState("");

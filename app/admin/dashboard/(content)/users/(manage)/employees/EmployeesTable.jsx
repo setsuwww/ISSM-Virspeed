@@ -4,7 +4,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_component
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { EmployeesActionHeader } from "./EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
-import { useEmployeesHooks } from "@/_client/hooks/useEmployeesHooks";
+import { useEmployeesHooks } from "@/_client/hooks/admin/useEmployeesHooks";
 
 export default function EmployeesTable({ users, divisions, shifts }) {
   const {
@@ -34,7 +34,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         <TableHeader>
           <TableRow>
             <TableHead className="flex items-center">
-              <Checkbox checked={selected.length === data.length && data.length > 0} 
+              <Checkbox checked={selected.length === data.length && data.length > 0}
                 onCheckedChange={(value) => setSelected(value ? data.map((u) => u.id) : [])}
               />
             </TableHead>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { useHandleUsers } from "../handlers/useHandleUsers";
+import { useHandleUsers } from "../../handlers/admin/useHandleUsers";
 
 export function useUsersHooks(initialData) {
   const [search, setSearch] = useState("");

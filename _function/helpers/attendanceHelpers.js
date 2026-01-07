@@ -1,5 +1,6 @@
 import dayjs from "@/_lib/day"
 import { prisma } from "@/_lib/prisma"
+import { addDays, isWeekend } from "date-fns"
 
 const LATE_THRESHOLD_MINUTES = 10
 const ABSENT_THRESHOLD_MINUTES = 20
@@ -117,7 +118,8 @@ export function getDistanceMeters(pointA, pointB) {
 }
 
 export async function canUserCheckout(shiftId) {
-  const shift = await prisma.shift.findUnique({ where: { id: shiftId },
+  const shift = await prisma.shift.findUnique({
+    where: { id: shiftId },
     select: { endTime: true, startTime: true },
   })
   if (!shift || shift.endTime == null) return false
@@ -138,6 +140,20 @@ export function shouldRemindForgotCheckout(attendance) {
   if (!attendance.checkInTime || attendance.checkOutTime) return false
   const checkIn = dayjs(attendance.checkInTime)
   return dayjs().diff(checkIn, "minute") >= FORGOT_CHECKOUT_REMINDER_MINUTES
+}
+
+export function addWorkDays(startDate, days) {
+  let date = new Date(startDate)
+  let added = 0
+
+  while (added < days) {
+    date = addDays(date, 1)
+    if (!isWeekend(date)) {
+      added++
+    }
+  }
+
+  return date
 }
 
 export function calculateWorkHours(checkIn, checkOut, breakHours = 1) {

@@ -25,6 +25,15 @@ const variantStyles = {
     border: "border-rose-500",
     title: "text-rose-700",
   },
+
+  blue: {
+    border: "border-blue-500",
+    title: "text-blue-700",
+  },
+  indigo: {
+    border: "border-indigo-500",
+    title: "text-indigo-700",
+  }
 }
 
 function Dialog({ ...props }) {
@@ -101,7 +110,7 @@ function DialogContent({
         <DialogPrimitive.Content
           data-slot="dialog-content"
           className={cn(
-            "bg-white fixed top-1/2 left-1/2 z-50 grid w-full text-slate-500", 
+            "bg-white fixed top-1/2 left-1/2 z-50 grid w-full text-slate-500",
             "gap-4 rounded-lg border-0 p-6 shadow-lg duration-200",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",

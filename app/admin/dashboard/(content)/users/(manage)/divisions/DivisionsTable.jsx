@@ -14,7 +14,7 @@ import DivisionsActionHeader from "./DivisionsActionHeader"
 import DivisionRow from "./DivisionsRow"
 import DivisionStatusChanger from "./DivisionsStatusChanger"
 
-import { useDivisionsHooks } from "@/_client/hooks/useDivisionsHooks"
+import { useDivisionsHooks } from "@/_client/hooks/admin/useDivisionsHooks"
 import { useDivisionStore } from "@/_stores/useDivisionStore"
 
 export default function DivisionsTable({ data }) {

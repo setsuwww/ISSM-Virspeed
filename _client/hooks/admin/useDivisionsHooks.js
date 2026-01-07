@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import { useState, useMemo, useCallback } from "react";
-import { useHandleDivisions } from "../handlers/useHandleDivisions";
+import { useHandleDivisions } from "../../handlers/admin/useHandleDivisions";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -39,11 +39,11 @@ export function useDivisionsHooks(initialData) {
   const {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
-    onEdit, onDelete, 
+    onEdit, onDelete,
     onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
 
-  
+
   const handleActivateSelected = useCallback(
     () => onBulkUpdate(selectedIds, "ACTIVE"),
     [onBulkUpdate, selectedIds]

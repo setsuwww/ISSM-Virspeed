@@ -11,7 +11,8 @@ const PAGE_SIZE = 10
 export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1
   const [divisions, total] = await Promise.all([
-    prisma.division.findMany({ skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
+    prisma.division.findMany({
+      skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
       orderBy: { createdAt: "desc" },
       select: {
         id: true, name: true, location: true, type: true, status: true,
@@ -23,7 +24,8 @@ export default async function Page({ searchParams }) {
   ])
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
-  const formattedDivisions = divisions.map((division) => ({...division,
+  const formattedDivisions = divisions.map((division) => ({
+    ...division,
     startTime: minutesToTime(division.startTime),
     endTime: minutesToTime(division.endTime)
   }))
