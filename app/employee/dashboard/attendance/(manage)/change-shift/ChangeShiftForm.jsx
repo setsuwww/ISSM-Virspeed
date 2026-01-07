@@ -4,8 +4,10 @@ import { useState } from "react"
 import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
 import { Textarea } from "@/_components/ui/Textarea"
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select"
-import { CalendarDays, CircleUserRound, Loader } from "lucide-react"
+import { Popover, PopoverTrigger, PopoverContent } from "@/_components/ui/Popover"
+import { Command, CommandInput, CommandItem, CommandList, CommandEmpty } from "@/_components/ui/Command"
+import { Check } from "lucide-react"
+import { CalendarDays, Loader } from "lucide-react"
 import { toast } from "sonner"
 import { apiFetchData } from "@/_lib/fetch"
 import ContentForm from '@/_components/common/ContentForm';
@@ -44,6 +46,13 @@ export default function ChangeShiftForm({ employees = [] }) {
 
   const disabled = loading || !selectedUser || !reason.trim() || !startValid || !endValid
 
+  const handleCancel = () => {
+    setSelectedUser("")
+    setStartDate(todayIso)
+    setEndDate(todayIso)
+    setReason("")
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!startValid) return toast.error("Start date must be today or later.")
@@ -57,12 +66,13 @@ export default function ChangeShiftForm({ employees = [] }) {
       const payload = {
         targetUserId: Number(target.id),
         newShiftId: target.shiftId,
-        startDate: toLocalISOString(startDate),  
-        endDate: endDate ? toLocalISOString(endDate) : null, 
+        startDate: toLocalISOString(startDate),
+        endDate: endDate ? toLocalISOString(endDate) : null,
         reason: reason.trim(),
       }
 
-      await apiFetchData({ url: "/shifts/user-side-change", method: "post", data: payload,
+      await apiFetchData({
+        url: "/shifts/user-side-change", method: "post", data: payload,
         successMessage: "Shift change request submitted successfully.",
         errorMessage: "Failed to submit shift change request.",
       })
@@ -71,63 +81,70 @@ export default function ChangeShiftForm({ employees = [] }) {
       setStartDate(todayIso)
       setEndDate(todayIso)
       setReason("")
-    } 
-    catch (err) {console.error("Submit error:", err)} 
-    finally { setLoading(false)}
+    }
+    catch (err) { console.error("Submit error:", err) }
+    finally { setLoading(false) }
   }
 
   return (
     <ContentForm>
       <ContentForm.Header>
-        <ContentInformation heading="Change shift form" subheading="Send a change shift request to another employee"/>
+        <ContentInformation heading="Change shift form" subheading="Send a change shift request to another employee"
+          show buttonText="History" href="/employee/dashboard/attendance/change-shift/history" variant="outline"
+        />
       </ContentForm.Header>
 
       <ContentForm.Body>
         <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl border border-slate-200">
           <div className="space-y-2">
             <Label>Select Employee</Label>
-            <Select value={String(selectedUser)} onValueChange={(v) => setSelectedUser(String(v))} disabled={loading}>
-              <SelectTrigger className="border-slate-200">
-                <SelectValue>
-                  {selectedUser ? ((() => {
-                    const emp = employees.find((e) => String(e.id) === String(selectedUser))
-                      if (!emp) return "Choose an employee"
-                      return (
-                        <div className="flex items-center text-left space-x-2">
-                          <span className="text-xs font-medium text-white bg-slate-600 px-2 py-0.5 rounded-sm">
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" role="combobox" className="w-full justify-between text-left"
+                  disabled={loading}
+                >
+                  {selectedUser ? employees.find(e => String(e.id) === selectedUser)?.name : "Search employee..."}
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-[420px] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Search by name or email..." />
+
+                  <CommandList className="p-2">
+                    <CommandEmpty>No employee found.</CommandEmpty>
+
+                    {employees.map(emp => (
+                      <CommandItem
+                        key={emp.id}
+                        value={`${emp.name} ${emp.email}`}
+                        onSelect={() => setSelectedUser(String(emp.id))}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-slate-600">
                             {emp.name}
                           </span>
-                          <span className={`${shiftStyles[emp.shift.type]} text-xs px-2 rounded-sm border`}>
+                          <span className="text-xs text-slate-400">
                             {emp.email}
                           </span>
                         </div>
-                      )
-                    })()) : ("Choose an employee")}
-                </SelectValue>
-              </SelectTrigger>
 
-              <div className="text-xs text-slate-400">
-                Select the employee whose shift you want to change.
-              </div>
+                        <span className={`text-xs px-2 py-0.5 rounded-sm ${shiftStyles[emp.shift?.type]}`}>{capitalize(emp.shift?.type || "No Shift")}</span>
 
-              <SelectContent>
-                {employees.map((emp) => (
-                  <SelectItem key={emp.id} value={String(emp.id)}>
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-slate-200 text-slate-600 p-2 rounded-full">
-                        <CircleUserRound strokeWidth={1} />
-                      </div>
-                      <div className="flex flex-col p-1">
-                        <span className="text-xs text-slate-600">
-                          {emp.name} - {capitalize(emp.shift?.type) || "No Shift"}
-                        </span>
-                        <span className="text-xs text-slate-400">{emp.email}</span>
-                      </div>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                        {selectedUser === String(emp.id) && (
+                          <Check className="ml-auto h-4 w-4 opacity-60" />
+                        )}
+                      </CommandItem>
+                    ))}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+
+            <p className="text-xs text-slate-400">
+              Search by employee name or email.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -159,10 +176,15 @@ export default function ChangeShiftForm({ employees = [] }) {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={disabled}>
-            {loading && <Loader className="animate-spin mr-2 h-4 w-4" />}
-            Submit Request
-          </Button>
+          <div className="flex items-center space-x-2 justify-start">
+            <Button variant="outline" onClick={handleCancel} disabled={disabled}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={disabled}>
+              {loading && <Loader className="animate-spin mr-2 h-4 w-4" />}
+              Submit Request
+            </Button>
+          </div>
         </form>
       </ContentForm.Body>
     </ContentForm>

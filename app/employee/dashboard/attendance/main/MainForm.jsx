@@ -1,16 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-  LogIn,
-  LogOut,
-  Plane,
-  Shuffle,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Circle,
-} from "lucide-react"
+import { LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
 
 import { Card, CardContent } from "@/_components/ui/Card"
 import { ContentInformation } from "@/_components/common/ContentInformation"
@@ -23,6 +14,7 @@ import { MainActionCard } from "./MainActionCard"
 import { MainStats } from "./MainStats"
 import { EarlyCheckoutModal } from "./modal/EarlyCheckoutModal"
 import { PermissionModal } from "./modal/PermissionModal"
+import { LeaveModal } from "./modal/LeaveModal"
 
 export default function CheckinForm() {
   const [user, setUser] = useState(null)
@@ -31,8 +23,10 @@ export default function CheckinForm() {
 
   const [reason, setReason] = useState("")
   const [earlyReason, setEarlyReason] = useState("")
+  const [leaveReason, setLeaveReason] = useState("")
   const [showEarlyModal, setShowEarlyModal] = useState(false)
   const [showPermission, setShowPermission] = useState(false)
+  const [showLeave, setShowLeave] = useState(false)
 
   const {
     isPending,
@@ -40,6 +34,7 @@ export default function CheckinForm() {
     checkOut,
     earlyCheckout,
     permission,
+    leave,
   } = useUserSendAttendance()
 
   useEffect(() => {
@@ -91,16 +86,16 @@ export default function CheckinForm() {
             subheading="Click once at cards below to send your status"
           />
 
-          <MainActionCard
-            icon={<LogIn />}
-            title="Check In"
-            description="Start your working time"
-            color="teal"
-            onClick={checkIn}
-            loading={isPending}
-          />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <MainActionCard
+              icon={<LogIn />}
+              title="Check In"
+              description="Start your working time"
+              color="teal"
+              onClick={checkIn}
+              loading={isPending}
+            />
+
             <MainActionCard
               icon={<LogOut />}
               title="Check Out"
@@ -108,6 +103,19 @@ export default function CheckinForm() {
               color="rose"
               onClick={checkOut}
               loading={isPending}
+            />
+          </div>
+
+          <ContentInformation
+            heading="Send Request"
+            subheading="Change your internal shift / attendance"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-3">
+            <MainActionCard icon={<Plane />} title="Permission"
+              description="Ask for permission"
+              color="blue"
+              onClick={() => setShowPermission(v => !v)}
             />
 
             <MainActionCard
@@ -118,18 +126,13 @@ export default function CheckinForm() {
               onClick={() => setShowEarlyModal(true)}
               loading={isPending}
             />
-          </div>
 
-          <ContentInformation
-            heading="Send Request"
-            subheading="Change your internal shift / attendance"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <MainActionCard icon={<Plane />} title="Permission"
-              description="Ask for leave or permission"
-              color="blue"
-              onClick={() => setShowPermission(v => !v)}
+            <MainActionCard
+              icon={<Plane />}
+              title="Leave"
+              description="Ask for leave"
+              color="violet"
+              onClick={() => setShowLeave(true)}
             />
 
             <MainActionCard
@@ -162,6 +165,19 @@ export default function CheckinForm() {
             setReason("")
             setShowPermission(false)
           })
+        }
+      />
+
+      <LeaveModal
+        open={showLeave}
+        onOpenChange={setShowLeave}
+        onSubmit={(data) =>
+          leave({
+            startDate: data.startDate,
+            endDate: data.endDate,
+            reason: data.type,
+          },
+            () => setShowLeave(false))
         }
       />
     </div>

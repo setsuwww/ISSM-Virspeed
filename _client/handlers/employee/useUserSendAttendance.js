@@ -8,6 +8,7 @@ import {
   userSendCheckOut,
   userSendEarlyCheckout,
   userSendPermissionRequest,
+  userSendLeaveRequest,
 } from "@/_server/employee-action/attendanceAction"
 
 export function useUserSendAttendance() {
@@ -77,11 +78,26 @@ export function useUserSendAttendance() {
       onSuccess?.()
     })
 
+  const leave = (payload, onSuccess) =>
+    startTransition(async () => {
+      const res = await userSendLeaveRequest(payload)
+
+      if (res?.error) {
+        toast.error(res.error)
+        return
+      }
+
+      toast.success("Leave request sent")
+      onSuccess?.()
+    })
+
+
   return {
     isPending,
     checkIn,
     checkOut,
     earlyCheckout,
     permission,
+    leave,
   }
 }

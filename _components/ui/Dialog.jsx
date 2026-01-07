@@ -33,6 +33,10 @@ const variantStyles = {
   indigo: {
     border: "border-indigo-500",
     title: "text-indigo-700",
+  },
+  violet: {
+    border: "border-violet-500",
+    title: "text-violet-700",
   }
 }
 

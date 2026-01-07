@@ -1,17 +1,17 @@
 export const LEAVE_RULES = {
   ANNUAL: {
-    label: "Cuti Tahunan",
+    label: "Annual Leave",
     maxWorkDays: 12,
-    description: "Minimal 12 hari kerja setelah 12 bulan bekerja",
+    description: "Minimum 12 working days entitlement after 12 months of service",
   },
   MATERNITY: {
-    label: "Cuti Melahirkan / Keguguran",
+    label: "Maternity / Miscarriage Leave",
     months: 3,
-    description: "1.5 bulan sebelum & 1.5 bulan sesudah",
+    description: "1.5 months before and 1.5 months after childbirth",
   },
   SICK: {
-    label: "Cuti Sakit",
+    label: "Sick Leave",
     months: 12,
-    description: "Hingga 12 bulan dengan surat dokter",
+    description: "Up to 12 months with a valid medical certificate",
   },
 }

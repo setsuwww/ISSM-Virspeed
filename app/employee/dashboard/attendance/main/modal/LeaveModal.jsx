@@ -11,8 +11,9 @@ import { Button } from "@/_components/ui/Button"
 
 import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule"
 import { addWorkDays } from "@/_function/helpers/attendanceHelpers"
+import { WarningCircle } from "phosphor-react"
 
-export function LeaveDialog({
+export function LeaveModal({
   open,
   onOpenChange,
   onSubmit,
@@ -58,14 +59,14 @@ export function LeaveDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg" variant="violet">
         <DialogHeader>
           <DialogTitle>Leave</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <Label>Leave Type</Label>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label>Leave Type<span className="text-red-500">*</span></Label>
             <Select value={type} onValueChange={setType}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose Leave type" />
@@ -80,14 +81,14 @@ export function LeaveDialog({
             </Select>
 
             {type && (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {LEAVE_RULES[type].description}
               </p>
             )}
           </div>
 
-          <div className="space-y-1">
-            <Label>Start date</Label>
+          <div className="space-y-2 ">
+            <Label>Start date<span className="text-red-500">*</span></Label>
             <Input
               type="date"
               value={startDate}
@@ -96,16 +97,16 @@ export function LeaveDialog({
             />
           </div>
 
-          <div className="space-y-1">
-            <Label>End date</Label>
+          <div className="space-y-2 ">
+            <Label>End date <span className="text-xs font-light text-slate-400">(Auto fill)</span></Label>
             <Input
               type="date"
               value={endDate}
               disabled
               className="bg-slate-100 cursor-not-allowed"
             />
-            <p className="text-xs text-slate-400">
-              End Date is auto filled based on Leave type & Start Date
+            <p className="flex items-center gap-x-1 text-xs text-blue-500">
+              <WarningCircle /> End Date is auto filled based on Leave type & Start Date
             </p>
           </div>
         </div>
@@ -115,7 +116,7 @@ export function LeaveDialog({
             Cancel
           </Button>
 
-          <Button onClick={handleSubmit} disabled={!type || !startDate || !endDate}>
+          <Button onClick={handleSubmit} disabled={!type || !startDate || !endDate} className="bg-violet-600 hover:bg-violet-700 text-white">
             Submit
           </Button>
         </DialogFooter>

@@ -37,6 +37,12 @@ export const attendanceActionTheme = {
     title: "text-blue-700",
     desc: "text-blue-500",
   },
+  violet: {
+    border: "border-violet-200 hover:border-violet-300",
+    iconBg: "bg-violet-100 text-violet-600",
+    title: "text-violet-700",
+    desc: "text-violet-500",
+  },
   slate: {
     border: "border-slate-200 hover:border-slate-300",
     iconBg: "bg-slate-100 text-slate-600",

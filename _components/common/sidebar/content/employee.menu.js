@@ -24,7 +24,7 @@ export const employeeMenu = (changeShiftCount, scheduleCount) => [
   },
   {
     type: "link",
-    label: "Your Schedule",
+    label: "Schedule",
     href: "/employee/dashboard/my-schedule",
     icon: "Calendar",
     badge: scheduleCount

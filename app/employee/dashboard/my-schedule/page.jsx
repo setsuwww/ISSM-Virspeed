@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/_lib/auth"
 import { prisma } from "@/_lib/prisma"
 import ContentForm from "@/_components/common/ContentForm"
 import ScheduleList from "./ScheduleList"
+import { ContentInformation } from "@/_components/common/ContentInformation"
 
 export const revalidate = 60
 
@@ -67,6 +68,9 @@ export default async function Page() {
 
   return (
     <ContentForm>
+      <ContentForm.Header>
+        <ContentInformation heading="My Schedule" subheading="List of my schedules" />
+      </ContentForm.Header>
       <ContentForm.Body>
         <ScheduleList schedules={normalizedSchedules} />
       </ContentForm.Body>
