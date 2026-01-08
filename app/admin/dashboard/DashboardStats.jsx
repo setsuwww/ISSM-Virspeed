@@ -19,10 +19,10 @@ function DashboardStatsComponent({
     if (value === undefined || value === null || value === 0) return null;
 
     return (
-      <div className="flex items-center space-x-1 ml-2">
+      <div className="flex items-center space-x-0.5 ml-2">
         <span
           key={label}
-          className={`h-6 px-1.5 rounded-sm text-[10px] font-semibold flex items-center justify-center gap-0.5 ${className}`}
+          className={`h-6 px-1.5 rounded-sm text-[10px] font-medium flex items-center justify-center mt-0 md:mt-0.5 ${className}`}
         >
           {label} : {value} 
         </span>
@@ -52,7 +52,7 @@ function DashboardStatsComponent({
           {caption && (<span className="mr-2">{caption}</span>)}
           <span className={valueColor}>{value}</span>
 
-          <span className="flex gap-x-1">
+          <span className="flex">
             {renderBadge("A", badges?.ABSENT, "bg-red-100/60 text-red-700")}
             {renderBadge("L", badges?.LATE, "bg-yellow-100/60 text-yellow-700")}
             {renderBadge("P", badges?.PERMISSION, "bg-blue-100/60 text-blue-700")}
