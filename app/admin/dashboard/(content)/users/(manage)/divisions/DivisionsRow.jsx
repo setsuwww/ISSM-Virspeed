@@ -52,16 +52,9 @@ function DivisionRow({
       </TableCell>
 
       <TableCell>
-        <div className="flex items-center gap-2 text-slate-600">
-          <div className="p-2 text-amber-700 bg-amber-500/15 rounded-full">
-            <AlarmClock size={14} strokeWidth={1.5} />
-          </div>
-          <span>
-            {division.startTime && division.endTime
-              ? `${division.startTime} - ${division.endTime}`
-              : "-"}
-          </span>
-        </div>
+        <span className="text-slate-600">
+          {division.startTime && division.endTime ? `${division.startTime} - ${division.endTime}` : "-"}
+        </span>
       </TableCell>
 
       <TableCell>
