@@ -48,7 +48,7 @@ function DashboardStatsComponent({
             </Link>
           )}
         </div>
-        <p className="flex items-center text-xl font-semibold">
+        <div className="flex items-center text-xl font-semibold">
           {caption && (<span className="mr-2">{caption}</span>)}
           <span className={valueColor}>{value}</span>
 
@@ -57,7 +57,7 @@ function DashboardStatsComponent({
             {renderBadge("L", badges?.LATE, "bg-yellow-100/60 text-yellow-700")}
             {renderBadge("P", badges?.PERMISSION, "bg-blue-100/60 text-blue-700")}
           </span>
-        </p>
+        </div>
       </div>
     </div>
   )
