@@ -2,14 +2,39 @@
 
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
-import { determineAttendanceStatus } from "@/_function/helpers/attendanceHelpers"
-import dayjs from "@/_lib/day"
 
-import { evaluateAttendancePolicy } from "@/_function/helpers/attendanceHelpers"
+import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout } from "@/_function/helpers/attendanceHelpers"
+import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
 
-export async function userSendCheckIn(currentCoords) {
+export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
-  if (!user) throw new Error("Unauthorized")
+  if (!user?.shiftId) return { error: "Unauthorized" }
+
+  const shift = await prisma.shift.findUnique({
+    where: { id: user.shiftId },
+    include: { division: true },
+  })
+
+  if (!shift?.division) {
+    return { error: "Shift atau divisi tidak ditemukan" }
+  }
+
+  const policy = evaluateAttendancePolicy({ division: shift.division })
+
+  return {
+    requireLocation: policy.ignoreLocation !== true,
+    toast: policy.toast,
+  }
+}
+
+export async function userSendCheckIn(coords) {
+  const user = await getCurrentUser()
+  if (!user?.id || !user.shiftId) {
+    return { error: "Unauthorized" }
+  }
+
+  const now = getNowJakarta()
+  const today = getTodayStartJakarta().toDate()
 
   const shift = await prisma.shift.findUnique({
     where: { id: user.shiftId },
@@ -20,41 +45,23 @@ export async function userSendCheckIn(currentCoords) {
     return { error: "Shift atau divisi tidak ditemukan" }
   }
 
-  const division = shift.division
-
-  if (!currentCoords) {
-    const policy = evaluateAttendancePolicy({ division })
-
-    return {
-      success: true,
-      requireLocation: policy.ignoreLocation !== true,
-      toast: policy.toast,
-      saved: false,
-    }
-  }
-
   const policy = evaluateAttendancePolicy({
-    division,
-    currentCoords,
+    division: shift.division,
+    currentCoords: coords,
   })
 
   if (!policy.allowed) {
-    return { error: policy.message }
+    return { error: policy.message ?? "Check-in tidak diizinkan" }
   }
 
-  if (!policy.save) {
-    return {
-      success: true,
-      toast: policy.toast,
-      saved: false,
-    }
+  let status
+  try {
+    status = await determineAttendanceStatus(user.shiftId)
+  } catch (err) {
+    return { error: err.message }
   }
 
-  const status = await determineAttendanceStatus(user.shiftId)
-
-  const today = dayjs().startOf("day").toDate()
-
-  await prisma.attendance.upsert({
+  const existing = await prisma.attendance.findUnique({
     where: {
       userId_shiftId_date: {
         userId: user.id,
@@ -62,28 +69,79 @@ export async function userSendCheckIn(currentCoords) {
         date: today,
       },
     },
-    update: {
-      checkInTime: new Date(),
-      status,
+  })
+
+  if (existing?.checkInTime) {
+    return { error: "Anda sudah check-in hari ini" }
+  }
+
+  if (!policy.save) {
+    return {
+      success: true,
+      skipped: true,
+      toast: policy.toast,
+    }
+  }
+
+  const attendance = await prisma.attendance.upsert({
+    where: {
+      userId_shiftId_date: {
+        userId: user.id,
+        shiftId: user.shiftId,
+        date: today,
+      },
     },
     create: {
       userId: user.id,
       shiftId: user.shiftId,
       date: today,
       status,
-      checkInTime: new Date(),
+      checkInTime: now.toDate(),
+      divisionType: shift.division.type,
+      divisionStatus: shift.division.status,
+    },
+    update: {
+      status,
+      checkInTime: now.toDate(),
     },
   })
 
-  return { success: true, saved: true }
+  return { success: true, attendance }
+}
+
+export async function userSendCheckOut() {
+  const user = await getCurrentUser()
+  if (!user?.shiftId) {
+    return { error: "User tidak memiliki shift aktif" }
+  }
+
+  const allowed = await canUserCheckout(user.shiftId)
+
+  if (!allowed) {
+    return { error: "Belum waktunya checkout" }
+  }
+
+  const now = getNowJakarta()
+
+  await prisma.attendance.updateMany({
+    where: {
+      userId: user.id,
+      checkOutTime: null,
+    },
+    data: {
+      checkOutTime: now.toDate(),
+    },
+  })
+
+  return { success: true }
 }
 
 export async function userSendEarlyCheckout(reason) {
   const user = await getCurrentUser()
-  if (!user || !user.shiftId) return { error: "Unauthorized" }
+  if (!user?.shiftId) return { error: "Unauthorized" }
   if (!reason.trim()) return { error: "Reason is required" }
 
-  const today = dayjs().startOf("day").toDate()
+  const today = getTodayStartJakarta().toDate()
 
   const attendance = await prisma.attendance.findUnique({
     where: {
@@ -110,38 +168,11 @@ export async function userSendEarlyCheckout(reason) {
   return { success: true }
 }
 
-export async function userSendCheckOut() {
-  const user = await getCurrentUser()
-  if (!user?.shiftId) return { error: "User tidak memiliki shift aktif" }
-
-  const shift = await prisma.shift.findUnique({
-    where: { id: user.shiftId },
-    select: { endTime: true },
-  })
-  if (!shift) return { error: "Shift tidak ditemukan" }
-
-  const now = dayjs()
-  const shiftEnd = dayjs().startOf("day").add(shift.endTime, "minute")
-
-  const diff = shiftEnd.diff(now, "minute")
-
-  if (diff > 5) {
-    return { error: `Belum waktunya checkout. Tunggu sampai ${shiftEnd.format("HH:mm")}.` }
-  }
-
-  await prisma.attendance.updateMany({
-    where: { userId: user.id, checkOutTime: null },
-    data: { checkOutTime: now.toDate() },
-  })
-
-  return { success: true }
-}
-
 export async function userSendPermissionRequest(reason) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
 
-  const today = dayjs().startOf("day").toDate()
+  const today = getTodayStartJakarta().toDate()
 
   await prisma.attendance.upsert({
     where: {
@@ -169,7 +200,11 @@ export async function userSendPermissionRequest(reason) {
   return { success: true }
 }
 
-export async function userSendLeaveRequest({ startDate, endDate, reason }) {
+export async function userSendLeaveRequest({
+  startDate,
+  endDate,
+  reason,
+}) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
 
@@ -177,8 +212,8 @@ export async function userSendLeaveRequest({ startDate, endDate, reason }) {
     return { error: "Invalid input data" }
   }
 
-  const start = dayjs(startDate).startOf("day").toDate()
-  const end = dayjs(endDate).startOf("day").toDate()
+  const start = getNowJakarta(startDate).startOf("day").toDate()
+  const end = getNowJakarta(endDate).startOf("day").toDate()
 
   await prisma.leaveRequest.create({
     data: {

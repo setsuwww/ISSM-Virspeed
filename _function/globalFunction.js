@@ -4,12 +4,14 @@ import { enUS } from "date-fns/locale";
 export const capitalize = (s) => typeof s === "string" && s.length ? s[0].toUpperCase() + s.slice(1).toLowerCase() : "";
 
 export const wordsLimit = (text, words = 10, end = "...") => {
+  if (typeof text !== "string" || !text.trim()) return "-";
+
   const arr = text.trim().split(/\s+/);
 
   if (arr.length <= words) return text;
 
   return arr.slice(0, words).join(" ") + end;
-}
+};
 
 export const safeToISOString = (v) => {
   const d = v ? new Date(v) : null;

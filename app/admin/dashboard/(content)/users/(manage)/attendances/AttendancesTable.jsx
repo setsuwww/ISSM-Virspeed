@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useMemo } from "react"
-import { CalendarFold, CircleUserRound } from "lucide-react"
+import { CalendarFold, CircleUserRound, Loader, ChevronDown } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -12,7 +12,7 @@ import { AttendancesActionHeader } from "./AttendancesActionHeader"
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/attendanceConstants"
 
-import { safeFormat, capitalize } from "@/_function/globalFunction"
+import { safeFormat, capitalize, wordsLimit } from "@/_function/globalFunction"
 import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"
 
 export default function AttendancesTableClient() {
@@ -60,8 +60,11 @@ export default function AttendancesTableClient() {
         />
       </div>
 
-      {isPending ? (<div className="text-center py-6 text-slate-500">Loading...</div>) 
-      : (
+      {isPending ? (
+        <div className="flex items-center justify-center text-center py-6 text-slate-500">
+          <Loader className="w-4 h-4 animate-spin mr-1" /> Loading...
+        </div>
+      ) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -117,10 +120,13 @@ export default function AttendancesTableClient() {
                   <TableCell>
                     <Badge className={`${attendancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
                       {capitalize(att.status)}
+                      {att.status === "PERMISSION" && att.approval === "PENDING" && (
+                        <ChevronDown size={30} />
+                      )}
                     </Badge>
                   </TableCell>
 
-                  <TableCell>{att.reason ?? "-"}</TableCell>
+                  <TableCell>{wordsLimit(att.reason, 5)}</TableCell>
                 </TableRow>
               ))
             ) : (
