@@ -8,24 +8,11 @@ const sizeClasses = {
   lg: "h-10 px-4 text-base",
 };
 
-function Input({
-  className,
-  type = "text",
-  size = "md",
-  typeSearch = false,
-  typeDate = false,
-  value,
-  onChange,
-  ...props
-}) {
-  const baseClasses =
-    "file:text-slate-600 placeholder:text-slate-500 flex w-full min-w-0 rounded-lg border transition-[color,box-shadow,border] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
-
-  const defaultFocus =
-    "border-slate-300 bg-white focus-visible:border-slate-300 focus-visible:ring-[4px] focus-visible:ring-slate-100 shadow-xs";
-
-  const searchFocus =
-    "border-slate-300/50 bg-slate-50/90 focus-visible:border-slate-300/50 focus-visible:ring-slate-100 caret-slate-400";
+function Input({ className, type = "text", size = "md", typeSearch = false, typeDate = false, value, onChange, ...props }) {
+  
+  const baseClasses = "file:text-slate-600 placeholder:text-slate-500 flex w-full min-w-0 rounded-lg border transition-[color,box-shadow,border] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
+  const defaultFocus = "border-slate-300/60 bg-white focus-visible:border-slate-300 focus-visible:ring-[4px] focus-visible:ring-slate-100 shadow-2xs";
+  const searchFocus = "border-slate-300/50 bg-slate-50/90 focus-visible:border-slate-300/50 focus-visible:ring-slate-100 caret-slate-400";
 
   if (typeDate) {
     return (

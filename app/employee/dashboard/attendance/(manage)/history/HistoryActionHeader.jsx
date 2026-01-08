@@ -13,7 +13,7 @@ export default function HistoryActionHeader({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button variant="outline" size="sm" onClick={onToggleOrder} className="flex items-center gap-2">
+      <Button variant="outline" onClick={onToggleOrder} className="flex items-center gap-2">
         <span className="font-semibold text-slate-600">Sort:</span> <span className="text-slate-500">{order === "asc" ? "Oldest" : "Newest"}</span>
         {order === "asc" ? <ArrowUpDown className="w-3 h-3 text-slate-400" /> : <ArrowDownUp className="w-3 h-3 text-slate-400" />}
       </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/_components/ui/Button";
@@ -11,18 +12,25 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { apiFetchData } from "@/_lib/fetch";
 import { timeToMinutes, minutesToTime, capitalize } from "@/_function/globalFunction";
-import {  } from "@/_function/globalFunction";
-import { Loader } from "lucide-react";
+
+import { updateShift } from "@/_server/admin-action/shiftAction";
 
 export default function EditShiftForm({ shift, divisions }) {
   const router = useRouter();
 
   const [type, setType] = useState(shift?.type || "MORNING");
   const [name, setName] = useState(shift?.name || "");
-  const [startTime, setStartTime] = useState(shift?.startTime ? minutesToTime(shift.startTime) : "");
-  const [endTime, setEndTime] = useState(shift?.endTime ? minutesToTime(shift.endTime) : "");
+  const [startTime, setStartTime] = useState(
+    shift?.startTime !== null && shift?.startTime !== undefined
+      ? minutesToTime(shift.startTime)
+      : ""
+  )
+  const [endTime, setEndTime] = useState(
+    shift?.endTime !== null && shift?.endTime !== undefined
+      ? minutesToTime(shift.endTime)
+      : ""
+  )
   const [divisionId, setDivisionId] = useState(String(shift?.divisionId || "NONE"));
   const [loading, setLoading] = useState(false);
 
@@ -30,43 +38,41 @@ export default function EditShiftForm({ shift, divisions }) {
     if (shift) {
       setType(shift.type || "MORNING");
       setName(shift.name || "");
-      setStartTime(shift.startTime ? minutesToTime(shift.startTime) : "");
-      setEndTime(shift.endTime ? minutesToTime(shift.endTime) : "");
+      setStartTime(
+        shift.startTime !== null && shift.startTime !== undefined
+          ? minutesToTime(shift.startTime)
+          : ""
+      )
+      setEndTime(
+        shift.endTime !== null && shift.endTime !== undefined
+          ? minutesToTime(shift.endTime)
+          : ""
+      )
       setDivisionId(String(shift.divisionId || "NONE"));
     }
   }, [shift]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (divisionId === "NONE") {
-      alert("Please select a division for this shift!");
-      return;
+      alert("Please select a division for this shift!")
+      return
     }
 
-    const payload = {
-      id: shift.id,
-      type,
-      name,
-      startTime: timeToMinutes(startTime),
-      endTime: timeToMinutes(endTime),
-      divisionId: parseInt(divisionId),
-    };
+    try { setLoading(true)
+      await updateShift(shift.id, {
+        type, name,
+        startTime: timeToMinutes(startTime),
+        endTime: timeToMinutes(endTime),
+        divisionId: parseInt(divisionId),
+      })
 
-    try {
-      setLoading(true);
-      await apiFetchData({
-        url: `/shifts/${shift.id}`,
-        method: "put",
-        data: payload,
-        successMessage: "Shift updated successfully!",
-        errorMessage: "Failed to update shift",
-        onSuccess: () => router.push("/admin/dashboard/shifts"),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      router.push("/admin/dashboard/shifts")
+    } 
+    finally { setLoading(false)}
+  }
+
 
   return (
     <section>

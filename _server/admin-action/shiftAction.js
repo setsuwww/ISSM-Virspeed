@@ -1,7 +1,41 @@
 "use server";
 
 import { prisma } from "@/_lib/prisma";
+import { revalidatePath } from "next/cache"
 import dayjs from "@/_lib/day";
+
+export async function createShift(payload) {
+  const { type, name, startTime, endTime, divisionId } = payload
+
+  if (!type || !name || !divisionId) {
+    return { error: "Invalid payload" }
+  }
+
+  await prisma.shift.create({
+    data: {
+      type,
+      name,
+      startTime,
+      endTime,
+      divisionId,
+    },
+  })
+
+  revalidatePath("/admin/dashboard/shifts")
+  return { success: true }
+}
+
+export async function updateShift(id, payload) {
+  if (!id) return { error: "Shift ID required" }
+
+  await prisma.shift.update({
+    where: { id },
+    data: payload,
+  })
+
+  revalidatePath("/admin/dashboard/shifts")
+  return { success: true }
+}
 
 export async function updateShiftChangeStatus(id, action, actorRole) {
   const request = await prisma.shiftChangeRequest.findUnique({ where: { id } });

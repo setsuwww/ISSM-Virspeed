@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/_components/ui/Button";
@@ -11,10 +12,10 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { apiFetchData } from "@/_lib/fetch";
 import { timeToMinutes } from "@/_function/globalFunction";
 import { capitalize } from "@/_function/globalFunction";
-import { Loader } from "lucide-react";
+
+import { createShift } from "@/_server/admin-action/shiftAction"
 
 export default function CreateShiftForm({ divisions }) {
   const router = useRouter();
@@ -43,18 +44,8 @@ export default function CreateShiftForm({ divisions }) {
 
     try {
       setLoading(true);
-      await apiFetchData({
-        url: "/shifts", method: "post", data: payload,
-        successMessage: "Shift created successfully!", errorMessage: "Failed to create shift",
-        onSuccess: () => {
-          setType("MORNING");
-          setName("");
-          setStartTime("");
-          setEndTime("");
-          setDivisionId("NONE");
-          router.push("/admin/dashboard/shifts");
-        },
-      });
+      await createShift(payload);
+      router.push("/admin/dashboard/shifts");
     }
     finally { setLoading(false) }
   };
