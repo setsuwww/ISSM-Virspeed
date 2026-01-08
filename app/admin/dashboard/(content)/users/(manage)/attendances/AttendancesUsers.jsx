@@ -1,14 +1,18 @@
 "use client"
 
 import { useMemo, useRef, useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/_components/ui/Dialog"
+import { User } from "lucide-react"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogFooter } from "@/_components/ui/Dialog"
 import { Button } from "@/_components/ui/Button"
 import { Badge } from "@/_components/ui/Badge"
 import { Input } from "@/_components/ui/Input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/_components/ui/Select"
+
 import { capitalize } from "@/_function/globalFunction"
 import { attendancesStyles } from "@/_constants/attendanceConstants"
-import { User } from "lucide-react"
+import { shiftStyles } from '@/_constants/shiftConstants';
 
 export default function AttendancesUsers({
   selectedStatus,
@@ -41,6 +45,11 @@ export default function AttendancesUsers({
           <>
             <DialogHeader>
               <div className="flex items-center gap-4 mb-4">
+
+                <VisuallyHidden>
+                  <DialogTitle>Attendance Dialog</DialogTitle>
+                </VisuallyHidden>
+
                 <div className="p-3 rounded-xl bg-indigo-100">
                   <User className="h-6 w-6 text-indigo-600" />
                 </div>
@@ -107,7 +116,7 @@ export default function AttendancesUsers({
                         </div>
 
                         <div className="flex items-center gap-1">
-                          <Badge className={attendancesStyles[u.attendanceStatus]}>
+                          <Badge className={shiftStyles[u.shiftType]}>
                             {capitalize(u.shiftType)}
                           </Badge>
 
