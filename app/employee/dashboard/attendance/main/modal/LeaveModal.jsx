@@ -21,7 +21,8 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
   const [endDate, setEndDate] = useState("")
 
   useEffect(() => {
-    if (!type || !startDate) { setEndDate("")
+    if (!type || !startDate) {
+      setEndDate("")
       return
     }
 
@@ -31,18 +32,27 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
     const start = new Date(`${startDate}T12:00:00`)
     let calculatedEnd = null
 
-    if (rule.maxWorkDays) { calculatedEnd = addWorkDays(start, rule.maxWorkDays)} 
-    else if (rule.months) { calculatedEnd = addMonths(start, rule.months)}
+    if (rule.maxWorkDays) {
+      calculatedEnd = addWorkDays(start, rule.maxWorkDays - 1)
+    } else if (rule.months) {
+      calculatedEnd = addMonths(start, rule.months)
+    }
 
-    if (calculatedEnd instanceof Date && !isNaN(calculatedEnd)) { setEndDate(format(calculatedEnd, "yyyy-MM-dd"))} 
-    else { setEndDate("")}
+    if (calculatedEnd instanceof Date && !isNaN(calculatedEnd)) {
+      setEndDate(format(calculatedEnd, "yyyy-MM-dd"))
+    } else {
+      setEndDate("")
+    }
   }, [type, startDate])
 
   const handleSubmit = () => {
     if (!type || !startDate || !endDate) return
 
-    onSubmit?.({
-      type, startDate, endDate, reason,
+    onSubmit({
+      type,
+      startDate,
+      endDate,
+      reason: reason?.trim() || null,
     })
 
     setType("")
@@ -56,10 +66,11 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg" variant="violet">
         <DialogHeader>
-          <DialogTitle>Leave</DialogTitle>
+          <DialogTitle>Leave Request</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Leave Type */}
           <div className="space-y-2">
             <Label>
               Leave Type <span className="text-red-500">*</span>
@@ -81,7 +92,7 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
 
             {type && (
               <p className="text-xs text-slate-400">
-                {LEAVE_RULES[type]?.description}
+                {LEAVE_RULES[type].description}
               </p>
             )}
           </div>
@@ -107,6 +118,7 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
                 (Auto fill)
               </span>
             </Label>
+
             <Input
               type="date"
               value={endDate}
@@ -116,17 +128,17 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
 
             <p className="flex items-center gap-1 text-xs text-blue-500">
               <WarningCircle size={14} />
-              End Date is auto filled based on Leave type & Start Date
+              Auto calculated based on leave type
             </p>
           </div>
 
           {/* Reason */}
           <div className="space-y-2">
-            <Label>Reason</Label> 
+            <Label>Reason</Label>
             <Input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Optional reason for leave"
+              placeholder="Optional reason"
             />
           </div>
         </div>

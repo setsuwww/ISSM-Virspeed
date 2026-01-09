@@ -202,8 +202,8 @@ export async function userSendLeaveRequest({ type, startDate, endDate, reason })
     return { error: "Invalid input data" }
   }
 
-  const start = getNowJakarta(startDate).startOf("day").toDate()
-  const end = getNowJakarta(endDate).startOf("day").toDate()
+  const start = new Date(`${startDate}T12:00:00`)
+  const end = new Date(`${endDate}T12:00:00`)
 
   if (end < start) {
     return { error: "End date cannot be before start date" }
