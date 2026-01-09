@@ -109,11 +109,11 @@ export default function ChangeShiftTable({ data = [] }) {
             </TableCell>
 
             <TableCell>
-              <div className="flex w-1/2 flex-col space-y-1 text-sm">
-                <span className="rounded-md border border-green-200/50 bg-green-50/50 px-2 text-green-600">
+              <div className="flex flex-col text-sm">
+                <span className="text-green-600">
                   {item.startDate}
                 </span>
-                <span className="rounded-md border border-red-100/50 bg-red-50/50 px-2 text-red-600">
+                <span className="text-red-600">
                   {item.endDate}
                 </span>
               </div>

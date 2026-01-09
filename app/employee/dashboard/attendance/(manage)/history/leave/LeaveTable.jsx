@@ -3,13 +3,8 @@
 import { CalendarDays } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
-import { capitalize } from "@/_function/globalFunction"
 
-import {
-  attendancesStyles,
-  normalizeRequestStatus,
-  getDisplayStatus,
-} from "@/_constants/attendanceConstants"
+import { attendancesStyles, normalizeRequestStatus, getDisplayStatus } from "@/_constants/attendanceConstants"
 
 export default function LeaveTable({ data }) {
   return (
@@ -17,6 +12,7 @@ export default function LeaveTable({ data }) {
       <TableHeader className="bg-slate-50">
         <TableRow>
           <TableHead>Date</TableHead>
+          <TableHead>Leave Type</TableHead>
           <TableHead>Leave Period</TableHead>
           <TableHead>Reason</TableHead>
           <TableHead>Status</TableHead>
@@ -39,32 +35,42 @@ export default function LeaveTable({ data }) {
             </TableCell>
 
             <TableCell>
-              <p className="text-sm font-medium">
-                {item.startDate} – {item.endDate}
-              </p>
+              <Badge variant="outline">
+                {item.typeLabel}
+              </Badge>
             </TableCell>
 
             <TableCell>
-              <p className="text-sm">{item.reason}</p>
+              <div className="flex flex-col text-sm font-medium">
+                <span className="text-green-600">
+                  {item.startDate}
+                </span>
+                <span className="text-red-600">
+                  {item.endDate}
+                </span>
+              </div>
+            </TableCell>
+
+            <TableCell>
+              <p className="text-sm">{item.reason || "—"}</p>
               {item.adminReason && (
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-400 mt-1">
                   Admin: {item.adminReason}
                 </p>
               )}
             </TableCell>
 
             <TableCell>
-  <Badge
-    className={
-      attendancesStyles[
-        normalizeRequestStatus(item.status)
-      ]
-    }
-  >
-    {getDisplayStatus(item.status)}
-  </Badge>
-</TableCell>
-
+              <Badge
+                className={
+                  attendancesStyles[
+                    normalizeRequestStatus(item.status)
+                  ]
+                }
+              >
+                {getDisplayStatus(item.status)}
+              </Badge>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

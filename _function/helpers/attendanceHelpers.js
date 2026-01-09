@@ -1,5 +1,6 @@
 import { prisma } from "@/_lib/prisma"
 import { getNowJakarta, minutesToTodayTime, MINUTE_MS } from "@/_lib/time"
+import { addDays, isWeekend } from "date-fns"
 
 const LATE_THRESHOLD_MINUTES = 10
 const ABSENT_THRESHOLD_MINUTES = 20

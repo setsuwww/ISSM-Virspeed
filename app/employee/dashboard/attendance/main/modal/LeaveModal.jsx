@@ -2,56 +2,51 @@
 
 import { useState, useEffect } from "react"
 import { format, addMonths } from "date-fns"
+import { WarningCircle } from "phosphor-react"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
+
 import { Input } from "@/_components/ui/Input"
 import { Label } from "@/_components/ui/Label"
 import { Button } from "@/_components/ui/Button"
 
 import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule"
 import { addWorkDays } from "@/_function/helpers/attendanceHelpers"
-import { WarningCircle } from "phosphor-react"
 
-export function LeaveModal({
-  open,
-  onOpenChange,
-  onSubmit,
-}) {
+export function LeaveModal({ open, onOpenChange, onSubmit }) {
   const [type, setType] = useState("")
+  const [reason, setReason] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
 
   useEffect(() => {
-    if (!type || !startDate) {
-      setEndDate("")
+    if (!type || !startDate) { setEndDate("")
       return
     }
 
     const rule = LEAVE_RULES[type]
-    let calculatedEnd
+    if (!rule) return
 
-    if (rule.maxWorkDays) {
-      calculatedEnd = addWorkDays(startDate, rule.maxWorkDays)
-    }
+    const start = new Date(startDate)
+    let calculatedEnd = null
 
-    if (rule.months) {
-      calculatedEnd = addMonths(new Date(startDate), rule.months)
-    }
+    if (rule.maxWorkDays) { calculatedEnd = addWorkDays(start, rule.maxWorkDays)} 
+    else if (rule.months) { calculatedEnd = addMonths(start, rule.months)}
 
-    setEndDate(format(calculatedEnd, "yyyy-MM-dd"))
+    if (calculatedEnd instanceof Date && !isNaN(calculatedEnd)) { setEndDate(format(calculatedEnd, "yyyy-MM-dd"))} 
+    else { setEndDate("")}
   }, [type, startDate])
 
   const handleSubmit = () => {
     if (!type || !startDate || !endDate) return
 
     onSubmit?.({
-      type,
-      startDate,
-      endDate,
+      type, startDate, endDate, reason,
     })
 
     setType("")
+    setReason("")
     setStartDate("")
     setEndDate("")
     onOpenChange(false)
@@ -66,11 +61,15 @@ export function LeaveModal({
 
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label>Leave Type<span className="text-red-500">*</span></Label>
+            <Label>
+              Leave Type <span className="text-red-500">*</span>
+            </Label>
+
             <Select value={type} onValueChange={setType}>
               <SelectTrigger>
-                <SelectValue placeholder="Choose Leave type" />
+                <SelectValue placeholder="Choose leave type" />
               </SelectTrigger>
+
               <SelectContent>
                 {Object.entries(LEAVE_RULES).map(([key, rule]) => (
                   <SelectItem key={key} value={key}>
@@ -82,13 +81,16 @@ export function LeaveModal({
 
             {type && (
               <p className="text-xs text-slate-400">
-                {LEAVE_RULES[type].description}
+                {LEAVE_RULES[type]?.description}
               </p>
             )}
           </div>
 
-          <div className="space-y-2 ">
-            <Label>Start date<span className="text-red-500">*</span></Label>
+          {/* Start Date */}
+          <div className="space-y-2">
+            <Label>
+              Start Date <span className="text-red-500">*</span>
+            </Label>
             <Input
               type="date"
               value={startDate}
@@ -97,17 +99,35 @@ export function LeaveModal({
             />
           </div>
 
-          <div className="space-y-2 ">
-            <Label>End date <span className="text-xs font-light text-slate-400">(Auto fill)</span></Label>
+          {/* End Date */}
+          <div className="space-y-2">
+            <Label>
+              End Date{" "}
+              <span className="text-xs font-light text-slate-400">
+                (Auto fill)
+              </span>
+            </Label>
             <Input
               type="date"
               value={endDate}
               disabled
               className="bg-slate-100 cursor-not-allowed"
             />
-            <p className="flex items-center gap-x-1 text-xs text-blue-500">
-              <WarningCircle /> End Date is auto filled based on Leave type & Start Date
+
+            <p className="flex items-center gap-1 text-xs text-blue-500">
+              <WarningCircle size={14} />
+              End Date is auto filled based on Leave type & Start Date
             </p>
+          </div>
+
+          {/* Reason */}
+          <div className="space-y-2">
+            <Label>Reason</Label> 
+            <Input
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Optional reason for leave"
+            />
           </div>
         </div>
 
@@ -116,7 +136,11 @@ export function LeaveModal({
             Cancel
           </Button>
 
-          <Button onClick={handleSubmit} disabled={!type || !startDate || !endDate} className="bg-violet-600 hover:bg-violet-700 text-white">
+          <Button
+            onClick={handleSubmit}
+            disabled={!type || !startDate || !endDate}
+            className="bg-violet-600 hover:bg-violet-700 text-white"
+          >
             Submit
           </Button>
         </DialogFooter>

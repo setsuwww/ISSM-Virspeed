@@ -172,13 +172,16 @@ export default function CheckinForm() {
         open={showLeave}
         onOpenChange={setShowLeave}
         onSubmit={(data) =>
-          leave({
-            startDate: data.startDate,
-            endDate: data.endDate,
-            reason: data.type,
-          },
-            () => setShowLeave(false))
-        }
+  leave(
+    {
+      type: data.type,        // ✅ leave type
+      startDate: data.startDate,
+      endDate: data.endDate,
+      reason: data.reason,    // ✅ optional text
+    },
+    () => setShowLeave(false)
+  )
+}
       />
     </div>
   )

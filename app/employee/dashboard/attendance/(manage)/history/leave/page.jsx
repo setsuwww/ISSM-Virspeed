@@ -2,8 +2,10 @@ import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 import { notFound } from "next/navigation"
 import { format } from "date-fns"
+
 import HistoryLayout from "../HistoryLayout"
 import LeaveTable from "./LeaveTable"
+import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule"
 
 export const revalidate = 60
 
@@ -12,12 +14,8 @@ export default async function Page() {
   if (!user) return notFound()
 
   const leaves = await prisma.leaveRequest.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
   })
 
   const tableData = leaves.map(l => ({
@@ -27,8 +25,11 @@ export default async function Page() {
     dateLabel: format(l.createdAt, "dd MMMM"),
     dateFull: format(l.createdAt, "EEEE, dd MMMM yyyy"),
 
-    startDate: format(l.startDate, "dd MMMM yyyy"),
-    endDate: format(l.endDate, "dd MMMM yyyy"),
+    type: l.type,
+    typeLabel: LEAVE_RULES[l.type]?.label ?? l.type,
+
+    startDate: format(l.startDate, "dd MMM yyyy"),
+    endDate: format(l.endDate, "dd MMM yyyy"),
 
     reason: l.reason,
     adminReason: l.adminReason,

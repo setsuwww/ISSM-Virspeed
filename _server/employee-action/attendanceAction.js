@@ -11,9 +11,6 @@ import {
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
 
-/* =========================
-   PRECHECK CHECK-IN
-========================= */
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
   if (!user?.shiftId) return { error: "Unauthorized" }
@@ -35,15 +32,12 @@ export async function userPrecheckCheckIn() {
   }
 }
 
-/* =========================
-   CHECK-IN (FIXED)
-========================= */
 export async function userSendCheckIn(coords = null) {
   const user = await getCurrentUser()
   if (!user?.id || !user.shiftId) return { error: "Unauthorized" }
 
   const now = getNowJakarta()
-  const today = getTodayStartJakarta().toDate() // ❗ FIX: NO UTC
+  const today = getTodayStartJakarta().toDate()
 
   const shift = await prisma.shift.findUnique({
     where: { id: user.shiftId },
@@ -84,7 +78,6 @@ export async function userSendCheckIn(coords = null) {
     return { error: err.message }
   }
 
-  // 🔥 FIX: PAKSA SIMPAN, TIDAK ADA SKIP
   const attendance = await prisma.attendance.upsert({
     where: {
       userId_shiftId_date: {
@@ -111,9 +104,6 @@ export async function userSendCheckIn(coords = null) {
   return { success: true, attendance }
 }
 
-/* =========================
-   CHECK-OUT (FIXED)
-========================= */
 export async function userSendCheckOut() {
   const user = await getCurrentUser()
   if (!user?.shiftId) {
@@ -141,9 +131,6 @@ export async function userSendCheckOut() {
   return { success: true }
 }
 
-/* =========================
-   EARLY CHECKOUT
-========================= */
 export async function userSendEarlyCheckout(reason) {
   const user = await getCurrentUser()
   if (!user?.shiftId) return { error: "Unauthorized" }
@@ -174,9 +161,6 @@ export async function userSendEarlyCheckout(reason) {
   return { success: true }
 }
 
-/* =========================
-   PERMISSION
-========================= */
 export async function userSendPermissionRequest(reason) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
@@ -210,25 +194,28 @@ export async function userSendPermissionRequest(reason) {
   return { success: true }
 }
 
-/* =========================
-   LEAVE REQUEST
-========================= */
-export async function userSendLeaveRequest({ startDate, endDate, reason }) {
+export async function userSendLeaveRequest({ type, startDate, endDate, reason }) {
   const user = await getCurrentUser()
   if (!user) throw new Error("Unauthorized")
-  if (!startDate || !endDate || !reason?.trim()) {
+
+  if (!type || !startDate || !endDate) {
     return { error: "Invalid input data" }
   }
 
   const start = getNowJakarta(startDate).startOf("day").toDate()
   const end = getNowJakarta(endDate).startOf("day").toDate()
 
+  if (end < start) {
+    return { error: "End date cannot be before start date" }
+  }
+
   await prisma.leaveRequest.create({
     data: {
       userId: user.id,
+      type,
       startDate: start,
       endDate: end,
-      reason,
+      reason: reason?.trim() || null,
       status: "PENDING",
     },
   })

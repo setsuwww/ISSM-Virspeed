@@ -52,6 +52,11 @@ enum LeaveStatus {
   REJECTED
 }
 
+enum LeaveType {
+  ANNUAL
+  MATERNITY
+  SICK
+}
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -255,19 +260,19 @@ model EarlyCheckoutRequest {
 model LeaveRequest {
   id Int @id @default(autoincrement())
 
-  user   User @relation(fields: [userId], references: [id])
   userId Int
+  user   User @relation(fields: [userId], references: [id])
 
-  approvedBy   User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
   approvedById Int?
+  approvedBy   User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
 
-  reason      String
+  type        LeaveType
+  reason      String?
   adminReason String?
 
   startDate DateTime
   endDate   DateTime
-
-  status LeaveStatus @default(PENDING)
+  status    LeaveStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
