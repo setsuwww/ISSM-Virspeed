@@ -2,16 +2,22 @@
 
 import { useState, useMemo, useRef } from "react"
 import { CalendarDays } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
-
 import { attendancesStyles } from "@/_constants/attendanceConstants"
 import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
 import { capitalize } from "@/_function/globalFunction"
 
-export default function HistoryTable({ data, initialOrder }) {
+export default function HistoryTable({ data, initialOrder = "desc" }) {
   const [order, setOrder] = useState(initialOrder)
   const [statusFilter, setStatusFilter] = useState("all")
   const [search, setSearch] = useState("")
@@ -23,7 +29,9 @@ export default function HistoryTable({ data, initialOrder }) {
         statusFilter === "all" ? true : att.status === statusFilter
       )
       .filter(att =>
-        search ? att.dateLabel.toLowerCase().includes(search.toLowerCase()) : true
+        search
+          ? att.dateLabel.toLowerCase().includes(search.toLowerCase())
+          : true
       )
       .sort((a, b) =>
         order === "asc"
@@ -35,9 +43,14 @@ export default function HistoryTable({ data, initialOrder }) {
   return (
     <div className="space-y-3">
       <HistoryActionHeader
-        order={order} onToggleOrder={() => setOrder(o => (o === "asc" ? "desc" : "asc"))}
-        statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
-        search={search} onSearchChange={setSearch}
+        order={order}
+        onToggleOrder={() =>
+          setOrder(o => (o === "asc" ? "desc" : "asc"))
+        }
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        search={search}
+        onSearchChange={setSearch}
         searchInputRef={searchInputRef}
       />
 
@@ -62,23 +75,28 @@ export default function HistoryTable({ data, initialOrder }) {
                   </div>
                   <div>
                     <p className="font-semibold">{att.dateLabel}</p>
-                    <p className="text-xs text-slate-400">{att.dateFull}</p>
+                    <p className="text-xs text-slate-400">
+                      {att.dateFull}
+                    </p>
                   </div>
                 </div>
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center">
-                  <Badge className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}>
-                    {shiftDots[att.shiftType]}
-                    <span>{capitalize(att.shiftType)}</span>
-                  </Badge>
-                </div>
+                <Badge
+                  className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}
+                >
+                  {shiftDots[att.shiftType]}
+                  <span>{capitalize(att.shiftType)}</span>
+                </Badge>
               </TableCell>
 
               <TableCell>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className={`${attendancesStyles[att.status]}`}>
+                  <Badge
+                    variant="outline"
+                    className={attendancesStyles[att.status]}
+                  >
                     {att.status}
                   </Badge>
 

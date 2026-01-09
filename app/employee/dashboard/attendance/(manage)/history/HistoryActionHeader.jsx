@@ -12,7 +12,7 @@ export default function HistoryActionHeader({
   searchInputRef,
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 pb-2">
       <Button variant="outline" onClick={onToggleOrder} className="flex items-center gap-2">
         <span className="font-semibold text-slate-600">Sort:</span> <span className="text-slate-500">{order === "asc" ? "Oldest" : "Newest"}</span>
         {order === "asc" ? <ArrowUpDown className="w-3 h-3 text-slate-400" /> : <ArrowDownUp className="w-3 h-3 text-slate-400" />}
@@ -29,9 +29,6 @@ export default function HistoryActionHeader({
           <SelectItem value="ABSENT">Absent</SelectItem>
           <SelectItem value="PERMISSION">Permission</SelectItem>
           <SelectItem value="LATE">Late</SelectItem>
-          <SelectItem value="EARLYCHECKOUT">Early Checkout</SelectItem>
-          <SelectItem value="CHANGESHIFT">Change Shift</SelectItem>
-          <SelectItem value="LEAVE">Leave</SelectItem>
         </SelectContent>
       </Select>
 
