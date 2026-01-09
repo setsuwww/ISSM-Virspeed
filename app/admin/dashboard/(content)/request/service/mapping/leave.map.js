@@ -10,17 +10,22 @@ export function mapLeave(data = []) {
     return {
       id: r.id,
       requestedBy: {
-        name: r.user?.name || "-",
-        email: r.user?.email || "-",
-        division: r.user?.division?.name || "-",
+        name: r.user?.name ?? "-",
+        email: r.user?.email ?? "-",
+        division: r.user?.division?.name ?? "-",
       },
-      shift: r.user?.shift || null,
+
+      shift: r.user?.shift ?? null,
       workHours,
-      reason: r.reason || "-",
+
+      reason: r.reason ?? "-",
+
       startDate: safeFormat(r.startDate, "d MMMM yyyy"),
       endDate: safeFormat(r.endDate, "d MMMM yyyy"),
       date: safeFormat(r.createdAt, "d MMMM yyyy"),
+
       status: r.status,
+      adminReason: r.adminReason
     }
   })
 }

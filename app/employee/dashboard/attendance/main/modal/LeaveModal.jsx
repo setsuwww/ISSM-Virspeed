@@ -28,7 +28,7 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
     const rule = LEAVE_RULES[type]
     if (!rule) return
 
-    const start = new Date(startDate)
+    const start = new Date(`${startDate}T12:00:00`)
     let calculatedEnd = null
 
     if (rule.maxWorkDays) { calculatedEnd = addWorkDays(start, rule.maxWorkDays)} 

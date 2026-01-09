@@ -27,17 +27,21 @@ export default function RenderLeave({ r }) {
       </TableCell>
 
       <TableCell>
-        <div className="flex items-center space-x-3">
-          {shiftDots[r.shift?.type]}
+        {r.shift ? (
+          <div className="flex items-center space-x-3">
+            {shiftDots[r.shift.type]}
 
-          <div className="flex flex-col text-sm text-slate-600">
-            <p className="font-semibold">{capitalize(r.shift?.name)}</p>
+            <div className="flex flex-col text-sm text-slate-600">
+              <p className="font-semibold">
+                {capitalize(r.shift.name)}
+              </p>
 
-            <p className="text-xs text-slate-400">
-              <span>{r.workHours.label}</span>
-            </p>
+              <p className="text-xs text-slate-400">
+                {r.workHours.label}
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (<span className="text-xs text-slate-400">No shift</span>)}
       </TableCell>
 
       <TableCell>
@@ -66,7 +70,7 @@ export default function RenderLeave({ r }) {
       <TableCell>
         <RequestStatusChangerToggle
           id={r.id}
-          status={r.approval ?? "PENDING"}
+          status={r.status}
           type="LEAVE"
           disabled={false}
         />
