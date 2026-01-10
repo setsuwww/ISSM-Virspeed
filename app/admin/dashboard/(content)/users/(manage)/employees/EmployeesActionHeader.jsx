@@ -37,7 +37,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   }
 
   return (
-    <div className="flex flex-wrap justify-between items-center gap-2">
+    <div className="flex flex-wrap justify-between items-center gap-2 pb-2">
       <div className="flex items-center gap-2 w-full md:w-2/3">
         <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
           <SelectTrigger className="w-auto px-3 whitespace-nowrap">

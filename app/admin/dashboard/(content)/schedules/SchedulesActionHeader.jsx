@@ -19,7 +19,7 @@ export default function SchedulesActionHeader({
   filterFrequency, onFilterFrequencyChange, filteredData
 }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2">
       <div className="flex items-center gap-2 w-full">
         <Select value={filterFrequency} onValueChange={onFilterFrequencyChange} defaultValue="all">
           <SelectTrigger className="w-auto px-3 whitespace-nowrap">

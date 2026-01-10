@@ -19,7 +19,9 @@ export function ShiftsView({ data }) {
   const handleEdit = (id) => router.push(`/admin/dashboard/shifts/${id}/edit`);
 
   const handleDelete = async (id) => {
-    try { await apiFetchData({ url: `/shifts/${id}`, method: "delete",
+    try {
+      await apiFetchData({
+        url: `/shifts/${id}`, method: "delete",
         successMessage: "Shift deleted successfully",
         errorMessage: "Failed to delete shift",
       });
@@ -73,7 +75,7 @@ export function ShiftsView({ data }) {
               </TableCell>
 
               <TableCell>
-                <Link href={`/admin/dashboard/shifts/${shift.id}/users`} className="flex items-center space-x-1 text-sky-500">
+                <Link href={`/admin/dashboard/shifts/${shift.id}/list-users`} className="flex items-center space-x-1 text-sky-500">
                   <UserCircle strokeWidth={1} size={24} color="#00bcff" weight="duotone" /> <span>{shift.usersCount} Users</span>
                 </Link>
               </TableCell>

@@ -16,7 +16,7 @@ export default function UsersActionHeader({
   filteredData, searchInputRef,
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 flex-wrap">
+    <div className="flex items-center justify-between gap-2 flex-wrap pb-2">
 
       <div className="flex items-center gap-2">
         <Select value={roleFilter} onValueChange={onRoleFilterChange}>

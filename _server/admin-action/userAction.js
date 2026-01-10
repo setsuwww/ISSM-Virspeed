@@ -17,10 +17,10 @@ export async function createUser(formData) {
         ? parseInt(formData.get("shiftId"))
         : null
 
-    if (!name || !email || !password) { throw new Error("Name, email, and password are required.")}
+    if (!name || !email || !password) { throw new Error("Name, email, and password are required.") }
 
     const existingUser = await prisma.user.findUnique({ where: { email } })
-    if (existingUser) { throw new Error("User with this email already exists.")}
+    if (existingUser) { throw new Error("User with this email already exists.") }
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
@@ -35,41 +35,46 @@ export async function createUser(formData) {
 
     revalidatePath("/admin/dashboard/users")
     return { success: true, message: "User created successfully" }
-  } 
-  catch (error) { console.error("Error creating user:", error)
+  }
+  catch (error) {
+    console.error("Error creating user:", error)
     return { success: false, message: error.message || "Failed to create user" }
   }
 }
 
 export async function updateUser(data) {
-  try { const { id, name, email, password, role, shiftId, divisionId } = data;
+  try {
+    const { id, name, email, password, role, shiftId, divisionId } = data;
 
-    if (!id) { return { error: "User ID is required." }}
+    if (!id) { return { error: "User ID is required." } }
 
     const updateData = {
       name, email, role,
       divisionId: divisionId ? parseInt(divisionId) : null, shiftId: shiftId ? parseInt(shiftId) : null,
     };
 
-    if (password && password.trim() !== "") { const hashedPassword = await bcrypt.hash(password, 12);
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 12);
       updateData.password = hashedPassword;
     }
 
-    await prisma.user.update({ where: { id: parseInt(id) },
+    await prisma.user.update({
+      where: { id: parseInt(id) },
       data: updateData,
     });
 
     return { success: true };
-  } 
+  }
   catch (error) {
     return { error: "Failed to update user." };
   }
 }
 
 export async function deleteUsers(ids) {
-  try { if (!ids || !Array.isArray(ids)) throw new Error("Invalid request")
+  try {
+    if (!ids || !Array.isArray(ids)) throw new Error("Invalid request")
 
-    await prisma.user.deleteMany({ where: { id: { in: ids } }})
+    await prisma.user.deleteMany({ where: { id: { in: ids } } })
 
     revalidatePath("/admin/users")
     return { success: true }
@@ -89,7 +94,7 @@ export async function updateUserWithId(id, data) {
   if (!name || !email || !role) throw new Error("Name, email, and role required");
 
   const dataToUpdate = { name, email, role, shiftId: shiftId ?? null };
-  if (password?.trim()) { dataToUpdate.password = await bcrypt.hash(password, 10)}
+  if (password?.trim()) { dataToUpdate.password = await bcrypt.hash(password, 10) }
 
   return prisma.user.update({
     where: { id: Number(id) },
@@ -97,7 +102,7 @@ export async function updateUserWithId(id, data) {
   });
 }
 
-export async function deleteUserWithId(id) {
+export async function deleteUserById(id) {
   await prisma.user.delete({ where: { id: Number(id) } });
   return { success: true };
 }
