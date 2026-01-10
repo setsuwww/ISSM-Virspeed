@@ -2,44 +2,129 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMemo, useState, useCallback } from "react";
+import { UserCircle } from "phosphor-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
+import { Checkbox } from "@/_components/ui/Checkbox";
 
 import { capitalize } from "@/_function/globalFunction";
 import { apiFetchData } from "@/_lib/fetch";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
-import { UserCircle } from "phosphor-react";
-import ShiftsActionHeader from './ShiftsActionHeader';
+
+import ShiftsActionHeader from "./ShiftsActionHeader";
 
 export function ShiftsView({ data }) {
   const router = useRouter();
 
-  const handleEdit = (id) => router.push(`/admin/dashboard/shifts/${id}/edit`);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sortFilter, setSortFilter] = useState("A-Z");
+  const [shiftFilter, setShiftFilter] = useState("ALL");
+
+  const filteredData = useMemo(() => {
+    let result = data;
+
+    // FILTER
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter((s) =>
+        s.name.toLowerCase().includes(q)
+      );
+    }
+
+    if (shiftFilter !== "ALL") {
+      result = result.filter((s) => s.type === shiftFilter);
+    }
+
+    // SORT (IMPORTANT)
+    const sorted = [...result];
+
+    if (sortFilter === "A-Z") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    if (sortFilter === "Z-A") {
+      sorted.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    return sorted;
+  }, [data, search, shiftFilter, sortFilter]);
+
+
+  const toggleSelect = useCallback((id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }, []);
+
+  const toggleSelectAll = useCallback((checked) => {
+    setSelectedIds(checked ? filteredData.map((s) => s.id) : []);
+  }, [filteredData]);
+
+  const isAllSelected =
+    filteredData.length > 0 &&
+    selectedIds.length === filteredData.length;
 
   const handleDelete = async (id) => {
-    try {
-      await apiFetchData({
-        url: `/shifts/${id}`, method: "delete",
-        successMessage: "Shift deleted successfully",
-        errorMessage: "Failed to delete shift",
-      });
-      router.refresh();
-    } catch (err) {
-      console.error(err);
-    }
+    await apiFetchData({
+      url: `/shifts/${id}`,
+      method: "delete",
+      successMessage: "Shift deleted",
+      errorMessage: "Failed to delete shift",
+    });
+    router.refresh();
+  };
+
+  const handleDeleteSelected = async () => {
+    await Promise.all(
+      selectedIds.map((id) =>
+        apiFetchData({ url: `/shifts/${id}`, method: "delete" })
+      )
+    );
+    setSelectedIds([]);
+    router.refresh();
+  };
+
+  const handleDeleteAll = async () => {
+    await Promise.all(
+      filteredData.map((s) =>
+        apiFetchData({ url: `/shifts/${s.id}`, method: "delete" })
+      )
+    );
+    setSelectedIds([]);
+    router.refresh();
   };
 
   return (
     <div className="space-y-4">
-      <ShiftsActionHeader />
+      <ShiftsActionHeader
+        search={search}
+        onSearchChange={setSearch}
+        shiftFilter={shiftFilter}
+        onShiftFilterChange={setShiftFilter}
+        sortFilter={sortFilter}
+        onSortFilterChange={setSortFilter}
+        selectedCount={selectedIds.length}
+        onDeleteSelected={handleDeleteSelected}
+        onDeleteAll={handleDeleteAll}
+        filteredData={filteredData}
+      />
+
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>
+              <Checkbox
+                checked={isAllSelected}
+                onCheckedChange={toggleSelectAll}
+              />
+            </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Time Range</TableHead>
+            <TableHead>Time</TableHead>
             <TableHead>Division</TableHead>
             <TableHead>Users</TableHead>
             <TableHead>Actions</TableHead>
@@ -47,43 +132,56 @@ export function ShiftsView({ data }) {
         </TableHeader>
 
         <TableBody>
-          {data.map((shift) => (
+          {filteredData.map((shift) => (
             <TableRow key={shift.id}>
-              <TableCell className="font-semibold text-slate-700">
-                <div className="flex items-center space-x-2">
-                  <div className={`p-2 rounded-lg ${shiftStyles[shift.type]}`}>
-                    {shiftIcons[shift.type]}
-                  </div>
-                  <span>{shift.name}</span>
-                </div>
+              <TableCell>
+                <Checkbox
+                  checked={selectedIds.includes(shift.id)}
+                  onCheckedChange={() => toggleSelect(shift.id)}
+                />
               </TableCell>
 
-              <TableCell className="text-slate-600">
+              <TableCell className="font-semibold flex items-center gap-2">
+                <div className={`p-2 rounded-lg ${shiftStyles[shift.type]}`}>
+                  {shiftIcons[shift.type]}
+                </div>
+                {shift.name}
+              </TableCell>
+
+              <TableCell>
                 <Badge className={shiftStyles[shift.type]}>
                   {capitalize(shift.type)}
                 </Badge>
               </TableCell>
 
-              <TableCell>
-                <Badge variant="outline" className="text-slate-600 border-slate-300">
-                  {shift.timeRange}
-                </Badge>
-              </TableCell>
-
-              <TableCell className="text-slate-700">
-                {shift.division}
-              </TableCell>
+              <TableCell>{shift.timeRange}</TableCell>
+              <TableCell>{shift.division}</TableCell>
 
               <TableCell>
-                <Link href={`/admin/dashboard/shifts/${shift.id}/list-users`} className="flex items-center space-x-1 text-sky-500">
-                  <UserCircle strokeWidth={1} size={24} color="#00bcff" weight="duotone" /> <span>{shift.usersCount} Users</span>
+                <Link
+                  href={`/admin/dashboard/shifts/${shift.id}/list-users`}
+                  className="flex items-center gap-1 text-sky-500"
+                >
+                  <UserCircle size={22} />
+                  {shift.usersCount}
                 </Link>
               </TableCell>
+
               <TableCell className="space-x-2">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(shift.id)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    router.push(`/admin/dashboard/shifts/${shift.id}/edit`)
+                  }
+                >
                   Edit
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(shift.id)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(shift.id)}
+                >
                   Delete
                 </Button>
               </TableCell>

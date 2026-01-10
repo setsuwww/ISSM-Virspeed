@@ -10,8 +10,8 @@ import { exportExcel } from "@/_function/exports/user/exportExcel";
 
 export default function ShiftsActionHeader({
   search, onSearchChange,
-  roleFilter, onRoleFilterChange,
   shiftFilter, onShiftFilterChange,
+  sortFilter, onSortFilterChange,
   selectedCount, onDeleteSelected, onDeleteAll,
   filteredData, searchInputRef,
 }) {
@@ -19,15 +19,28 @@ export default function ShiftsActionHeader({
     <div className="flex items-center justify-between gap-2 flex-wrap pb-2">
 
       <div className="flex items-center gap-2">
-
-        <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
+        <Select value={sortFilter} onValueChange={onSortFilterChange}>
           <SelectTrigger className="w-auto px-3 whitespace-nowrap">
             <span className="font-semibold text-slate-600 mr-1">Filter:</span>
             <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="AFTERNOON">A - Z</SelectItem>
-            <SelectItem value="EVENING">Z - A</SelectItem>
+
+            <SelectItem value="A-Z">A - Z</SelectItem>
+            <SelectItem value="Z-A">Z - A</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
+          <SelectTrigger className="w-auto px-3 whitespace-nowrap">
+            <span className="font-semibold text-slate-600 mr-1">Shift:</span>
+            <SelectValue placeholder="All" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">All</SelectItem>
+            <SelectItem value="MORNING">Morning</SelectItem>
+            <SelectItem value="AFTERNOON">Afternoon</SelectItem>
+            <SelectItem value="EVENING">Evening</SelectItem>
           </SelectContent>
         </Select>
 
