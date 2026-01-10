@@ -4,11 +4,10 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import UsersTable from "./ShiftUserTable";
+import ListUsersTable from "./ListUsersTable";
 
 import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunction";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import LinkToPage from "./LinkToPage";
 
 export const revalidate = 60;
 
@@ -111,19 +110,12 @@ export default async function ShiftUsersPage({ params, searchParams }) {
                   : "-"
                 }`}
             />
-
-            <Link
-              href="/admin/dashboard/users"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline w-fit pb-2"
-            >
-              Users detail
-              <ChevronRight size={18} strokeWidth={2} />
-            </Link>
+            <LinkToPage />
           </div>
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <UsersTable data={usersDataMapped} />
+          <ListUsersTable data={usersDataMapped} />
         </ContentForm.Body>
 
         <Pagination page={page} totalPages={totalPages} basePath={`/admin/dashboard/shifts/${shiftId}`} />

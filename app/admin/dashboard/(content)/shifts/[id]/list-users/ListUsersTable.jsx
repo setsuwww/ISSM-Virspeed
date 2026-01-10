@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { CircleUserRound, Trash2, FolderInput, RefreshCcw, Building2 } from "lucide-react";
+import { CircleUserRound, Trash2, FolderInput, RefreshCcw } from "lucide-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
@@ -17,14 +17,14 @@ import { EmployeesSwitchModal } from "../../../users/(manage)/employees/Employee
 
 import { deleteUsers, deleteUserById } from "@/_server/admin-action/userAction";
 
-export default function UserShiftTable({ data }) {
+export default function ListUsersTable({ data }) {
   const router = useRouter();
 
   const [users, setUsers] = useState(data);
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("ALL");
+  const [sortOrder, setSortOrder] = useState("A-Z");
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
 
@@ -126,7 +126,6 @@ export default function UserShiftTable({ data }) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL">Default</SelectItem>
               <SelectItem value="A-Z">A - Z</SelectItem>
               <SelectItem value="Z-A">Z - A</SelectItem>
             </SelectContent>
