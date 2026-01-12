@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function AuthForm({ children, headers }) {
   return (
     <div className="flex justify-center items-center w-full">

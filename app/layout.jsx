@@ -5,7 +5,7 @@ import { OfflineGuard } from "./offline"
 
 export const metadata = {
   title: "Beefast",
-  description: "Shift information system ",
+  description: "ISSM B-Fast Application",
   icons: {
     icon: "/icons/liveon.png"
   }
