@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import clsx from "clsx"
+import { CircleUserRound } from "lucide-react"
 
 import { iconMap } from "./content/iconMap"
 import { Logo } from "../Logo"
@@ -38,7 +39,7 @@ export default function SidebarBase({ menu, user }) {
 
           if (item.type === "link") {
             return (
-              <SidebarLink key={item.href} href={item.href} activePaths={item.activePaths}
+              <SidebarLink key={item.href} href={item.href}
                 icon={Icon} badge={item.badge}
                 minimized={minimized}
               >
