@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import clsx from "clsx"
-import { CircleUserRound } from "lucide-react"
 
 import { iconMap } from "./content/iconMap"
 import { Logo } from "../Logo"
@@ -20,8 +19,8 @@ export default function SidebarBase({ menu, user }) {
     )}
     >
       <div className={clsx("border-b border-slate-200 flex items-center justify-between",
-          minimized ? "px-4 py-[22px]" : "px-6 py-[21px]"
-        )}
+        minimized ? "px-4 py-[22px]" : "px-6 py-[21px]"
+      )}
       >
         <Logo
           minimized={minimized}
@@ -30,8 +29,8 @@ export default function SidebarBase({ menu, user }) {
       </div>
 
       <nav className={clsx("flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300",
-          minimized ? "px-2 py-4 space-y-2" : "px-4 py-5 space-y-3"
-        )}
+        minimized ? "px-2 py-4 space-y-2" : "px-4 py-5 space-y-3"
+      )}
       >
         {menu.map((item) => {
           const Icon = iconMap[item.icon]
@@ -39,7 +38,7 @@ export default function SidebarBase({ menu, user }) {
 
           if (item.type === "link") {
             return (
-              <SidebarLink key={item.href} href={item.href}
+              <SidebarLink key={item.href} href={item.href} activePaths={item.activePaths}
                 icon={Icon} badge={item.badge}
                 minimized={minimized}
               >
@@ -62,7 +61,7 @@ export default function SidebarBase({ menu, user }) {
       </nav>
 
       {user && (
-        <SidebarUserFooter user={user} minimized={minimized}/>
+        <SidebarUserFooter user={user} minimized={minimized} />
       )}
     </aside>
   )

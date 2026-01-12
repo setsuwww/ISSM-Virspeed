@@ -6,8 +6,8 @@ import { CircleUserRound } from "lucide-react";
 import { TableRow, TableCell } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { Badge } from "@/_components/ui/Badge";
-import { EmployeesActionButton } from "./EmployeesActionButton";
-import { EmployeesSwitchModal } from "./EmployeesSwitchModal";
+import { EmployeesActionButton } from "../EmployeesActionButton";
+import { EmployeesSwitchModal } from "../EmployeesSwitchModal";
 
 import { format } from "date-fns";
 import { capitalize } from "@/_function/globalFunction";

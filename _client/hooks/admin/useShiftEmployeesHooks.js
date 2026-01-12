@@ -16,7 +16,7 @@ const MSG = {
   DELETE_FAIL: "Failed to delete user",
 };
 
-export function useEmployeesHooks(users) {
+export function useShiftEmployeesHooks(users) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]);
   const [divisionFilter, setDivisionFilter] = useState("all");
@@ -85,7 +85,8 @@ export function useEmployeesHooks(users) {
     const confirmed = await askConfirm(message, variant);
     if (!confirmed) return;
 
-    try { await api.delete(`/users/${id}`);
+    try {
+      await api.delete(`/users/${id}`);
       setData((prev) => prev.filter((u) => u.id !== id));
     } catch {
       alert(MSG.DELETE_FAIL);

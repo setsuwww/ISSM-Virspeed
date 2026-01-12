@@ -2,9 +2,9 @@
 
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
-import { EmployeesActionHeader } from "./EmployeesActionHeader";
+import { EmployeesActionHeader } from "../EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
-import { useEmployeesHooks } from "@/_client/hooks/admin/useEmployeesHooks";
+import { useShiftEmployeesHooks } from "@/_client/hooks/admin/useShiftEmployeesHooks";
 
 export default function EmployeesTable({ users, divisions, shifts }) {
   const {
@@ -16,7 +16,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
     toggleSelect, deleteSelected,
     deleteAll,
     onHistory, onSwitch, onEdit, onDelete,
-  } = useEmployeesHooks(users, shifts);
+  } = useShiftEmployeesHooks(users, shifts);
 
   return (
     <div className="space-y-4">

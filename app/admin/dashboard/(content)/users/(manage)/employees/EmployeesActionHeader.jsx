@@ -19,12 +19,15 @@ import { exportWord } from "@/_function/exports/employee/exportWord";
 import { exportExcel } from "@/_function/exports/employee/exportExcel";
 
 export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
+  mode = "default",
   search, setSearch,
-  selected, onDeleteSelected, onDeleteAll,
-  divisionFilter, setDivisionFilter, filteredData,
+  selected = [], onDeleteSelected, onDeleteAll,
+  divisionFilter, setDivisionFilter,
+  filteredData = [],
   shiftFilter, onShiftFilterChange,
-  divisions,
+  divisions = [],
 }) {
+  const [divisionQuery, setDivisionQuery] = useState("")
   const [openDivision, setOpenDivision] = useState(false)
   const [statusFilter, setStatusFilter] = useState([])
 
@@ -36,21 +39,37 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
     )
   }
 
+  const isWorkHours = mode === "work-hours"
+  const showShift = !isWorkHours
+
+  const filteredDivisions = divisions.filter((d) => {
+    const matchStatus =
+      statusFilter.length === 0 || statusFilter.includes(d.type)
+
+    const matchQuery =
+      divisionQuery === "" ||
+      d.name.toLowerCase().includes(divisionQuery.toLowerCase())
+
+    return matchStatus && matchQuery
+  })
+
   return (
     <div className="flex flex-wrap justify-between items-center gap-2 pb-2">
       <div className="flex items-center gap-2 w-full md:w-2/3">
-        <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
-          <SelectTrigger className="w-auto px-3 whitespace-nowrap">
-            <span className="font-semibold text-slate-600 mr-1">Shift:</span>
-            <SelectValue placeholder="All" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="MORNING">Morning</SelectItem>
-            <SelectItem value="AFTERNOON">Afternoon</SelectItem>
-            <SelectItem value="EVENING">Evening</SelectItem>
-          </SelectContent>
-        </Select>
+        {showShift && (
+          <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
+            <SelectTrigger className="w-auto px-3 whitespace-nowrap">
+              <span className="font-semibold text-slate-600 mr-1">Shift:</span>
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="MORNING">Morning</SelectItem>
+              <SelectItem value="AFTERNOON">Afternoon</SelectItem>
+              <SelectItem value="EVENING">Evening</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
 
         <Popover open={openDivision} onOpenChange={setOpenDivision}>
           <PopoverTrigger asChild>
@@ -67,7 +86,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>
             <Command>
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200">
-                <CommandInput placeholder="Search division..." withBorder={false} />
+                <CommandInput placeholder="Search division..." withBorder={false} value={divisionQuery} onValueChange={setDivisionQuery} />
                 <div className="flex gap-1">
                   {["WFO", "WFA"].map((type) => (
                     <Badge key={type} onClick={() => toggleStatus(type)} variant={statusFilter.includes(type) ? "secondary" : "outline"}
@@ -86,6 +105,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
                 <CommandGroup>
                   <CommandItem value="all" onSelect={() => {
                     setDivisionFilter("all")
+                    setDivisionQuery("")
                     setOpenDivision(false)
                   }}
                   >
@@ -93,16 +113,25 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
                     <Check className={cn("mr-2 h-4 w-4", divisionFilter === "all" ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
 
-                  {divisions.filter((d) => statusFilter.length === 0 || statusFilter.includes(d.type))
-                    .map((d) => (
-                      <CommandItem key={d.id} value={d.name} onSelect={() => {
+                  {filteredDivisions.map((d) => (
+                    <CommandItem
+                      key={d.id}
+                      value={d.name}
+                      onSelect={() => {
                         setDivisionFilter(String(d.id))
                         setOpenDivision(false)
-                      }}>
-                        {d.name}
-                        <Check className={cn("mr-2 h-4 w-4", divisionFilter === String(d.id) ? "opacity-100" : "opacity-0")} />
-                      </CommandItem>
-                    ))}
+                        setDivisionQuery("")
+                      }}
+                    >
+                      {d.name}
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          divisionFilter === String(d.id) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
                 </CommandGroup>
               </CommandList>
             </Command>

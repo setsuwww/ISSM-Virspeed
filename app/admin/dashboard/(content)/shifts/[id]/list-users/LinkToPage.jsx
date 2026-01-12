@@ -25,7 +25,7 @@ export default function LinkToPage() {
         <ChevronRight size={18} strokeWidth={2} />
       </Link>
       <Link
-        href="/admin/dashboard/users/employees"
+        href="/admin/dashboard/users/employees/shift-employees"
         className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline w-fit"
       >
         Employees Details

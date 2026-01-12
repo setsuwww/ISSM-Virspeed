@@ -5,7 +5,7 @@ import EmployeesTable from "./EmployeesTable";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_function/globalFunction";
-import EmployeesTableButton from "./EmployeesTableButton";
+import EmployeesTableButton from "../EmployeesTableButton";
 
 const PAGE_SIZE = 10;
 
@@ -84,8 +84,8 @@ export default async function EmployeesPage({ searchParams }) {
           <div className="flex items-center justify-between pb-3">
             <ContentInformation
               autoMargin={false}
-              heading="List Employees"
-              subheading="Manage all employees here"
+              heading="List Shift Employees"
+              subheading="Manage all shift-hours employees here"
             />
             <EmployeesTableButton />
           </div>
@@ -93,7 +93,7 @@ export default async function EmployeesPage({ searchParams }) {
 
         <ContentForm.Body>
           <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts} />
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees" />
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees/shift-employees" />
         </ContentForm.Body>
       </ContentForm>
     </section>

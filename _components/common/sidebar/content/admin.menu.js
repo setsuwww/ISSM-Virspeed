@@ -23,11 +23,27 @@ export const adminMenu = [
     label: "Division",
     icon: "Building2",
     items: [
-      { label: "Divisions", href: "/admin/dashboard/users/divisions" },
-      { label: "Employees", href: "/admin/dashboard/users/employees" },
-      { label: "Attendances", href: "/admin/dashboard/users/attendances" },
-      { label: "Work Hours", href: "/admin/dashboard/users/work-hours" }
-    ]
+      {
+        label: "Divisions",
+        href: "/admin/dashboard/users/divisions",
+      },
+      {
+        label: "Employees",
+        href: "/admin/dashboard/users/employees/shift-employees",
+        activePaths: [
+          "/admin/dashboard/users/employees/shift-employees",
+          "/admin/dashboard/users/employees/work-hours",
+        ],
+      },
+      {
+        label: "Attendances",
+        href: "/admin/dashboard/users/attendances",
+      },
+      {
+        label: "Work Hours",
+        href: "/admin/dashboard/users/work-hours",
+      },
+    ],
   },
   {
     type: "group",

@@ -20,7 +20,7 @@ export default function EditForm({ user, divisions }) {
   const [isPending, startTransition] = useTransition();
 
   const [form, setForm] = useState({
-    id: user.id, name: user.name, email: user.email, 
+    id: user.id, name: user.name, email: user.email,
     password: "", role: user.role,
     divisionId: user.divisionId ? String(user.divisionId) : "",
     shiftId: user.shiftId ? String(user.shiftId) : "",
@@ -40,8 +40,8 @@ export default function EditForm({ user, divisions }) {
 
     startTransition(async () => {
       const result = await updateUser(form);
-        if (result?.success) { router.push("/admin/dashboard/users")} 
-        else { alert(result?.error)}
+      if (result?.success) { router.push("/admin/dashboard/users") }
+      else { alert(result?.error) }
     });
   }
 
@@ -58,7 +58,7 @@ export default function EditForm({ user, divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/users/employees" />
+            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/users/employees/shift-employees" />
           </ContentForm.Header>
 
           <ContentForm.Body>
@@ -126,8 +126,8 @@ export default function EditForm({ user, divisions }) {
 
           <ContentForm.Footer>
             <Button type="submit" disabled={isPending}>
-              {isPending 
-                ? (<><Loader className="w-4 h-4 animate-spin" /> Updating...</>) 
+              {isPending
+                ? (<><Loader className="w-4 h-4 animate-spin" /> Updating...</>)
                 : "Update User"
               }
             </Button>
