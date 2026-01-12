@@ -4,31 +4,16 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import clsx from "clsx"
 
-export function SidebarLink({
-  href,
-  activePaths = [],
-  icon: Icon,
-  children,
-  minimized,
-  badge = 0,
-}) {
+export function SidebarLink({ href, icon: Icon, children, minimized, badge = 0 }) {
   const pathname = usePathname()
-
-  const isActive =
-    activePaths.length > 0
-      ? activePaths.some((p) => pathname.startsWith(p))
-      : pathname === href
+  const isActive = pathname === href
 
   return (
-    <Link
-      href={href}
-      className={clsx(
-        "relative text-sm font-semibold flex items-center rounded-lg transition-all duration-200",
-        minimized
-          ? "justify-center h-12 w-12 mx-auto"
+    <Link href={href}
+      className={clsx("relative text-sm font-semibold flex items-center rounded-lg transition-all duration-200",
+        minimized ? "justify-center h-12 w-12 mx-auto"
           : "gap-3 px-3 py-2 w-full",
-        isActive
-          ? "bg-slate-50 ring ring-slate-200 text-slate-800"
+        isActive ? "bg-slate-50 ring ring-slate-200 text-slate-800"
           : "text-slate-600 hover:text-slate-800 hover:bg-slate-50"
       )}
     >
