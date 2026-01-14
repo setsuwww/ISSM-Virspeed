@@ -4,8 +4,6 @@ import { CalendarDays, CircleUserRound } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
 
-import { capitalize } from "@/_function/globalFunction"
-
 import { shiftStyles } from "@/_constants/shiftConstants"
 import {
   attendancesStyles,
@@ -120,16 +118,16 @@ export default function ChangeShiftTable({ data = [] }) {
             </TableCell>
 
             <TableCell>
-  <Badge
-    className={
-      attendancesStyles[
-        normalizeRequestStatus(item.status)
-      ]
-    }
-  >
-    {getDisplayStatus(item.status)}
-  </Badge>
-</TableCell>
+              <Badge
+                className={
+                  attendancesStyles[
+                  normalizeRequestStatus(item.status)
+                  ]
+                }
+              >
+                {getDisplayStatus(item.status)}
+              </Badge>
+            </TableCell>
 
           </TableRow>
         ))}
