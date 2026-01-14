@@ -1,18 +1,24 @@
 "use client";
 
 import { Calendar } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
-import { Dialog, DialogContent, DialogHeader } from "@/_components/ui/Dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog";
 import { ScrollArea } from "@/_components/ui/Scroll-area";
 
-import WorkHoursActionHeader from "./WorkHoursHeaderAction";
+import WorkHoursActionHeader from "./WorkHoursActionHeader";
 
 export default function UsersModal({ open, onClose, title, users }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent size="full" className="p-0">
         <DialogHeader>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 py-5 px-6">
+
+            <VisuallyHidden>
+              <DialogTitle>Users Detail Dialog</DialogTitle>
+            </VisuallyHidden>
+
             <div className="p-3 rounded-xl bg-indigo-100">
               <Calendar className="h-6 w-6 text-indigo-600" />
             </div>
