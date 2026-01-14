@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function LoadingStates() {
   return (
@@ -7,7 +7,7 @@ export default function LoadingStates() {
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/60 to-transparent" />
 
       <div className="relative flex flex-col items-center gap-4 text-slate-600">
-        <Loader2 className="h-12 w-12 animate-spin text-slate-700" strokeWidth={1.5} />
+        <Loader className="h-12 w-12 animate-spin text-slate-700" strokeWidth={1.5} />
         <div className="text-center">
           <p className="text-base font-medium">Loading data</p>
           <p className="text-sm text-slate-500">Please wait a moment</p>
