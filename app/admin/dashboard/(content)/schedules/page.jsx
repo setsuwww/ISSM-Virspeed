@@ -13,11 +13,7 @@ export async function getSchedules({ page = 1, search = "", frequency, shift }) 
     skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
     where: {
       ...(search
-        ? {
-          OR: [{ title: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-          ],
-        }
+        ? { OR: [{ title: { contains: search, mode: "insensitive" } }, { description: { contains: search, mode: "insensitive" } },], }
         : {}),
       ...(frequency && frequency !== "all" ? { frequency } : {}), ...(shift && shift !== "all" ? { shift: { type: shift } } : {}),
     },
@@ -51,8 +47,7 @@ export default async function Page({ searchParams }) {
   ]);
 
   const schedules = schedulesRaw.map((s) => ({
-    ...s,
-    startDate: s.startDate?.toISOString() ?? null, endDate: s.endDate?.toISOString() ?? null,
+    ...s, startDate: s.startDate?.toISOString() ?? null, endDate: s.endDate?.toISOString() ?? null,
     createdAt: s.createdAt?.toISOString() ?? null, updatedAt: s.updatedAt?.toISOString() ?? null,
     shift: s.shift
       ? { ...s.shift, startTime: s.shift.startTime, endTime: s.shift.endTime, }
