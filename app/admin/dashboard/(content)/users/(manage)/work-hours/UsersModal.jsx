@@ -1,20 +1,34 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/_components/ui/Dialog";
+import { Calendar } from "lucide-react";
+
+import { Dialog, DialogContent, DialogHeader } from "@/_components/ui/Dialog";
 import { ScrollArea } from "@/_components/ui/Scroll-area";
+
+import WorkHoursActionHeader from "./WorkHoursHeaderAction";
 
 export default function UsersModal({ open, onClose, title, users }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent size="xl" className="p-0">
-        <DialogHeader className="px-6 pt-6">
-          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+      <DialogContent size="full" className="p-0">
+        <DialogHeader>
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-indigo-100">
+              <Calendar className="h-6 w-6 text-indigo-600" />
+            </div>
+
+            <div className="flex flex-col gap-0.5">
+              <h1 className="text-xl font-semibold">Division : {title}</h1>
+              <p className="text-sm text-slate-500">
+                Lists users on this shift if the user have shift assigned
+              </p>
+            </div>
+          </div>
         </DialogHeader>
+
+        <div className="px-6">
+          <WorkHoursActionHeader />
+        </div>
 
         {users.length === 0 ? (
           <div className="px-6 pb-6 pt-3 text-center">

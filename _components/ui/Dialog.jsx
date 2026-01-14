@@ -103,7 +103,7 @@ function DialogContent({
     md: "sm:max-w-md",
     lg: "sm:max-w-lg",
     xl: "sm:max-w-xl",
-    full: "sm:max-w-[90vw]",
+    full: "sm:max-w-[70vw]",
   }
 
   return (

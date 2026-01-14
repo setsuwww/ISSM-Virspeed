@@ -46,14 +46,14 @@ export default function TabsNormalHours({ divisions = [] }) {
                   <p className="text-xs text-slate-400 mt-0.5">
                     {division.startTime != null && division.endTime != null
                       ? `${minutesToTime(division.startTime)} – ${minutesToTime(
-                          division.endTime
-                        )}`
+                        division.endTime
+                      )}`
                       : "No working hours"}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 text-sm font-medium">
                   {users.length}
                 </div>

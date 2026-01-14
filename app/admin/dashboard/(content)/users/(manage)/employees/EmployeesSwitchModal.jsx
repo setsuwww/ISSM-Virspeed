@@ -67,7 +67,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         {/* Header */}
         <div className="border-b px-6 py-5 shrink-0">
           <DialogHeader>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 p-4">
               <div className="p-3 rounded-xl bg-indigo-100">
                 <CalendarSync className="h-6 w-6 text-indigo-600" />
               </div>

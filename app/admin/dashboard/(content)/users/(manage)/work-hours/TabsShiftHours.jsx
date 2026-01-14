@@ -20,7 +20,7 @@ export default function TabsShiftHours({ shifts = [] }) {
           <div
             key={shift.id}
             onClick={() => setSelected(shift)}
-            className="cursor-pointer group rounded-xl border border-slate-200 p-4"
+            className="cursor-pointer group rounded-xl border border-slate-200 p-4 hover:shadow transition"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -38,8 +38,8 @@ export default function TabsShiftHours({ shifts = [] }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 text-indigo-600 text-sm font-medium">
+              <div className="flex items-center gap-1">
+                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 text-sm font-medium">
                   {users.length}
                 </div>
 
