@@ -22,7 +22,7 @@ export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, t
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-slate-200 text-slate-500 rounded-full">
+          <div className="p-2 bg-slate-200 rounded-full">
             <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
           </div>
           <div className="flex flex-col">

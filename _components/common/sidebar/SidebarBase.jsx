@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import clsx from "clsx"
-import { CircleUserRound } from "lucide-react"
 
 import { iconMap } from "./content/iconMap"
 import { Logo } from "../Logo"

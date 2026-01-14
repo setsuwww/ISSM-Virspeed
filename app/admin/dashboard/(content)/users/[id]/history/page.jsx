@@ -1,5 +1,4 @@
 import { prisma } from "@/_lib/prisma";
-import { CircleUserRound } from "lucide-react";
 
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import ContentForm from "@/_components/common/ContentForm";

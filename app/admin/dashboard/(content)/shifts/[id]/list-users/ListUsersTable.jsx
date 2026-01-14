@@ -2,13 +2,11 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { CircleUserRound, Trash2, FolderInput, RefreshCcw } from "lucide-react";
+import { CircleUserRound, RefreshCcw } from "lucide-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { Button } from "@/_components/ui/Button";
-import { Input } from "@/_components/ui/Input";
 import EmptyStates from "@/_components/common/EmptyStates";
 
 import { roleStyles } from "@/_constants/roleConstants";
@@ -16,6 +14,7 @@ import { capitalize } from "@/_function/globalFunction";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 
 import { deleteUsers, deleteUserById } from "@/_server/admin-action/userAction";
+import ListUsersActionHeader from "./ListUsersActionHeader";
 
 export default function ListUsersTable({ data }) {
   const router = useRouter();
@@ -38,9 +37,7 @@ export default function ListUsersTable({ data }) {
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
-        (u) =>
-          u.name.toLowerCase().includes(q) ||
-          u.email.toLowerCase().includes(q)
+        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
       );
     }
 
@@ -118,58 +115,13 @@ export default function ListUsersTable({ data }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row justify-between gap-4 pb-2">
-        <div className="flex items-center gap-2">
-          <Select value={sortOrder} onValueChange={setSortOrder}>
-            <SelectTrigger className="w-auto px-3">
-              <span className="font-semibold text-slate-600 mr-1">Filter:</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="A-Z">A - Z</SelectItem>
-              <SelectItem value="Z-A">Z - A</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input
-            placeholder="Search user..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            typeSearch
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-rose-500"
-            disabled={!selectedIds.length}
-            onClick={handleDeleteSelected}
-          >
-            Delete Selected
-          </Button>
-
-          <Button
-            size="sm"
-            variant="ghost"
-            className="bg-rose-50 text-rose-500 hover:bg-rose-100"
-            onClick={handleDeleteAll}
-          >
-            <Trash2 size={18} />
-            Delete All
-          </Button>
-
-          <Button
-            size="sm"
-            variant="ghost"
-            className="bg-teal-100 text-teal-600 hover:bg-teal-200"
-          >
-            <FolderInput size={16} />
-            Export
-          </Button>
-        </div>
-      </div>
+      <ListUsersActionHeader
+        search={search} onSearchChange={setSearch}
+        sortOrder={sortOrder} onSortOrderChange={setSortOrder}
+        selectedCount={selectedIds.length}
+        onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
+        filteredData={filteredData}
+      />
 
       {filteredData.length === 0 ? (
         <EmptyStates />
@@ -178,11 +130,7 @@ export default function ListUsersTable({ data }) {
           <TableHeader>
             <TableRow>
               <TableHead>
-                <Checkbox
-                  checked={
-                    selectedIds.length > 0 &&
-                    selectedIds.length === filteredData.length
-                  }
+                <Checkbox checked={selectedIds.length > 0 && selectedIds.length === filteredData.length}
                   onCheckedChange={toggleSelectAll}
                 />
               </TableHead>
@@ -198,16 +146,13 @@ export default function ListUsersTable({ data }) {
             {filteredData.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>
-                  <Checkbox
-                    checked={selectedIds.includes(user.id)}
-                    onCheckedChange={() => toggleSelect(user.id)}
-                  />
+                  <Checkbox checked={selectedIds.includes(user.id)} onCheckedChange={() => toggleSelect(user.id)} />
                 </TableCell>
 
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <div className="p-2 bg-slate-200 rounded-full">
-                      <CircleUserRound className="text-slate-500" />
+                      <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
                     </div>
                     <div>
                       <div className="font-semibold">{user.name}</div>

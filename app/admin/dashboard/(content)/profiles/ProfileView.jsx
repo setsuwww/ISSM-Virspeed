@@ -5,22 +5,9 @@ import { useUserStore } from "@/_stores/useUserStore"
 import { updateProfile } from "@/_server/profileAction"
 import { toast } from "sonner"
 
-import {
-  CircleUserRound,
-  LogOut,
-  Trash2,
-  Save,
-  Pencil,
-  Building2,
-  CalendarDays,
-} from "lucide-react"
+import { CircleUserRound, LogOut, Trash2, Save, Pencil, Building2, CalendarDays } from "lucide-react"
 
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/_components/ui/Card"
+import { Card, CardHeader, CardContent, CardFooter } from "@/_components/ui/Card"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Badge } from "@/_components/ui/Badge"
