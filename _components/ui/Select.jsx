@@ -43,7 +43,7 @@ function SelectTrigger({
         "data-[size=default]:h-9 data-[size=sm]:h-8",
         "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
         "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
-        "*:data-[slot=select-value]:text-slate-500 *:data-[slot=select-value]:font-base data-[placeholder]:*:data-[slot=select-value]:text-slate-400", 
+        "*:data-[slot=select-value]:text-slate-500 *:data-[slot=select-value]:font-base data-[placeholder]:*:data-[slot=select-value]:text-slate-400",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
@@ -51,7 +51,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="text-slate-400/80 size-4 transition-transform duration-200 group-data-[state=open]:rotate-180"/>
+        <ChevronDownIcon className="group-hover:text-slate-600 text-slate-400/80 size-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
 
@@ -69,7 +69,7 @@ function SelectContent({
       <SelectPrimitive.Content data-slot="select-content"
         className={cn("bg-white text-slate-400 font-base",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md ring-slate-100 border-t-2 border-slate-300/30 shadow-md transition-all",
-          position === "popper" && 
+          position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className
         )}
