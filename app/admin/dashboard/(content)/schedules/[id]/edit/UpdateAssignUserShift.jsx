@@ -124,7 +124,7 @@ export default function UpdateAssignUserShift({ users }) {
                   return (
                     <CommandItem key={u.id} onSelect={() => toggleUser(u.id)}>
                       <div className="flex items-center gap-3">
-                        <CircleUserRound className="icon" strokeWidth={1} />
+                        <CircleUserRound className="h-5 w-5 text-slate-600" />
                         <div>
                           <p className="text-sm font-medium text-slate-600">{u.name}</p>
                           <p className="text-xs text-slate-400">{u.email}</p>
