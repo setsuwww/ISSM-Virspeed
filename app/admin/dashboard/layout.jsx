@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }) {
       <SidebarBase menu={adminMenu} user={user} />
 
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 overflow-y-auto px-[15px] py-[12px] bg-slate-100">
+        <main className="flex-1 overflow-y-auto px-8 py-3.5 bg-slate-100">
           <ReactQueryProvider>
             <ToastProvider><ConfirmDialog />
               {children}

@@ -16,6 +16,7 @@ import { Label } from "@/_components/ui/Label"
 import { roleStyles } from "@/_constants/roleConstants"
 import { capitalize, minutesToTime } from "@/_function/globalFunction"
 import { format } from "date-fns"
+import AppInformation from "./AppInformation"
 
 export function ProfileView({ user }) {
   const { setUser } = useUserStore()
@@ -54,126 +55,130 @@ export function ProfileView({ user }) {
   }
 
   return (
-    <Card className="rounded-2xl border border-slate-200 shadow-sm">
-      {/* HEADER */}
-      <CardHeader className="flex flex-row items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-full bg-slate-100 ring-1 ring-slate-200">
-            <CircleUserRound className="w-10 h-10 text-slate-600" />
-          </div>
-
-          <div>
-            <h2 className="text-lg font-semibold text-slate-800">
-              {user.name}
-            </h2>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              {user.email}
-            </div>
-            <Badge
-              className={`mt-1 w-fit ${roleStyles[capitalize(user.role)] ?? ""}`}
-            >
-              {capitalize(user.role)}
-            </Badge>
-          </div>
-        </div>
-
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={() => setIsEditing((v) => !v)}
-        >
-          <Pencil className="w-4 h-4" />
-        </Button>
-      </CardHeader>
-
-      {/* CONTENT */}
-      <CardContent className="space-y-6 px-6">
-        {/* EDIT FORM */}
-        {isEditing && (
-          <div className="grid max-w-md gap-4">
-            <div className="space-y-1">
-              <Label>Full name</Label>
-              <Input
-                value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
-              />
+    <div className="space-y-6">
+      <Card className="rounded-2xl border border-slate-200 shadow-sm">
+        {/* HEADER */}
+        <CardHeader className="flex flex-row items-center justify-between px-6 py-5">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-full bg-slate-100 ring-1 ring-slate-200">
+              <CircleUserRound className="w-10 h-10 text-slate-600" />
             </div>
 
-            <div className="space-y-1">
-              <Label>Email</Label>
-              <Input
-                value={form.email}
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-              />
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSave}>
-                <Save className="w-4 h-4 mr-2" />
-                Save
-              </Button>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800">
+                {user.name}
+              </h2>
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                {user.email}
+              </div>
+              <Badge
+                className={`mt-1 w-fit ${roleStyles[capitalize(user.role)] ?? ""}`}
+              >
+                {capitalize(user.role)}
+              </Badge>
             </div>
           </div>
-        )}
 
-        {/* BASIC INFORMATION */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Info label="Division" icon={Building2}>
-            {user.division?.name ?? "-"}
-          </Info>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setIsEditing((v) => !v)}
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+        </CardHeader>
 
-          <Info label="Joined at" icon={CalendarDays}>
-            {user.createdAt
-              ? format(new Date(user.createdAt), "dd MMMM yyyy")
-              : "-"}
-          </Info>
-        </div>
+        {/* CONTENT */}
+        <CardContent className="space-y-6 px-6">
+          {/* EDIT FORM */}
+          {isEditing && (
+            <div className="grid max-w-md gap-4">
+              <div className="space-y-1">
+                <Label>Full name</Label>
+                <Input
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm({ ...form, name: e.target.value })
+                  }
+                />
+              </div>
 
-        {/* SHIFT */}
-        {user.shift && (
-          <div className="rounded-xl border bg-slate-50 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-md font-medium text-slate-700">
-                Shift Information
-              </h3>
+              <div className="space-y-1">
+                <Label>Email</Label>
+                <Input
+                  value={form.email}
+                  onChange={(e) =>
+                    setForm({ ...form, email: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button variant="outline" onClick={() => setIsEditing(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save
+                </Button>
+              </div>
             </div>
+          )}
 
-            <p className="text-sm text-slate-700">
-              Shift : {user.shift.name ?? user.shift.type}
-            </p>
-            <p className="text-sm mt-1">
-              <span className="font-medium text-emerald-600">
-                {minutesToTime(user.shift.startTime)}
-              </span>
-              {" – "}
-              <span className="font-medium text-rose-500">
-                {minutesToTime(user.shift.endTime)}
-              </span>
-            </p>
+          {/* BASIC INFORMATION */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Info label="Division" icon={Building2}>
+              {user.division?.name ?? "-"}
+            </Info>
+
+            <Info label="Joined at" icon={CalendarDays}>
+              {user.createdAt
+                ? format(new Date(user.createdAt), "dd MMMM yyyy")
+                : "-"}
+            </Info>
           </div>
-        )}
-      </CardContent>
 
-      {/* FOOTER */}
-      <CardFooter className="flex justify-between border-t px-6 py-4">
-        <Button variant="ghost" className="text-rose-600">
-          <Trash2 className="w-4 h-4 mr-2" />
-          Delete account
-        </Button>
+          {/* SHIFT */}
+          {user.shift && (
+            <div className="rounded-xl border bg-slate-50 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-md font-medium text-slate-700">
+                  Shift Information
+                </h3>
+              </div>
 
-        <Button variant="outline">
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </Button>
-      </CardFooter>
-    </Card>
+              <p className="text-sm text-slate-700">
+                Shift : {user.shift.name ?? user.shift.type}
+              </p>
+              <p className="text-sm mt-1">
+                <span className="font-medium text-emerald-600">
+                  {minutesToTime(user.shift.startTime)}
+                </span>
+                {" – "}
+                <span className="font-medium text-rose-500">
+                  {minutesToTime(user.shift.endTime)}
+                </span>
+              </p>
+            </div>
+          )}
+
+        </CardContent>
+
+        {/* FOOTER */}
+        <CardFooter className="flex justify-between border-t px-6 py-4">
+          <Button variant="ghost" className="text-rose-600">
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete account
+          </Button>
+
+          <Button variant="outline">
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </CardFooter>
+      </Card>
+      <AppInformation />
+    </div>
   )
 }
 
