@@ -27,9 +27,8 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
   const visibleSegments = segments.slice(0, 3)
 
   const handleLogout = () => {
-    startTransition(async () => { const result = await LogoutAuthAction()
-      if (result.success) window.location.href = "/login"
-      else alert("Logout failed.")
+    startTransition(async () => {
+      LogoutAuthAction()
     })
   }
 
@@ -51,8 +50,8 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
             const isLast = index === visibleSegments.length - 1
             return (
               <span key={index}>
-                {!isLast 
-                  ? (<Link href={href} className="font-semibold text-slate-700">{formatLabel(segment)}</Link>) 
+                {!isLast
+                  ? (<Link href={href} className="font-semibold text-slate-700">{formatLabel(segment)}</Link>)
                   : (<span className="text-slate-500">{formatLabel(segment)}</span>)
                 }
                 {!isLast && <span className="mx-2">/</span>}

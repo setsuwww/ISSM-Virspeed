@@ -1,6 +1,6 @@
 "use client"
 
-import { EllipsisVertical } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import React from "react"
 import Link from "next/link"
 
@@ -24,7 +24,7 @@ function DashboardStatsComponent({
           key={label}
           className={`h-6 px-1.5 rounded-sm text-[10px] font-medium flex items-center justify-center mt-0 md:mt-0.5 ${className}`}
         >
-          {label} : {value} 
+          {label} : {value}
         </span>
       </div>
     );
@@ -41,7 +41,7 @@ function DashboardStatsComponent({
           <h2 className="text-sm font-medium">{title}</h2>
           {link && (
             <Link href={link}>
-              <EllipsisVertical strokeWidth={2} size={15}
+              <ChevronRight strokeWidth={2} size={15}
                 className={dark ? "text-slate-400" : "text-slate-500"}
               />
               {textlink}
