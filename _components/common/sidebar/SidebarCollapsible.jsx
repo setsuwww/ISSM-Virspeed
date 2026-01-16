@@ -31,12 +31,12 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
     <div className="flex flex-col px-2">
       <button onClick={handleClick}
         className={clsx("group w-full flex items-center transition-all duration-200 rounded-lg",
-          minimized ? "justify-center h-12 w-12 mx-auto" : "justify-between py-2 px-2.5",
-          isParentActive ? "bg-slate-50 ring ring-slate-200 text-slate-600 font-bold border-b-2 border-0 border-slate-200" : "font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-50"
+          minimized ? "justify-center h-12 w-12 mx-auto" : "justify-between py-1.5 pl-1.5 pr-2.5",
+          isParentActive ? "bg-slate-50 ring ring-slate-200 text-slate-600 font-bold border-b-2 border-0 border-slate-200" : "font-semibold text-slate-600 border border-transparent hover:text-slate-800 hover:bg-slate-50 hover:border hover:border-slate-200"
         )}
       >
         <div className="flex items-center gap-x-3">
-          <div className="p-1.5 bg-yellow-600/10 rounded-md">
+          <div className="p-1.5 bg-yellow-500/10 rounded-md">
             <Icon size={18} className="text-yellow-500" />
           </div>
           {!minimized && <span className="text-sm">{title}</span>}
@@ -52,9 +52,9 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
       {!minimized && (
         <div className="overflow-hidden transition-all duration-300" style={{ height: `${height}px` }}>
           <div ref={contentRef}
-            className="ml-4.5 flex flex-col space-y-1.5 border-l-2 border-dashed border-slate-300"
+            className="ml-5 flex flex-col space-y-1.5 border-l-2 border-dashed border-slate-300"
           >
-            <div className="p-2">
+            <div className="py-2 px-[14px]">
               {items.map((item) => (
                 <SidebarSubLink key={item.href} href={item.href} minimized={minimized}>
                   {item.label}

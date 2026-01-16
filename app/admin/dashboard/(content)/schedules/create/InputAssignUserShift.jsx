@@ -27,10 +27,11 @@ export default function InputAssignUserShift({ users }) {
   })
 
   const toggleUser = useCallback(
-    (id) => setForm((prev) => ({...prev,
+    (id) => setForm((prev) => ({
+      ...prev,
       selectedUsers: prev.selectedUsers.includes(id)
         ? prev.selectedUsers.filter((u) => u !== id) : [...prev.selectedUsers, id],
-      })),
+    })),
     []
   )
 
@@ -56,7 +57,7 @@ export default function InputAssignUserShift({ users }) {
       users: users.filter((u) => selectedUsers.includes(u.id)),
     })
 
-    setUI({ 
+    setUI({
       open: false, dialogOpen: true,
       dialogMessage: `Draft schedule created for ${selectedUsers.length} user(s).`, dialogType: "success",
     })
@@ -159,9 +160,10 @@ export default function InputAssignUserShift({ users }) {
                         className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-700 text-xs px-2 py-0.5"
                       >
                         {user?.name}
-                        <span role="button" tabIndex={0} onClick={(e) => {e.stopPropagation()
-                            toggleUser(id)
-                          }} className="cursor-pointer hover:bg-rose-100 rounded-md ml-1"
+                        <span role="button" tabIndex={0} onClick={(e) => {
+                          e.stopPropagation()
+                          toggleUser(id)
+                        }} className="cursor-pointer hover:bg-rose-100 rounded-md ml-1"
                         >
                           <X className="h-3 w-3 text-rose-500 hover:text-rose-700" />
                         </span>
@@ -189,8 +191,8 @@ export default function InputAssignUserShift({ users }) {
                       className="group cursor-pointer flex items-center justify-between rounded-md px-3 py-2 mb-1 hover:bg-slate-50 transition-all duration-150"
                     >
                       <div className="flex items-center gap-3 w-full">
-                        <div className="p-2.5 rounded-lg bg-slate-100 group-hover:bg-slate-200">
-                          <CircleUserRound className="h-5 w-5 text-slate-600" />
+                        <div className="p-2 rounded-full bg-slate-100 group-hover:bg-slate-200">
+                          <CircleUserRound className="icon" strokeWidth={1} />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium text-slate-700">{user.name}</span>

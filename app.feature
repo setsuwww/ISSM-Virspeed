@@ -8,3 +8,9 @@ Untuk Karyawan Swasta:
 Cuti Tahunan: Minimal 12 hari kerja setelah 12 bulan bekerja terus-menerus. 
 Cuti Melahirkan/Keguguran: 1,5 bulan sebelum dan 1,5 bulan sesudah melahirkan (total 3 bulan). UU KIA memungkinkan 6 bulan jika ada kondisi khusus (dengan ketentuan upah berbeda). 
 Cuti Sakit: Hingga 12 bulan (4 bulan pertama gaji penuh, sisa gaji 75%) jika dibuktikan dengan surat dokter. 
+
+Track Update
+
+Velizue 0.1.0 (Aurora) Vercel UI
+Gowsh 0.2.0 (Beriar) Crystal UI
+Aylish : 0.3.0 (Catalyct) Glassmorphism UI

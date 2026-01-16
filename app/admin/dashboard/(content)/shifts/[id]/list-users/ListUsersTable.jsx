@@ -151,8 +151,8 @@ export default function ListUsersTable({ data }) {
 
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-slate-200 rounded-full">
-                      <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
+                    <div className="icon-parent">
+                      <CircleUserRound className="icon" strokeWidth={1} />
                     </div>
                     <div>
                       <div className="font-semibold">{user.name}</div>

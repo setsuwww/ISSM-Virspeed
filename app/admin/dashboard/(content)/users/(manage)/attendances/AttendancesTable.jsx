@@ -52,7 +52,7 @@ export default function AttendancesTableClient() {
           subheading="Manage and review all attendance records"
         />
 
-        <AttendancesActionHeader 
+        <AttendancesActionHeader
           selectedDate={date} onDateChange={setDate}
           filterShift={filterShift} onFilterShiftChange={setFilterShift}
           dateSortOrder={sortOrder} onDateSortChange={setSortOrder}
@@ -91,8 +91,8 @@ export default function AttendancesTableClient() {
 
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="bg-slate-200 p-2 rounded-full">
-                        <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
+                      <div className="icon-parent">
+                        <CircleUserRound className="icon" strokeWidth={1} />
                       </div>
 
                       <div className="flex flex-col">

@@ -18,8 +18,8 @@ function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyl
 
       <TableCell>
         <div className="flex items-center gap-3">
-          <div className="bg-slate-200 p-2 rounded-full">
-            <CircleUserRound className="h-5 w-5 text-slate-600" strokeWidth={1} />
+          <div className="icon-parent">
+            <CircleUserRound className="icon" strokeWidth={1} />
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-600">{user.name}</p>
@@ -53,9 +53,9 @@ function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyl
       </TableCell>
 
       <TableCell>
-        {user.isActionLocked 
-          ? (<LockedAction />) 
-          : (<UsersActionButton userId={user.id} onEdit={onEdit} onDelete={onDelete}/>)
+        {user.isActionLocked
+          ? (<LockedAction />)
+          : (<UsersActionButton userId={user.id} onEdit={onEdit} onDelete={onDelete} />)
         }
       </TableCell>
     </TableRow>

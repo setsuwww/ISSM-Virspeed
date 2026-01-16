@@ -19,7 +19,8 @@ export default function UpdateAssignUserShift({ users }) {
   )
 
   const toggleUser = useCallback(
-    (id) => { const isSelected = event.users.some((u) => u.id === id)
+    (id) => {
+      const isSelected = event.users.some((u) => u.id === id)
       const updatedUsers = isSelected
         ? event.users.filter((u) => u.id !== id)
         : [...event.users, users.find((u) => u.id === id)]
@@ -123,9 +124,9 @@ export default function UpdateAssignUserShift({ users }) {
                   return (
                     <CommandItem key={u.id} onSelect={() => toggleUser(u.id)}>
                       <div className="flex items-center gap-3">
-                        <CircleUserRound className="h-5 w-5 text-slate-600" />
+                        <CircleUserRound className="icon" strokeWidth={1} />
                         <div>
-                          <p className="text-sm font-medium">{u.name}</p>
+                          <p className="text-sm font-medium text-slate-600">{u.name}</p>
                           <p className="text-xs text-slate-400">{u.email}</p>
                         </div>
                         {isSelected && <Check className="ml-auto h-4 w-4 text-teal-600" />}
