@@ -11,6 +11,14 @@ Cuti Sakit: Hingga 12 bulan (4 bulan pertama gaji penuh, sisa gaji 75%) jika dib
 
 Track Update
 
-Velizue 0.1.0 (Aurora) Vercel UI
-Gowsh 0.2.0 (Beriar) Crystal UI
-Aylish : 0.3.0 (Catalyct) Glassmorphism UI
+Version 0.1.0 — (Aurora)
+Design: Velizue
+UI Style: Vercel UI
+
+Version 0.2.0 — (Beriar)
+Design: Gowsh
+UI Style: Crystal UI
+
+Version 0.3.0 — (Catalyct)
+Design: Aylish
+UI Style: Glassmorphism

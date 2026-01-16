@@ -116,23 +116,30 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background:
+      radial-gradient(
+        1200px circle at top,
+        rgba(56, 189, 248, 0.15),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #0f172a, #020617);
   }
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('/fonts/Geist-VariableFont_wght.ttf') format('truetype');
+  font-family: "Geist";
+  src: url("/fonts/Geist-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
 
 @layer base {
   * {
-    font-family: 'Geist';
+    font-family: "Geist";
   }
 
-  button, a {
+  button,
+  a {
     @apply cursor-pointer;
   }
 }

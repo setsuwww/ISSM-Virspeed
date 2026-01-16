@@ -25,11 +25,11 @@ export default async function DashboardLayout({ children }) {
     <div className="flex h-screen">
       <SidebarBase menu={employeeMenu(csCount, scheduleCount)} user={user} />
 
-      <div className="flex-1 flex flex-col"> 
+      <div className="flex-1 flex flex-col">
         <Toaster position="top-right" richColors expand duration={3000} closeButton toastOptions={{
-            className: "rounded-lg shadow-lg border border-slate-200",
-            style: { fontSize: "14px", padding: "12px 16px" },
-          }}
+          className: "rounded-lg shadow-lg border border-slate-200",
+          style: { fontSize: "14px", padding: "12px 16px" },
+        }}
         />
         <DashboardHeader />
         <main className="flex-1 overflow-y-auto p-6 bg-slate-100">

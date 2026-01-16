@@ -11,11 +11,16 @@ export default async function Page() {
   const employees = await prisma.user.findMany({
     where: {
       role: "EMPLOYEE",
-      divisionId: user.divisionId,  
-      NOT: { id: user.id }
+      divisionId: user.divisionId,
+      shiftId: { not: null },
+      id: { not: user.id },
     },
-    include: { shift: true },
-    orderBy: { name: "asc" }
+    include: {
+      shift: true,
+    },
+    orderBy: {
+      name: "asc",
+    },
   })
 
   const requests = await prisma.shiftChangeRequest.findMany({
@@ -33,7 +38,7 @@ export default async function Page() {
   return (
     <main className="space-y-4">
       <ChangeShiftForm employees={employees} />
-      <ChangeShiftTable requests={requests} currentUserId={user.id}/>
+      <ChangeShiftTable requests={requests} currentUserId={user.id} />
     </main>
   )
 }

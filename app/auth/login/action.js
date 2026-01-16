@@ -4,26 +4,26 @@ import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { prisma } from "@/_lib/prisma"
-import { signToken } from "@/_lib/auth"
-import { removeAuthCookie } from "@/_lib/auth"
+import { signToken, removeAuthCookie } from "@/_lib/auth"
 
 export async function AuthAction(prevState, formData) {
   const email = formData.get("email")
   const password = formData.get("password")
 
-  if (!email || !password) { return { error: "Both fields are required" }}
+  if (!email || !password) { return { error: "Both fields are required" } }
 
   const user = await prisma.user.findUnique({ where: { email } })
-  if (!user) { return { error: "User not found" }}
+  if (!user) { return { error: "User not found" } }
 
   const valid = await bcrypt.compare(password, user.password)
-  if (!valid) { return { error: "Invalid password" }}
+  if (!valid) { return { error: "Invalid password" } }
 
   const token = signToken({
     id: user.id, name: user.name, role: user.role,
   })
 
-  cookies().set("token", token, { httpOnly: true,
+  cookies().set("token", token, {
+    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax", path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -38,6 +38,6 @@ export async function AuthAction(prevState, formData) {
 }
 
 export async function LogoutAuthAction() {
-  try { await removeAuthCookie()} 
-  catch (error) { return { success: false, message: "Logout failed" }}
+  await removeAuthCookie()
+  redirect("/auth/login")
 }
