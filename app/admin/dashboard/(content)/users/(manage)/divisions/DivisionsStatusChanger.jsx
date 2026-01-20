@@ -23,24 +23,28 @@ export default function DivisionStatusChanger({
       <div className="flex items-center gap-2 mt-2">
         <Button
           size="sm"
-          variant="outline"
-          className="text-xs rounded-full"
+          variant="link"
+          className="group text-sm rounded-full"
           disabled={selectedCount === 0}
           onClick={onActivateSelected}
         >
-          <Check className="text-teal-600" />
-          Activate Selected
+          <div className="p-0.5 rounded-full bg-teal-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-teal-400/20">
+            <Check className="text-teal-600" />
+          </div>
+          <span className="group-hover:text-teal-600">Activate Selected</span>
         </Button>
 
         <Button
           size="sm"
-          variant="outline"
-          className="text-xs rounded-full"
+          variant="link"
+          className="group text-sm rounded-full"
           disabled={selectedCount === 0}
           onClick={onInactivateSelected}
         >
-          <X className="text-rose-600" />
-          Inactivate Selected
+          <div className="p-0.5 rounded-full bg-rose-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-rose-400/20">
+            <X className="text-rose-600" />
+          </div>
+          <span className="group-hover:text-rose-600">Inactivate Selected</span>
         </Button>
       </div>
     </div>
