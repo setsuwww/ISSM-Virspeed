@@ -54,7 +54,7 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
           <div ref={contentRef}
             className="ml-5 flex flex-col space-y-1.5 border-l-2 border-dashed border-slate-300"
           >
-            <div className="py-2 px-[14px]">
+            <div className="py-2 px-[14.3px]">
               {items.map((item) => (
                 <SidebarSubLink key={item.href} href={item.href} minimized={minimized}>
                   {item.label}
