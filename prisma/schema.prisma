@@ -52,11 +52,16 @@ enum LeaveStatus {
   REJECTED
 }
 
-enum LeaveType {
+enum LeaveCategory {
   ANNUAL
-  MATERNITY
   SICK
+  MATERNITY
+  MARRIAGE
+  BEREAVEMENT
+  RELIGIOUS
+  SPECIAL
 }
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -124,11 +129,30 @@ model User {
   shiftRequests         ShiftChangeRequest[]   @relation("RequestedUser")
   createdRequests       ShiftChangeRequest[]   @relation("RequestedByAdmin")
   targetShiftRequests   ShiftChangeRequest[]   @relation("TargetUser")
-  leaveRequests         LeaveRequest[]
-  approvedLeaves        LeaveRequest[]         @relation("LeaveApprovedBy")
+
+  leaveBalances  UserLeaveBalance[]
+  leaveRequests  LeaveRequest[]
+  approvedLeaves LeaveRequest[]     @relation("LeaveApprovedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model UserLeaveBalance {
+  userId      Int
+  leaveTypeId Int
+  year        Int
+
+  totalDays Int
+  usedDays  Int @default(0)
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, leaveTypeId, year])
 }
 
 model Shift {
@@ -257,25 +281,47 @@ model EarlyCheckoutRequest {
   @@index([attendanceId])
 }
 
+model LeaveType {
+  id          Int           @id @default(autoincrement())
+  code        String        @unique
+  name        String
+  category    LeaveCategory
+  maxDays     Int
+  isPaid      Boolean       @default(true)
+  description String?
+
+  balances UserLeaveBalance[]
+  requests LeaveRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model LeaveRequest {
   id Int @id @default(autoincrement())
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId      Int
+  leaveTypeId Int
+
+  startDate DateTime
+  endDate   DateTime
+  totalDays Int
+
+  reason      String?
+  adminReason String?
+  status      LeaveStatus @default(PENDING)
 
   approvedById Int?
   approvedBy   User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
 
-  type        LeaveType
-  reason      String?
-  adminReason String?
-
-  startDate DateTime
-  endDate   DateTime
-  status    LeaveStatus @default(PENDING)
+  user      User      @relation(fields: [userId], references: [id])
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([leaveTypeId])
 }
 
 model ShiftChangeRequest {
