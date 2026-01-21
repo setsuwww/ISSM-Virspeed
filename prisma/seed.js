@@ -153,6 +153,14 @@ async function main() {
     ],
   });
 
+  await prisma.leaveType.createMany({
+    data: [
+      { code: "ANNUAL", name: "Cuti Tahunan", category: "ANNUAL", maxDays: 12 },
+      { code: "SICK", name: "Cuti Sakit", category: "SICK", maxDays: 365 },
+      { code: "MATERNITY", name: "Cuti Melahirkan", category: "MATERNITY", maxDays: 90 },
+    ],
+  })
+
   console.log("✅ Dummy seed completed!");
 }
 

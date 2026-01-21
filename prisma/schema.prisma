@@ -282,19 +282,14 @@ model EarlyCheckoutRequest {
 }
 
 model LeaveType {
-  id          Int           @id @default(autoincrement())
-  code        String        @unique
-  name        String
-  category    LeaveCategory
-  maxDays     Int
-  isPaid      Boolean       @default(true)
-  description String?
+  id       Int           @id @default(autoincrement())
+  code     String        @unique
+  name     String
+  category LeaveCategory
+  maxDays  Int
 
-  balances UserLeaveBalance[]
-  requests LeaveRequest[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  leaveRequests LeaveRequest[]
+  balances      UserLeaveBalance[]
 }
 
 model LeaveRequest {

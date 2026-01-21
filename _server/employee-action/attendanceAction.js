@@ -3,13 +3,9 @@
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 
-import {
-  determineAttendanceStatus,
-  evaluateAttendancePolicy,
-  canUserCheckout,
-} from "@/_function/helpers/attendanceHelpers"
-
+import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout } from "@/_function/helpers/attendanceHelpers"
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
+import { addWorkDays } from "@/_function/helpers/attendanceHelpers"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
@@ -194,29 +190,69 @@ export async function userSendPermissionRequest(reason) {
   return { success: true }
 }
 
-export async function userSendLeaveRequest({ type, startDate, endDate, reason }) {
+export async function userSendLeaveRequest({ type, startDate, reason }) {
   const user = await getCurrentUser()
-  if (!user) throw new Error("Unauthorized")
+  if (!user?.id) return { error: "Unauthorized" }
 
-  if (!type || !startDate || !endDate) {
-    return { error: "Invalid input data" }
-  }
+  const leaveType = await prisma.leaveType.findUnique({
+    where: { code: type },
+  })
+  if (!leaveType) return { error: "Leave type not found" }
 
   const start = new Date(`${startDate}T12:00:00`)
-  const end = new Date(`${endDate}T12:00:00`)
+  const year = start.getFullYear()
 
-  if (end < start) {
-    return { error: "End date cannot be before start date" }
+  let end = start
+  let totalDays = leaveType.maxDays
+
+  if (leaveType.category === "ANNUAL") {
+    end = addWorkDays(start, totalDays - 1)
+  }
+
+  // overlap
+  const conflict = await prisma.leaveRequest.findFirst({
+    where: {
+      userId: user.id,
+      status: { in: ["PENDING", "APPROVED"] },
+      AND: [{ startDate: { lte: end } }, { endDate: { gte: start } }],
+    },
+  })
+  if (conflict) return { error: "Leave date overlaps" }
+
+  let balance = await prisma.userLeaveBalance.findUnique({
+    where: {
+      userId_leaveTypeId_year: {
+        userId: user.id,
+        leaveTypeId: leaveType.id,
+        year,
+      },
+    },
+  })
+
+  if (!balance) {
+    balance = await prisma.userLeaveBalance.create({
+      data: {
+        userId: user.id,
+        leaveTypeId: leaveType.id,
+        year,
+        totalDays: leaveType.maxDays,
+        usedDays: 0,
+      },
+    })
+  }
+
+  if (balance.totalDays - balance.usedDays < totalDays) {
+    return { error: "Leave balance not sufficient" }
   }
 
   await prisma.leaveRequest.create({
     data: {
       userId: user.id,
-      type,
+      leaveTypeId: leaveType.id,
       startDate: start,
       endDate: end,
+      totalDays,
       reason: reason?.trim() || null,
-      status: "PENDING",
     },
   })
 
