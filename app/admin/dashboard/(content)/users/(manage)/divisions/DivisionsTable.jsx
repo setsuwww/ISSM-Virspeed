@@ -63,10 +63,8 @@ export default function DivisionsTable({ data }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="flex items-center justify-center text-center w-[40px]">
-                <Checkbox checked={filteredData.length > 0 &&
-                  selectedIds.length === filteredData.length
-                }
+              <TableHead className="flex items-center">
+                <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length}
                   onCheckedChange={toggleSelectAll}
                 />
               </TableHead>

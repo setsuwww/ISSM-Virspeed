@@ -40,7 +40,7 @@ export const Pagination = React.memo(function ({
   }
 
   return (
-    <div className="flex items-center gap-1 mt-4">
+    <div className="flex items-center gap-1 mt-4 px-1">
       {page > 1 && (
         <Link href={`${basePath}?page=${page - 1}`} className="pagination-btn text-slate-600 hover:bg-slate-50 hover:text-slate-700">
           <ChevronLeft size={18} />

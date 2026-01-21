@@ -22,14 +22,14 @@ function DivisionRow({
 }) {
   return (
     <TableRow>
-      <TableCell className="w-[20px] text-center">
+      <TableCell>
         <Checkbox checked={isSelected} onCheckedChange={onSelect} />
       </TableCell>
 
       <TableCell>
         <div className="flex items-center gap-3">
-          <div className="bg-slate-200 p-2 rounded-full">
-            <Building2 className="h-5 w-5 text-slate-600" strokeWidth={1} />
+          <div className="icon-parent">
+            <Building2 className="icon" strokeWidth={1} />
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-600">{division.name}</p>
