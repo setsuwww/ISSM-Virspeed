@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo, useRef } from "react";
 import { Calendar } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
@@ -9,6 +10,19 @@ import { ScrollArea } from "@/_components/ui/Scroll-area";
 import WorkHoursActionHeader from "./WorkHoursActionHeader";
 
 export default function UsersModal({ open, onClose, title, users }) {
+  const [search, setSearch] = useState("");
+  const searchInputRef = useRef(null);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((u) => {
+      const matchSearch =
+        u.name?.toLowerCase().includes(search.toLowerCase()) ||
+        u.email?.toLowerCase().includes(search.toLowerCase());
+
+      return matchSearch;
+    });
+  }, [users, search]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent size="full" className="p-0">
@@ -33,19 +47,23 @@ export default function UsersModal({ open, onClose, title, users }) {
         </DialogHeader>
 
         <div className="px-6">
-          <WorkHoursActionHeader />
+          <WorkHoursActionHeader
+            search={search}
+            onSearchChange={setSearch}
+            searchInputRef={searchInputRef}
+          />
         </div>
 
-        {users.length === 0 ? (
+        {filteredUsers.length === 0 ? (
           <div className="px-6 pb-6 pt-3 text-center">
             <p className="text-sm text-slate-500">No users found.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-80 px-2 pb-4">
+          <ScrollArea className="max-h-80 px-2 pb-6">
             <ul className="space-y-1 px-4 pb-2">
-              {users.map((u) => (
-                <li key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition border border-slate-200/60">
-                  <span className="px-3 py-2 bg-slate-200 text-slate-600 text-xs rounded-full">
+              {filteredUsers.map((u) => (
+                <li key={u.id} className="flex items-center gap-3 py-3 rounded-xl hover:bg-slate-100 transition">
+                  <span className="px-3 py-2 bg-slate-700 text-slate-50 text-xs rounded-full">
                     {u.name?.charAt(0).toUpperCase()}
                   </span>
 

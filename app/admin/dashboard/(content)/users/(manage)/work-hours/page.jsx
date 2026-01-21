@@ -19,7 +19,7 @@ async function getWorkHoursData() {
             role: "EMPLOYEE",
             shiftId: null,
           },
-          select: { id: true, name: true },
+          select: { id: true, name: true, email: true },
         },
       },
     }),
@@ -34,7 +34,7 @@ async function getWorkHoursData() {
         type: true,
         users: {
           where: { role: "EMPLOYEE" },
-          select: { id: true, name: true },
+          select: { id: true, name: true, email: true },
         },
       },
     }),
