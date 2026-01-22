@@ -15,37 +15,37 @@ export const attendancesStyles = {
 export const attendanceActionTheme = {
   teal: {
     border: "border-teal-200 hover:border-teal-300",
-    iconBg: "bg-teal-100 text-teal-600",
+    iconBg: "bg-teal-100/50 text-teal-600",
     title: "text-teal-700",
     desc: "text-teal-500",
   },
   rose: {
     border: "border-rose-200 hover:border-rose-300",
-    iconBg: "bg-rose-100 text-rose-600",
+    iconBg: "bg-rose-100/50 text-rose-600",
     title: "text-rose-700",
     desc: "text-rose-500",
   },
-  amber: {
-    border: "border-orange-200 hover:border-orange-300",
-    iconBg: "bg-orange-100 text-orange-600",
+  "gowsh-amber": {
+    border: "ring ring-orange-700 border-0 border-t border-orange-400 hover:border-orange-300",
+    iconBg: "bg-orange-600 text-white group-hover:bg-orange-700 group-active:bg-orange-800",
     title: "text-orange-700",
     desc: "text-orange-500",
   },
-  blue: {
-    border: "border-blue-200 hover:border-blue-300",
-    iconBg: "bg-blue-100 text-blue-600",
+  "gowsh-blue": {
+    border: "ring ring-blue-700 border-0 border-t border-blue-400 hover:border-blue-300",
+    iconBg: "bg-blue-600 text-white group-hover:bg-blue-700 group-active:bg-blue-800",
     title: "text-blue-700",
     desc: "text-blue-500",
   },
-  violet: {
-    border: "border-violet-200 hover:border-violet-300",
-    iconBg: "bg-violet-100 text-violet-600",
+  "gowsh-violet": {
+    border: "ring ring-violet-700 border-0 border-t border-violet-400 hover:border-violet-300",
+    iconBg: "bg-violet-600 text-white group-hover:bg-violet-700 group-active:bg-violet-800",
     title: "text-violet-700",
     desc: "text-violet-500",
   },
   slate: {
-    border: "border-slate-200 hover:border-slate-300",
-    iconBg: "bg-slate-100 text-slate-600",
+    border: "ring ring-slate-700 border-0 border-t border-slate-400 hover:border-slate-300",
+    iconBg: "bg-slate-600 text-white group-hover:bg-slate-700 group-active:bg-slate-800",
     title: "text-slate-700",
     desc: "text-slate-500",
   },

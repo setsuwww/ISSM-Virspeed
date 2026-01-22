@@ -133,23 +133,23 @@ export default function CheckinForm() {
           <ContentInformation heading="Send Request" subheading="Change your internal shift / attendance" />
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-3">
-            <MainActionCard icon={<Plane />} title="Permission" description="Ask for permission"
-              color="blue" onClick={() => openModal(MODAL.PERMISSION)}
+            <MainActionCard icon={<Plane strokeWidth={1.5} />} title="Permission" description="Ask for permission"
+              color="gowsh-blue" onClick={() => openModal(MODAL.PERMISSION)}
               loading={isPending}
             />
 
-            <MainActionCard icon={<AlertTriangle />} title="Early Checkout" description="Checkout before scheduled time"
-              color="amber" onClick={() => openModal(MODAL.EARLY)}
+            <MainActionCard icon={<AlertTriangle strokeWidth={1.5} />} title="Early Checkout" description="Checkout before scheduled time"
+              color="gowsh-amber" onClick={() => openModal(MODAL.EARLY)}
               loading={isPending}
             />
 
-            <MainActionCard icon={<Plane />} title="Leave" description="Ask for leave"
-              color="violet"
+            <MainActionCard icon={<Plane strokeWidth={1.5} />} title="Leave" description="Ask for leave"
+              color="gowsh-violet"
               onClick={() => openModal(MODAL.LEAVE)}
               loading={isPending}
             />
 
-            <MainActionCard icon={<Shuffle />} title="Change Shift" description="Request shift change"
+            <MainActionCard icon={<Shuffle strokeWidth={1.5} />} title="Change Shift" description="Request shift change"
               asLink
               href="/employee/dashboard/attendance/change-shift"
             />

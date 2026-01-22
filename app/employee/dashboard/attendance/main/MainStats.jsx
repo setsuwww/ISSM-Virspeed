@@ -18,15 +18,15 @@ function StatItem({ icon, label, value, tone = "slate" }) {
     teal: { icon: "bg-teal-50 text-teal-600 border-teal-100" },
     rose: { icon: "bg-rose-50 text-rose-600 border-rose-100" },
     blue: { icon: "bg-blue-50 text-blue-600 border-blue-100" },
-    yellow: { icon: "bg-yellow-50 text-yellow-600 border-yellow-100" },
+    yellow: { icon: "bg-yellow-50 text-yellow-600 border-yellow-200/50" },
   }
 
   const t = tones[tone] ?? tones.slate
 
   return (
-    <Card className="border border-slate-200 shadow-sm">
+    <Card className="border-b-4 border-slate-200 shadow-xs">
       <CardContent className="flex items-center gap-4 p-5">
-        <div className={clsx("p-3 rounded-xl border", t.icon)}>
+        <div className={clsx("p-3 rounded-2xl border", t.icon)}>
           {icon}
         </div>
 
