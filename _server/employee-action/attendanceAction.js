@@ -202,19 +202,23 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
   const start = new Date(`${startDate}T12:00:00`)
   const year = start.getFullYear()
 
-  let end = start
-  let totalDays = leaveType.maxDays
+  let end
+  let totalDays
 
   if (leaveType.category === "ANNUAL") {
+    totalDays = leaveType.maxDays
     end = addWorkDays(start, totalDays - 1)
+  } else {
+    totalDays = 1
+    end = new Date(start)
   }
 
-  // overlap
   const conflict = await prisma.leaveRequest.findFirst({
     where: {
       userId: user.id,
       status: { in: ["PENDING", "APPROVED"] },
-      AND: [{ startDate: { lte: end } }, { endDate: { gte: start } }],
+      startDate: { lte: end },
+      endDate: { gte: start },
     },
   })
   if (conflict) return { error: "Leave date overlaps" }

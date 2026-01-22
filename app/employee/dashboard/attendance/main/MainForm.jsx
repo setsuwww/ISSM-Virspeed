@@ -1,7 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import {
+  LogIn,
+  LogOut,
+  Plane,
+  Shuffle,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Circle,
+} from "lucide-react"
 
 import { Card, CardContent } from "@/_components/ui/Card"
 import { ContentInformation } from "@/_components/common/ContentInformation"
@@ -16,17 +25,22 @@ import { EarlyCheckoutModal } from "./modal/EarlyCheckoutModal"
 import { PermissionModal } from "./modal/PermissionModal"
 import { LeaveModal } from "./modal/LeaveModal"
 
+const MODAL = {
+  EARLY: "EARLY",
+  PERMISSION: "PERMISSION",
+  LEAVE: "LEAVE",
+}
+
 export default function CheckinForm() {
   const [user, setUser] = useState(null)
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const [reason, setReason] = useState("")
-  const [earlyReason, setEarlyReason] = useState("")
-  const [leaveReason, setLeaveReason] = useState("")
-  const [showEarlyModal, setShowEarlyModal] = useState(false)
-  const [showPermission, setShowPermission] = useState(false)
-  const [showLeave, setShowLeave] = useState(false)
+  // single modal state
+  const [modal, setModal] = useState({
+    type: null,
+    reason: "",
+  })
 
   const {
     isPending,
@@ -37,7 +51,10 @@ export default function CheckinForm() {
     leave,
   } = useUserSendAttendance()
 
+  /* ---------------- fetch initial data ---------------- */
   useEffect(() => {
+    let mounted = true
+
     const fetchData = async () => {
       try {
         const userData = await apiFetchData({
@@ -45,6 +62,8 @@ export default function CheckinForm() {
           successMessage: null,
           errorMessage: "Failed to load user data",
         })
+
+        if (!mounted) return
         setUser(userData)
 
         const statsData = await apiFetchData({
@@ -52,23 +71,61 @@ export default function CheckinForm() {
           successMessage: null,
           errorMessage: "Failed to load stats",
         })
+
+        if (!mounted) return
         setStats(statsData)
       } finally {
-        setLoading(false)
+        if (mounted) setLoading(false)
       }
     }
 
     fetchData()
+    return () => {
+      mounted = false
+    }
   }, [])
+
+  /* ---------------- modal handlers ---------------- */
+  const openModal = useCallback((type) => {
+    setModal({ type, reason: "" })
+  }, [])
+
+  const closeModal = useCallback(() => {
+    setModal({ type: null, reason: "" })
+  }, [])
+
+  const onChangeReason = useCallback((value) => {
+    setModal((prev) => ({ ...prev, reason: value }))
+  }, [])
+
+  /* ---------------- submit handlers ---------------- */
+  const handleEarlyCheckout = useCallback(() => {
+    earlyCheckout(modal.reason, closeModal)
+  }, [earlyCheckout, modal.reason, closeModal])
+
+  const handlePermission = useCallback(() => {
+    permission(modal.reason, closeModal)
+  }, [permission, modal.reason, closeModal])
+
+  const handleLeave = useCallback(
+    (data) => {
+      leave(
+        {
+          type: data.type,
+          startDate: data.startDate,
+          reason: data.reason,
+        },
+        closeModal
+      )
+    },
+    [leave, closeModal]
+  )
 
   if (loading) return <LoadingStates />
 
   return (
     <div className="p-8 space-y-8">
-      <ContentInformation
-        heading="Your Statistic"
-        subheading="Views your attendance"
-      />
+      <ContentInformation heading="Your Statistic" subheading="Views your attendance" />
 
       <MainStats
         items={[
@@ -81,64 +138,42 @@ export default function CheckinForm() {
 
       <Card className="border border-slate-200 shadow-sm pt-4">
         <CardContent className="space-y-5">
-          <ContentInformation
-            heading="Your Presence"
-            subheading="Click once at cards below to send your status"
-          />
+          <ContentInformation heading="Your Presence" subheading="Click once at cards below to send your status" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <MainActionCard
-              icon={<LogIn />}
-              title="Check In"
-              description="Start your working time"
+            <MainActionCard icon={<LogIn />} title="Check In" description="Start your working time"
               color="teal"
               onClick={checkIn}
               loading={isPending}
             />
 
-            <MainActionCard
-              icon={<LogOut />}
-              title="Check Out"
-              description="End your working time"
+            <MainActionCard icon={<LogOut />} title="Check Out" description="End your working time"
               color="rose"
               onClick={checkOut}
               loading={isPending}
             />
           </div>
 
-          <ContentInformation
-            heading="Send Request"
-            subheading="Change your internal shift / attendance"
-          />
+          <ContentInformation heading="Send Request" subheading="Change your internal shift / attendance" />
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-3">
-            <MainActionCard icon={<Plane />} title="Permission"
-              description="Ask for permission"
-              color="blue"
-              onClick={() => setShowPermission(v => !v)}
-            />
-
-            <MainActionCard
-              icon={<AlertTriangle />}
-              title="Early Checkout"
-              description="Checkout before scheduled time"
-              color="amber"
-              onClick={() => setShowEarlyModal(true)}
+            <MainActionCard icon={<Plane />} title="Permission" description="Ask for permission"
+              color="blue" onClick={() => openModal(MODAL.PERMISSION)}
               loading={isPending}
             />
 
-            <MainActionCard
-              icon={<Plane />}
-              title="Leave"
-              description="Ask for leave"
-              color="violet"
-              onClick={() => setShowLeave(true)}
+            <MainActionCard icon={<AlertTriangle />} title="Early Checkout" description="Checkout before scheduled time"
+              color="amber" onClick={() => openModal(MODAL.EARLY)}
+              loading={isPending}
             />
 
-            <MainActionCard
-              icon={<Shuffle />}
-              title="Change Shift"
-              description="Request shift change"
+            <MainActionCard icon={<Plane />} title="Leave" description="Ask for leave"
+              color="violet"
+              onClick={() => openModal(MODAL.LEAVE)}
+              loading={isPending}
+            />
+
+            <MainActionCard icon={<Shuffle />} title="Change Shift" description="Request shift change"
               asLink
               href="/employee/dashboard/attendance/change-shift"
             />
@@ -146,42 +181,28 @@ export default function CheckinForm() {
         </CardContent>
       </Card>
 
-      <EarlyCheckoutModal open={showEarlyModal} loading={isPending} reason={earlyReason}
-        onChangeReason={setEarlyReason}
-        onClose={() => setShowEarlyModal(false)}
-        onSubmit={() =>
-          earlyCheckout(earlyReason, () => {
-            setEarlyReason("")
-            setShowEarlyModal(false)
-          })
-        }
+      <EarlyCheckoutModal
+        open={modal.type === MODAL.EARLY}
+        loading={isPending}
+        reason={modal.reason}
+        onChangeReason={onChangeReason}
+        onClose={closeModal}
+        onSubmit={handleEarlyCheckout}
       />
 
-      <PermissionModal open={showPermission} loading={isPending} reason={reason}
-        onChangeReason={setReason}
-        onClose={() => { setShowPermission(false) }}
-        onSubmit={() =>
-          permission(reason, () => {
-            setReason("")
-            setShowPermission(false)
-          })
-        }
+      <PermissionModal
+        open={modal.type === MODAL.PERMISSION}
+        loading={isPending}
+        reason={modal.reason}
+        onChangeReason={onChangeReason}
+        onClose={closeModal}
+        onSubmit={handlePermission}
       />
 
       <LeaveModal
-        open={showLeave}
-        onOpenChange={setShowLeave}
-        onSubmit={(data) =>
-  leave(
-    {
-      type: data.type,        // ✅ leave type
-      startDate: data.startDate,
-      endDate: data.endDate,
-      reason: data.reason,    // ✅ optional text
-    },
-    () => setShowLeave(false)
-  )
-}
+        open={modal.type === MODAL.LEAVE}
+        onOpenChange={closeModal}
+        onSubmit={handleLeave}
       />
     </div>
   )
