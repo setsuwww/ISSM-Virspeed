@@ -15,10 +15,15 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
-  const { data, error, isLoading } = useSWR("/api/system-config/admin-notification", fetcher, {
-    refreshInterval: 60000,
-    revalidateOnFocus: true,
-  })
+  const { data } = useSWR("/api/system-config/admin-notification",
+    fetcher,
+    {
+      refreshInterval: 60000,
+      revalidateOnFocus: true,
+      revalidateIfStale: true,
+      dedupingInterval: 30000,
+    }
+  );
 
   const hasNotifications = data?.hasNotifications || false
 

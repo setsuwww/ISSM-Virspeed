@@ -25,7 +25,7 @@ export default function RenderChangeShift({ r }) {
 
       <TableCell>
         <div className="flex items-center gap-3 py-2">
-          <div className="icon-parent">
+          <div className="bg-slate-200 p-2 rounded-full">
             <CircleUserRound className="icon" strokeWidth={1} />
           </div>
           <div>
@@ -64,7 +64,7 @@ export default function RenderChangeShift({ r }) {
       <TableCell>
         <RequestStatusChangerToggle
           id={r.id}
-          status={r.approval ?? "PENDING"}
+          status={r.status ?? "PENDING"}
           type="CHANGE-SHIFT"
           disabled={false}
         />

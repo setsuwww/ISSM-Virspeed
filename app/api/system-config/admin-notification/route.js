@@ -3,34 +3,50 @@ import { prisma } from "@/_lib/prisma";
 import { getCurrentUser } from "@/_lib/auth";
 
 export async function GET() {
-  try { const user = await getCurrentUser();
-    if (!user) return NextResponse.json({ hasNotifications: false });
+  try {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "ADMIN") {
+      return NextResponse.json({ hasNotifications: false });
+    }
 
-    const pendingPermissions = await prisma.attendance.count({
-      where: {
-        status: "PERMISSION",
-        approval: "PENDING",
-      },
-    });
+    const [pendingPermissions, pendingEarlyCheckout, pendingLeaves, pendingShiftChanges] = await Promise.all([
+      prisma.attendance.count({
+        where: {
+          status: "PERMISSION",
+          approval: "PENDING",
+        },
+      }),
 
-    const pendingShiftChanges = await prisma.shiftChangeRequest.count({
-      where: {
-        status: "PENDING",
-      },
-    });
+      prisma.earlyCheckoutRequest.count({ where: { status: "PENDING" } }),
 
-    const hasNotifications =
-      pendingPermissions > 0 || pendingShiftChanges > 0;
+      prisma.leaveRequest.count({ where: { status: "PENDING" } }),
+
+      prisma.shiftChangeRequest.count({
+        where: {
+          status: {
+            in: ["PENDING_TARGET", "PENDING_ADMIN"],
+          },
+        },
+      }),
+    ]);
+
+    const total = pendingPermissions + pendingEarlyCheckout + pendingLeaves + pendingShiftChanges;
 
     return NextResponse.json({
-      hasNotifications,
-      pendingPermissions,
-      pendingShiftChanges,
+      hasNotifications: total > 0,
+      counts: {
+        permission: pendingPermissions,
+        earlyCheckout: pendingEarlyCheckout,
+        leave: pendingLeaves,
+        changeShift: pendingShiftChanges,
+        total,
+      },
     });
-  } 
-  catch (error) { console.error("❌ Notification fetch error:", error);
+  } catch (error) {
+    console.error("Admin notification error:", error);
     return NextResponse.json(
-      { error: "Server error", hasNotifications: false }, { status: 500 }
+      { hasNotifications: false },
+      { status: 500 }
     );
   }
 }

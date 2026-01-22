@@ -18,6 +18,7 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
   });
 
   revalidatePath("/admin/dashboard/request");
+  revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
 }
@@ -37,6 +38,7 @@ export async function updateShiftChangeRequestStatus(id, newStatus, adminReason 
   });
 
   revalidatePath("/admin/dashboard/request");
+  revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
 }
@@ -57,6 +59,8 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
   });
 
   revalidatePath("/admin/dashboard/request");
+  revalidatePath("/api/system-config/admin-notification");
+
   return { success: true };
 }
 
@@ -94,5 +98,7 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
   }
 
   revalidatePath("/admin/dashboard/request");
+  revalidatePath("/api/system-config/admin-notification");
+
   return { success: true };
 }
