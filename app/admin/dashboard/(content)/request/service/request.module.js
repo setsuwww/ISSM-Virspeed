@@ -87,26 +87,35 @@ export async function fetchLeaveRequests(isHistory) {
     where: isHistory
       ? { status: { not: "PENDING" } }
       : { status: "PENDING" },
+
     orderBy: { createdAt: "desc" },
     take: 20,
+
     select: {
       id: true,
-      type: true,
       reason: true,
       adminReason: true,
       startDate: true,
       endDate: true,
+      totalDays: true,
       status: true,
       createdAt: true,
+
+      leaveType: {
+        select: {
+          code: true,
+          name: true,
+          category: true,
+          maxDays: true,
+        },
+      },
 
       user: {
         select: {
           name: true,
           email: true,
           division: {
-            select: {
-              name: true,
-            },
+            select: { name: true },
           },
           shift: {
             select: {

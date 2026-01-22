@@ -56,15 +56,15 @@ export default function RenderLeave({ r }) {
       </TableCell>
 
       <TableCell>
-        <span className="bg-blue-50/50 text-blue-600 px-2 border border-blue-200/50 rounded-md text-sm">
-          {r.date}
-        </span>
-      </TableCell>
-
-      <TableCell>
         <div className="max-w-xs text-sm text-slate-600 leading-relaxed">
           {wordsLimit(r.reason, 5)}
         </div>
+      </TableCell>
+
+      <TableCell>
+        <span className="bg-blue-50/50 text-blue-600 px-2 border border-blue-200/50 rounded-md text-sm">
+          {r.date}
+        </span>
       </TableCell>
 
       <TableCell>

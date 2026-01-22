@@ -18,8 +18,12 @@ export function mapLeave(data = []) {
       shift: r.user?.shift ?? null,
       workHours,
 
-      reason: r.reason ?? "-",
+      leave: {
+        name: r.leaveType?.name,
+        category: r.leaveType?.category,
+      },
 
+      reason: r.reason ?? "-",
       startDate: safeFormat(r.startDate, "d MMMM yyyy"),
       endDate: safeFormat(r.endDate, "d MMMM yyyy"),
       date: safeFormat(r.createdAt, "d MMMM yyyy"),
