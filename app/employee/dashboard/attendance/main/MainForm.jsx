@@ -1,16 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import {
-  LogIn,
-  LogOut,
-  Plane,
-  Shuffle,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Circle,
-} from "lucide-react"
+import { LogIn, LogOut, Plane, Shuffle, CheckCircle2, XCircle, AlertTriangle, Circle } from "lucide-react"
 
 import { Card, CardContent } from "@/_components/ui/Card"
 import { ContentInformation } from "@/_components/common/ContentInformation"
@@ -36,31 +27,22 @@ export default function CheckinForm() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // single modal state
   const [modal, setModal] = useState({
     type: null,
     reason: "",
   })
 
-  const {
-    isPending,
-    checkIn,
-    checkOut,
-    earlyCheckout,
-    permission,
-    leave,
+  const { isPending,
+    checkIn, checkOut, earlyCheckout, permission, leave,
   } = useUserSendAttendance()
 
-  /* ---------------- fetch initial data ---------------- */
   useEffect(() => {
     let mounted = true
 
     const fetchData = async () => {
       try {
         const userData = await apiFetchData({
-          url: "/me",
-          successMessage: null,
-          errorMessage: "Failed to load user data",
+          url: "/me", successMessage: null, errorMessage: "Failed to load user data",
         })
 
         if (!mounted) return
@@ -68,15 +50,13 @@ export default function CheckinForm() {
 
         const statsData = await apiFetchData({
           url: `/attendance/employee-stats?userId=${userData.id}`,
-          successMessage: null,
-          errorMessage: "Failed to load stats",
+          successMessage: null, errorMessage: "Failed to load stats",
         })
 
         if (!mounted) return
         setStats(statsData)
-      } finally {
-        if (mounted) setLoading(false)
       }
+      finally { if (mounted) setLoading(false) }
     }
 
     fetchData()
@@ -85,7 +65,6 @@ export default function CheckinForm() {
     }
   }, [])
 
-  /* ---------------- modal handlers ---------------- */
   const openModal = useCallback((type) => {
     setModal({ type, reason: "" })
   }, [])
@@ -98,7 +77,6 @@ export default function CheckinForm() {
     setModal((prev) => ({ ...prev, reason: value }))
   }, [])
 
-  /* ---------------- submit handlers ---------------- */
   const handleEarlyCheckout = useCallback(() => {
     earlyCheckout(modal.reason, closeModal)
   }, [earlyCheckout, modal.reason, closeModal])
@@ -115,10 +93,8 @@ export default function CheckinForm() {
           startDate: data.startDate,
           reason: data.reason,
         },
-        closeModal
-      )
-    },
-    [leave, closeModal]
+        closeModal)
+    }, [leave, closeModal]
   )
 
   if (loading) return <LoadingStates />
