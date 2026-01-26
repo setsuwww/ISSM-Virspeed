@@ -112,7 +112,7 @@ bun run dev
 
 ---
 
-Open app-server port at [http://](http://localhost:3000/)
+Open app-server port at
 
 Open B-fast/prisma/seed.js to see the accounts listed when running **npm run prisma:seed**
 
