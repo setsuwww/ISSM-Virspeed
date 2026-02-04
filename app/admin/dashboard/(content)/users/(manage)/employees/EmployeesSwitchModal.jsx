@@ -3,6 +3,7 @@
 import { CircleUserRound, Search, CalendarSync, Loader } from "lucide-react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEmployeeSwitchStore } from "@/_stores/useEmployeeSwitchStore"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog"
 import { Checkbox } from "@/_components/ui/Checkbox"
@@ -79,12 +80,13 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
                 </p>
               </div>
             </div>
+            <VisuallyHidden>
+              <DialogTitle>Attendance Dialog</DialogTitle>
+            </VisuallyHidden>
           </DialogHeader>
         </div>
 
-        {/* Content */}
         <div className="flex-1 flex flex-col gap-6 px-6 py-5 overflow-hidden">
-          {/* Current user */}
           <section className="space-y-2 shrink-0">
             <Label>Current user</Label>
 
