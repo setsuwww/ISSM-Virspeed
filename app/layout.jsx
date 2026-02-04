@@ -1,8 +1,6 @@
 import { ToastProvider } from "@/_context/Toast-Provider"
 import "../_styles/admin.css"
 
-import { OfflineGuard } from "./offline"
-
 export const metadata = {
   title: "Beefast",
   description: "ISSM B-Fast Application",
@@ -21,7 +19,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="relative">
         <ToastProvider>
-          <OfflineGuard>{children}</OfflineGuard>
+          {children}
         </ToastProvider>
       </body>
     </html>
