@@ -108,7 +108,7 @@ export default async function ShiftsPage({ searchParams }) {
             heading="List shifts"
             subheading="Manage all shift data in this table"
             show
-            buttonText="Add Shift"
+            buttonText="Create Shift"
             href="/admin/dashboard/shifts/create"
           />
         </ContentForm.Header>

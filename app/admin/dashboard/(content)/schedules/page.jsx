@@ -4,7 +4,7 @@ import ScheduleCard from "./SchedulesCard";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import ContentForm from "@/_components/common/ContentForm";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import ClientPage from "./page-client";
+import ScheduleFrequencies from "./ScheduleFrequencies";
 
 const PAGE_SIZE = 10;
 
@@ -62,7 +62,7 @@ export default async function Page({ searchParams }) {
       <DashboardHeader title="Schedules" subtitle="List of your schedules" />
       <ContentForm>
         <ContentForm.Header>
-          <ClientPage />
+          <ScheduleFrequencies />
         </ContentForm.Header>
 
         <ContentForm.Body>

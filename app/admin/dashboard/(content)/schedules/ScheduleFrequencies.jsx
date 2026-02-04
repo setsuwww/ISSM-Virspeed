@@ -7,7 +7,7 @@ import { frequenciesLabel } from '@/_constants/scheduleConstants'
 import { Tag } from 'lucide-react'
 import { Button } from '@/_components/ui/Button'
 
-export default function ClientPage() {
+export default function ScheduleFrequencies() {
   const router = useRouter();
 
   return (
@@ -27,8 +27,7 @@ export default function ClientPage() {
       </div>
 
       <div className='flex items-center space-x-2'>
-        {/*<Button variant="outline" onClick={() => router.push("/admin/dashboard/schedules/create")}>My Schedule</Button>*/}
-        <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>Add Schedule</Button>
+        <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>Create Schedule</Button>
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useTransition } from "react"
-import { LogOut, Inbox } from "lucide-react"
+import { LogOut, Inbox, Home } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import useSWR from "swr"
@@ -31,6 +31,16 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
   const formatLabel = (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
   const visibleSegments = segments.slice(0, 3)
 
+  const breadcrumbMap = {
+    dashboard: "Dashboard",
+    employees: "Employees",
+    schedule: "Schedule",
+    shift: "Shift",
+    division: "Division",
+    users: "Users"
+  }
+
+
   const handleLogout = () => {
     startTransition(async () => {
       LogoutAuthAction()
@@ -49,18 +59,25 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
       </div>
 
       <div className="flex items-center space-x-4">
-        <nav className="flex-1 text-sm text-slate-500">
+        <nav className="flex items-center text-sm text-slate-500 gap-x-2">
+          <Home size={16} strokeWidth={3} />
+
           {visibleSegments.map((segment, index) => {
-            const href = "/" + segments.slice(0, index + 1).join("/")
             const isLast = index === visibleSegments.length - 1
+            const href = "/admin/" + segments.slice(0, index + 1).join("/")
+            const label = breadcrumbMap[segment] ?? formatLabel(segment)
+
             return (
-              <span key={index}>
-                {!isLast
-                  ? (<Link href={href} className="font-semibold text-slate-700">{formatLabel(segment)}</Link>)
-                  : (<span className="text-slate-500">{formatLabel(segment)}</span>)
-                }
-                {!isLast && <span className="mx-2">/</span>}
-              </span>
+              <React.Fragment key={segment}>
+                {!isLast ? (
+                  <Link href={href} className="font-semibold text-slate-700 hover:text-sky-600">
+                    {label}
+                  </Link>
+                ) : (
+                  <span className="text-slate-500">{label}</span>
+                )}
+                {!isLast && <span>/</span>}
+              </React.Fragment>
             )
           })}
         </nav>

@@ -37,7 +37,7 @@ export default function EmployeesTableButton() {
         variant={pathname.includes("/create") ? "secondary" : "primary"}
         onClick={() => router.push("/admin/dashboard/users/create")}
       >
-        Add Employees
+        Create Employees
       </Button>
     </div>
   )
