@@ -42,6 +42,66 @@ export async function createUser(formData) {
   }
 }
 
+export async function bulkCreateUser(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return { success: false, message: "Empty data" }
+  }
+
+  let created = 0
+
+  for (const row of rows) {
+    const {
+      name,
+      email,
+      password,
+      role = "EMPLOYEE",
+      division,
+      workMode = "WORK_HOURS",
+      shift,
+    } = row
+
+    if (!name || !email || !password || !division) continue
+
+    const exists = await prisma.user.findUnique({ where: { email } })
+    if (exists) continue
+
+    const divisionData = await prisma.division.findFirst({
+      where: { name: division },
+      include: { shifts: true },
+    })
+
+    if (!divisionData) continue
+
+    let shiftId = null
+    if (workMode === "SHIFT" && shift) {
+      const shiftData = divisionData.shifts.find(
+        (s) => s.name === shift
+      )
+      if (shiftData) shiftId = shiftData.id
+    }
+
+    const hashed = await bcrypt.hash(password, 10)
+
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashed,
+        role,
+        divisionId: divisionData.id,
+        shiftId,
+      },
+    })
+
+    created++
+  }
+
+  return {
+    success: true,
+    count: created,
+  }
+}
+
 export async function updateUser(data) {
   try {
     const { id, name, email, password, role, shiftId, divisionId } = data;

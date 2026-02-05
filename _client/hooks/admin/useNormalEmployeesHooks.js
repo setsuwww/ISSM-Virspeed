@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { api } from "@/_lib/api"
 import { useConfirmStore } from "@/_stores/common/useConfirmStore"
 import { confirmMessages } from "@/_constants/static/handleEmployeeMessage"
+import { deleteUserById } from "@/_server/admin-action/userAction"
 
 const askConfirm = useConfirmStore.getState().ask
 
@@ -66,7 +67,7 @@ export function useNormalEmployeesHooks(users = []) {
     const { message, variant } = confirmMessages.deleteOne
     const confirmed = await askConfirm(message, variant)
     if (!confirmed) return
-    await api.delete(`/users/${id}`)
+    await deleteUserById(id)
   }, [])
 
   return {

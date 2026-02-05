@@ -16,9 +16,10 @@ import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
 import { createUser } from "@/_server/admin-action/userAction.js"
-import { capitalize, formatIntToTime, minutesToTime } from "@/_function/globalFunction"
+import { capitalize, minutesToTime } from "@/_function/globalFunction"
 import { roleOptions } from "@/_constants/roleConstants"
 import { Loader } from 'lucide-react';
+import { CreateUserFromExcel } from "./CreateUserFromExcel"
 
 export default function CreateForm({ divisions, shifts }) {
   const router = useRouter()
@@ -52,7 +53,7 @@ export default function CreateForm({ divisions, shifts }) {
         })
         e.target.reset()
         router.push("/admin/dashboard/users")
-      } 
+      }
       else {
         addToast(res.message || "Failed to create user.", {
           type: "error",
@@ -86,6 +87,9 @@ export default function CreateForm({ divisions, shifts }) {
 
           <ContentForm.Body>
             <div className="space-y-6">
+              <div>
+                <CreateUserFromExcel />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="username">
                   Username <span className="text-rose-500">*</span>
@@ -148,12 +152,12 @@ export default function CreateForm({ divisions, shifts }) {
 
               <div className="space-y-2">
                 <Label>Work Mode</Label>
-                <RadioButton name="workMode" value={form.workMode} 
+                <RadioButton name="workMode" value={form.workMode}
                   onChange={(v) => handleCustomChange("workMode", v)}
                   options={[
                     { label: "Work Hours", value: "WORK_HOURS" },
                     { label: "Shift Hours", value: "SHIFT" },
-                  ]} 
+                  ]}
                 />
                 <ContentList type="i"
                   items={[
@@ -204,8 +208,8 @@ export default function CreateForm({ divisions, shifts }) {
 
           <ContentForm.Footer>
             <Button type="submit" disabled={isPending}>
-              {isPending 
-                ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) 
+              {isPending
+                ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>)
                 : "Create User"
               }
             </Button>

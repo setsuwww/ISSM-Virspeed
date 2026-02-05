@@ -5,3 +5,6 @@ UI Style: Crystal UI
 Version 0.3.0 — (Catalyct)
 Design: Aylish
 UI Style: Glassmorphism
+
+Untuk Employee yang akan mendapatkan Long-shift
+dia akan menerima 2 Row di Attendance Table, Shift default & Shift Tambahannya

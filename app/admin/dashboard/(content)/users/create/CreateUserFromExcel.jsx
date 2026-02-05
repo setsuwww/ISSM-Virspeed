@@ -1,0 +1,201 @@
+"use client"
+
+import { useState, useRef, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/_context/Toast-Provider"
+import * as XLSX from "xlsx"
+
+import { bulkCreateUser } from "@/_server/admin-action/userAction"
+import { Button } from "@/_components/ui/Button"
+import { File, FileXls, Download } from "phosphor-react"
+import { Label } from "@/_components/ui/Label"
+import { ContentList } from "@/_components/common/ContentList"
+
+export function CreateUserFromExcel() {
+  const { addToast } = useToast()
+  const router = useRouter()
+
+  const [loading, setLoading] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
+
+  const fileInputRef = useRef(null)
+
+  const downloadTemplate = () => {
+    const templateData = [
+      {
+        name: "John Doe",
+        email: "john@mail.com",
+        password: "secret123",
+        role: "EMPLOYEE",
+        division: "IT",
+        workMode: "SHIFT",
+        shift: "MORNING",
+      },
+    ]
+
+    const worksheet = XLSX.utils.json_to_sheet(templateData)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users")
+
+    XLSX.writeFile(workbook, "user-import-template.xlsx")
+  }
+
+  const processFile = async (file) => {
+    setSelectedFile(file)
+    setLoading(true)
+
+    try {
+      const buffer = await file.arrayBuffer()
+      const workbook = XLSX.read(buffer)
+      const sheet = workbook.Sheets[workbook.SheetNames[0]]
+      const rows = XLSX.utils.sheet_to_json(sheet)
+
+      if (!rows.length) {
+        addToast("Excel file is empty", { type: "error" })
+        return
+      }
+
+      const res = await bulkCreateUser(rows)
+
+      if (res.success) {
+        addToast(`${res.count} users imported`, {
+          type: "success",
+          title: "Import Success",
+        })
+        router.refresh()
+      } else {
+        addToast(res.message || "Import failed", {
+          type: "error",
+          title: "Import Failed",
+        })
+      }
+    } catch {
+      addToast("Invalid or corrupted Excel file", { type: "error" })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault()
+    setDragActive(false)
+
+    const file = e.dataTransfer.files?.[0]
+    if (!file) return
+
+    if (!file.name.match(/\.(xlsx|xls)$/i)) {
+      addToast("Only .xlsx or .xls files allowed", { type: "error" })
+      return
+    }
+
+    processFile(file)
+  }, [])
+
+  const removeFile = () => {
+    setSelectedFile(null)
+    setLoading(false)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  return (
+    <>
+      <Label className="mb-2">
+        Excel File
+      </Label>
+      <div
+        onDragOver={(e) => {
+          e.preventDefault()
+          setDragActive(true)
+        }}
+        onDragLeave={() => setDragActive(false)}
+        onDrop={handleDrop}
+        className={`rounded-xl border border-dashed p-6 transition mb-2
+        ${dragActive
+            ? "border-solid border-emerald-500 bg-emerald-500/5"
+            : "border-slate-300 hover:border-slate-400"}
+      `}
+      >
+        <input ref={fileInputRef} type="file" accept=".xlsx,.xls" hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) processFile(file)
+            e.target.value = ""
+          }}
+        />
+
+        <div className="flex items-center gap-4">
+          <div
+            className={`group relative flex h-12 w-12 items-center justify-center rounded-lg border transition
+            ${selectedFile
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                : "border-slate-300 text-slate-500"}`}
+          >
+            {selectedFile
+              ? (<FileXls className="h-6 w-6" weight="duotone" />)
+              : (<File className="h-6 w-6" />)
+            }
+
+            {selectedFile && (
+              <button type="button" onClick={removeFile}
+                className="absolute animate-bouncy -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white shadow-sm transition group-hover:flex hover:bg-rose-600"
+                aria-label="Remove file"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+
+          <div className="flex-1 text-left">
+            {selectedFile ? (
+              <>
+                <p className="text-sm font-medium text-emerald-700 truncate">
+                  {selectedFile.name}
+                </p>
+                <p className="text-xs text-slate-400">
+                  Excel file selected
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-slate-600">
+                  Drag & drop Excel file
+                </p>
+                <p className="text-xs text-slate-400">
+                  .xlsx or .xls
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex gap-3">
+          <label htmlFor="excel-upload">
+            <Button
+              variant="positive"
+              type="button"
+              disabled={loading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {loading ? "Importing..." : selectedFile ? "Replace File" : "Browse File"}
+            </Button>
+          </label>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={downloadTemplate}
+          >
+            <Download className="h-4 w-4" />
+            Download Template
+          </Button>
+        </div>
+      </div>
+      <ContentList type="i" items={["Use excel file template for fill Inputuse the excel file from the template by downloading, and dropping here, to input data directly"]}/>
+    </>
+  )
+}

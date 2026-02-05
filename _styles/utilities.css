@@ -136,3 +136,22 @@
     @apply bg-indigo-600 text-white border-indigo-600;
   }
 }
+
+@keyframes bouncy {
+  0% {
+    transform: scale(0.5) translateY(4px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15) translateY(-2px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-bouncy {
+  animation: bouncy 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
