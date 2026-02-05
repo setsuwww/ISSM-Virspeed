@@ -21,6 +21,16 @@ export function CreateUserFromExcel() {
 
   const fileInputRef = useRef(null)
 
+  const formatFileSize = (bytes) => {
+    if (!bytes) return "0 KB"
+
+    const k = 1024
+    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`
+  }
+
   const downloadTemplate = () => {
     const templateData = [
       {
@@ -116,7 +126,7 @@ export function CreateUserFromExcel() {
         className={`rounded-xl border border-dashed p-6 transition mb-2
         ${dragActive
             ? "border-solid border-emerald-500 bg-emerald-500/5"
-            : "border-slate-300 hover:border-slate-400"}
+            : "border-slate-300"}
       `}
       >
         <input ref={fileInputRef} type="file" accept=".xlsx,.xls" hidden
@@ -131,11 +141,11 @@ export function CreateUserFromExcel() {
           <div
             className={`group relative flex h-12 w-12 items-center justify-center rounded-lg border transition
             ${selectedFile
-                ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
-                : "border-slate-300 text-slate-500"}`}
+                ? "border-emerald-300 bg-gradient-to-br from-emerald-100/50 to-emerald-100/30 text-emerald-600"
+                : "border-slate-300/80 text-slate-600"}`}
           >
             {selectedFile
-              ? (<FileXls className="h-6 w-6" weight="duotone" />)
+              ? (<FileXls className="h-6 w-6" weight="duotone" strokeWidth={2} />)
               : (<File className="h-6 w-6" />)
             }
 
@@ -157,7 +167,7 @@ export function CreateUserFromExcel() {
                   {selectedFile.name}
                 </p>
                 <p className="text-xs text-slate-400">
-                  Excel file selected
+                  {formatFileSize(selectedFile.size)}
                 </p>
               </>
             ) : (
@@ -187,7 +197,7 @@ export function CreateUserFromExcel() {
 
           <Button
             type="button"
-            variant="outline"
+            variant="outline" className="bg-white"
             onClick={downloadTemplate}
           >
             <Download className="h-4 w-4" />
@@ -195,7 +205,7 @@ export function CreateUserFromExcel() {
           </Button>
         </div>
       </div>
-      <ContentList type="i" items={["Use excel file template for fill Inputuse the excel file from the template by downloading, and dropping here, to input data directly"]}/>
+      <ContentList type="i" items={["Use excel file template for fill Inputuse the excel file from the template by downloading, and dropping here, to input data directly"]} />
     </>
   )
 }

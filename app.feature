@@ -6,9 +6,21 @@ Version 0.3.0 — (Catalyct)
 Design: Aylish
 UI Style: Glassmorphism
 
-Untuk Employee yang akan mendapatkan Long-shift
-dia akan menerima 2 Row di Attendance Table, Shift default & Shift Tambahannya
+Longshift POV(
+    Employee Req : Send request
+    Employee Resp : Mendapatkan Total jamkerja tambahan + Status Longshift
 
-Divisi : (
-    WFO & WFA Bisa di switch mode, Kalau Aktif berarti masuk, Nonaktif libur
+    Attendance(
+        Employee : Shift Info -> Shift1 & Shift2 + Longshift
+    )
+
+    Otomatis(
+        Employee Req gamasuk, Munculin notif{
+            Admin
+            Employee [
+                Let it Be -> Clear notif
+                Take Assignment -> Shift1 & Shift2
+            ]
+        }
+    )
 )
