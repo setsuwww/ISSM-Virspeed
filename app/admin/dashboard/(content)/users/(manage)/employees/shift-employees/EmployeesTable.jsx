@@ -1,7 +1,9 @@
 "use client";
 
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+import { Table, TableBody, TableHead, TableHeader, TableCell, TableRow } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
+import EmptyStates from "@/_components/common/EmptyStates";
+
 import { EmployeesActionHeader } from "../EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
 import { useShiftEmployeesHooks } from "@/_client/hooks/admin/useShiftEmployeesHooks";
@@ -47,14 +49,26 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         </TableHeader>
 
         <TableBody>
-          {filteredData.map((user) => (
-            <EmployeesRow key={user.id} user={user} selected={selected} toggleSelect={toggleSelect}
-              onHistory={() => onHistory(user.id)}
-              onSwitch={onSwitch}
-              onEdit={() => onEdit(user.id)}
-              onDelete={() => onDelete(user.id)}
-            />
-          ))}
+          {filteredData.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="py-10 text-center">
+                <EmptyStates/>
+              </TableCell>
+            </TableRow>
+          ) : (
+            filteredData.map((user) => (
+              <EmployeesRow
+                key={user.id}
+                user={user}
+                selected={selected}
+                toggleSelect={toggleSelect}
+                onHistory={() => onHistory(user.id)}
+                onSwitch={onSwitch}
+                onEdit={() => onEdit(user.id)}
+                onDelete={() => onDelete(user.id)}
+              />
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

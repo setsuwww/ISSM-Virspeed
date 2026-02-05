@@ -40,7 +40,7 @@ export function useDivisionsHooks(initialData) {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
     onEdit, onDelete,
-    onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
+    onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
 
 
@@ -63,6 +63,6 @@ export function useDivisionsHooks(initialData) {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
     onEdit, onDelete, handleActivateSelected, handleInactivateSelected,
-    onToggleStatus, onBulkGlobalUpdate, onBulkUpdate,
+    onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   };
 }

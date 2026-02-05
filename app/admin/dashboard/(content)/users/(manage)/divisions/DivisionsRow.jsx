@@ -2,7 +2,7 @@
 
 import { memo } from "react"
 
-import { Building2, AlarmClock } from "lucide-react"
+import { Building2, RefreshCcw } from "lucide-react"
 import { format } from "date-fns"
 
 import { TableRow, TableCell } from "@/_components/ui/Table"
@@ -15,7 +15,7 @@ import DivisionActionButton from "./DivisionsActionButton"
 
 function DivisionRow({
   division, isSelected,
-  onSelect, onToggleStatus,
+  onSelect, onToggleStatus, onToggleType,
 
   onEdit,
   onDelete,
@@ -39,9 +39,13 @@ function DivisionRow({
       </TableCell>
 
       <TableCell>
-        <Badge variant="outline" className={divisionStyles[division.type]}>
-          {division.type}
+        <Badge variant="outline" role="button" onClick={() => onToggleType(division)}
+          className={`flex cursor-pointer items-center gap-1 transition hover:opacity-80 ${divisionStyles[division.type]}`}
+        >
+          <span>{division.type}</span>
+          <RefreshCcw className="h-3.5 w-3.5" />
         </Badge>
+
       </TableCell>
 
       <TableCell>

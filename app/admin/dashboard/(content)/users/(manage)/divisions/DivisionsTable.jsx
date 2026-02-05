@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { Loader } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
@@ -26,7 +25,7 @@ export default function DivisionsTable({ data }) {
     toggleSelect, toggleSelectAll,
     handleDeleteSelected, handleDeleteAll,
     handleActivateSelected, handleInactivateSelected,
-    onEdit, onDelete, onToggleStatus,
+    onEdit, onDelete, onToggleStatus, onToggleType,
     onBulkGlobalUpdate,
   } = useDivisionsHooks(data)
 
@@ -92,6 +91,7 @@ export default function DivisionsTable({ data }) {
                   isSelected={selectedIds.includes(division.id)}
                   onSelect={() => toggleSelect(division.id)}
                   onToggleStatus={onToggleStatus}
+                  onToggleType={onToggleType}
                   onEdit={onEdit}
                   onDelete={onDelete}
                 />

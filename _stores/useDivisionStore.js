@@ -4,17 +4,33 @@ import { apiFetchData } from "@/_lib/fetch"
 export const useDivisionStore = create((set, get) => ({
   allActive: false, pendingStatus: null, confirmOpen: false, loading: true,
 
+  openSwitchType(division) {
+    set({
+      switchTypeOpen: true,
+      pendingDivision: division,
+    })
+  },
+
+  closeSwitchType() {
+    set({
+      switchTypeOpen: false,
+      pendingDivision: null,
+    })
+  },
+
   fetchConfig: async () => {
     try {
-      const data = await apiFetchData({ url: "/system-config", method: "get",
+      const data = await apiFetchData({
+        url: "/system-config", method: "get",
         successMessage: null,
         useCache: true,
       })
       set({ allActive: data.allWfaActive, loading: false })
-    } catch (err) { set({ loading: false })}
+    } catch (err) { set({ loading: false }) }
   },
 
-  handleBulkToggle: () => { const newStatus = !get().allActive
+  handleBulkToggle: () => {
+    const newStatus = !get().allActive
     set({ pendingStatus: newStatus, confirmOpen: true })
   },
 
@@ -23,15 +39,17 @@ export const useDivisionStore = create((set, get) => ({
     set({ allActive: pendingStatus, confirmOpen: false })
 
     try {
-      await apiFetchData({ url: "/system-config", method: "patch", data: { allWfaActive: pendingStatus },
+      await apiFetchData({
+        url: "/system-config", method: "patch", data: { allWfaActive: pendingStatus },
         successMessage: "Configuration updated successfully",
         errorMessage: "Failed to update configuration",
       })
 
-      await onBulkUpdate?.({ activateType: "WFA", deactivateType: "WFO",
+      await onBulkUpdate?.({
+        activateType: "WFA", deactivateType: "WFO",
         isActive: pendingStatus,
       }); mutate?.()
-    } catch (err) { console.error(err)}
+    } catch (err) { console.error(err) }
   },
 
   closeDialog: () => set({ confirmOpen: false }),

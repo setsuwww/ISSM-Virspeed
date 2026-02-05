@@ -4,13 +4,11 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionHelper";
 
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle } from "@/_server/admin-action/divisionAction";
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_server/admin-action/divisionAction";
 
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 
-export function useHandleDivisions({
-  filteredData, selectedIds, setSelectedIds, mutate,
-}) {
+export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, mutate }) {
   const router = useRouter();
   const { withConfirm, withTry } = useActionHelper();
 
@@ -33,6 +31,29 @@ export function useHandleDivisions({
     mutate?.();
   }, [withTry, mutate]);
 
+  const onToggleType = useCallback(
+    async (division) => {
+      const nextType = division.type === "WFA" ? "WFO" : "WFA";
+
+      await withConfirm(
+        `Switch division "${division.name}" from ${division.type} to ${nextType}?`,
+        async () => {
+          const result = await withTry(
+            () => toggleDivisionType(division.id),
+            `Division switched to ${nextType}.`,
+            "Failed to switch division type."
+          );
+
+          if (result?.success) {
+            mutate?.();
+          }
+        },
+        "warning"
+      );
+    },
+    [withConfirm, withTry, mutate]
+  );
+
   const onEdit = useCallback((id) => {
     router.push(`/admin/dashboard/users/divisions/${id}/edit`);
   }, [router]);
@@ -43,8 +64,8 @@ export function useHandleDivisions({
         "Division successfully removed.", "Failed to delete division."
       ),
       confirmMessages.deleteOne(name).variant
-    ).then(() => mutate?.()), 
-  [withTry, mutate]);
+    ).then(() => mutate?.()),
+    [withTry, mutate]);
 
   const handleDeleteSelected = async () => {
     if (!selectedIds.length) return toast.error("No divisions selected.");
@@ -103,6 +124,7 @@ export function useHandleDivisions({
     toggleSelectAll,
 
     onToggleStatus,
+    onToggleType,
     onDelete,
     handleDeleteSelected,
     handleDeleteAll,

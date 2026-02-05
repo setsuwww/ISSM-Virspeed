@@ -16,7 +16,7 @@ export async function createDivision(data) {
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true, division: newDivision }
-  } 
+  }
   catch (error) { return { success: false, message: "Failed to create division" }}
 }
 
@@ -27,7 +27,7 @@ export async function updateDivisionStatus(id, newStatus) {
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true }
-  } 
+  }
   catch (error) { return { success: false }}
 }
 
@@ -38,7 +38,7 @@ export async function bulkDeleteDivisions(ids) {
     })
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true }
-  } 
+  }
   catch (error) { return { success: false }}
 }
 
@@ -51,8 +51,41 @@ export async function bulkToggleSelectedDivision({ ids, isActive }) {
 
     revalidatePath("/admin/dashboard/users/divisions");
     return { success: true };
-  } 
+  }
   catch (error) { return { success: false }}
+}
+
+export async function toggleDivisionType(id) {
+  try {
+    const division = await prisma.division.findUnique({
+      where: { id },
+      select: { type: true },
+    });
+
+    if (!division) {
+      return { success: false, message: "Division not found" };
+    }
+
+    const nextType = division.type === "WFA" ? "WFO" : "WFA";
+
+    await prisma.division.update({
+      where: { id },
+      data: { type: nextType },
+    });
+
+    revalidatePath("/admin/dashboard/users/divisions");
+
+    return {
+      success: true,
+      message: `Division switched to ${nextType}`,
+      nextType,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Failed to switch division type",
+    };
+  }
 }
 
 export async function bulkToggle({ activateType, deactivateType, isActive }) {
@@ -83,7 +116,7 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
     revalidatePath("/admin/dashboard/users/divisions");
     return { success: true, message: "Global toggle updated."};
 
-  } 
+  }
   catch (error) { return { success: false, error: error.message || "Unknown error"}}
 }
 
@@ -111,7 +144,7 @@ export async function updateDivision(id, data) {
     revalidatePath("/admin/dashboard/users/divisions")
 
     return { success: true, data: updatedDivision }
-  } 
+  }
   catch (error) { return { success: false, message: error.message || "Failed to update division" }}
 }
 
