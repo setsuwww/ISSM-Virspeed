@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useMemo } from "react"
-import { CalendarFold, CircleUserRound, Loader, ChevronDown } from "lucide-react"
+import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -14,6 +14,7 @@ import { attendancesStyles } from "@/_constants/attendanceConstants"
 
 import { safeFormat, capitalize, wordsLimit } from "@/_function/globalFunction"
 import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"
+import Link from "next/link"
 
 export default function AttendancesTableClient() {
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
@@ -86,6 +87,9 @@ export default function AttendancesTableClient() {
                         <CalendarFold className="h-4 w-4 text-slate-600" strokeWidth={1} />
                       </div>
                       <span>{safeFormat(att.date, "dd-MM-yyyy")}</span>
+                      <Link href={`/admin/dashboard/users/${att.user?.id}/history`} className="bg-blue-100 hover:bg-blue-200/50 text-blue-500 hover:text-blue-700 p-1 rounded-full">
+                        <Eye size={16} />
+                      </Link>
                     </div>
                   </TableCell>
 
@@ -99,7 +103,7 @@ export default function AttendancesTableClient() {
                         <span className="flex items-center text-sm text-slate-700 font-semibold">
                           {att.user?.name}
                           {att.shift ? (
-                            <Badge className={`bg-transparent border-none ml-2 ${shiftStyles[att.shift.type]}`}>
+                            <Badge className={`bg-transparent border-none ml-1 ${shiftStyles[att.shift.type]}`}>
                               {capitalize(att.shift.type)}
                             </Badge>
                           ) : "-"}
@@ -128,6 +132,8 @@ export default function AttendancesTableClient() {
 
                   <TableCell>{wordsLimit(att.reason, 5)}</TableCell>
                 </TableRow>
+
+
               ))
             ) : (
               <TableRow>

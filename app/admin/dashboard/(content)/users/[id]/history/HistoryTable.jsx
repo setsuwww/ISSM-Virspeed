@@ -37,16 +37,12 @@ export default function UserHistoryTable({ history }) {
   return (
     <div className="space-y-4">
       <HistoryActionHeader
-        search={search}
-        onSearchChange={setSearch}
-        status={status}
-        onStatusChange={setStatus}
-        sort={sort}
-        onSortChange={setSort}
+        search={search} onSearchChange={setSearch}
+        status={status} onStatusChange={setStatus}
+        sort={sort} onSortChange={setSort}
         filteredData={filteredData}
         selectedCount={selectedIds.length}
-        onRemoveSelected={removeSelected}
-        onRemoveAll={removeAll}
+        onRemoveSelected={removeSelected} onRemoveAll={removeAll}
       />
 
       <Table>

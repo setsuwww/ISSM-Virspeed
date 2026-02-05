@@ -74,7 +74,7 @@ export default function HistoryActionHeader({
           disabled={selectedCount === 0}
           onClick={onRemoveSelected}
         >
-          Delete Selected
+          Remove Selected
         </Button>
 
         <Button
@@ -84,7 +84,7 @@ export default function HistoryActionHeader({
           onClick={onRemoveAll}
         >
           <Trash2 size={16} />
-          Delete All
+          Remove All
         </Button>
 
         <DropdownMenu>
