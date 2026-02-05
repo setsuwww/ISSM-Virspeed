@@ -26,7 +26,7 @@ export default function DashboardHeaderClient({ user }) {
     <header className="w-full flex items-center justify-between border-b border-slate-200 px-6 py-4.5 bg-white">
       <div>
         <div className="flex items-center gap-3 text-slate-600">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-sky-100 text-sky-700 font-semibold text-lg">
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-sky-800 text-sky-50 font-semibold text-lg">
             {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
           </div>
 
