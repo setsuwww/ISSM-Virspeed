@@ -30,9 +30,11 @@ export default function CreateForm({ divisions, shifts }) {
     divisionId: "", workMode: "WORK_HOURS", shiftId: "",
   })
 
+  const [inputMode, setInputMode] = useState("MANUAL")
   const [isPending, startTransition] = useTransition()
 
-  const handleChange = (e) => { const { name, value } = e.target
+  const handleChange = (e) => {
+    const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
@@ -40,7 +42,16 @@ export default function CreateForm({ divisions, shifts }) {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e) => { e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (inputMode === "EXCEL") {
+      addToast("Excel import already processed. Manual submit disabled.", {
+        type: "warning",
+      })
+      return
+    }
+
     const fd = new FormData()
     Object.entries(form).forEach(([key, value]) => fd.append(key, value))
 
@@ -75,7 +86,7 @@ export default function CreateForm({ divisions, shifts }) {
 
   return (
     <section>
-      <DashboardHeader title="Create User" subtitle="Insert name, email, password, role, and work mode (shift or division hours)"/>
+      <DashboardHeader title="Create User" subtitle="Insert name, email, password, role, and work mode (shift or division hours)" />
 
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -88,13 +99,13 @@ export default function CreateForm({ divisions, shifts }) {
           <ContentForm.Body>
             <div className="space-y-6">
               <div>
-                <CreateUserFromExcel />
+                <CreateUserFromExcel onImported={() => setInputMode("EXCEL")} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="username">
                   Username <span className="text-rose-500">*</span>
                 </Label>
-                <Input placeholder="Username" name="name"
+                <Input placeholder="Username" name="name" disabled={inputMode === "EXCEL"}
                   value={form.name}
                   onChange={handleChange}
                   required
@@ -105,20 +116,20 @@ export default function CreateForm({ divisions, shifts }) {
                 <Label htmlFor="email">
                   Email <span className="text-rose-500">*</span>
                 </Label>
-                <Input placeholder="Users email" type="email" name="email"
+                <Input placeholder="Users email" type="email" name="email" disabled={inputMode === "EXCEL"}
                   value={form.email}
                   onChange={handleChange}
                   required
                 />
               </div>
 
-              <ContentInformation heading="Private" subheading="Users private password & role"/>
+              <ContentInformation heading="Private" subheading="Users private password & role" />
 
               <div className="space-y-2 mt-8">
                 <Label htmlFor="password">
                   Password <span className="text-rose-500">*</span>
                 </Label>
-                <Input placeholder="Users password" type="password" name="password"
+                <Input placeholder="Users password" type="password" name="password" disabled={inputMode === "EXCEL"}
                   value={form.password}
                   onChange={handleChange}
                   required
@@ -185,7 +196,7 @@ export default function CreateForm({ divisions, shifts }) {
                       <SelectTrigger className="w-1/2">
                         <SelectValue placeholder={
                           availableShifts.length === 0 ? "No shifts found" : "Select a Shift"
-                        }/>
+                        } />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="NONE">-</SelectItem>
@@ -199,7 +210,7 @@ export default function CreateForm({ divisions, shifts }) {
                   </div>
 
                   {availableShifts.length === 0 && (
-                    <ContentList type="w" items={["There is no shift detected or created in this division to assign"]}/>
+                    <ContentList type="w" items={["There is no shift detected or created in this division to assign"]} />
                   )}
                 </>
               )}

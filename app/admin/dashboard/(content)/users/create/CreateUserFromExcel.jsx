@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/_context/Toast-Provider"
-import * as XLSX from "xlsx"
+import { parseUserExcel } from "@/_lib/excel"
 
 import { bulkCreateUser } from "@/_server/admin-action/userAction"
 import { Button } from "@/_components/ui/Button"
@@ -11,7 +11,7 @@ import { File, FileXls, Download } from "phosphor-react"
 import { Label } from "@/_components/ui/Label"
 import { ContentList } from "@/_components/common/ContentList"
 
-export function CreateUserFromExcel() {
+export function CreateUserFromExcel({ onImported }) {
   const { addToast } = useToast()
   const router = useRouter()
 
@@ -23,32 +23,10 @@ export function CreateUserFromExcel() {
 
   const formatFileSize = (bytes) => {
     if (!bytes) return "0 KB"
-
     const k = 1024
     const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-
     return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`
-  }
-
-  const downloadTemplate = () => {
-    const templateData = [
-      {
-        name: "John Doe",
-        email: "john@mail.com",
-        password: "secret123",
-        role: "EMPLOYEE",
-        division: "IT",
-        workMode: "SHIFT",
-        shift: "MORNING",
-      },
-    ]
-
-    const worksheet = XLSX.utils.json_to_sheet(templateData)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Users")
-
-    XLSX.writeFile(workbook, "user-import-template.xlsx")
   }
 
   const processFile = async (file) => {
@@ -56,10 +34,7 @@ export function CreateUserFromExcel() {
     setLoading(true)
 
     try {
-      const buffer = await file.arrayBuffer()
-      const workbook = XLSX.read(buffer)
-      const sheet = workbook.Sheets[workbook.SheetNames[0]]
-      const rows = XLSX.utils.sheet_to_json(sheet)
+      const rows = await parseUserExcel(file)
 
       if (!rows.length) {
         addToast("Excel file is empty", { type: "error" })
@@ -73,6 +48,7 @@ export function CreateUserFromExcel() {
           type: "success",
           title: "Import Success",
         })
+        onImported?.()
         router.refresh()
       } else {
         addToast(res.message || "Import failed", {
@@ -105,17 +81,32 @@ export function CreateUserFromExcel() {
   const removeFile = () => {
     setSelectedFile(null)
     setLoading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
+  const downloadTemplate = () => {
+    import("xlsx").then(XLSX => {
+      const data = [{
+        name: "John Doe",
+        email: "john@mail.com",
+        password: "secret123",
+        role: "EMPLOYEE",
+        division: "IT",
+        workMode: "WORK_HOURS",
+        shift: "",
+      }]
+
+      const ws = XLSX.utils.json_to_sheet(data)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, "Users")
+      XLSX.writeFile(wb, "user-import-template.xlsx")
+    })
   }
 
   return (
     <>
-      <Label className="mb-2">
-        Excel File
-      </Label>
+      <Label className="mb-2">Excel File</Label>
+
       <div
         onDragOver={(e) => {
           e.preventDefault()
@@ -124,12 +115,16 @@ export function CreateUserFromExcel() {
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
         className={`rounded-xl border border-dashed p-6 transition mb-2
-        ${dragActive
-            ? "border-solid border-emerald-500 bg-emerald-500/5"
-            : "border-slate-300"}
-      `}
+          ${dragActive
+            ? "border-emerald-500 bg-emerald-500/5"
+            : "border-slate-300"}`}
       >
-        <input ref={fileInputRef} type="file" accept=".xlsx,.xls" hidden
+        {/* hidden input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".xlsx,.xls"
+          hidden
           onChange={(e) => {
             const file = e.target.files?.[0]
             if (file) processFile(file)
@@ -137,30 +132,32 @@ export function CreateUserFromExcel() {
           }}
         />
 
+        {/* main content */}
         <div className="flex items-center gap-4">
           <div
             className={`group relative flex h-12 w-12 items-center justify-center rounded-lg border transition
-            ${selectedFile
-                ? "border-emerald-300 bg-gradient-to-br from-emerald-100/50 to-emerald-100/30 text-emerald-600"
-                : "border-slate-300/80 text-slate-600"}`}
+              ${selectedFile
+                ? "border-emerald-300 bg-emerald-100/40 text-emerald-600"
+                : "border-slate-300 bg-slate-100/40 text-slate-600"}`}
           >
-            {selectedFile
-              ? (<FileXls className="h-6 w-6" weight="duotone" strokeWidth={2} />)
-              : (<File className="h-6 w-6" />)
-            }
+            {selectedFile ? (
+              <FileXls className="h-6 w-6" weight="duotone" />
+            ) : (
+              <File className="h-6 w-6" />
+            )}
 
             {selectedFile && (
-              <button type="button" onClick={removeFile}
-                className="absolute animate-bouncy -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white shadow-sm transition group-hover:flex hover:bg-rose-600"
-                aria-label="Remove file"
+              <button
+                type="button"
+                onClick={removeFile}
+                className="absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white group-hover:flex"
               >
                 ×
               </button>
             )}
           </div>
 
-
-          <div className="flex-1 text-left">
+          <div className="flex-1">
             {selectedFile ? (
               <>
                 <p className="text-sm font-medium text-emerald-700 truncate">
@@ -173,7 +170,7 @@ export function CreateUserFromExcel() {
             ) : (
               <>
                 <p className="text-sm text-slate-600">
-                  Drag & drop Excel file
+                  Drag & drop Excel file here
                 </p>
                 <p className="text-xs text-slate-400">
                   .xlsx or .xls
@@ -183,21 +180,25 @@ export function CreateUserFromExcel() {
           </div>
         </div>
 
+        {/* actions */}
         <div className="mt-4 flex gap-3">
-          <label htmlFor="excel-upload">
-            <Button
-              variant="positive"
-              type="button"
-              disabled={loading}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {loading ? "Importing..." : selectedFile ? "Replace File" : "Browse File"}
-            </Button>
-          </label>
+          <Button
+            variant="positive"
+            type="button"
+            disabled={loading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {loading
+              ? "Importing..."
+              : selectedFile
+                ? "Replace File"
+                : "Browse File"}
+          </Button>
 
           <Button
             type="button"
-            variant="outline" className="bg-white"
+            variant="outline"
+            className="bg-white"
             onClick={downloadTemplate}
           >
             <Download className="h-4 w-4" />
@@ -205,7 +206,6 @@ export function CreateUserFromExcel() {
           </Button>
         </div>
       </div>
-      <ContentList type="i" items={["Use excel file template for fill Inputuse the excel file from the template by downloading, and dropping here, to input data directly"]} />
     </>
   )
 }
