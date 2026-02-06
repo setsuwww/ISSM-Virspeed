@@ -76,7 +76,8 @@ async function getEmployeeCount() {
 export const revalidate = 60;
 
 export default async function EmployeesWorkHoursPage({ searchParams }) {
-  const page = Number(searchParams?.page) || 1;
+  const params = await searchParams
+  const page = Number(params?.page) || 1;
 
   const [users, total, divisions] = await Promise.all([
     getEmployees(page),

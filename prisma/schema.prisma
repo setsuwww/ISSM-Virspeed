@@ -78,6 +78,33 @@ enum ShiftChangeStatus {
   REJECTED
 }
 
+enum LogAction {
+  VIEW
+  SUBMIT
+  CREATE
+  UPDATE
+  DELETE
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  url       String
+  method    String?
+  action    LogAction
+  data      Json?
+  ipAddress String?
+  userAgent String?
+
+  user      User?    @relation("UserActivityLogs", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([action])
+}
+
 model SystemConfig {
   id           Int      @id @default(autoincrement())
   allWfaActive Boolean  @default(false)
@@ -133,6 +160,8 @@ model User {
   leaveBalances  UserLeaveBalance[]
   leaveRequests  LeaveRequest[]
   approvedLeaves LeaveRequest[]     @relation("LeaveApprovedBy")
+
+  activityLogs ActivityLog[] @relation("UserActivityLogs")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

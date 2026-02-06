@@ -2,10 +2,26 @@
 
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
+import { logActivity } from "@/_lib/activityLogger"
+import { LogAction } from "@prisma/client"
 
-import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout } from "@/_function/helpers/attendanceHelpers"
+import {
+  determineAttendanceStatus,
+  evaluateAttendancePolicy,
+  canUserCheckout,
+  addWorkDays,
+} from "@/_function/helpers/attendanceHelpers"
+
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
-import { addWorkDays } from "@/_function/helpers/attendanceHelpers"
+
+async function safeLog(payload) {
+  try {
+    await logActivity(payload)
+    console.log("🔥 LOG ACTIVITY:", payload)
+  } catch (err) {
+    console.error("ACTIVITY LOG FAILED:", err)
+  }
+}
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
@@ -15,12 +31,18 @@ export async function userPrecheckCheckIn() {
     where: { id: user.shiftId },
     include: { division: true },
   })
-
-  if (!shift?.division) {
-    return { error: "Shift atau divisi tidak ditemukan" }
-  }
+  if (!shift?.division) return { error: "Shift atau divisi tidak ditemukan" }
 
   const policy = evaluateAttendancePolicy({ division: shift.division })
+
+  await safeLog({
+    userId: user.id,
+    url: "/attendance/precheck",
+    action: LogAction.VIEW,
+    data: {
+      requireLocation: policy.ignoreLocation !== true,
+    },
+  })
 
   return {
     requireLocation: policy.ignoreLocation !== true,
@@ -39,19 +61,13 @@ export async function userSendCheckIn(coords = null) {
     where: { id: user.shiftId },
     include: { division: true },
   })
-
-  if (!shift?.division) {
-    return { error: "Shift atau divisi tidak ditemukan" }
-  }
+  if (!shift?.division) return { error: "Shift atau divisi tidak ditemukan" }
 
   const policy = evaluateAttendancePolicy({
     division: shift.division,
     currentCoords: coords,
   })
-
-  if (!policy.allowed) {
-    return { error: policy.message ?? "Check-in tidak diizinkan" }
-  }
+  if (!policy.allowed) return { error: policy.message ?? "Check-in tidak diizinkan" }
 
   const existing = await prisma.attendance.findUnique({
     where: {
@@ -62,17 +78,9 @@ export async function userSendCheckIn(coords = null) {
       },
     },
   })
+  if (existing?.checkInTime) return { error: "Anda sudah check-in hari ini" }
 
-  if (existing?.checkInTime) {
-    return { error: "Anda sudah check-in hari ini" }
-  }
-
-  let status
-  try {
-    status = await determineAttendanceStatus(user.shiftId)
-  } catch (err) {
-    return { error: err.message }
-  }
+  const status = await determineAttendanceStatus(user.shiftId)
 
   const attendance = await prisma.attendance.upsert({
     where: {
@@ -97,20 +105,29 @@ export async function userSendCheckIn(coords = null) {
     },
   })
 
+  await safeLog({
+    userId: user.id,
+    url: "/attendance/check-in",
+    action: LogAction.SUBMIT,
+    data: {
+      attendanceId: attendance.id,
+      status,
+      coords,
+    },
+  })
+
   return { success: true, attendance }
 }
 
 export async function userSendCheckOut() {
   const user = await getCurrentUser()
-  if (!user?.shiftId) {
-    return { error: "User tidak memiliki shift aktif" }
-  }
+  if (!user?.shiftId) return { error: "User tidak memiliki shift aktif" }
 
   const allowed = await canUserCheckout(user.shiftId)
   if (!allowed) return { error: "Belum waktunya checkout" }
 
   const now = getNowJakarta()
-  const today = getTodayStartJakarta().toDate() // ❗ FIX
+  const today = getTodayStartJakarta().toDate()
 
   await prisma.attendance.updateMany({
     where: {
@@ -119,9 +136,14 @@ export async function userSendCheckOut() {
       date: today,
       checkOutTime: null,
     },
-    data: {
-      checkOutTime: now.toDate(),
-    },
+    data: { checkOutTime: now.toDate() },
+  })
+
+  await safeLog({
+    userId: user.id,
+    url: "/attendance/check-out",
+    action: LogAction.SUBMIT,
+    data: { checkoutTime: now.toDate() },
   })
 
   return { success: true }
@@ -143,13 +165,23 @@ export async function userSendEarlyCheckout(reason) {
       },
     },
   })
-
   if (!attendance) return { error: "Attendance not found" }
 
-  await prisma.earlyCheckoutRequest.create({
+  const request = await prisma.earlyCheckoutRequest.create({
     data: {
       userId: user.id,
       attendanceId: attendance.id,
+      reason,
+    },
+  })
+
+  await safeLog({
+    userId: user.id,
+    url: "/attendance/early-checkout",
+    action: LogAction.CREATE,
+    data: {
+      attendanceId: attendance.id,
+      requestId: request.id,
       reason,
     },
   })
@@ -159,7 +191,7 @@ export async function userSendEarlyCheckout(reason) {
 
 export async function userSendPermissionRequest(reason) {
   const user = await getCurrentUser()
-  if (!user) throw new Error("Unauthorized")
+  if (!user?.id) return { error: "Unauthorized" }
   if (!reason?.trim()) return { error: "Reason is required" }
 
   const today = getTodayStartJakarta().toDate()
@@ -187,6 +219,13 @@ export async function userSendPermissionRequest(reason) {
     },
   })
 
+  await safeLog({
+    userId: user.id,
+    url: "/attendance/permission",
+    action: LogAction.CREATE,
+    data: { reason, date: today },
+  })
+
   return { success: true }
 }
 
@@ -202,16 +241,11 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
   const start = new Date(`${startDate}T12:00:00`)
   const year = start.getFullYear()
 
-  let end
-  let totalDays
-
-  if (leaveType.category === "ANNUAL") {
-    totalDays = leaveType.maxDays
-    end = addWorkDays(start, totalDays - 1)
-  } else {
-    totalDays = 1
-    end = new Date(start)
-  }
+  const totalDays = leaveType.category === "ANNUAL" ? leaveType.maxDays : 1
+  const end =
+    leaveType.category === "ANNUAL"
+      ? addWorkDays(start, totalDays - 1)
+      : new Date(start)
 
   const conflict = await prisma.leaveRequest.findFirst({
     where: {
@@ -223,18 +257,17 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
   })
   if (conflict) return { error: "Leave date overlaps" }
 
-  let balance = await prisma.userLeaveBalance.findUnique({
-    where: {
-      userId_leaveTypeId_year: {
-        userId: user.id,
-        leaveTypeId: leaveType.id,
-        year,
+  const balance =
+    (await prisma.userLeaveBalance.findUnique({
+      where: {
+        userId_leaveTypeId_year: {
+          userId: user.id,
+          leaveTypeId: leaveType.id,
+          year,
+        },
       },
-    },
-  })
-
-  if (!balance) {
-    balance = await prisma.userLeaveBalance.create({
+    })) ??
+    (await prisma.userLeaveBalance.create({
       data: {
         userId: user.id,
         leaveTypeId: leaveType.id,
@@ -242,14 +275,13 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
         totalDays: leaveType.maxDays,
         usedDays: 0,
       },
-    })
-  }
+    }))
 
   if (balance.totalDays - balance.usedDays < totalDays) {
     return { error: "Leave balance not sufficient" }
   }
 
-  await prisma.leaveRequest.create({
+  const request = await prisma.leaveRequest.create({
     data: {
       userId: user.id,
       leaveTypeId: leaveType.id,
@@ -257,6 +289,18 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
       endDate: end,
       totalDays,
       reason: reason?.trim() || null,
+    },
+  })
+
+  await safeLog({
+    userId: user.id,
+    url: "/leave/request",
+    action: LogAction.CREATE,
+    data: {
+      leaveRequestId: request.id,
+      leaveType: type,
+      startDate,
+      reason,
     },
   })
 

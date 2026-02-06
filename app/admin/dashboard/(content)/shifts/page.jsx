@@ -10,7 +10,8 @@ const PAGE_SIZE = 10;
 export const revalidate = 60;
 
 export default async function ShiftsPage({ searchParams }) {
-  const page = Number(searchParams?.page) || 1;
+  const params = await searchParams
+  const page = Number(params?.page) || 1;
 
   async function getShifts(page = 1) {
     return prisma.shift.findMany({

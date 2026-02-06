@@ -1,5 +1,5 @@
 import React from "react";
-import { Info, Layers, ShieldCheck, Code2 } from "lucide-react";
+import { Layers, ShieldCheck } from "lucide-react";
 
 export default function AppInformation() {
   return (

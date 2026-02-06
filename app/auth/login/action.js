@@ -22,10 +22,13 @@ export async function AuthAction(prevState, formData) {
     id: user.id, name: user.name, role: user.role,
   })
 
-  cookies().set("token", token, {
+  const cookieStore = await cookies()
+
+  cookieStore.set("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax", path: "/",
+    sameSite: "lax",
+    path: "/",
     maxAge: 60 * 60 * 24 * 7,
   })
 

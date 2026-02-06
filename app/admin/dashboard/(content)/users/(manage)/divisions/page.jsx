@@ -9,7 +9,8 @@ import { minutesToTime } from "@/_function/globalFunction"
 const PAGE_SIZE = 10
 
 export default async function Page({ searchParams }) {
-  const page = Number(searchParams?.page) || 1
+  const params = await searchParams
+  const page = Number(params?.page) || 1
   const [divisions, total] = await Promise.all([
     prisma.division.findMany({
       skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,

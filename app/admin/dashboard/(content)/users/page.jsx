@@ -38,7 +38,8 @@ async function getUserCount() {
 }
 
 export default async function Page({ searchParams }) {
-  const page = Number(searchParams?.page) || 1;
+  const params = await searchParams
+  const page = Number(params?.page) || 1;
 
   const [users, total] = await Promise.all([
     getUsers(page), getUserCount(),
