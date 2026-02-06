@@ -9,7 +9,6 @@ import { bulkCreateUser } from "@/_server/admin-action/userAction"
 import { Button } from "@/_components/ui/Button"
 import { File, FileXls, Download } from "phosphor-react"
 import { Label } from "@/_components/ui/Label"
-import { ContentList } from "@/_components/common/ContentList"
 
 export function CreateUserFromExcel({ onImported }) {
   const { addToast } = useToast()
