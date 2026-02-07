@@ -5,22 +5,15 @@ import { getCurrentUser } from "@/_lib/auth"
 import { logActivity } from "@/_lib/activityLogger"
 import { LogAction } from "@prisma/client"
 
-import {
-  determineAttendanceStatus,
-  evaluateAttendancePolicy,
-  canUserCheckout,
-  addWorkDays,
-} from "@/_function/helpers/attendanceHelpers"
+import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_function/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
 
 async function safeLog(payload) {
-  try {
-    await logActivity(payload)
-    console.log("🔥 LOG ACTIVITY:", payload)
-  } catch (err) {
-    console.error("ACTIVITY LOG FAILED:", err)
+  try { await logActivity(payload)
+    console.log("LOG ACTIVITY:", payload)
   }
+  catch (err) { console.error("LOG ACTIVITY FAILED:", err)}
 }
 
 export async function userPrecheckCheckIn() {
@@ -34,15 +27,6 @@ export async function userPrecheckCheckIn() {
   if (!shift?.division) return { error: "Shift atau divisi tidak ditemukan" }
 
   const policy = evaluateAttendancePolicy({ division: shift.division })
-
-  await safeLog({
-    userId: user.id,
-    url: "/attendance/precheck",
-    action: LogAction.VIEW,
-    data: {
-      requireLocation: policy.ignoreLocation !== true,
-    },
-  })
 
   return {
     requireLocation: policy.ignoreLocation !== true,
@@ -107,7 +91,7 @@ export async function userSendCheckIn(coords = null) {
 
   await safeLog({
     userId: user.id,
-    url: "/attendance/check-in",
+    url: "/employee/attendance/main/check-in",
     action: LogAction.SUBMIT,
     data: {
       attendanceId: attendance.id,
@@ -141,7 +125,7 @@ export async function userSendCheckOut() {
 
   await safeLog({
     userId: user.id,
-    url: "/attendance/check-out",
+    url: "/employee/attendance/main/check-out",
     action: LogAction.SUBMIT,
     data: { checkoutTime: now.toDate() },
   })
@@ -177,7 +161,7 @@ export async function userSendEarlyCheckout(reason) {
 
   await safeLog({
     userId: user.id,
-    url: "/attendance/early-checkout",
+    url: "/employee/attendance/main/req?=early-checkout",
     action: LogAction.CREATE,
     data: {
       attendanceId: attendance.id,
@@ -221,7 +205,7 @@ export async function userSendPermissionRequest(reason) {
 
   await safeLog({
     userId: user.id,
-    url: "/attendance/permission",
+    url: "/employee/attendance/main/req?=permission",
     action: LogAction.CREATE,
     data: { reason, date: today },
   })
@@ -294,7 +278,7 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
 
   await safeLog({
     userId: user.id,
-    url: "/leave/request",
+    url: "/employee/dashboard/main/req?=leave",
     action: LogAction.CREATE,
     data: {
       leaveRequestId: request.id,

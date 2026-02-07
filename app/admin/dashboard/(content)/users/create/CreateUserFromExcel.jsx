@@ -149,7 +149,7 @@ export function CreateUserFromExcel({ onImported }) {
               <button
                 type="button"
                 onClick={removeFile}
-                className="absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white group-hover:flex"
+                className="animate-bouncy absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white group-hover:flex"
               >
                 ×
               </button>

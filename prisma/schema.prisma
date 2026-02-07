@@ -86,12 +86,21 @@ enum LogAction {
   DELETE
 }
 
+enum LogMethod {
+  VIEW
+  SUBMIT
+  CREATE
+  UPDATE
+  DELETE
+}
+
 model ActivityLog {
   id        Int      @id @default(autoincrement())
   userId    Int
   url       String
   method    String?
   action    LogAction
+  method    LogMethod
   data      Json?
   ipAddress String?
   userAgent String?

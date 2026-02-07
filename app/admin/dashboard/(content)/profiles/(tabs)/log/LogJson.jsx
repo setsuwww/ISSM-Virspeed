@@ -3,7 +3,7 @@
 
 export default function LogJSON({ data }) {
   return (
-    <pre className="overflow-x-auto rounded bg-gray-100 p-3 text-xs">
+    <pre className="font-number font-semibold overflow-x-auto rounded bg-green-200/40 p-3 text-xs text-green-800">
       {JSON.stringify(data, null, 2)}
     </pre>
   )

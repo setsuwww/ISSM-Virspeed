@@ -57,7 +57,6 @@ export function ProfileView({ user }) {
   return (
     <div className="space-y-6">
       <Card className="rounded-2xl border border-slate-200 shadow-sm">
-        {/* HEADER */}
         <CardHeader className="flex flex-row items-center justify-between px-6 py-5">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-full bg-slate-100 ring-1 ring-slate-200">
@@ -88,9 +87,7 @@ export function ProfileView({ user }) {
           </Button>
         </CardHeader>
 
-        {/* CONTENT */}
         <CardContent className="space-y-6 px-6">
-          {/* EDIT FORM */}
           {isEditing && (
             <div className="grid max-w-md gap-4">
               <div className="space-y-1">
@@ -125,7 +122,6 @@ export function ProfileView({ user }) {
             </div>
           )}
 
-          {/* BASIC INFORMATION */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Info label="Division" icon={Building2}>
               {user.division?.name ?? "-"}
@@ -138,7 +134,6 @@ export function ProfileView({ user }) {
             </Info>
           </div>
 
-          {/* SHIFT */}
           {user.shift && (
             <div className="rounded-xl border bg-slate-50 p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -164,7 +159,6 @@ export function ProfileView({ user }) {
 
         </CardContent>
 
-        {/* FOOTER */}
         <CardFooter className="flex justify-between border-t px-6 py-4">
           <Button variant="ghost" className="text-rose-600">
             <Trash2 className="w-4 h-4 mr-2" />
@@ -182,12 +176,7 @@ export function ProfileView({ user }) {
   )
 }
 
-/* SMALL ATOMIC COMPONENT */
-function Info({
-  label,
-  icon: Icon,
-  children,
-}) {
+function Info({ label, icon: Icon, children }) {
   return (
     <div className="flex items-center gap-2">
       <div className="bg-slate-200 p-2 rounded-full">
