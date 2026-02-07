@@ -25,7 +25,7 @@ export function SecurityTable({ logs: initialLogs }) {
         <TableRow>
           <TableHead>Time</TableHead>
           <TableHead>User</TableHead>
-          <TableHead>Action</TableHead>
+          <TableHead>User Action</TableHead>
           <TableHead>IP</TableHead>
           <TableHead>User Agent</TableHead>
           <TableHead>Action</TableHead>
@@ -66,7 +66,7 @@ export function SecurityTable({ logs: initialLogs }) {
 
             <TableCell>
               <span
-                className={`border px-2 py-1 rounded-md text-xs font-semibold ${actionColor(
+                className={`border border-slate-300/80 shadow-2xs px-2 py-1 rounded-md text-xs font-semibold ${actionColor(
                   log.action
                 )}`}
               >

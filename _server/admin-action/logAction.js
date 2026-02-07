@@ -53,7 +53,7 @@ export async function logActivity({ userId, url, action, data, method = "POST" }
 
 export async function clearAllActivityLogs() {
   await prisma.activityLog.deleteMany({})
-  revalidatePath("/admin/activity-log")
+  revalidatePath("/admin/dashboard/profiles/security")
 }
 
 export async function safeLog(payload) {

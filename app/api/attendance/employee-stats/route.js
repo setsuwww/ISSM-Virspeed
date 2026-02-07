@@ -7,7 +7,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url)
     const userId = searchParams.get("userId")
 
-    if (!userId || isNaN(userId)) {
+    if (!userId) {
       return NextResponse.json({ error: "Invalid or missing userId" }, { status: 400 })
     }
 

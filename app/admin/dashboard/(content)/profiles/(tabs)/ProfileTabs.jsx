@@ -8,7 +8,7 @@ import { cn } from "@/_lib/utils"
 const tabs = [
   { label: "Profile", href: "/admin/dashboard/profiles", icon: User  },
   { label: "Log Activity", href: "/admin/dashboard/profiles/log", icon: FileText },
-  { label: "Security", href: "/admin/dashboard/profiles/security", icon: Shield },
+  { label: "Log Security", href: "/admin/dashboard/profiles/security", icon: Shield },
 ]
 
 export default function ProfileTabs() {
@@ -31,7 +31,7 @@ export default function ProfileTabs() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <tab.icon className="mr-2 h-4 w-4" />
+              <tab.icon className="mr-1.5 h-4 w-4" />
               {tab.label}
             </Link>
           )

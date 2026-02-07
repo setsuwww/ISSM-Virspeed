@@ -2,6 +2,7 @@
 
 import { prisma } from "@/_lib/prisma"
 import { SecurityAction } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 const MAX_SCORE = 100
 const WINDOW_MINUTES = 15
@@ -140,6 +141,11 @@ export async function clearUserSession(userId) {
       action: "SESSION_CLEARED",
     },
   })
+}
+
+export async function clearAllSecurityLogs() {
+  await prisma.securityLog.deleteMany({})
+  revalidatePath("/admin/dashboard/profiles/security")
 }
 
 

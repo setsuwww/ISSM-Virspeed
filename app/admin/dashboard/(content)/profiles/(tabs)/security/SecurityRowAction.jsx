@@ -50,7 +50,7 @@ export function SecurityRowAction({ log, onUserUpdate }) {
           }
           className="flex items-center text-sm px-2 py-1 rounded bg-green-50 text-green-700"
         >
-          <LockOpen size={16} className="mr-1" /> Unblock
+          <LockOpen size={16} color="#008236" weight="duotone" className="mr-1" /> Unblock
         </button>
       ) : (
         <button
@@ -59,7 +59,7 @@ export function SecurityRowAction({ log, onUserUpdate }) {
           }
           className="flex items-center text-sm px-2 py-1 rounded bg-red-50 text-red-700"
         >
-          <Prohibit size={16} className="mr-1" /> Block
+          <Prohibit size={16} color="#c10007" weight="duotone" className="mr-1" /> Block
         </button>
       )}
 
@@ -79,7 +79,7 @@ export function SecurityRowAction({ log, onUserUpdate }) {
           }
           className="flex items-center text-sm px-2 py-1 rounded bg-yellow-50 text-yellow-700"
         >
-          <Flag size={16} className="mr-1" /> Flag
+          <Flag size={16} color="#a65f00" weight="duotone" className="mr-1" /> Flag
         </button>
       )}
 

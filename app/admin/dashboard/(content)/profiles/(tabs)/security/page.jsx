@@ -3,6 +3,7 @@ import { SecurityTable } from "./SecurityTable"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import ContentForm from "@/_components/common/ContentForm"
 import { safeFormat } from "@/_function/globalFunction"
+import SecurityView from "./SecurityView"
 
 export default async function SecurityPage() {
   const logs = await prisma.securityLog.findMany({
@@ -52,19 +53,6 @@ export default async function SecurityPage() {
   })
 
   return (
-    <section>
-      <ContentForm>
-        <ContentForm.Header>
-          <ContentInformation
-            heading="Security Table"
-            subheading="Monitor login, session, and suspicious activity"
-          />
-        </ContentForm.Header>
-
-        <ContentForm.Body>
-          <SecurityTable logs={formattedLogs} />
-        </ContentForm.Body>
-      </ContentForm>
-    </section>
+    <SecurityView logs={formattedLogs} />
   )
 }
