@@ -4,26 +4,54 @@ import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { prisma } from "@/_lib/prisma"
-import { signToken, removeAuthCookie } from "@/_lib/auth"
+import { getCurrentUser, removeAuthCookie, signToken } from "@/_lib/auth"
+import { logActivity } from "@/_server/logAction"
+import { LogAction } from "@prisma/client"
 
 export async function AuthAction(prevState, formData) {
   const email = formData.get("email")
   const password = formData.get("password")
 
-  if (!email || !password) { return { error: "Both fields are required" } }
+  if (!email || !password) {
+    return { error: "Both fields are required" }
+  }
 
   const user = await prisma.user.findUnique({ where: { email } })
-  if (!user) { return { error: "User not found" } }
+  if (!user) {
+    return { error: "User not found" }
+  }
 
   const valid = await bcrypt.compare(password, user.password)
-  if (!valid) { return { error: "Invalid password" } }
+  if (!valid) {
+    await logActivity({
+      userId: user.id,
+      url: "/auth/login",
+      action: LogAction.SUBMIT,
+      method: LogAction.POST,
+      data: { success: false, reason: "Invalid password" },
+    })
+
+    return { error: "Invalid password" }
+  }
 
   const token = signToken({
-    id: user.id, name: user.name, role: user.role,
+    id: user.id,
+    name: user.name,
+    role: user.role,
+  })
+
+  await logActivity({
+    userId: user.id,
+    url: "/auth/login",
+    action: LogAction.SUBMIT,
+    method: LogAction.POST,
+    data: {
+      success: true,
+      role: user.role,
+    },
   })
 
   const cookieStore = await cookies()
-
   cookieStore.set("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -36,11 +64,20 @@ export async function AuthAction(prevState, formData) {
   if (user.role === "USER") redirect("/user/dashboard")
   if (user.role === "COORDINATOR") redirect("/coordinator/dashboard")
   if (user.role === "EMPLOYEE") redirect("/employee/dashboard")
-
-  return { success: true }
 }
 
 export async function LogoutAuthAction() {
+  const user = await getCurrentUser()
+
+  if (user?.id) {
+    await logActivity({
+      userId: user.id,
+      url: "/auth/logout",
+      action: LogAction.SUBMIT,
+      method: LogAction.POST,
+    })
+  }
+
   await removeAuthCookie()
   redirect("/auth/login")
 }

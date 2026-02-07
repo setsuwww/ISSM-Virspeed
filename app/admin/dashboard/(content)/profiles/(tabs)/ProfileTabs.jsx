@@ -25,7 +25,7 @@ export default function ProfileTabs() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                "flex items-center rounded-md px-4 py-1.5 text-sm font-medium transition-colors",
                 active
                   ? "bg-white text-yellow-500 shadow"
                   : "text-muted-foreground hover:text-foreground"

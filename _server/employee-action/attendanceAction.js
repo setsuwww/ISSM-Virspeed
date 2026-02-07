@@ -2,19 +2,12 @@
 
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
-import { logActivity } from "@/_lib/activityLogger"
 import { LogAction } from "@prisma/client"
 
 import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_function/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
-
-async function safeLog(payload) {
-  try { await logActivity(payload)
-    console.log("LOG ACTIVITY:", payload)
-  }
-  catch (err) { console.error("LOG ACTIVITY FAILED:", err)}
-}
+import { safeLog } from "@/_server/logAction"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
@@ -93,6 +86,7 @@ export async function userSendCheckIn(coords = null) {
     userId: user.id,
     url: "/employee/attendance/main/check-in",
     action: LogAction.SUBMIT,
+    method: LogAction.POST,
     data: {
       attendanceId: attendance.id,
       status,
@@ -127,6 +121,7 @@ export async function userSendCheckOut() {
     userId: user.id,
     url: "/employee/attendance/main/check-out",
     action: LogAction.SUBMIT,
+    method: LogAction.POST,
     data: { checkoutTime: now.toDate() },
   })
 
@@ -163,6 +158,7 @@ export async function userSendEarlyCheckout(reason) {
     userId: user.id,
     url: "/employee/attendance/main/req?=early-checkout",
     action: LogAction.CREATE,
+    method: LogAction.POST,
     data: {
       attendanceId: attendance.id,
       requestId: request.id,
@@ -207,6 +203,7 @@ export async function userSendPermissionRequest(reason) {
     userId: user.id,
     url: "/employee/attendance/main/req?=permission",
     action: LogAction.CREATE,
+    method: LogAction.POST,
     data: { reason, date: today },
   })
 
@@ -280,6 +277,7 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
     userId: user.id,
     url: "/employee/dashboard/main/req?=leave",
     action: LogAction.CREATE,
+    method: LogAction.POST,
     data: {
       leaveRequestId: request.id,
       leaveType: type,

@@ -87,10 +87,10 @@ enum LogAction {
 }
 
 enum LogMethod {
-  VIEW
-  SUBMIT
-  CREATE
-  UPDATE
+  GET
+  POST
+  PUT
+  PATCH
   DELETE
 }
 
@@ -98,7 +98,6 @@ model ActivityLog {
   id        Int      @id @default(autoincrement())
   userId    Int
   url       String
-  method    String?
   action    LogAction
   method    LogMethod
   data      Json?
