@@ -26,7 +26,7 @@ const LoginPage = () => {
             placeholder="Enter your email"
           />
           {state?.error && !state?.email && (
-            <p className="text-xs font-semibold text-rose-500">Email is required</p>
+            <p className="px-2 py-1 bg-red-50 border border-red-100 text-xs font-semibold text-rose-500">Email is required</p>
           )}
         </div>
 
@@ -37,7 +37,7 @@ const LoginPage = () => {
             placeholder="Enter your password"
           />
           {state?.error && !state?.password && (
-            <p className="text-xs font-semibold text-rose-500">Password is required</p>
+            <p className="px-2 py-1 bg-red-50 border border-red-100 text-xs font-semibold text-rose-500">Password is required</p>
           )}
         </div>
 
@@ -57,8 +57,8 @@ const LoginPage = () => {
         </div>
 
         <Button type="submit" disabled={pending} className="w-full text-base font-semibold bg-yellow-500 hover:bg-yellow-700 py-2">
-          {pending 
-            ? (<div className="flex items-center space-x-1 gap-x-1"><Loader className="animate-spin"/>Logging in...</div>) 
+          {pending
+            ? (<div className="flex items-center space-x-1 gap-x-1"><Loader className="animate-spin"/>Logging in...</div>)
             : "Login"
           }
         </Button>
@@ -69,7 +69,7 @@ const LoginPage = () => {
       </form>
 
       {state?.error && (
-        <p className="text-rose-500 mt-2 text-center">{state.error}</p>
+        <p className="px-2 py-1 bg-red-50 border border-red-100 text-rose-500 mt-2 text-center">{state.error}</p>
       )}
     </AuthForm>
   )

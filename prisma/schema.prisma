@@ -7,14 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum LocationType {
-  WFO
-  WFA
+enum LogAction {
+  VIEW
+  SUBMIT
+  CREATE
+  UPDATE
+  DELETE
 }
 
-enum LocationStatus {
-  ACTIVE
-  INACTIVE
+enum LogMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+}
+
+enum SecurityAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  PASSWORD_CHANGED
+  SESSION_REVOKED
+  ROLE_CHANGED
+  ACCOUNT_LOCKED
+}
+
+enum Role {
+  ADMIN
+  COORDINATOR
+  EMPLOYEE
+  USER
 }
 
 enum ShiftType {
@@ -25,11 +48,14 @@ enum ShiftType {
   CUSTOM
 }
 
-enum Role {
-  ADMIN
-  COORDINATOR
-  EMPLOYEE
-  USER
+enum LocationType {
+  WFO
+  WFA
+}
+
+enum LocationStatus {
+  ACTIVE
+  INACTIVE
 }
 
 enum FrequencyType {
@@ -78,24 +104,8 @@ enum ShiftChangeStatus {
   REJECTED
 }
 
-enum LogAction {
-  VIEW
-  SUBMIT
-  CREATE
-  UPDATE
-  DELETE
-}
-
-enum LogMethod {
-  GET
-  POST
-  PUT
-  PATCH
-  DELETE
-}
-
 model ActivityLog {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   userId    Int
   url       String
   action    LogAction
@@ -104,7 +114,7 @@ model ActivityLog {
   ipAddress String?
   userAgent String?
 
-  user      User?    @relation("UserActivityLogs", fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -113,41 +123,47 @@ model ActivityLog {
   @@index([action])
 }
 
+model SecurityLog {
+  id        String         @id @default(uuid())
+  userId    Int
+  action    SecurityAction
+  ip        String?
+  userAgent String?
+  createdAt DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model SuspiciousActivity {
+  id        String   @id @default(uuid())
+  userId    Int?
+  ip        String?
+  reason    String
+  score     Int
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resolved])
+}
+
 model SystemConfig {
   id           Int      @id @default(autoincrement())
   allWfaActive Boolean  @default(false)
   updatedAt    DateTime @updatedAt
 }
 
-model Division {
-  id        Int            @id @default(autoincrement())
-  name      String
-  location  String?
-  longitude Float?
-  latitude  Float?
-  radius    Float?
-  type      LocationType   @default(WFO)
-  status    LocationStatus @default(INACTIVE)
-  startTime Int?
-  endTime   Int?
-  parentId  Int?
-  parent    Division?      @relation("DivisionHierarchy", fields: [parentId], references: [id])
-  branches  Division[]     @relation("DivisionHierarchy")
-
-  users     User[]
-  shifts    Shift[]
-  schedules Schedule[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   name     String
-  email    String @unique
+  email    String  @unique
   password String
-  role     Role   @default(USER)
+  role     Role    @default(USER)
+  isLocked Boolean @default(false)
 
   divisionId Int?
   shiftId    Int?
@@ -169,7 +185,9 @@ model User {
   leaveRequests  LeaveRequest[]
   approvedLeaves LeaveRequest[]     @relation("LeaveApprovedBy")
 
-  activityLogs ActivityLog[] @relation("UserActivityLogs")
+  activityLogs         ActivityLog[]
+  securityLogs         SecurityLog[]
+  suspiciousActivities SuspiciousActivity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -190,29 +208,6 @@ model UserLeaveBalance {
   updatedAt DateTime @updatedAt
 
   @@id([userId, leaveTypeId, year])
-}
-
-model Shift {
-  id        Int       @id @default(autoincrement())
-  name      String
-  type      ShiftType
-  startTime Int
-  endTime   Int
-  isActive  Boolean   @default(true)
-
-  divisionId Int?
-  division   Division? @relation(fields: [divisionId], references: [id])
-
-  users       User[]                @relation("ShiftUsers")
-  assignments UserShiftAssignment[]
-  attendances Attendance[]
-
-  oldShiftRequests    ShiftChangeRequest[] @relation("OldShift")
-  newShiftRequests    ShiftChangeRequest[] @relation("NewShift")
-  targetShiftRequests ShiftChangeRequest[] @relation("TargetShift")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model UserShiftAssignment {
@@ -269,6 +264,52 @@ model ScheduleReminder {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, userId])
+}
+
+model Division {
+  id        Int            @id @default(autoincrement())
+  name      String
+  location  String?
+  longitude Float?
+  latitude  Float?
+  radius    Float?
+  type      LocationType   @default(WFO)
+  status    LocationStatus @default(INACTIVE)
+  startTime Int?
+  endTime   Int?
+  parentId  Int?
+  parent    Division?      @relation("DivisionHierarchy", fields: [parentId], references: [id])
+  branches  Division[]     @relation("DivisionHierarchy")
+
+  users     User[]
+  shifts    Shift[]
+  schedules Schedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Shift {
+  id        Int       @id @default(autoincrement())
+  name      String
+  type      ShiftType
+  startTime Int
+  endTime   Int
+  isActive  Boolean   @default(true)
+
+  divisionId Int?
+  division   Division? @relation(fields: [divisionId], references: [id])
+
+  users       User[]                @relation("ShiftUsers")
+  assignments UserShiftAssignment[]
+  attendances Attendance[]
+
+  oldShiftRequests    ShiftChangeRequest[] @relation("OldShift")
+  newShiftRequests    ShiftChangeRequest[] @relation("NewShift")
+  targetShiftRequests ShiftChangeRequest[] @relation("TargetShift")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Attendance {

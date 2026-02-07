@@ -39,11 +39,6 @@ export async function logQuery({ page = 1, limit = 20, userId, action }) {
   })
 }
 
-export async function clearAllActivityLogs() {
-  await prisma.activityLog.deleteMany({})
-  revalidatePath("/admin/activity-log")
-}
-
 export async function logActivity({ userId, url, action, data, method = "POST" }) {
   await prisma.activityLog.create({
     data: {
@@ -54,6 +49,11 @@ export async function logActivity({ userId, url, action, data, method = "POST" }
       data,
     },
   })
+}
+
+export async function clearAllActivityLogs() {
+  await prisma.activityLog.deleteMany({})
+  revalidatePath("/admin/activity-log")
 }
 
 export async function safeLog(payload) {

@@ -1,39 +1,74 @@
 "use server"
 
 import bcrypt from "bcryptjs"
-import { cookies } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
+
 import { prisma } from "@/_lib/prisma"
-import { getCurrentUser, removeAuthCookie, signToken } from "@/_lib/auth"
+import { signToken, getCurrentUser, removeAuthCookie } from "@/_lib/auth"
 import { logActivity } from "@/_server/logAction"
-import { LogAction } from "@prisma/client"
+
+import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_server/securityAction"
 
 export async function AuthAction(prevState, formData) {
-  const email = formData.get("email")
-  const password = formData.get("password")
+  const email = formData.get("email")?.toString()
+  const password = formData.get("password")?.toString()
 
   if (!email || !password) {
-    return { error: "Both fields are required" }
+    return { error: "Email & password required" }
   }
 
   const user = await prisma.user.findUnique({ where: { email } })
+
   if (!user) {
-    return { error: "User not found" }
+    await reportSuspicious({
+      ip: headers().get("x-forwarded-for") ?? "",
+      reason: "Login with unknown email",
+      score: 40,
+    })
+    return { error: "Invalid credentials" }
   }
 
+  if (user.isLocked) {
+    return {
+      error: "Account locked due to suspicious activity",
+    }
+  }
+
+  const ip = headers().get("x-forwarded-for") ?? ""
+  const ua = headers().get("user-agent") ?? ""
+
   const valid = await bcrypt.compare(password, user.password)
+
   if (!valid) {
     await logActivity({
       userId: user.id,
       url: "/auth/login",
       action: LogAction.SUBMIT,
       method: LogAction.POST,
-      data: { success: false, reason: "Invalid password" },
+      data: { success: false },
     })
 
-    return { error: "Invalid password" }
+    await logSecurity({
+      userId: user.id,
+      action: SecurityAction.LOGIN_FAILED,
+      ip,
+      userAgent: ua,
+    })
+
+    await reportSuspicious({
+      userId: user.id,
+      ip,
+      reason: "Invalid password",
+      score: 35,
+    })
+
+    await checkAndLockUser(user.id)
+
+    return { error: "Invalid credentials" }
   }
 
+  // LOGIN SUCCESS
   const token = signToken({
     id: user.id,
     name: user.name,
@@ -45,14 +80,23 @@ export async function AuthAction(prevState, formData) {
     url: "/auth/login",
     action: LogAction.SUBMIT,
     method: LogAction.POST,
-    data: {
-      success: true,
-      role: user.role,
-    },
+    data: { success: true },
   })
 
-  const cookieStore = await cookies()
-  cookieStore.set("token", token, {
+  await logSecurity({
+    userId: user.id,
+    action: SecurityAction.LOGIN_SUCCESS,
+    ip,
+    userAgent: ua,
+  })
+
+  // reset suspicious
+  await prisma.suspiciousActivity.updateMany({
+    where: { userId: user.id, resolved: false },
+    data: { resolved: true },
+  })
+
+  cookies().set("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -63,18 +107,16 @@ export async function AuthAction(prevState, formData) {
   if (user.role === "ADMIN") redirect("/admin/dashboard")
   if (user.role === "USER") redirect("/user/dashboard")
   if (user.role === "COORDINATOR") redirect("/coordinator/dashboard")
-  if (user.role === "EMPLOYEE") redirect("/employee/dashboard")
+  redirect("/employee/dashboard")
 }
 
 export async function LogoutAuthAction() {
   const user = await getCurrentUser()
 
   if (user?.id) {
-    await logActivity({
+    await logSecurity({
       userId: user.id,
-      url: "/auth/logout",
-      action: LogAction.SUBMIT,
-      method: LogAction.POST,
+      action: SecurityAction.LOGOUT,
     })
   }
 

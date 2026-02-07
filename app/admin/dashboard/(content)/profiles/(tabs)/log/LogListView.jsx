@@ -1,14 +1,15 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { LogConfirmModal } from "./LogConfirmModal"
+import { LogConfirmDialog } from "./LogConfirmDialog"
 import { METHOD_COLORS } from "@/_constants/static/methodColors"
 import { clearAllActivityLogs } from "@/_server/logAction"
+import { Button } from "@/_components/ui/Button"
 
 import LogJSON from "./LogJson"
 
 export default function LogListView({ logs, onClear }) {
-  const [openConfirm, setOpenConfirm] = useState(false)
+  const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   if (!logs.length) {
@@ -23,10 +24,10 @@ export default function LogListView({ logs, onClear }) {
 
   return (
     <>
-      <div className="flex justify-end mb-3">
-        <button onClick={() => setOpenConfirm(true)} className="text-sm text-red-600 hover:text-red-700 font-medium">
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setOpen(true)} variant="outline" className="text-red-500 hover:text-red-700">
           Clear all logs
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-4">
@@ -34,14 +35,14 @@ export default function LogListView({ logs, onClear }) {
           const badgeColor = METHOD_COLORS[method] || "bg-gray-100 text-gray-600 border-gray-300"
 
           return (
-            <div key={log.id} className="rounded-md border bg-white px-4 py-3">
+            <div key={log.id} className="bg-white rounded-lg border border-slate-200 shadow-xs px-4 py-3">
               <div className="flex items-center gap-4.5">
                 <span className={`min-w-[54px] text-center rounded border px-2 py-0.5 text-xs font-semibold ${badgeColor}`}>
                   {method}
                 </span>
 
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-blue-600 ">
                     {log.url}
                   </span>
                   <span className="text-xs text-gray-400">
@@ -64,7 +65,7 @@ export default function LogListView({ logs, onClear }) {
               {log.data && (
                 <div className="mt-4">
                   <div className="mb-1.5 text-sm font-medium text-gray-500">
-                    PAYLOAD
+                    PAYLOAD :
                   </div>
                   <div className="rounded bg-green-50 border border-green-100 p-2">
                     <LogJSON data={log.data} />
@@ -76,9 +77,9 @@ export default function LogListView({ logs, onClear }) {
         })}
       </div>
 
-      <LogConfirmModal
-        open={openConfirm}
-        onClose={() => setOpenConfirm(false)}
+      <LogConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
         onConfirm={handleClearLogs}
       />
     </>
