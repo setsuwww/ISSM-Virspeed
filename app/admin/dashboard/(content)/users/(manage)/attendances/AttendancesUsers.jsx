@@ -11,7 +11,7 @@ import { Input } from "@/_components/ui/Input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/_components/ui/Select"
 
 import { capitalize } from "@/_function/globalFunction"
-import { attendancesStyles } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
 import { shiftStyles } from '@/_constants/shiftConstants';
 
 export default function AttendancesUsers({

@@ -10,7 +10,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
 
 import { safeFormat, capitalize, wordsLimit } from "@/_function/globalFunction"
 import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"

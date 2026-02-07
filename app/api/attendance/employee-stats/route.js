@@ -5,7 +5,7 @@ export async function GET(req) {
   try {
     // Ambil query userId
     const { searchParams } = new URL(req.url)
-    const userId = parseInt(searchParams.get("userId"))
+    const userId = searchParams.get("userId")
 
     if (!userId || isNaN(userId)) {
       return NextResponse.json({ error: "Invalid or missing userId" }, { status: 400 })

@@ -5,11 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/_components/ui/Badge"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import {
-  attendancesStyles,
-  normalizeRequestStatus,
-  getDisplayStatus,
-} from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { normalizePendingStatus, getAttendanceStatus } from "@/_constants/attendanceConstants"
 
 export default function ChangeShiftTable({ data = [] }) {
   if (!data.length) {
@@ -121,11 +118,11 @@ export default function ChangeShiftTable({ data = [] }) {
               <Badge
                 className={
                   attendancesStyles[
-                  normalizeRequestStatus(item.status)
+                  normalizePendingStatus(item.status)
                   ]
                 }
               >
-                {getDisplayStatus(item.status)}
+                {getAttendanceStatus(item.status)}
               </Badge>
             </TableCell>
 

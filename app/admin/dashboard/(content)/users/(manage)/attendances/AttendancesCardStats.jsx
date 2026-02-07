@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import { statusColorsClass } from "@/_constants/attendanceConstants"
+import { attendanceStatusClass } from "@/_constants/themes/attendanceTheme"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
 import AttendancesUsers from "./AttendancesUsers"
@@ -65,7 +65,7 @@ export function AttendancesCard({ shifts = [] }) {
         {statusSummary.map(({ status, users, approvalCounts }) => (
           <AttendancesApprovalPartials key={status} status={status} users={users}
             approvalCounts={approvalCounts}
-            statusColorsClass={statusColorsClass}
+            statusColorsClass={attendanceStatusClass}
             onClick={() => users.length > 0 && handleOpen(status)}
           />
         ))}

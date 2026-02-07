@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { CheckCircle, XCircle } from "phosphor-react"
 import { CircleUserRound } from "lucide-react"
-
-import { updateShiftChangeStatus } from "@/_server/admin-action/shiftAction"
 
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/_components/ui/Table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/Dialog"
@@ -13,9 +12,11 @@ import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles, getDisplayStatus, normalizeRequestStatus } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { getAttendanceStatus, normalizePendingStatus } from "@/_constants/attendanceConstants"
+
+import { updateShiftChangeStatus } from "@/_server/admin-action/shiftAction"
 import { wordsLimit } from "@/_function/globalFunction"
-import { CheckCircle, XCircle } from "phosphor-react"
 
 export default function ChangeShiftTable({ requests = [], currentUserId }) {
   const [isPending, startTransition] = useTransition()
@@ -111,8 +112,8 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     </TableCell>
 
                     <TableCell>
-                      <Badge className={attendancesStyles[normalizeRequestStatus(req.status)]}>
-                        {getDisplayStatus(req.status)}
+                      <Badge className={attendancesStyles[normalizePendingStatus(req.status)]}>
+                        {getAttendanceStatus(req.status)}
                       </Badge>
                     </TableCell>
 

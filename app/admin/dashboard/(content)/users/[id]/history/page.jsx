@@ -59,9 +59,9 @@ export default async function UserHistoryPage({ params, searchParams }) {
   const page = Number(searchParams?.page) || 1;
 
   const [history, total, profile] = await Promise.all([
-    getHistory(Number(id), page, searchParams),
-    getHistoryCount(Number(id)),
-    getUserProfile(Number(id)),
+    getHistory(id, page, searchParams),
+    getHistoryCount(id),
+    getUserProfile(id),
   ]);
 
   const serializedHistory = history.map((h) => {

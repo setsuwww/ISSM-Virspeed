@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
-import { attendancesStyles } from "@/_constants/attendanceConstants"
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
 import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
 import { capitalize } from "@/_function/globalFunction"
 

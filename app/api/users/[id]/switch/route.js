@@ -2,7 +2,7 @@ import { prisma } from "@/_lib/prisma"
 import { NextResponse } from "next/server"
 
 export async function GET(req, { params }) {
-  const currentUserId = parseInt(params.id)
+  const currentUserId = params.id
 
   const currentUser = await prisma.user.findUnique({
     where: { id: currentUserId },

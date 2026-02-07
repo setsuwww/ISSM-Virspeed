@@ -1,12 +1,12 @@
 "use client"
 
-import { attendanceActionTheme } from "@/_constants/attendanceConstants"
+import { attendanceAction } from "@/_constants/themes/attendanceTheme"
 import clsx from "clsx"
 import Link from "next/link"
 
 export function MainActionCard({ icon, title, description, color = "slate", onClick, asLink, href }) {
 
-  const t = attendanceActionTheme[color] ?? attendanceActionTheme.slate
+  const t = attendanceAction[color] ?? attendanceAction.slate
 
   const content = (
     <div onClick={onClick}

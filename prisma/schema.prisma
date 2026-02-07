@@ -31,6 +31,8 @@ enum SecurityAction {
   SESSION_REVOKED
   ROLE_CHANGED
   ACCOUNT_LOCKED
+  ACCOUNT_UNLOCKED
+  SESSION_CLEARED
 }
 
 enum Role {
@@ -106,7 +108,7 @@ enum ShiftChangeStatus {
 
 model ActivityLog {
   id        Int       @id @default(autoincrement())
-  userId    Int
+  userId    String
   url       String
   action    LogAction
   method    LogMethod
@@ -125,7 +127,7 @@ model ActivityLog {
 
 model SecurityLog {
   id        String         @id @default(uuid())
-  userId    Int
+  userId    String
   action    SecurityAction
   ip        String?
   userAgent String?
@@ -138,7 +140,7 @@ model SecurityLog {
 
 model SuspiciousActivity {
   id        String   @id @default(uuid())
-  userId    Int?
+  userId    String?
   ip        String?
   reason    String
   score     Int
@@ -158,12 +160,14 @@ model SystemConfig {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  name     String
-  email    String  @unique
-  password String
-  role     Role    @default(USER)
-  isLocked Boolean @default(false)
+  id           String  @id @default(cuid())
+  name         String
+  email        String  @unique
+  password     String
+  role         Role    @default(USER)
+  isLocked     Boolean @default(false)
+  isFlagged    Boolean @default(false)
+  tokenVersion Int     @default(0)
 
   divisionId Int?
   shiftId    Int?
@@ -194,7 +198,7 @@ model User {
 }
 
 model UserLeaveBalance {
-  userId      Int
+  userId      String
   leaveTypeId Int
   year        Int
 
@@ -212,7 +216,7 @@ model UserLeaveBalance {
 
 model UserShiftAssignment {
   id         Int      @id @default(autoincrement())
-  userId     Int
+  userId     String
   shiftId    Int
   assignedAt DateTime @default(now())
 
@@ -243,9 +247,9 @@ model Schedule {
 }
 
 model SchedulesOnUsers {
-  id         Int @id @default(autoincrement())
+  id         Int    @id @default(autoincrement())
   scheduleId Int
-  userId     Int
+  userId     String
 
   schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -256,7 +260,7 @@ model SchedulesOnUsers {
 model ScheduleReminder {
   id         Int      @id @default(autoincrement())
   scheduleId Int
-  userId     Int
+  userId     String
   remindAt   DateTime
   createdAt  DateTime @default(now())
 
@@ -322,7 +326,7 @@ model Attendance {
   checkInTime         DateTime?
   checkOutTime        DateTime?
   earlyCheckoutReason String?
-  userId              Int
+  userId              String
   shiftId             Int
 
   user  User  @relation(fields: [userId], references: [id])
@@ -342,7 +346,7 @@ model Attendance {
 model EarlyCheckoutRequest {
   id Int @id @default(autoincrement())
 
-  userId       Int
+  userId       String
   attendanceId Int?
 
   reason      String
@@ -373,7 +377,7 @@ model LeaveType {
 model LeaveRequest {
   id Int @id @default(autoincrement())
 
-  userId      Int
+  userId      String
   leaveTypeId Int
 
   startDate DateTime
@@ -384,8 +388,8 @@ model LeaveRequest {
   adminReason String?
   status      LeaveStatus @default(PENDING)
 
-  approvedById Int?
-  approvedBy   User? @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
+  approvedById String?
+  approvedBy   User?   @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
 
   user      User      @relation(fields: [userId], references: [id])
   leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
@@ -400,14 +404,14 @@ model LeaveRequest {
 model ShiftChangeRequest {
   id Int @id @default(autoincrement())
 
-  user   User @relation("RequestedUser", fields: [userId], references: [id])
-  userId Int
+  user   User   @relation("RequestedUser", fields: [userId], references: [id])
+  userId String
 
-  requestedBy   User @relation("RequestedByAdmin", fields: [requestedById], references: [id])
-  requestedById Int
+  requestedBy   User   @relation("RequestedByAdmin", fields: [requestedById], references: [id])
+  requestedById String
 
-  targetUser   User? @relation("TargetUser", fields: [targetUserId], references: [id])
-  targetUserId Int?
+  targetUser   User?   @relation("TargetUser", fields: [targetUserId], references: [id])
+  targetUserId String?
 
   oldShift   Shift? @relation("OldShift", fields: [oldShiftId], references: [id])
   oldShiftId Int?

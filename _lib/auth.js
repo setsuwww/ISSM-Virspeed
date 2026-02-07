@@ -45,7 +45,7 @@ export async function getCurrentUser() {
   if (!decoded?.id) return null
 
   return prisma.user.findUnique({
-    where: { id: Number(decoded.id) },
+    where: { id: decoded.id },
     include: { shift: true, division: true },
   })
 }

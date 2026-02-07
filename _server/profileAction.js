@@ -8,7 +8,7 @@ export async function updateProfile(data) {
 
   try {
     const updated = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id: id },
       data: { name, email, divisionId, shiftId },
       include: { shift: true, division: true },
     })
@@ -25,7 +25,7 @@ export async function updateShiftTime(data) {
 
   try {
     const updated = await prisma.shift.update({
-      where: { id: Number(id) },
+      where: { id: id },
       data: { startTime, endTime },
     })
     revalidatePath("/admin/profiles")

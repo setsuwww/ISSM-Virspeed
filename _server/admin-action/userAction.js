@@ -119,7 +119,7 @@ export async function updateUser(data) {
     }
 
     await prisma.user.update({
-      where: { id: parseInt(id) },
+      where: { id: id },
       data: updateData,
     });
 
@@ -145,7 +145,7 @@ export async function deleteUsers(ids) {
 
 export async function getUserWithId(id) {
   return prisma.user.findUnique({
-    where: { id: Number(id) }, select: { id: true, name: true, email: true, role: true },
+    where: { id: id }, select: { id: true, name: true, email: true, role: true },
   });
 }
 
@@ -157,12 +157,12 @@ export async function updateUserWithId(id, data) {
   if (password?.trim()) { dataToUpdate.password = await bcrypt.hash(password, 10) }
 
   return prisma.user.update({
-    where: { id: Number(id) },
+    where: { id: id },
     data: dataToUpdate,
   });
 }
 
 export async function deleteUserById(id) {
-  await prisma.user.delete({ where: { id: Number(id) } });
+  await prisma.user.delete({ where: { id: id } });
   return { success: true };
 }

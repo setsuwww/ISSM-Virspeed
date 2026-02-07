@@ -2,11 +2,9 @@ import { prisma } from "@/_lib/prisma";
 import EditForm from "./EditForm";
 
 export default async function Page({ params }) {
-  const userId = parseInt(params.id);
-
   const [user, shifts, divisions] = await Promise.all([
     prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: params.id },
       select: {
         id: true, name: true, email: true, role: true,
         divisionId: true, shiftId: true,

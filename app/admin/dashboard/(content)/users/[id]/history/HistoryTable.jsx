@@ -4,7 +4,7 @@ import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 
-import { attendancesStyles } from "@/_constants/attendanceConstants";
+import { attendancesStyles } from "@/_constants/themes/attendanceTheme";
 import { shiftDots } from "@/_constants/shiftConstants";
 import { capitalize } from "@/_function/globalFunction";
 

@@ -1,37 +1,18 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import { LogConfirmDialog } from "./LogConfirmDialog"
 import { METHOD_COLORS } from "@/_constants/static/methodColors"
-import { clearAllActivityLogs } from "@/_server/logAction"
-import { Button } from "@/_components/ui/Button"
-
 import LogJSON from "./LogJson"
 
-export default function LogListView({ logs, onClear }) {
-  const [open, setOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-
+export default function LogCard({ logs }) {
   if (!logs.length) {
     return <p className="text-sm text-gray-500">No activity logs</p>
   }
 
-  function handleClearLogs() {
-    startTransition(async () => {
-      await clearAllActivityLogs()
-    })
-  }
-
   return (
     <>
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => setOpen(true)} variant="outline" className="text-red-500 hover:text-red-700">
-          Clear all logs
-        </Button>
-      </div>
-
       <div className="space-y-4">
-        {logs.map(log => { const method = log.method || "POST"
+        {logs.map(log => {
+          const method = log.method || "POST"
           const badgeColor = METHOD_COLORS[method] || "bg-gray-100 text-gray-600 border-gray-300"
 
           return (
@@ -76,12 +57,6 @@ export default function LogListView({ logs, onClear }) {
           )
         })}
       </div>
-
-      <LogConfirmDialog
-        open={open}
-        onOpenChange={setOpen}
-        onConfirm={handleClearLogs}
-      />
     </>
   )
 }

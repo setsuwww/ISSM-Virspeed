@@ -21,7 +21,7 @@ export async function middleware(req) {
     }
     return NextResponse.next();
   }
-  
+
   try {
     const { payload } = await jwtVerify( token,
       new TextEncoder().encode(JWT_SECRET_STRING)
@@ -33,7 +33,7 @@ export async function middleware(req) {
     if (path.startsWith("/coordinator") && payload.role !== "COORDINATOR") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
     if (path.startsWith("/employee") && payload.role !== "EMPLOYEE") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
     if (path.startsWith("/user") && payload.role !== "USER") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
-    
+
 
     return NextResponse.next();
   } catch (err) {

@@ -7,7 +7,7 @@ import { LogAction } from "@prisma/client"
 import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_function/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
-import { safeLog } from "@/_server/logAction"
+import { safeLog } from "@/_server/admin-action/logAction"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
