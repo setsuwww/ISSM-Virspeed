@@ -56,8 +56,8 @@ export default function UserHistoryTable({ history }) {
             </TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Shift</TableHead>
-            <TableHead>Check In - Check Out</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Check In - Check Out</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -98,6 +98,12 @@ export default function UserHistoryTable({ history }) {
               </TableCell>
 
               <TableCell>
+                <Badge className={` ${attendancesStyles[h.status]} bg-white border border-slate-300 shadow-xs text-sm px-2 py-0.5 rounded-sm`}>
+                  {capitalize(h.status)}
+                </Badge>
+              </TableCell>
+
+              <TableCell>
                 <div className="flex items-center gap-3 font-number">
                   {h.checkInTime && (
                     <span className="flex items-center gap-1 text-teal-600">
@@ -124,11 +130,6 @@ export default function UserHistoryTable({ history }) {
                 </div>
               </TableCell>
 
-              <TableCell>
-                <Badge className={attendancesStyles[h.status]}>
-                  {capitalize(h.status)}
-                </Badge>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

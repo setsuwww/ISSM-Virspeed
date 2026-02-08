@@ -30,7 +30,7 @@ export function exportWord(history = []) {
 
   exportWordTemplate({
     title: "Attendance History Report",
-    sheetName: "History",
+    sheetName: "History Sheet",
     columns,
     data,
   });

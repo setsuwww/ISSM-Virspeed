@@ -30,7 +30,7 @@ export function exportPDF(history = []) {
 
   exportPDFTemplate({
     title: "Attendance History Report",
-    sheetName: "History",
+    sheetName: "History Sheet",
     columns,
     data,
   });

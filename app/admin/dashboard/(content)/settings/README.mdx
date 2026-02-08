@@ -1,0 +1,154 @@
+# ⚙️ System Settings
+
+Dokumen ini berisi daftar konfigurasi dan fitur yang direncanakan untuk **Sistem Informasi Manajemen Shift**.
+Seluruh fitur di bawah **belum diimplementasikan** dan berfungsi sebagai _blueprint_ pengembangan.
+
+---
+
+## 🧩 General Settings
+
+Konfigurasi global sistem yang memengaruhi seluruh aplikasi.
+
+### Planned Features
+- Company / Organization name
+- System timezone
+- Date & time format
+- Default shift view (pending / history)
+- Default working hours
+- Enable / disable overtime globally
+- Enable approval workflow
+- Maintenance mode toggle
+
+> Catatan:
+> Pengaturan di tab ini jarang berubah namun berdampak besar ke sistem.
+
+---
+
+## ⏰ Shift Rules
+
+Aturan bisnis terkait shift kerja.
+
+### Planned Features
+- Shift templates (Morning / Evening / Night)
+- Start & end time per shift
+- Maximum shifts per day
+- Minimum rest time between shifts
+- Auto assignment enable/disable
+- Overtime calculation rules
+- Approval requirement for overtime
+- Shift overlap & conflict validation
+
+> Catatan:
+> Ini **rules**, bukan jadwal aktual.
+
+---
+
+## 👥 Users & Roles
+
+Manajemen user dan hak akses.
+
+### Users
+- User list & status (active / suspended)
+- Assign default role
+- Assign department / unit
+- Reset access / revoke session
+
+### Roles & Permissions
+- Role management (Admin, Supervisor, Staff)
+- Permission matrix:
+  - View schedule
+  - Edit schedule
+  - Approve shift
+  - View history
+  - Export data
+  - Access settings
+
+> Catatan:
+> Role ≠ Shift.
+> Role hanya mengatur **authorization**.
+
+---
+
+## 🔔 Notifications
+
+Pengaturan notifikasi otomatis.
+
+### Planned Features
+- Notification channels:
+  - Email
+  - In-app
+- Trigger events:
+  - Shift approved
+  - Shift rejected
+  - Schedule updated
+- Recipient targeting:
+  - Staff
+  - Supervisor
+  - Admin
+- Notification frequency:
+  - Real-time
+  - Daily digest
+  - Weekly recap
+
+> Catatan:
+> Tidak ada pengiriman manual di sini.
+
+---
+
+## 📅 Calendar
+
+Konfigurasi kalender kerja.
+
+### Planned Features
+- Working days configuration
+- Public holidays
+- Custom company holidays
+- Blackout dates (no shift allowed)
+- Week start configuration (Mon / Sun)
+
+> Catatan:
+> Calendar memengaruhi **perhitungan shift & overtime**.
+
+---
+
+## 🔐 Security
+
+Keamanan dan audit sistem.
+
+### Planned Features
+- Session timeout configuration
+- Password policy
+- Multi-factor authentication (future)
+- Allowed IP / device policy
+- Security log retention
+- Export audit logs
+
+> Catatan:
+> Semua perubahan di tab ini **wajib dilog**.
+
+---
+
+## 🔗 Dependency Notes
+
+- Shift Rules bergantung pada Calendar
+- Notifications bergantung pada Users & Roles
+- Security memengaruhi seluruh sistem
+- Schedule (future module) akan bergantung pada:
+  - Shift Rules
+  - Calendar
+  - Users
+
+---
+
+## 🚧 Development Status
+
+- [ ] General
+- [ ] Shift Rules
+- [ ] Users & Roles
+- [ ] Notifications
+- [ ] Calendar
+- [ ] Security
+
+---
+
+_Last updated: draft phase_

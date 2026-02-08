@@ -4,7 +4,7 @@ import { Filter, FolderInput, Trash2 } from "lucide-react";
 
 import { Input } from "@/_components/ui/Input";
 import { Button } from "@/_components/ui/Button";
-import { ButtonGroup } from "@/_components/ui/Button-group";
+// import { ButtonGroup } from "@/_components/ui/Button-group";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 
@@ -23,11 +23,11 @@ export default function HistoryActionHeader({
   return (
     <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
       <div className="flex items-center gap-2 flex-wrap">
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button size="sm" variant="outline">1 Week</Button>
           <Button size="sm" variant="outline">1 Month</Button>
           <Button size="sm" variant="outline">1 Year</Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
 
         <Select value={status} onValueChange={onStatusChange}>
           <SelectTrigger size="sm" className="w-auto">
@@ -96,9 +96,9 @@ export default function HistoryActionHeader({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuLabel>Export As</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => exportPDF(filteredData)}>PDF</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => exportWord(filteredData)}>Word</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => exportExcel(filteredData)}>Excel</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportPDF(filteredData)} className="focus:text-red-500">PDF</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportWord(filteredData)} className="focus:text-blue-500">Word</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)} className="focus:text-green-500">Excel</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
