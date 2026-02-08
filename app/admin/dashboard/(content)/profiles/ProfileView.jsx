@@ -90,7 +90,7 @@ export function ProfileView({ user }) {
 
         <CardContent className="space-y-6 px-6">
           {isEditing && (
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg grid max-w-md gap-4">
+            <div className="animate-bouncy bg-blue-50 border border-blue-200 p-4 rounded-lg grid max-w-md gap-4">
               <h1 className="text-lg text-blue-500 font-bold">Edit account</h1>
               <div className="space-y-2">
                 <Label>Full name</Label>

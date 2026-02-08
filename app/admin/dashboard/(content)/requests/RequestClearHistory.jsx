@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react"
 import { useToast } from "@/_context/Toast-Provider"
 import { useRouter, useSearchParams } from "next/navigation"
 import { clearHistory } from "@/_server/admin-action/requestAction"
+import { capitalize } from "@/_function/globalFunction"
 
 export function RequestClearHistory({ type, initialMode }) {
   const router = useRouter()
@@ -61,7 +62,7 @@ export function RequestClearHistory({ type, initialMode }) {
       </Button>
 
       <Button onClick={toggleMode} variant="outline" className="mb-2">
-        Switch Mode <span className={`px-2 rounded-lg ${modeClass[mode]}`}>{mode}</span>
+        Mode : <span className={`px-1.5 ${modeClass[mode]}`}>{capitalize(mode)}</span>
       </Button>
     </div>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useMemo } from "react"
-import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye } from "lucide-react"
+import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye, ChevronRight } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -115,14 +115,14 @@ export default function AttendancesTableClient() {
                   </TableCell>
 
                   <TableCell>
-                    <div className="font-number text-sm text-slate-600">
+                    <div className="font-number text-sm text-slate-600 tracking-tight">
                       {safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} -{" "}
                       {safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <Badge className={`${attendancesStyles[att.status]} bg-white border border-slate-200 text-sm px-2 py-0.5 rounded-sm`}>
+                    <Badge className={`${attendancesStyles[att.status]} bg-white border border-slate-300 shadow-xs text-sm px-2 py-0.5 rounded-sm`}>
                       {capitalize(att.status)}
                       {att.status === "PERMISSION" && att.approval === "PENDING" && (
                         <ChevronDown size={30} />
@@ -130,7 +130,16 @@ export default function AttendancesTableClient() {
                     </Badge>
                   </TableCell>
 
-                  <TableCell>{wordsLimit(att.reason, 5)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      {wordsLimit(att.reason, 5)}
+                      {att.status === "PERMISSION" && (
+                        <Link href="/admin/dashboard/requests" className="ml-1">
+                          <ChevronRight className="w-5 h-5 text-blue-500"/>
+                        </Link>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
 
 
