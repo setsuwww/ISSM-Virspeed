@@ -60,7 +60,6 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
                 selected={selected}
                 toggleSelect={toggleSelect}
                 onHistory={() => onHistory(user.id)}
-                onSwitch={onSwitch}
                 onEdit={() => onEdit(user.id)}
                 onDelete={() => onDelete(user.id)}
               />

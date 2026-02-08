@@ -16,7 +16,7 @@ export default function ProfileTabs() {
 
   return (
     <div className="mb-6">
-      <div className="inline-flex rounded-lg border bg-slate-200 p-1">
+      <div className="inline-flex rounded-lg border bg-slate-200/70 p-1">
         {tabs.map(tab => {
           const active = pathname === tab.href
 

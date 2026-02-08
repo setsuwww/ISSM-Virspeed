@@ -3,7 +3,6 @@
 import React, { useTransition } from "react"
 import { LogOut, Inbox, Home } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import useSWR from "swr"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
@@ -12,7 +11,6 @@ import { LogoutAuthAction } from "../../auth/login/action"
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export const DashboardHeader = React.memo(function DashboardHeader({ title, subtitle, useColor = false }) {
-  const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
   const { data } = useSWR("/api/system-config/admin-notification",
@@ -26,20 +24,6 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
   );
 
   const hasNotifications = data?.hasNotifications || false
-
-  const segments = pathname.split("/").filter(Boolean)
-  const formatLabel = (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
-  const visibleSegments = segments.slice(0, 3)
-
-  const breadcrumbMap = {
-    dashboard: "Dashboard",
-    employees: "Employees",
-    schedule: "Schedule",
-    shift: "Shift",
-    division: "Division",
-    users: "Users"
-  }
-
 
   const handleLogout = () => {
     startTransition(async () => {
@@ -59,29 +43,6 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
       </div>
 
       <div className="flex items-center space-x-4">
-        <nav className="flex items-center text-sm text-slate-500 gap-x-2">
-          <Home size={16} strokeWidth={3} />
-
-          {visibleSegments.map((segment, index) => {
-            const isLast = index === visibleSegments.length - 1
-            const href = "/admin/" + segments.slice(0, index + 1).join("/")
-            const label = breadcrumbMap[segment] ?? formatLabel(segment)
-
-            return (
-              <React.Fragment key={segment}>
-                {!isLast ? (
-                  <Link href={href} className="font-semibold text-slate-700 hover:text-sky-600">
-                    {label}
-                  </Link>
-                ) : (
-                  <span className="text-slate-500">{label}</span>
-                )}
-                {!isLast && <span>/</span>}
-              </React.Fragment>
-            )
-          })}
-        </nav>
-
         <div className="flex items-center gap-x-2">
           <Tooltip>
             <Link href="/admin/dashboard/request" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
