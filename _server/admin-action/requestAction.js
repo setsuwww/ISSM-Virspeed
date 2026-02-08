@@ -17,7 +17,7 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
     },
   });
 
-  revalidatePath("/admin/dashboard/request");
+  revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
@@ -37,7 +37,7 @@ export async function updateShiftChangeRequestStatus(id, newStatus, adminReason 
     },
   });
 
-  revalidatePath("/admin/dashboard/request");
+  revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
@@ -58,7 +58,7 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
     },
   });
 
-  revalidatePath("/admin/dashboard/request");
+  revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
@@ -97,8 +97,38 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
     });
   }
 
-  revalidatePath("/admin/dashboard/request");
+  revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");
 
   return { success: true };
+}
+
+export async function clearHistory(type) {
+  switch (type) {
+    case "shift":
+      await prisma.shiftChangeRequest.deleteMany({
+        where: { status: { in: ["APPROVED", "REJECTED"] } },
+      })
+      break
+    case "leave":
+      await prisma.leaveRequest.deleteMany({
+        where: { status: { in: ["APPROVED", "REJECTED"] } },
+      })
+      break
+    case "early":
+      await prisma.earlyCheckoutRequest.deleteMany({
+        where: { status: { in: ["APPROVED", "REJECTED"] } },
+      })
+      break
+    case "permission":
+      // sesuaikan jika ada model PermissionRequest
+      await prisma.permissionRequest?.deleteMany({
+        where: { status: { in: ["APPROVED", "REJECTED"] } },
+      })
+      break
+    default:
+      throw new Error("Invalid request type")
+  }
+
+  return { success: true, message: "History cleared successfully" }
 }

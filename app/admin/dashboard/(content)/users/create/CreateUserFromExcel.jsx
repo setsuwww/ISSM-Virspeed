@@ -9,6 +9,7 @@ import { bulkCreateUser } from "@/_server/admin-action/userAction"
 import { Button } from "@/_components/ui/Button"
 import { File, FileXls, Download } from "phosphor-react"
 import { Label } from "@/_components/ui/Label"
+import { X } from "lucide-react"
 
 export function CreateUserFromExcel({ onImported }) {
   const { addToast } = useToast()
@@ -149,9 +150,9 @@ export function CreateUserFromExcel({ onImported }) {
               <button
                 type="button"
                 onClick={removeFile}
-                className="animate-bouncy absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white group-hover:flex"
+                className="animate-bouncy absolute -top-2 -right-2 hidden p-1 items-center justify-center rounded-full bg-white border border-slate-300 text-red-500 hover:bg-slate-100 hover:text-red-700 group-hover:flex"
               >
-                ×
+                <X className="w-3 h-3" strokeWidth={2} />
               </button>
             )}
           </div>

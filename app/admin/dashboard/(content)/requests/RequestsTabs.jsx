@@ -1,18 +1,13 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
-import { Button } from "@/_components/ui/Button"
 import RequestsDataTable from "./RequestsTable"
 
 export default function RequestsTabs({
   permissionRequests = [], changeShiftRequests = [], earlyCheckoutRequests = [], leaveRequests = [],
   mode,
 }) {
-  const router = useRouter()
   const isHistory = mode === "history"
-
-  const toggleMode = () => { router.push(`?mode=${isHistory ? "pending" : "history"}`) }
 
   const tabs = [
     { key: "permission", label: "Permission", data: permissionRequests },
@@ -39,13 +34,6 @@ export default function RequestsTabs({
             </TabsTrigger>
           ))}
         </TabsList>
-
-        <Button variant="outline" onClick={toggleMode}>
-          <span className="font-semibold text-slate-600">Request:</span>
-          <span className="text-slate-400">
-            {isHistory ? "Finished" : "Pending"}
-          </span>
-        </Button>
       </div>
 
       {tabs.map((t) => (

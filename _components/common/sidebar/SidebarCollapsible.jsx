@@ -28,7 +28,7 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
   }
 
   return (
-    <div className="flex flex-col px-2">
+    <div className="flex flex-col px-0.5">
       <button onClick={handleClick}
         className={clsx("group w-full flex items-center transition-all duration-200 rounded-lg",
           minimized ? "justify-center h-12 w-12 mx-auto" : "justify-between py-1.5 pl-1.5 pr-2.5",

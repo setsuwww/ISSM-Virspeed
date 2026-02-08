@@ -20,25 +20,9 @@ export default function RequestsDataTable({ type, items, isHistory }) {
       columns: ["Requested By", "Shift", "Period", "Reason", "Send At", "Status"],
     },
   }
-
   const cfg = config[type];
-
-  if (!cfg) {
-    return (
-      <div className="py-12 text-center text-slate-400">
-        Invalid request type
-      </div>
-    );
-  }
-
-  if (!items || items.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-slate-400">{cfg.empty}</p>
-      </div>
-    );
-  }
-
+  if (!cfg) { return (<div className="py-12 text-center text-slate-400">Invalid request type </div>)}
+  if (!items || items.length === 0) { return ( <div className="flex items-center justify-center py-12"> <p className="text-slate-400">{cfg.empty}</p></div> );}
 
   return (
     <Table>

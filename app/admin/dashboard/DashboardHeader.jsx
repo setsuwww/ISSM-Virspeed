@@ -45,7 +45,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
       <div className="flex items-center space-x-4">
         <div className="flex items-center gap-x-2">
           <Tooltip>
-            <Link href="/admin/dashboard/request" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
+            <Link href="/admin/dashboard/requests" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
               <TooltipTrigger><Inbox size={20} strokeWidth={2} /></TooltipTrigger>
               <TooltipContent>
                 <p>Request Inbox</p>

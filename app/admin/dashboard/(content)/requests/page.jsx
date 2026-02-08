@@ -1,3 +1,4 @@
+// app/admin/dashboard/(content)/requests/page.jsx
 export const revalidate = 0
 export const runtime = "nodejs"
 
@@ -5,6 +6,7 @@ import RequestsTabs from "./RequestsTabs"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
+import { RequestClearHistory } from "./RequestClearHistory"
 
 import {
   fetchShiftRequests,
@@ -21,12 +23,7 @@ import { mapPermission } from './service/mapping/permission.map'
 async function getRequests(mode = "pending") {
   const isHistory = mode === "history"
 
-  const [
-    shift,
-    attendance,
-    earlyCheckout,
-    leave
-  ] = await Promise.all([
+  const [ shift, attendance, earlyCheckout, leave ] = await Promise.all([
     fetchShiftRequests(isHistory),
     fetchPermissionRequests(isHistory),
     fetchEarlyCheckoutRequests(isHistory),
@@ -42,7 +39,8 @@ async function getRequests(mode = "pending") {
 }
 
 export default async function Page({ searchParams }) {
-  const mode = searchParams?.mode ?? "pending"
+  const params = await searchParams
+  const mode = params?.mode ?? "pending"
 
   const { shift, attendance, earlyCheckout, leave } = await getRequests(mode)
 
@@ -50,20 +48,23 @@ export default async function Page({ searchParams }) {
     <section>
       <DashboardHeader
         title="Requests"
-        subtitle={
-          mode === "history"
-            ? "All requests history"
-            : "Manage pending requests by type"
+        subtitle={mode === "history"
+          ? "All requests history"
+          : "Manage pending requests by type"
         }
       />
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation
-            heading={mode === "history" ? "Request History" : "Pending Requests"}
-            subheading="Switch between request types"
-            show={false}
-          />
+          <div className="flex items-center justify-between w-full">
+            <ContentInformation
+              heading={mode === "history" ? "Request History" : "Pending Requests"}
+              subheading="Switch between request types or clear history"
+              show={false}
+            />
+
+            <RequestClearHistory type="shift" initialMode={mode} />
+          </div>
         </ContentForm.Header>
 
         <ContentForm.Body>

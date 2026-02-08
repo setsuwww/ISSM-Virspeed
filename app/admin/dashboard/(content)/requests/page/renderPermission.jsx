@@ -52,7 +52,7 @@ export default function RenderPermission({ r }) {
       <TableCell>
         <RequestStatusChangerToggle
           id={r.id}
-          status={r.approval ?? "PENDING"}
+          status={r.status}
           type="PERMISSION"
           disabled={false}
         />

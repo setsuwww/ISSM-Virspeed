@@ -1,6 +1,6 @@
-import { LayoutDashboard, Users, Building2, Clock, User } from "lucide-react"
+import { LayoutDashboard, Users, Building2, Clock, User, Cog } from "lucide-react"
 
-export const iconMap = { LayoutDashboard, Users, Building2, Clock, User, }
+export const iconMap = { LayoutDashboard, Users, Building2, Clock, User, Cog }
 
 export const adminMenu = [
   {
@@ -44,5 +44,11 @@ export const adminMenu = [
     label: "Profile",
     href: "/admin/dashboard/profiles",
     icon: "User"
+  },
+  {
+    type: "link",
+    label: "Setting",
+    href: "/admin/dashboard/settings",
+    icon: "Cog"
   }
 ]
