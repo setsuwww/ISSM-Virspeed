@@ -9,7 +9,7 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 import { Button } from "@/_components/ui/Button";
 import EmptyStates from "@/_components/common/EmptyStates";
 
-import { roleStyles } from "@/_constants/roleConstants";
+import { roleStyles } from "@/_constants/userConstants";
 import { capitalize } from "@/_function/globalFunction";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 

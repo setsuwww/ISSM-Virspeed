@@ -1,7 +1,7 @@
 "use client"
 
 import clsx from "clsx"
-import { profilesRoleStyles } from "@/_constants/roleConstants"
+import { profilesRoleStyles } from "@/_constants/themes/userTheme"
 import { ChevronDown, CircleUserRound } from "lucide-react"
 import { useRouter } from "next/navigation"
 

@@ -13,7 +13,7 @@ import { Button } from "@/_components/ui/Button"
 import { Badge } from "@/_components/ui/Badge"
 import { Label } from "@/_components/ui/Label"
 
-import { roleStyles } from "@/_constants/roleConstants"
+import { roleStyles } from "@/_constants/userConstants"
 import { capitalize, minutesToTime } from "@/_function/globalFunction"
 import { format } from "date-fns"
 

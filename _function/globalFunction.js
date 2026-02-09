@@ -52,3 +52,5 @@ export function minutesToTime(min) {
 }
 
 export const getInitial = (name) => name?.charAt(0)?.toUpperCase() || "?";
+
+export const expiresIn12Hours = () => new Date(Date.now() + 12 * 60 * 60 * 1000)

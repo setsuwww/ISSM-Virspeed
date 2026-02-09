@@ -12,7 +12,7 @@ export const shiftIcons = {
   EVENING: <Moon className="w-4 h-4 text-purple-500" />,
 };
 
-function PingDot({ color }) {
+export function PingDot({ color }) {
   return (
     <span className="relative flex h-2 w-2">
       <span
@@ -30,5 +30,3 @@ export const shiftDots = {
   AFTERNOON: (<PingDot color="bg-orange-300" />),
   EVENING: (<PingDot color="bg-purple-300" />),
 }
-
-export const defaultShifts = ["MORNING", "AFTERNOON", "EVENING"];

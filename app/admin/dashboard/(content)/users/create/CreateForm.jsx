@@ -17,7 +17,7 @@ import { Label } from "@/_components/ui/Label"
 
 import { createUser } from "@/_server/admin-action/userAction.js"
 import { capitalize, minutesToTime } from "@/_function/globalFunction"
-import { roleOptions } from "@/_constants/roleConstants"
+import { roleOptions } from "@/_constants/userConstants"
 import { Loader } from 'lucide-react';
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
 
