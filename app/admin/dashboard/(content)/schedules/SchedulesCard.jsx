@@ -11,7 +11,7 @@ import SchedulesActionHeader from "./SchedulesActionHeader";
 import ScheduleUsersDialog from "./SchedulesUsersDialog";
 import { useHandleSchedules } from "@/_client/handlers/admin/useHandleSchedules";
 import { capitalize } from "@/_function/globalFunction";
-import { frequencyStyles } from "@/_constants/scheduleConstants";
+import { frequencyStyles } from "@/_constants/themes/scheduleTheme";
 import EmptyStates from "@/_components/common/EmptyStates";
 import { useSchedulesHooks } from "@/_client/hooks/admin/useSchedulesHooks";
 
