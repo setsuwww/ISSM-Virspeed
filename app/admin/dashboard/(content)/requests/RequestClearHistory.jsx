@@ -57,7 +57,7 @@ export function RequestClearHistory({ type, initialMode }) {
         variant="outline"
         className="text-red-500 hover:text-red-700 mb-2"
       >
-        <Trash2 className="w-6 h-6 mr-2" />
+        <Trash2 className="w-6 h-6" />
         {isPending ? "Clearing..." : "Clear all"}
       </Button>
 
