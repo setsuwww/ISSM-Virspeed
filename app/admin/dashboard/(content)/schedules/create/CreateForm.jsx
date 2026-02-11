@@ -50,7 +50,7 @@ export default function CreateForm({ users, shifts }) {
           resetForm()
           router.push("/admin/dashboard/schedules")
         } else { addToast("Schedule failed created", { type: "error" })}
-      } catch (error) { addToast("Schedule failed created", { type: "error" })} 
+      } catch (error) { addToast("Schedule failed created", { type: "error" })}
       finally { setLoading(false)}
     },
     [form, events, setLoading, addToast, resetForm, router]
@@ -105,15 +105,16 @@ export default function CreateForm({ users, shifts }) {
 
             <div className="flex items-center justify-between pt-6 border-t border-slate-200">
               <div className="text-sm text-slate-600">
-                {totalAssignedUsers()} users assigned • {events.length} dates scheduled
+                <span className="bg-sky-100 text-sky-800 px-3 py-1 rounded-xl">{totalAssignedUsers()} Users assigned</span> •{" "}
+                <span className="ml-1 bg-green-100 text-green-800 px-3 py-1 rounded-xl">{events.length} Dates scheduled</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button type="button" variant="outline" disabled={loading}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={loading}>
-                  {loading 
-                    ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) 
+                  {loading
+                    ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>)
                     : ("Create Schedule")
                   }
                 </Button>

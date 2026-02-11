@@ -63,7 +63,7 @@ function Card({
   children,
 }) {
   return (
-    <div className="rounded-xl border bg-white p-5 shadow-sm space-y-3">
+    <div className="rounded-xl border border-slate-400/50 ring ring-gray-300/50 bg-white/50 p-4 shadow-xs space-y-3">
       <div className="flex items-center gap-2 text-gray-800 font-semibold">
         <div className={iconParentUI}>
           {icon}
@@ -77,7 +77,7 @@ function Card({
 
 function InfoCard({ label, value }) {
   return (
-    <div className="rounded-xl border bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-400/50 ring ring-gray-300/50 bg-white/50 p-4 shadow-xs">
       <p className="text-xs uppercase tracking-wide text-gray-500">
         {label}
       </p>

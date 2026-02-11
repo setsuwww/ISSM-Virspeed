@@ -5,12 +5,11 @@ import { useUserStore } from "@/_stores/useUserStore"
 import { updateProfile } from "@/_server/profileAction"
 import { toast } from "sonner"
 
-import { CircleUserRound, LogOut, Trash2, Save, Pencil, Building2, CalendarDays, Calendar } from "lucide-react"
+import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, Calendar, SquarePen } from "lucide-react"
 
 import { Card, CardHeader, CardContent, CardFooter } from "@/_components/ui/Card"
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
-import { Badge } from "@/_components/ui/Badge"
 import { Label } from "@/_components/ui/Label"
 
 import { profilesRoleStyles, roleStyles } from "@/_constants/themes/userTheme"
@@ -80,11 +79,12 @@ export function ProfileView({ user }) {
           </div>
 
           <Button
-            size="icon"
+
             variant="ghost"
             onClick={() => setIsEditing((v) => !v)}
           >
-            <Pencil className="w-4 h-4" />
+            <SquarePen className="w-3 h-3" />
+            Edit Profile
           </Button>
         </CardHeader>
 
@@ -147,20 +147,20 @@ export function ProfileView({ user }) {
           </div>
 
           {user.shift && (
-            <div className="mt-4">
-              <div className="flex items-center gap-2 mb-2 mt-6">
+            <div className="bg-gray-200/40 p-4">
+              <div className="flex items-center gap-2 mb-2">
                 <ContentInformation heading="Shift Information" subheading="See your shift information, your start time & end time here" />
               </div>
 
               <p className="text-sm text-slate-700">
-                Shift : {user.shift.name ?? user.shift.type}
+                Shift : {user.shift.name} ({user.shift.type})
               </p>
               <p className="text-sm mt-1">
-                <span className="font-medium text-emerald-500">
+                <span className="font-medium">
                   {minutesToTime(user.shift.startTime)}
                 </span>
                 {" – "}
-                <span className="font-medium text-rose-500">
+                <span className="font-medium">
                   {minutesToTime(user.shift.endTime)}
                 </span>
               </p>

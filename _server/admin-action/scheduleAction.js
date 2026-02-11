@@ -10,7 +10,7 @@ export async function createSchedule(formData) {
 
     if (!title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
 
-    const validUsers = await prisma.user.findMany({ where: { id: { in: userIds.map(Number) } }})
+    const validUsers = await prisma.user.findMany({ where: { id: { in: userIds } }})
 
     if (validUsers.length !== userIds.length) { const missing = userIds.filter((id) => !validUsers.some((u) => u.id === Number(id)))
       throw new Error(`Some users not found: ${missing.join(", ")}`)
@@ -44,7 +44,7 @@ export async function updateSchedule(data) {
   const { id, title, description, frequency, startDate, startTime, endDate, endTime, userIds } = data
   if (!id || !title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
 
-  const validUsers = await prisma.user.findMany({ where: { id: { in: userIds.map(Number) } }})
+  const validUsers = await prisma.user.findMany({ where: { id: { in: userIds } }})
 
   const updated = await prisma.schedule.update({
     where: { id: Number(id) },
@@ -91,7 +91,7 @@ export async function deleteSchedules(ids = []) {
 
     revalidatePath("/admin/dashboard/schedules")
     return { success: true, message: "Schedules deleted successfully" }
-  } 
+  }
   catch (error) { return { success: false, message: "Failed to delete schedules" }}
 }
 

@@ -46,7 +46,7 @@ export default function EditForm({ schedule, users }) {
 
     setLoading(true)
     try { const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
-      
+
       const payload = {
         id: schedule.id, title: form.title, description: form.description, frequency: form.frequency,
         startDate: events[0]?.startDate ?? null, endDate: events[0]?.endDate ?? null,
@@ -57,8 +57,8 @@ export default function EditForm({ schedule, users }) {
       await updateSchedule(payload)
       addToast("Schedule updated successfully", { type: "success" })
       router.push("/admin/dashboard/schedules")
-    } 
-    catch (error) {addToast("Schedule failed to update", { type: "error" })} 
+    }
+    catch (error) {addToast("Schedule failed to update", { type: "error" })}
     finally {setLoading(false)}
   }
 
@@ -68,7 +68,7 @@ export default function EditForm({ schedule, users }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Edit Schedule Form" subheading="Modify existing schedule and assigned users" 
+          <ContentInformation heading="Edit Schedule Form" subheading="Modify existing schedule and assigned users"
             show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/schedules"
           />
         </ContentForm.Header>
@@ -79,7 +79,7 @@ export default function EditForm({ schedule, users }) {
               <div className="space-y-2 max-w-sm">
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" value={form.title} onChange={(e) => setFormField("title", e.target.value)}
-                  placeholder="Enter schedule title" required 
+                  placeholder="Enter schedule title" required
                 />
               </div>
 
@@ -111,13 +111,13 @@ export default function EditForm({ schedule, users }) {
 
             <div className="flex items-center justify-between pt-6 border-t border-slate-200">
               <div className="text-sm text-slate-600">
-                {events.reduce((acc, e) => acc + e.users.length, 0)} users assigned •{" "}
-                {events.length} dates scheduled
+                <span className="bg-sky-100 text-sky-800 px-3 py-1 rounded-xl">{events.reduce((acc, e) => acc + e.users.length, 0)} Users assigned</span> •{" "}
+                <span className="ml-1 bg-green-100 text-green-800 px-3 py-1 rounded-xl">{events.length} Dates scheduled</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button type="submit" disabled={loading}>
-                  {loading 
-                    ? (<><Loader className="w-4 h-4 animate-spin" />Updating...</>) 
+                  {loading
+                    ? (<><Loader className="w-4 h-4 animate-spin" />Updating...</>)
                     : ("Update Schedule")
                   }
                 </Button>

@@ -1,3 +1,4 @@
+import { safeFormat } from "@/_function/globalFunction";
 import { exportExcelTemplate } from "../utils/ExportExcelTemplate"
 
 export const exportExcel = (attendances) => {
@@ -20,8 +21,8 @@ export const exportExcel = (attendances) => {
     name: att.user?.name,
     email: att.user?.email,
     shift: att.shift?.name ?? "-",
-    checkIn: att.checkInTime || "-",
-    checkOut: att.checkOutTime || "-",
+    checkIn: safeFormat(att.checkInTime, "hh:mm a") || "-",
+    checkOut: safeFormat(att.checkOutTime, "hh:mm a") || "-",
     status: att.status,
     reason: att.reason ?? "-",
   }));

@@ -10,8 +10,8 @@ export default async function Page({ params }) {
 
   const schedule = await prisma.schedule.findFirst({
     where: user.role === "ADMIN"
-      ? { id: id }
-      : { id: id, users: { some: { userId: user.id } } },
+      ? { id: Number(id) }
+      : { id: Number(id), users: { some: { userId: user.id } } },
     include: {
       users: { include: { user: true } },
     },
