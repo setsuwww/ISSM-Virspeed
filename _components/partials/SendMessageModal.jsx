@@ -87,7 +87,7 @@ export function SendMessageModal({ open, onClose }) {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search users by name or email..."
+            placeholder="Search users..."
             className="pl-9"
             typeSearch
           />
@@ -150,9 +150,9 @@ export function SendMessageModal({ open, onClose }) {
               {selectedUsers.map(user => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-sm shadow-xs"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-300 text-sm shadow-xs"
                 >
-                  <span>{user.email}</span>
+                  <span className="text-black">{user.email}</span>
                   <button
                     onClick={() => removeUser(user.id)}
                     className="text-slate-900 hover:text-rose-500"
