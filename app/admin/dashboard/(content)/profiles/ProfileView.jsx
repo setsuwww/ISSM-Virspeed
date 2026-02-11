@@ -5,7 +5,7 @@ import { useUserStore } from "@/_stores/useUserStore"
 import { updateProfile } from "@/_server/profileAction"
 import { toast } from "sonner"
 
-import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, Calendar, SquarePen } from "lucide-react"
+import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, Calendar, SquarePen, InfoIcon } from "lucide-react"
 
 import { Card, CardHeader, CardContent, CardFooter } from "@/_components/ui/Card"
 import { Input } from "@/_components/ui/Input"
@@ -13,10 +13,11 @@ import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
 
 import { profilesRoleStyles, roleStyles } from "@/_constants/themes/userTheme"
-import { capitalize, minutesToTime } from "@/_function/globalFunction"
+import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunction"
 import { format } from "date-fns"
 import AppInformation from "./AppInformation"
 import { ContentInformation } from "@/_components/common/ContentInformation"
+import Link from "next/link"
 
 export function ProfileView({ user }) {
   const { setUser } = useUserStore()
@@ -147,22 +148,27 @@ export function ProfileView({ user }) {
           </div>
 
           {user.shift && (
-            <div className="bg-gray-200/40 p-4">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="bg-gray-200/40 rounded-lg p-4">
+              <div className="flex items-center gap-2">
                 <ContentInformation heading="Shift Information" subheading="See your shift information, your start time & end time here" />
               </div>
 
-              <p className="text-sm text-slate-700">
+              <p className="text-sm text-slate-500 mt-4">
                 Shift : {user.shift.name} ({user.shift.type})
               </p>
-              <p className="text-sm mt-1">
+              <p className="text-sm mt-1 text-slate-900">
                 <span className="font-medium">
-                  {minutesToTime(user.shift.startTime)}
+                  Time In : {minutesToTime(user.shift.startTime)}
                 </span>
                 {" – "}
                 <span className="font-medium">
-                  {minutesToTime(user.shift.endTime)}
+                  Time Out : {minutesToTime(user.shift.endTime)}
                 </span>
+              </p>
+
+              <p className="text-sm flex flex-col mt-4 space-y-1">
+                <span>Assigned At :</span>
+                <span className="text-slate-900">{safeFormat(user.createdAt, "dd MMMM yyyy")}</span>
               </p>
             </div>
           )}
@@ -189,8 +195,8 @@ export function ProfileView({ user }) {
 function Info({ label, icon: Icon, children }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="bg-slate-200 p-2 rounded-full">
-        <Icon className="w-4 h-4 text-slate-400" />
+      <div className="bg-slate-200/50 p-2 rounded-full">
+        <Icon className="w-4 h-4 text-slate-500" />
       </div>
       <div>
         <p className="text-xs text-slate-500">{label}</p>
