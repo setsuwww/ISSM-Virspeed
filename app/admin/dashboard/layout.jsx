@@ -14,6 +14,7 @@ import SidebarBase from '@/_components/common/sidebar/SidebarBase';
 import { adminMenu } from '@/_components/common/sidebar/content/admin.menu';
 
 import { getCurrentUser } from '@/_lib/auth';
+import PageTransition from './page-transition';
 
 export default async function DashboardLayout({ children }) {
 
@@ -27,7 +28,11 @@ export default async function DashboardLayout({ children }) {
         <main className="flex-1 overflow-y-auto px-8 py-3.5 bg-slate-100">
           <ReactQueryProvider>
             <ToastProvider><ConfirmDialog />
-              {children}
+
+              <PageTransition>
+                {children}
+              </PageTransition>
+
             </ToastProvider>
           </ReactQueryProvider>
         </main>

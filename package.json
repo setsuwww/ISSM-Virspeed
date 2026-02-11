@@ -41,6 +41,7 @@
     "docx": "^9.5.1",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.34.0",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
