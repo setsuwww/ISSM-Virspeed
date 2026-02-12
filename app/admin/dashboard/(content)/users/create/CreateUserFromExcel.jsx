@@ -105,7 +105,7 @@ export function CreateUserFromExcel({ onImported }) {
 
   return (
     <>
-      <Label className="mb-3">Excel File <span className="font-light text-slate-400">(Bulk create users)</span></Label>
+      <Label className="mb-3">Excel File <span className="font-light text-slate-400">(Bulk create users)</span><span className="text-xs bg-teal-100 px-2 text-teal-600 rounded-full">IMPORT</span></Label>
 
       <div
         onDragOver={(e) => {
@@ -114,7 +114,7 @@ export function CreateUserFromExcel({ onImported }) {
         }}
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
-        className={`rounded-xl border border-dashed p-8 transition mb-2
+        className={`bg-slate-50/50 rounded-xl border border-dashed p-8 transition mb-2
           ${dragActive
             ? "border-emerald-500 bg-emerald-500/5"
             : "border-slate-300"}`}

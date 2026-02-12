@@ -1,14 +1,13 @@
 "use server";
 
 import { prisma } from "@/_lib/prisma";
-import { revalidatePath } from "next/cache"
-import dayjs from "@/_lib/day";
+import { revalidatePath } from "next/cache";
 
 export async function createShift(payload) {
-  const { type, name, startTime, endTime, divisionId } = payload
+  const { type, name, startTime, endTime, divisionId } = payload;
 
   if (!type || !name || !divisionId) {
-    return { error: "Invalid payload" }
+    return { error: "Invalid payload" };
   }
 
   await prisma.shift.create({
@@ -19,22 +18,51 @@ export async function createShift(payload) {
       endTime,
       divisionId,
     },
-  })
+  });
 
-  revalidatePath("/admin/dashboard/shifts")
-  return { success: true }
+  revalidatePath("/admin/dashboard/shifts");
+  return { success: true };
 }
 
-export async function updateShift(id, payload) {
-  if (!id) return { error: "Shift ID required" }
+export async function updateShift(
+  id,
+  payload
+) {
+  if (!id) return { error: "Shift ID required" };
 
   await prisma.shift.update({
     where: { id },
     data: payload,
-  })
+  });
 
-  revalidatePath("/admin/dashboard/shifts")
-  return { success: true }
+  revalidatePath("/admin/dashboard/shifts");
+  return { success: true };
+}
+
+export async function deleteShift(id) {
+  if (!id) return { error: "Shift ID required" };
+
+  await prisma.shift.delete({
+    where: { id },
+  });
+
+  revalidatePath("/admin/dashboard/shifts");
+  return { success: true };
+}
+
+export async function deleteManyShifts(ids) {
+  if (!ids || ids.length === 0) {
+    return { error: "No IDs provided" };
+  }
+
+  await prisma.shift.deleteMany({
+    where: {
+      id: { in: ids },
+    },
+  });
+
+  revalidatePath("/admin/dashboard/shifts");
+  return { success: true };
 }
 
 export async function updateShiftChangeStatus(id, action, actorRole) {
@@ -65,7 +93,7 @@ export async function resetExpiredShiftChanges(todayOverride = null) {
   const todayStart = (todayOverride || dayjs()).startOf("day").toDate();
 
   const expiredRequests = await prisma.shiftChangeRequest.findMany({
-    where: { status: "APPROVED", endDate: { lt: todayStart }},
+    where: { status: "APPROVED", endDate: { lt: todayStart } },
     select: {
       id: true, userId: true,
       targetUserId: true, oldShiftId: true, targetShiftId: true,

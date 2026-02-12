@@ -2,22 +2,35 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useTransition } from "react";
 import { UserCircle } from "phosphor-react";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/_components/ui/Table";
+
 import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 
 import { capitalize } from "@/_function/globalFunction";
-import { apiFetchData } from "@/_lib/fetch";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
+
+import {
+  deleteShift,
+  deleteManyShifts,
+} from "@/_server/admin-action/shiftAction";
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
 
 export function ShiftsView({ data }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [search, setSearch] = useState("");
@@ -27,7 +40,6 @@ export function ShiftsView({ data }) {
   const filteredData = useMemo(() => {
     let result = data;
 
-    // FILTER
     if (search) {
       const q = search.toLowerCase();
       result = result.filter((s) =>
@@ -39,7 +51,6 @@ export function ShiftsView({ data }) {
       result = result.filter((s) => s.type === shiftFilter);
     }
 
-    // SORT (IMPORTANT)
     const sorted = [...result];
 
     if (sortFilter === "A-Z") {
@@ -53,49 +64,50 @@ export function ShiftsView({ data }) {
     return sorted;
   }, [data, search, shiftFilter, sortFilter]);
 
-
   const toggleSelect = useCallback((id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
     );
   }, []);
 
-  const toggleSelectAll = useCallback((checked) => {
-    setSelectedIds(checked ? filteredData.map((s) => s.id) : []);
-  }, [filteredData]);
+  const toggleSelectAll = useCallback(
+    (checked) => {
+      setSelectedIds(
+        checked ? filteredData.map((s) => s.id) : []
+      );
+    },
+    [filteredData]
+  );
 
   const isAllSelected =
     filteredData.length > 0 &&
     selectedIds.length === filteredData.length;
 
-  const handleDelete = async (id) => {
-    await apiFetchData({
-      url: `/shifts/${id}`,
-      method: "delete",
-      successMessage: "Shift deleted",
-      errorMessage: "Failed to delete shift",
+  const handleDelete = (id) => {
+    startTransition(async () => {
+      await deleteShift(id);
+      router.refresh();
     });
-    router.refresh();
   };
 
-  const handleDeleteSelected = async () => {
-    await Promise.all(
-      selectedIds.map((id) =>
-        apiFetchData({ url: `/shifts/${id}`, method: "delete" })
-      )
-    );
-    setSelectedIds([]);
-    router.refresh();
+  const handleDeleteSelected = () => {
+    startTransition(async () => {
+      await deleteManyShifts(selectedIds);
+      setSelectedIds([]);
+      router.refresh();
+    });
   };
 
-  const handleDeleteAll = async () => {
-    await Promise.all(
-      filteredData.map((s) =>
-        apiFetchData({ url: `/shifts/${s.id}`, method: "delete" })
-      )
-    );
-    setSelectedIds([]);
-    router.refresh();
+  const handleDeleteAll = () => {
+    startTransition(async () => {
+      await deleteManyShifts(
+        filteredData.map((s) => s.id)
+      );
+      setSelectedIds([]);
+      router.refresh();
+    });
   };
 
   return (
@@ -137,12 +149,14 @@ export function ShiftsView({ data }) {
               <TableCell>
                 <Checkbox
                   checked={selectedIds.includes(shift.id)}
-                  onCheckedChange={() => toggleSelect(shift.id)}
+                  onCheckedChange={() =>
+                    toggleSelect(shift.id)
+                  }
                 />
               </TableCell>
 
               <TableCell className="font-semibold flex items-center gap-2">
-                <div className={`p-2 rounded-lg ${shiftStyles[shift.type]}`}>
+                <div className={`p-2 rounded-full border ${shiftStyles[shift.type]}`}>
                   {shiftIcons[shift.type]}
                 </div>
                 {shift.name}
@@ -172,15 +186,21 @@ export function ShiftsView({ data }) {
                   size="sm"
                   variant="outline"
                   onClick={() =>
-                    router.push(`/admin/dashboard/shifts/${shift.id}/edit`)
+                    router.push(
+                      `/admin/dashboard/shifts/${shift.id}/edit`
+                    )
                   }
                 >
                   Edit
                 </Button>
+
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={() => handleDelete(shift.id)}
+                  disabled={isPending}
+                  onClick={() =>
+                    handleDelete(shift.id)
+                  }
                 >
                   Delete
                 </Button>
