@@ -9,7 +9,7 @@ import { bulkCreateUser } from "@/_server/admin-action/userAction"
 import { Button } from "@/_components/ui/Button"
 import { File, FileXls, Download } from "phosphor-react"
 import { Label } from "@/_components/ui/Label"
-import { X } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 export function CreateUserFromExcel({ onImported }) {
   const { addToast } = useToast()
@@ -105,7 +105,7 @@ export function CreateUserFromExcel({ onImported }) {
 
   return (
     <>
-      <Label className="mb-2">Excel File</Label>
+      <Label className="mb-3">Excel File <span className="font-light text-slate-400">(Bulk create users)</span></Label>
 
       <div
         onDragOver={(e) => {
@@ -114,7 +114,7 @@ export function CreateUserFromExcel({ onImported }) {
         }}
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
-        className={`rounded-xl border border-dashed p-6 transition mb-2
+        className={`rounded-xl border border-dashed p-8 transition mb-2
           ${dragActive
             ? "border-emerald-500 bg-emerald-500/5"
             : "border-slate-300"}`}
@@ -170,7 +170,7 @@ export function CreateUserFromExcel({ onImported }) {
             ) : (
               <>
                 <p className="text-sm text-slate-600">
-                  Drag & drop Excel file here
+                  Drag & Drop Excel file here
                 </p>
                 <p className="text-xs text-slate-400">
                   .xlsx or .xls
@@ -183,19 +183,6 @@ export function CreateUserFromExcel({ onImported }) {
         {/* actions */}
         <div className="mt-4 flex gap-3">
           <Button
-            variant="positive"
-            type="button"
-            disabled={loading}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {loading
-              ? "Importing..."
-              : selectedFile
-                ? "Replace File"
-                : "Browse File"}
-          </Button>
-
-          <Button
             type="button"
             variant="outline"
             className="bg-white"
@@ -203,6 +190,20 @@ export function CreateUserFromExcel({ onImported }) {
           >
             <Download className="h-4 w-4" />
             Download Template
+          </Button>
+
+          <Button
+            variant="positive"
+            type="button"
+            disabled={loading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Search className="h-4 w-4" />
+            {loading
+              ? "Importing..."
+              : selectedFile
+                ? "Replace File"
+                : "Browse File"}
           </Button>
         </div>
       </div>
