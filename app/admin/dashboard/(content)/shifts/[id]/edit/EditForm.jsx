@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/_components/ui/Button";
@@ -69,7 +69,7 @@ export default function EditShiftForm({ shift, divisions }) {
       })
 
       router.push("/admin/dashboard/shifts")
-    } 
+    }
     finally { setLoading(false)}
   }
 
@@ -84,13 +84,8 @@ export default function EditShiftForm({ shift, divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-0">
           <ContentForm.Header>
-            <ContentInformation
-              heading="Edit Shift"
-              subheading={`Modify the details of shift "${shift?.name || ""}"`}
-              show={true}
-              buttonText="Cancel"
-              variant="outline"
-              href="/admin/dashboard/shifts"
+            <ContentInformation heading="Edit Shift" subheading={`Modify the details of shift "${shift?.name || ""}"`}
+              show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>
 

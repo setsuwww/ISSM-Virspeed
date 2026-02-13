@@ -8,8 +8,8 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import LogCard from "./LogCard"
 
-import { LogClearButton } from "../../LogClearButton"
-import { LogConfirmDialog } from "../../LogConfirmDialog"
+import { LogClearButton } from "../../ClearButton"
+import { LogConfirmDialog } from "../../ConfirmDialog"
 
 export default function LogView({ logs }) {
   const [open, setOpen] = useState(false)

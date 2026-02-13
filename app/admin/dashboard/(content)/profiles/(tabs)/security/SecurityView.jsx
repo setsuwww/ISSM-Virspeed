@@ -5,8 +5,8 @@ import { useState, useTransition } from "react"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { LogClearButton } from "../../LogClearButton"
-import { LogConfirmDialog } from "../../LogConfirmDialog"
+import { LogClearButton } from "../../ClearButton"
+import { LogConfirmDialog } from "../../ConfirmDialog"
 import { SecurityTable } from "./SecurityTable"
 import { clearAllSecurityLogs } from "@/_server/admin-action/securityAction"
 

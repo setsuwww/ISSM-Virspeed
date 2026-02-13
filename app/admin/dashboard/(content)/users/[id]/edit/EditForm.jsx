@@ -13,7 +13,7 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { capitalize } from "@/_function/globalFunction";
 import { roleOptions } from "@/_constants/userConstants";
 import { updateUser } from "@/_server/admin-action/userAction.js";
-import { Loader } from 'lucide-react';
+import { ChevronLeft, Loader } from 'lucide-react';
 
 export default function EditForm({ user, divisions }) {
   const router = useRouter();
@@ -58,7 +58,7 @@ export default function EditForm({ user, divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/users/employees/shift-employees" />
+            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/users/employees/shift-employees" />
           </ContentForm.Header>
 
           <ContentForm.Body>

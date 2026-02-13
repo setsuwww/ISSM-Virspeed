@@ -14,8 +14,9 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants"
 import { capitalize, timeToMinutes } from "@/_function/globalFunction"
-import { Loader } from "lucide-react"
+import { ChevronLeft, Loader } from "lucide-react"
 import { createDivision } from "@/_server/admin-action/divisionAction"
+import { CreateLocationByScan } from "./CreateLocationByScan"
 
 export default function CreateDivisionForm() {
   const router = useRouter()
@@ -27,7 +28,7 @@ export default function CreateDivisionForm() {
   const [loading, setLoading] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  const handleChange = (e) => { const { name, value } = e.target 
+  const handleChange = (e) => { const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -49,7 +50,7 @@ export default function CreateDivisionForm() {
     startTransition(async () => { const result = await createDivision(payload)
       setLoading(false)
 
-      if (result.success) { router.push("/admin/dashboard/users/divisions")} 
+      if (result.success) { router.push("/admin/dashboard/users/divisions")}
       else { alert(result.message) }
     })
   }
@@ -60,15 +61,18 @@ export default function CreateDivisionForm() {
         subtitle="Fill in division details to register a new division location"
       />
 
+
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
             <ContentInformation heading="Division Info" subheading="Division details & location"
-              show={true} variant="outline" buttonText="Back" href="/admin/dashboard/users/divisions"
+              show={true} variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
             />
           </ContentForm.Header>
 
           <ContentForm.Body>
+            <CreateLocationByScan />
+
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name">
@@ -179,8 +183,8 @@ export default function CreateDivisionForm() {
 
           <ContentForm.Footer>
             <Button type="submit" disabled={loading || isPending}>
-              {loading || isPending 
-                ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>) 
+              {loading || isPending
+                ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>)
                 : ("Create Division")
               }
             </Button>

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/_components/ui/Button"
-import { ChevronsUpDown } from "lucide-react"
+import { ChevronsUpDown, PlusSquare } from "lucide-react"
 
 export default function EmployeesTableButton() {
   const router = useRouter()
@@ -26,7 +26,7 @@ export default function EmployeesTableButton() {
       </Button>
 
       <Button
-        variant={isShiftHours || isWorkHours ? "secondary" : "ghost"}
+        variant={isShiftHours || isWorkHours ? "secondary" : "ghost"} className="rounded-md"
         onClick={() => router.push(toggleRoute)}
       >
         {toggleLabel}
@@ -37,6 +37,7 @@ export default function EmployeesTableButton() {
         variant={pathname.includes("/create") ? "secondary" : "primary"}
         onClick={() => router.push("/admin/dashboard/users/create")}
       >
+        <PlusSquare />
         Create Employees
       </Button>
     </div>

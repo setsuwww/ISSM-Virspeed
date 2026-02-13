@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader } from "lucide-react"
+import { ChevronLeft, Loader } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useCallback } from "react"
 
@@ -63,7 +63,7 @@ export default function CreateForm({ users, shifts }) {
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users"
-            show={true} buttonText="Back" variant="outline" href="/admin/dashboard/schedules"
+            show={true} buttonText="Back" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/schedules"
           />
         </ContentForm.Header>
 

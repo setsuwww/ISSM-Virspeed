@@ -15,7 +15,6 @@ import { Label } from "@/_components/ui/Label"
 import { profilesRoleStyles, roleStyles } from "@/_constants/themes/userTheme"
 import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunction"
 import { format } from "date-fns"
-import AppInformation from "./AppInformation"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
 export function ProfileView({ user }) {
@@ -186,7 +185,6 @@ export function ProfileView({ user }) {
           </Button>
         </CardFooter>
       </Card>
-      <AppInformation />
     </div>
   )
 }

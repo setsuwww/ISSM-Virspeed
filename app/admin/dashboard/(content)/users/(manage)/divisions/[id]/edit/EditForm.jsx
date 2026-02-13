@@ -6,7 +6,7 @@ import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 import { Label } from "@/_components/ui/Label";
-import { Loader } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
@@ -23,7 +23,7 @@ export default function EditDivisionForm({ division }) {
   const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData) {
-    const data = Object.fromEntries(formData.entries()); // ✅ Fix: ubah FormData jadi object
+    const data = Object.fromEntries(formData.entries());
 
     startTransition(async () => {
       const res = await updateDivision(division.id, data);
@@ -48,7 +48,7 @@ export default function EditDivisionForm({ division }) {
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
           <ContentInformation heading="Edit Division" subheading={`Editing data for: ${division.name}`}
-            show variant="outline" buttonText="Cancel" href="/admin/dashboard/users/divisions"
+            show variant="outline" buttonText="Cancel" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
           />
         </ContentForm.Header>
 

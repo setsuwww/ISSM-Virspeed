@@ -18,7 +18,7 @@ import { Label } from "@/_components/ui/Label"
 import { createUser } from "@/_server/admin-action/userAction.js"
 import { capitalize, minutesToTime } from "@/_function/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
-import { Loader } from 'lucide-react';
+import { ChevronLeft, Loader } from 'lucide-react';
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
 
 export default function CreateForm({ divisions, shifts }) {
@@ -92,7 +92,7 @@ export default function CreateForm({ divisions, shifts }) {
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
             <ContentInformation heading="Public" subheading="Users public username & email"
-              show variant="outline" buttonText="Back" href="/admin/dashboard/users"
+              show variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users"
             />
           </ContentForm.Header>
 

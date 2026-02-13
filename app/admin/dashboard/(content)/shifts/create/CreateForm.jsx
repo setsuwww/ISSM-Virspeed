@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/_components/ui/Button";
@@ -58,7 +58,7 @@ export default function CreateShiftForm({ divisions }) {
         <form onSubmit={handleSubmit} className="space-y-0">
           <ContentForm.Header>
             <ContentInformation heading="Shift Form" subheading="Create a new shift and assign it to an division"
-              show={true} buttonText="Back" variant="outline" href="/admin/dashboard/shifts"
+              show={true} buttonText="Back" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>
 

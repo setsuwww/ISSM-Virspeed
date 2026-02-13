@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { Loader } from "lucide-react"
+import { ChevronLeft, Loader } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import UpdateAssignUserShift from "./UpdateAssignUserShift"
@@ -69,7 +69,7 @@ export default function EditForm({ schedule, users }) {
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation heading="Edit Schedule Form" subheading="Modify existing schedule and assigned users"
-            show={true} buttonText="Cancel" variant="outline" href="/admin/dashboard/schedules"
+            show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/schedules"
           />
         </ContentForm.Header>
 

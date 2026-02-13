@@ -23,11 +23,11 @@ export default function LogCard({ logs }) {
                 </span>
 
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-blue-600 ">
+                  <span className="text-sm font-medium text-sky-500 ">
                     {log.url}
                   </span>
                   <span className="text-xs text-gray-400">
-                    {new Date(log.createdAt).toLocaleString()}
+                    {log.createdAt}
                   </span>
                 </div>
               </div>
@@ -48,7 +48,7 @@ export default function LogCard({ logs }) {
                   <div className="mb-1.5 text-sm font-medium text-gray-500">
                     PAYLOAD :
                   </div>
-                  <div className="rounded bg-green-50 border border-green-100 p-2">
+                  <div className="rounded bg-slate-50 border border-slate-100 p-2">
                     <LogJSON data={log.data} />
                   </div>
                 </div>

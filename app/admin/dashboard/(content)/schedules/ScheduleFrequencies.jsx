@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 
 import { ContentInformation } from '@/_components/common/ContentInformation'
 import { frequenciesLabel } from '@/_constants/scheduleConstants'
-import { Tag } from 'lucide-react'
+import { SquarePlus, Tag } from 'lucide-react'
 import { Button } from '@/_components/ui/Button'
 
 export default function ScheduleFrequencies() {
@@ -27,7 +27,10 @@ export default function ScheduleFrequencies() {
       </div>
 
       <div className='flex items-center space-x-2'>
-        <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>Create Schedule</Button>
+        <Button variant="primary" onClick={() => router.push("/admin/dashboard/schedules/create")}>
+          <SquarePlus />
+          Create Schedule
+        </Button>
       </div>
     </div>
   )
