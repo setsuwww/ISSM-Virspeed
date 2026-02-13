@@ -10,7 +10,7 @@ export function CreateLocationByScan({ onLocationCaptured }) {
   const { addToast } = useToast()
 
   const [loading, setLoading] = useState(false)
-  const [coords, setCoords] = useState(null) // { latitude, longitude }
+  const [coords, setCoords] = useState(null)
 
   const handleScan = () => {
     if (!navigator.geolocation) {
@@ -63,8 +63,6 @@ export function CreateLocationByScan({ onLocationCaptured }) {
             </button>
           )}
         </div>
-
-        {/* Display coordinates */}
         {coords ? (
           <div className="text-sm text-sky-700 text-start">
             <p>Latitude: {coords.latitude}</p>
@@ -75,6 +73,8 @@ export function CreateLocationByScan({ onLocationCaptured }) {
             Click <span className="font-semibold">"Scan Location"</span> to capture your current location
           </p>
         )}
+
+        {/* Display coordinates */}
 
         {/* Scan button */}
         <Button

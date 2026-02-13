@@ -64,7 +64,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
               {hasNotifications && (
                 <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75"></span>
-                  <span className="animate-pulse relative inline-flex rounded-full h-2 w-2 bg-sky-600"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-600"></span>
                 </span>
               )}
             </Link>

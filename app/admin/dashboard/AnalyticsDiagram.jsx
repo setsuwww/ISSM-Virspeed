@@ -4,14 +4,16 @@ import { useMemo, useState } from "react";
 import { parseISO, subDays, isWithinInterval, addDays } from "date-fns";
 import { AreaDiagram } from "./DashboardDiagram";
 import { Button } from "@/_components/ui/Button";
+import { ChartNoAxesCombined } from "lucide-react";
+import { ContentInformation } from "@/_components/common/ContentInformation";
 
 const PRESET_RANGES = {
-  last7:  { label: "Last 7 days",  getRange: () => ({ start: subDays(new Date(), 6),  end: new Date() }) },
-  last14: { label: "Last 14 days", getRange: () => ({ start: subDays(new Date(), 13), end: new Date() }) },
-  last30: { label: "Last 30 days", getRange: () => ({ start: subDays(new Date(), 29), end: new Date() }) },
+  last7: { label: "7 Days", getRange: () => ({ start: subDays(new Date(), 6), end: new Date() }) },
+  last14: { label: "14 Days", getRange: () => ({ start: subDays(new Date(), 13), end: new Date() }) },
+  last30: { label: "30 Days", getRange: () => ({ start: subDays(new Date(), 29), end: new Date() }) },
 };
 
-const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function AnalyticsDiagram({ attendanceRaw = [] }) {
   const [rangeKey, setRangeKey] = useState("last7");
@@ -36,7 +38,8 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
 
     for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
       const key = d.toISOString().split("T")[0];
-      map[key] = { date: key, name: dayNames[d.getDay()],
+      map[key] = {
+        date: key, name: dayNames[d.getDay()],
         present: 0,
         late: 0,
         absent: 0,
@@ -59,32 +62,37 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
     return Object.keys(map).sort().map((k) => map[k]);
   }, [parsedAttendances, start, end]);
 
-  const series = [
+  const series = useMemo(() => [
     { key: "absent", color: "#ffa2a2", label: "Absent" },
     { key: "late", color: "#ffdf20", label: "Late" },
     { key: "present", color: "#7bf1a8", label: "Present" },
     { key: "permission", color: "#3b82f6", label: "Permission" },
-  ];
+  ], []);
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-lg font-semibold text-slate-700">Attendance Overview</h3>
-          <p className="text-xs text-slate-400">
-            Showing {PRESET_RANGES[rangeKey].label}
-          </p>
+        <div className="">
+          <div className="flex items-center space-x-3">
+            <div className="bg-purple-50 border border-purple-100 text-purple-500 p-2 rounded-lg">
+              <ChartNoAxesCombined strokeWidth={2} />
+            </div>
+            <ContentInformation heading="Analytics" subheading={`Views statistic in ${PRESET_RANGES[rangeKey].label}`} autoMargin={false} />
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {Object.keys(PRESET_RANGES).map((k) => (
-            <Button key={k} size="sm" variant="outline"
-              className={k === rangeKey ? "text-indigo-700 bg-indigo-50 border-indigo-200/60 hover:bg-indigo-100/80" : ""}
-              onClick={() => setRangeKey(k)}
-            >
-              {PRESET_RANGES[k].label}
-            </Button>
-          ))}
+        <div className="flex items-center space-x-2">
+          <span className="text-sm font-semibold text-slate-400">Filter Last : </span>
+          <div className="flex items-center gap-2">
+            {Object.keys(PRESET_RANGES).map((k) => (
+              <Button key={k} size="sm" variant="outline"
+                className={k === rangeKey ? "text-indigo-700 bg-indigo-50 border-indigo-200/60 hover:bg-indigo-100/80" : ""}
+                onClick={() => setRangeKey(k)}
+              >
+                {PRESET_RANGES[k].label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 

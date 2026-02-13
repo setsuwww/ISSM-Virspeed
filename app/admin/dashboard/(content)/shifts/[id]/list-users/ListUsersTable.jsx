@@ -185,7 +185,7 @@ export default function ListUsersTable({ data }) {
 
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="ghost" className="text-indigo-600" onClick={() => handleSwapShift(user.id)}>
+                    <Button size="sm" variant="ghost" className="text-indigo-600 rounded-full" onClick={() => handleSwapShift(user.id)}>
                       <RefreshCcw size={16} />
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => handleEditUser(user.id)}>

@@ -79,7 +79,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <DashboardStats dark={true} link="/admin/dashboard/shifts" title="Total Users"
           value={`${totalUsers} Users`} valueColor="text-yellow-400"
-          icon={<Clock strokeWidth={2} />} 
+          icon={<Clock strokeWidth={2} />}
           color="bg-slate-500 text-white"
         />
 
@@ -110,15 +110,6 @@ export default async function AdminDashboardPage() {
           <ContentInformation heading="Fast action" subheading="Access your content in one click" autoMargin={false} />
         </div>
         <FastActions />
-      </div>
-
-      <div className="p-4 space-y-4 bg-white rounded-xl border border-slate-200 shadow-xs">
-        <div className="flex items-center space-x-3">
-          <div className="bg-purple-50 border border-purple-100 text-purple-500 p-2 rounded-lg">
-            <ChartNoAxesCombined strokeWidth={2} />
-          </div>
-          <ContentInformation heading="Analytics" subheading="Views statistic in diagram views" autoMargin={false} />
-        </div>
       </div>
 
       <div className="grid gap-4 grid-cols-1">

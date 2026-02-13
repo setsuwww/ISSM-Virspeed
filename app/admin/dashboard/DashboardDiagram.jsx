@@ -1,53 +1,21 @@
 "use client";
+
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card";
-import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 
-export function BarDiagram({ title, description, data, series }) {
+export const AreaDiagram = React.memo(function AreaDiagram({ title, description, data, series }) {
   const seriesToUse = series ?? [{ key: "value", color: "#4f46e5", label: "Value" }];
 
-  return (
-    <Card className="border border-slate-200 shadow-sm rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-slate-700 font-semibold">{title}</CardTitle>
-        {description && (
-          <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
-        )}
-      </CardHeader>
-      <CardContent className="h-[320px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} />
-            <YAxis tick={{ fontSize: 11, fill: "#6b7280" }} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#18181b",
-                border: "1px solid #27272a",
-                borderRadius: "0.5rem",
-                fontSize: "12px",
-                color: "white",
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: "12px", color: "#6b7280" }} />
-            {seriesToUse.map((s) => (
-              <Bar
-                key={s.key}
-                dataKey={s.key}
-                fill={s.color}
-                radius={[4, 4, 0, 0]}
-                barSize={14}
-                name={s.label || s.key}
-              />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  );
-}
+  const chartMargin = { top: 10, right: 20, left: 0, bottom: 0 };
 
-export function AreaDiagram({ title, description, data, series }) {
-  const seriesToUse = series ?? [{ key: "value", color: "#4f46e5", label: "Value" }];
+  const tooltipStyle = {
+    backgroundColor: "#ffffff",
+    border: "1px solid #e2e8f0",
+    borderRadius: "0.5rem",
+    fontSize: "14px",
+    color: "#45556c",
+  };
 
   return (
     <Card className="border-transparent shadow-none rounded-2xl">
@@ -59,9 +27,9 @@ export function AreaDiagram({ title, description, data, series }) {
           <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
         )}
       </CardHeader>
-      <CardContent className="h-[320px]">
+      <CardContent className="h-[440px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={chartMargin}>
             <defs>
               {seriesToUse.map((s, idx) => (
                 <linearGradient key={s.key} id={`gradient-${s.key}-${idx}`} x1="0" y1="0" x2="0" y2="1">
@@ -75,13 +43,7 @@ export function AreaDiagram({ title, description, data, series }) {
             <XAxis dataKey="name" tick={{ fontSize: 8, fill: "#6b7280" }} />
             <YAxis tick={{ fontSize: 8, fill: "#6b7280" }} />
             <Tooltip
-              contentStyle={{
-                backgroundColor: "#ffffff",
-                border: "1px solid #e2e8f0",
-                borderRadius: "0.5rem",
-                fontSize: "14px",
-                color: "#45556c",
-              }}
+              contentStyle={tooltipStyle}
             />
             <Legend wrapperStyle={{ fontSize: "12px", color: "#6b7280" }} />
             {seriesToUse.map((s, idx) => (
@@ -102,4 +64,4 @@ export function AreaDiagram({ title, description, data, series }) {
       </CardContent>
     </Card>
   );
-}
+})

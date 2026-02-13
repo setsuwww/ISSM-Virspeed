@@ -16,9 +16,9 @@ export default function ScheduleFrequencies() {
         <ContentInformation heading="Schedule table" subheading="Manage schedule more detail than calendar view" />
         <div className="flex items-center space-x-2 mt-4 mb-4">
           {frequenciesLabel.map((f) => (
-            <div key={f.label} className={`flex items-center space-x-2 border border-${f.color}-100 px-2 py-0.5 rounded-full`}>
-              <Tag strokeWidth={2} className={`w-3 h-3 text-${f.color}-500`} />
-              <span className={`text-${f.color}-600 text-sm font-base`}>
+            <div key={f.label} className={`${f.color} flex items-center space-x-2 border px-2 py-0.5 rounded-full`}>
+              <Tag strokeWidth={2} className={`w-3 h-3`} />
+              <span className={`text-sm font-base`}>
                 {f.label}
               </span>
             </div>
