@@ -6,7 +6,7 @@ import { redirect } from "next/navigation"
 
 import { prisma } from "@/_lib/prisma"
 import { signToken, getCurrentUser, removeAuthCookie } from "@/_lib/auth"
-import { LogAction, SecurityAction } from "@prisma/client"
+import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
 import { logActivity } from "@/_server/admin-action/logAction"
 
 import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_server/admin-action/securityAction"
@@ -46,7 +46,7 @@ export async function AuthAction(prevState, formData) {
       userId: user.id,
       url: "/auth/login",
       action: LogAction.SUBMIT,
-      method: LogAction.POST,
+      method: LogMethod.POST,
       data: { success: false },
     })
 
@@ -80,7 +80,7 @@ export async function AuthAction(prevState, formData) {
     userId: user.id,
     url: "/auth/login",
     action: LogAction.SUBMIT,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: { success: true },
   })
 

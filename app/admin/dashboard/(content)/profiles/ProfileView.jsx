@@ -5,7 +5,7 @@ import { useUserStore } from "@/_stores/useUserStore"
 import { updateProfile } from "@/_server/profileAction"
 import { toast } from "sonner"
 
-import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, Calendar, SquarePen, InfoIcon } from "lucide-react"
+import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, SquarePen, Clock } from "lucide-react"
 
 import { Card, CardHeader, CardContent, CardFooter } from "@/_components/ui/Card"
 import { Input } from "@/_components/ui/Input"
@@ -17,7 +17,6 @@ import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunctio
 import { format } from "date-fns"
 import AppInformation from "./AppInformation"
 import { ContentInformation } from "@/_components/common/ContentInformation"
-import Link from "next/link"
 
 export function ProfileView({ user }) {
   const { setUser } = useUserStore()
@@ -130,7 +129,7 @@ export function ProfileView({ user }) {
               {user.division?.name ?? "-"}
             </Info>
 
-            <Info label="Shift" icon={Calendar}>
+            <Info label="Shift" icon={Clock}>
               {user.shift?.name ?? "-"}
             </Info>
 

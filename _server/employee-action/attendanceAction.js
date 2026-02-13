@@ -2,7 +2,7 @@
 
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
-import { LogAction } from "@prisma/client"
+import { LogAction, LogMethod } from "@prisma/client"
 
 import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_function/helpers/attendanceHelpers"
 
@@ -20,6 +20,18 @@ export async function userPrecheckCheckIn() {
   if (!shift?.division) return { error: "Shift atau divisi tidak ditemukan" }
 
   const policy = evaluateAttendancePolicy({ division: shift.division })
+
+  await safeLog({
+    userId: user.id,
+    url: "/employee/attendance/main/precheck-location",
+    action: LogAction.VIEW,
+    method: LogMethod.GET,
+    data: {
+      requireLocation: policy.ignoreLocation !== true,
+      toast: policy.toast,
+      timestamp: new Date().toISOString(),
+    },
+  })
 
   return {
     requireLocation: policy.ignoreLocation !== true,
@@ -86,7 +98,7 @@ export async function userSendCheckIn(coords = null) {
     userId: user.id,
     url: "/employee/attendance/main/check-in",
     action: LogAction.SUBMIT,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: {
       attendanceId: attendance.id,
       status,
@@ -121,7 +133,7 @@ export async function userSendCheckOut() {
     userId: user.id,
     url: "/employee/attendance/main/check-out",
     action: LogAction.SUBMIT,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: { checkoutTime: now.toDate() },
   })
 
@@ -158,7 +170,7 @@ export async function userSendEarlyCheckout(reason) {
     userId: user.id,
     url: "/employee/attendance/main/req?=early-checkout",
     action: LogAction.CREATE,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: {
       attendanceId: attendance.id,
       requestId: request.id,
@@ -203,7 +215,7 @@ export async function userSendPermissionRequest(reason) {
     userId: user.id,
     url: "/employee/attendance/main/req?=permission",
     action: LogAction.CREATE,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: { reason, date: today },
   })
 
@@ -277,7 +289,7 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
     userId: user.id,
     url: "/employee/dashboard/main/req?=leave",
     action: LogAction.CREATE,
-    method: LogAction.POST,
+    method: LogMethod.POST,
     data: {
       leaveRequestId: request.id,
       leaveType: type,

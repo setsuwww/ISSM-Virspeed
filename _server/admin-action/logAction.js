@@ -39,7 +39,7 @@ export async function logQuery({ page = 1, limit = 20, userId, action }) {
   })
 }
 
-export async function logActivity({ userId, url, action, data, method = "POST" }) {
+export async function logActivity({ userId, url, action, data, method }) {
   await prisma.activityLog.create({
     data: {
       userId,

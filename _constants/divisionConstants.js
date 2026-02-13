@@ -1,5 +1,5 @@
 export const typeOptions = [
-  { label: "WFO (Work From division)", value: "WFO" },
+  { label: "WFO (Work From Office)", value: "WFO" },
   { label: "WFA (Work From Anywhere)", value: "WFA" },
 ];
 
