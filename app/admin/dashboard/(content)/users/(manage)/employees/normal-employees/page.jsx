@@ -109,7 +109,7 @@ export default async function EmployeesWorkHoursPage({ searchParams }) {
           <div className="flex items-center justify-between pb-3">
             <ContentInformation
               autoMargin={false}
-              heading="List Normal Employees"
+              heading="List Normal employees"
               subheading="Manage all normal-hours employees here"
             />
             <EmployeesTableButton />

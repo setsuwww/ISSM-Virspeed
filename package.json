@@ -1,10 +1,11 @@
 {
-  "name": "helpdesk",
+  "name": "beefast",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "prisma:seed": "node prisma/seed.js",
+    "prisma:test": "node prisma/seed.test.js",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -32,6 +33,7 @@
     "@tanstack/react-query": "^5.87.1",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "chalk": "^5.6.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -52,6 +54,7 @@
     "next-auth": "^4.24.11",
     "next-pwa": "^5.6.0",
     "nprogress": "^0.2.0",
+    "ora": "^9.3.0",
     "pdf-lib": "^1.17.1",
     "phosphor-react": "^1.4.1",
     "react": "19.1.0",

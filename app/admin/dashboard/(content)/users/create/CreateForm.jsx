@@ -91,7 +91,7 @@ export default function CreateForm({ divisions, shifts }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Public" subheading="Users public username & email"
+            <ContentInformation heading="Users form" subheading="Insert users data & create new user"
               show variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users"
             />
           </ContentForm.Header>

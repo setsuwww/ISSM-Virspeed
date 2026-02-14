@@ -4,11 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import React from "react";
 import Link from "next/link";
 
-export const Pagination = React.memo(function ({
-  page,
-  totalPages,
-  basePath = "/"
-}) {
+export const Pagination = React.memo(function ({ page, totalPages, basePath = "/" }) {
   if (totalPages <= 1) return null;
 
   function getPages(page, total) {
@@ -18,9 +14,7 @@ export const Pagination = React.memo(function ({
     let l
 
     for (let i = 1; i <= total; i++) {
-      if (
-        i === 1 ||
-        i === total ||
+      if ( i === 1 || i === total ||
         (i >= page - delta && i <= page + delta)
       ) {
         range.push(i)

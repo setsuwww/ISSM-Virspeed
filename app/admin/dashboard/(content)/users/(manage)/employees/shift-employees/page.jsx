@@ -85,7 +85,7 @@ export default async function EmployeesPage({ searchParams }) {
           <div className="flex items-center justify-between pb-3">
             <ContentInformation
               autoMargin={false}
-              heading="List Shift Employees"
+              heading="List Shift employees"
               subheading="Manage all shift-hours employees here"
             />
             <EmployeesTableButton />

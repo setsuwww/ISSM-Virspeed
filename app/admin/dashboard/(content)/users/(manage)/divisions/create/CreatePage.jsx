@@ -65,7 +65,7 @@ export default function CreateDivisionForm() {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Division Info" subheading="Division details & location"
+            <ContentInformation heading="Division form" subheading="Insert divisions data & create new division"
               show={true} variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
             />
           </ContentForm.Header>

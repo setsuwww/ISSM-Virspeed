@@ -70,12 +70,8 @@ enum FrequencyType {
 
 enum ApprovalStatus {
   PENDING
-  APPROVED
-  REJECTED
-}
-
-enum LeaveStatus {
-  PENDING
+  PENDING_TARGET
+  PENDING_ADMIN
   APPROVED
   REJECTED
 }
@@ -96,14 +92,6 @@ enum AttendanceStatus {
   LATE
   PERMISSION
   ALPHA
-}
-
-enum ShiftChangeStatus {
-  PENDING
-  PENDING_TARGET
-  PENDING_ADMIN
-  APPROVED
-  REJECTED
 }
 
 model ActivityLog {
@@ -386,7 +374,7 @@ model LeaveRequest {
 
   reason      String?
   adminReason String?
-  status      LeaveStatus @default(PENDING)
+  status      ApprovalStatus @default(PENDING)
 
   approvedById String?
   approvedBy   User?   @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
@@ -426,7 +414,7 @@ model ShiftChangeRequest {
   rejectReason String?
   startDate    DateTime
   endDate      DateTime?
-  status       ShiftChangeStatus @default(PENDING_TARGET)
+  status       ApprovalStatus @default(PENDING_TARGET)
 
   verifiedByTarget Boolean @default(false)
   verifiedByAdmin  Boolean @default(false)

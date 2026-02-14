@@ -36,7 +36,7 @@ export default async function Page({ searchParams }) {
       <DashboardHeader title="Divisions" subtitle="List of Division divisions" />
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="List Divisions" subheading="Manage all Division data in this table"
+          <ContentInformation heading="List divisions" subheading="Manage all division data in this table"
             show={true} buttonText="Create Division" href="/admin/dashboard/users/divisions/create"
           />
         </ContentForm.Header>

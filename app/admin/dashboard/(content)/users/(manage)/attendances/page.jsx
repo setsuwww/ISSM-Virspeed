@@ -103,8 +103,8 @@ export default async function AttendancesPage() {
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation
-            heading="Shift Overview"
-            subheading="View attendance by shift"
+            heading="Shift attendance"
+            subheading="View employees attendance at this today"
           />
         </ContentForm.Header>
 

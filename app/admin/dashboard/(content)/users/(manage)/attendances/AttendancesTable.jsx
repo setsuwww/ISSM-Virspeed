@@ -49,8 +49,8 @@ export default function AttendancesTableClient() {
     <>
       <div className="flex flex-wrap items-center justify-between my-6 gap-4">
         <ContentInformation
-          heading="List Attendances"
-          subheading="Manage and review all attendance records"
+          heading="List attendances"
+          subheading={`Manage and review all attendance ${safeFormat(date, "dd-MMMM-yyyy")}`}
         />
 
         <AttendancesActionHeader

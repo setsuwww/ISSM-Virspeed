@@ -1,10 +1,14 @@
-import { PrismaClient, Role, ShiftType, LocationType, LocationStatus, FrequencyType, AttendanceStatus, ApprovalStatus, ShiftChangeStatus } from "@prisma/client";
+import { PrismaClient, Role, ShiftType, LocationType, LocationStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { log } from "../_constants/logConstants.js";
+import ora from "ora";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🚀 Starting structured dummy seed...");
+  log.section("PRISMA STRUCTURED SEED START");
+
+  const cleanSpinner = ora("Cleaning existing data...").start();
 
   await prisma.schedulesOnUsers.deleteMany();
   await prisma.schedule.deleteMany();
@@ -13,13 +17,28 @@ async function main() {
   await prisma.shift.deleteMany();
   await prisma.division.deleteMany();
   await prisma.systemConfig.deleteMany();
+  await prisma.leaveType.deleteMany();
+
+  cleanSpinner.succeed("Database cleaned");
+
+  /* ---------- SYSTEM CONFIG ---------- */
+  log.section("SYSTEM CONFIG");
+
+  const configSpinner = ora("Creating system configs...").start();
 
   const systemConfigs = await prisma.systemConfig.createMany({
     data: [
       { allWfaActive: false },
       { allWfaActive: true },
-    ]
+    ],
   });
+
+  configSpinner.succeed(`Inserted ${systemConfigs.count} system configs`);
+
+  /* ---------- DIVISIONS ---------- */
+  log.section("DIVISIONS");
+
+  const divisionSpinner = ora("Creating divisions...").start();
 
   const divisions = await prisma.division.createMany({
     data: [
@@ -45,10 +64,16 @@ async function main() {
         startTime: 9 * 60,
         endTime: 18 * 60,
       },
-    ]
+    ],
   });
 
+  divisionSpinner.succeed(`Inserted ${divisions.count} divisions`);
+
   const divisionList = await prisma.division.findMany();
+
+  /* ---------- SHIFTS ---------- */
+  log.section("SHIFTS");
+
   const shiftTemplates = [
     { type: ShiftType.MORNING, baseName: "M", start: 8 * 60, end: 16 * 60 },
     { type: ShiftType.AFTERNOON, baseName: "A", start: 16 * 60, end: 24 * 60 },
@@ -70,15 +95,23 @@ async function main() {
     }
   }
 
-  await prisma.shift.createMany({ data: shiftData });
+  const shiftSpinner = ora("Creating shifts...").start();
+
+  const shifts = await prisma.shift.createMany({ data: shiftData });
+
+  shiftSpinner.succeed(`Inserted ${shifts.count} shifts`);
+
   const shiftList = await prisma.shift.findMany();
+
+  /* ---------- USERS ---------- */
+  log.section("USERS");
 
   const usersData = [
     { name: "Mikasa", email: "mikasa@next.com", role: Role.ADMIN },
     { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
     { name: "Brian", email: "brian@next.com", role: Role.EMPLOYEE },
     { name: "Charlie", email: "charlie@next.com", role: Role.EMPLOYEE },
-    { name: "Dirman", email: "dirman@next.com", role: Role.EMPLOYEE },
+    { name: "Drake", email: "drake@next.com", role: Role.EMPLOYEE },
     { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
     { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
     { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
@@ -91,24 +124,24 @@ async function main() {
     { name: "Noah", email: "noah@next.com", role: Role.EMPLOYEE },
     { name: "Odelio", email: "odelio@next.com", role: Role.EMPLOYEE },
     { name: "Prilly", email: "prilly@next.com", role: Role.EMPLOYEE },
-    { name: "Quenzi", email: "quenzi@next.com", role: Role.EMPLOYEE },
-    { name: "Ryan", email: "ryan@next.com", role: Role.EMPLOYEE },
+    { name: "Qian", email: "qian@next.com", role: Role.EMPLOYEE },
+    { name: "Raymond", email: "raymond@next.com", role: Role.EMPLOYEE },
     { name: "Stevan", email: "stevan@next.com", role: Role.EMPLOYEE },
     { name: "Thomas", email: "thomas@next.com", role: Role.EMPLOYEE },
-    { name: "Umar", email: "umar@next.com", role: Role.EMPLOYEE },
+    { name: "Ulrich", email: "ulrich@next.com", role: Role.EMPLOYEE },
     { name: "Veline", email: "veline@next.com", role: Role.EMPLOYEE },
-    { name: "Wayne", email: "wayne@next.com", role: Role.EMPLOYEE },
-    { name: "Xiulin", email: "xiulin@next.com", role: Role.EMPLOYEE },
+    { name: "Wilson", email: "wilson@next.com", role: Role.EMPLOYEE },
+    { name: "Xin", email: "xin@next.com", role: Role.EMPLOYEE },
     { name: "Yohannes", email: "yohannes@next.com", role: Role.EMPLOYEE },
     { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
   ];
 
-  const users = [];
+  const userSpinner = ora("Creating users...").start();
 
   for (let i = 0; i < usersData.length; i++) {
     const hash = await bcrypt.hash("password123", 10);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: usersData[i].name,
         email: usersData[i].email,
@@ -118,55 +151,34 @@ async function main() {
         shiftId: shiftList[i % shiftList.length].id,
       },
     });
-
-    users.push(user);
   }
 
-  const scheduleData = await prisma.schedule.createMany({
-    data: [
-      {
-        title: "Prototyping",
-        frequency: FrequencyType.DAILY,
-        divisionId: divisionList[0].id,
-      },
-      {
-        title: "Holy Friday",
-        frequency: FrequencyType.WEEKLY,
-        divisionId: divisionList[1].id,
-      },
-    ],
-  });
+  userSpinner.succeed(`Inserted ${usersData.length} users`);
 
-  const schedules = await prisma.schedule.findMany();
+  /* ---------- LEAVE TYPES ---------- */
+  log.section("LEAVE TYPES");
 
-  await prisma.schedulesOnUsers.createMany({
-    data: [
-      { scheduleId: schedules[0].id, userId: users[0].id },
-      { scheduleId: schedules[1].id, userId: users[1].id },
-    ],
-  });
+  const leaveSpinner = ora("Creating leave types...").start();
 
-  await prisma.userShiftAssignment.createMany({
-    data: [
-      { userId: users[0].id, shiftId: shiftList[0].id },
-      { userId: users[1].id, shiftId: shiftList[1].id },
-    ],
-  });
-
-  await prisma.leaveType.createMany({
+  const leaveTypes = await prisma.leaveType.createMany({
     data: [
       { code: "ANNUAL", name: "Cuti Tahunan", category: "ANNUAL", maxDays: 12 },
       { code: "SICK", name: "Cuti Sakit", category: "SICK", maxDays: 365 },
       { code: "MATERNITY", name: "Cuti Melahirkan", category: "MATERNITY", maxDays: 90 },
     ],
-  })
+  });
 
-  console.log("✅ Dummy seed completed!");
+  leaveSpinner.succeed(`Inserted ${leaveTypes.count} leave types`);
+
+  log.section("SEED COMPLETED");
+  log.success("All dummy data successfully generated");
 }
+
 
 main()
   .catch((e) => {
-    console.error("❌ Error seeding:", e);
+    log.error("Seeding failed");
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {
