@@ -45,10 +45,10 @@ export const adminMenu = [
     href: "/admin/dashboard/profiles",
     icon: "User"
   },
-  {
-    type: "link",
-    label: "Setting",
-    href: "/admin/dashboard/settings",
-    icon: "Cog"
-  }
+  // {
+  //   type: "link",
+  //   label: "Setting",
+  //   href: "/admin/dashboard/settings",
+  //   icon: "Cog"
+  // }
 ]
