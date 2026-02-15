@@ -9,7 +9,7 @@ import { TableRow, TableCell } from "@/_components/ui/Table"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import { Badge } from "@/_components/ui/Badge"
 
-import { divisionStyles } from "@/_constants/themes/divisionTheme"
+import { divisionStyles } from "@/_constants/theme/divisionTheme"
 import DivisionsStatusBadge from "./DivisionsStatusBadge"
 import DivisionActionButton from "./DivisionsActionButton"
 

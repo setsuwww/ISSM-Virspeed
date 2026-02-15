@@ -10,8 +10,8 @@ import { Badge } from "@/_components/ui/Badge"
 import { Input } from "@/_components/ui/Input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/_components/ui/Select"
 
-import { capitalize } from "@/_function/globalFunction"
-import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { capitalize } from "@/_functions/globalFunction"
+import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { shiftStyles } from '@/_constants/shiftConstants';
 
 export default function AttendancesUsers({

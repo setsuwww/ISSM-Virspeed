@@ -4,9 +4,9 @@ import { Button } from "@/_components/ui/Button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { exportPDF } from "@/_function/exports/user/exportPDF";
-import { exportWord } from "@/_function/exports/user/exportWord";
-import { exportExcel } from "@/_function/exports/user/exportExcel";
+import { exportPDF } from "@/_functions/exports/user/exportPDF";
+import { exportWord } from "@/_functions/exports/user/exportWord";
+import { exportExcel } from "@/_functions/exports/user/exportExcel";
 
 export default function UsersActionHeader({
   search, onSearchChange,

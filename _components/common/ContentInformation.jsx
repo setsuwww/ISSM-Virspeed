@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { PlusSquare } from "lucide-react";
 
 export const ContentInformation = React.memo(function ContentInformation({
-  heading,
-  subheading,
+  title,
+  subtitle,
   show = false,
   buttonText = "Create",
   href,
@@ -16,7 +16,7 @@ export const ContentInformation = React.memo(function ContentInformation({
   buttonIcon,
 }) {
 
-  const hasHeader = heading || subheading;
+  const hasHeader = title || subtitle;
   const router = useRouter();
 
   if (!hasHeader) return null;
@@ -25,14 +25,14 @@ export const ContentInformation = React.memo(function ContentInformation({
     <header className={`${autoMargin ? "mb-3" : "mb-0"} flex items-center justify-between`}>
 
       <div className="flex flex-col">
-        {heading && (
+        {title && (
           <h2 className="text-lg font-bold text-slate-700/80">
-            {heading}
+            {title}
           </h2>
         )}
-        {subheading && (
+        {subtitle && (
           <p className="text-sm text-slate-500">
-            {subheading}
+            {subtitle}
           </p>
         )}
       </div>

@@ -95,8 +95,8 @@ export function ToastProvider({ children }) {
                 className={cn("absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
                   toast.type === "success"
                     ? "bg-teal-500" : toast.type === "error"
-                    ? "bg-rose-500" : toast.type === "warning"
-                    ? "bg-yellow-500" : "bg-sky-500"
+                      ? "bg-rose-500" : toast.type === "warning"
+                        ? "bg-yellow-500" : "bg-sky-500"
                 )}
                 style={{ width: "100%", animation: `progress ${toast.duration}ms linear forwards` }}
               />
@@ -127,7 +127,7 @@ export function ToastProvider({ children }) {
         .animate-slide-in {
           animation: slide-in 0.25s ease-out;
         }
-      `}</style>
+        `}</style>
     </ToastContext.Provider>
   )
 }

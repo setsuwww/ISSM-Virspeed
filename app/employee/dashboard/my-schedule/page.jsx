@@ -69,7 +69,7 @@ export default async function Page() {
   return (
     <ContentForm>
       <ContentForm.Header>
-        <ContentInformation heading="My Schedule" subheading="List of my schedules" />
+        <ContentInformation title="My Schedule" subtitle="List of my schedules" />
       </ContentForm.Header>
       <ContentForm.Body>
         <ScheduleList schedules={normalizedSchedules} />

@@ -3,7 +3,7 @@
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 import { revalidatePath } from "next/cache"
-import { safeFormat } from "@/_function/globalFunction"
+import { safeFormat } from "@/_functions/globalFunction"
 
 export async function getUserLogs() {
   const user = await getCurrentUser()

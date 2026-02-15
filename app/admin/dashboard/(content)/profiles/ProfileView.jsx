@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useUserStore } from "@/_stores/useUserStore"
-import { updateProfile } from "@/_server/profileAction"
+import { updateProfile } from "@/_servers/profileAction"
 import { toast } from "sonner"
 
 import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, SquarePen, Clock } from "lucide-react"
@@ -12,8 +12,8 @@ import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
 
-import { profilesRoleStyles, roleStyles } from "@/_constants/themes/userTheme"
-import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunction"
+import { profilesRoleStyles, roleStyles } from "@/_constants/theme/userTheme"
+import { capitalize, minutesToTime, safeFormat } from "@/_functions/globalFunction"
 import { format } from "date-fns"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
@@ -148,7 +148,7 @@ export function ProfileView({ user }) {
           {user.shift && (
             <div className="bg-gray-200/40 rounded-lg p-4">
               <div className="flex items-center gap-2">
-                <ContentInformation heading="Shift Information" subheading="See your shift information, your start time & end time here" />
+                <ContentInformation title="Shift Information" subtitle="See your shift information, your start time & end time here" />
               </div>
 
               <p className="text-sm text-slate-500 mt-4">

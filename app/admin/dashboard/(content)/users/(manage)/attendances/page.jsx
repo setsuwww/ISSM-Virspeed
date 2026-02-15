@@ -4,7 +4,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesCard } from "./AttendancesCardStats"
 import AttendancesTableClient from "./AttendancesTable"
 import { prisma } from "@/_lib/prisma"
-import { minutesToTime } from "@/_function/globalFunction"
+import { minutesToTime } from "@/_functions/globalFunction"
 
 async function getAttendancesByUserToday() {
   const startOfDay = new Date()
@@ -102,10 +102,7 @@ export default async function AttendancesPage() {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation
-            heading="Shift attendance"
-            subheading="View employees attendance at this today"
-          />
+          <ContentInformation title="Shift attendance" subtitle="View employees attendance at this today"/>
         </ContentForm.Header>
 
         <ContentForm.Body>

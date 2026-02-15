@@ -1,6 +1,6 @@
 "use client"
 
-import { attendanceAction } from "@/_constants/themes/attendanceTheme"
+import { attendanceAction } from "@/_constants/theme/attendanceTheme"
 import clsx from "clsx"
 import Link from "next/link"
 

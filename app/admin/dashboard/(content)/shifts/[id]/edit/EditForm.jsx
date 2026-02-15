@@ -12,9 +12,9 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { timeToMinutes, minutesToTime, capitalize } from "@/_function/globalFunction";
+import { timeToMinutes, minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateShift } from "@/_server/admin-action/shiftAction";
+import { updateShift } from "@/_servers/admin-action/shiftAction";
 
 export default function EditShiftForm({ shift, divisions }) {
   const router = useRouter();
@@ -84,7 +84,7 @@ export default function EditShiftForm({ shift, divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-0">
           <ContentForm.Header>
-            <ContentInformation heading="Edit Shift" subheading={`Modify the details of shift "${shift?.name || ""}"`}
+            <ContentInformation title="Edit Shift" subtitle={`Modify the details of shift "${shift?.name || ""}"`}
               show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>

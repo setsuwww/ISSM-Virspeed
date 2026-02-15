@@ -55,10 +55,7 @@ export default async function Page() {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation
-            heading="Work Hours Overview"
-            subheading="Division & shift-based working hours"
-          />
+          <ContentInformation title="Work Hours Overview" subtitle="Division & shift-based working hours"/>
         </ContentForm.Header>
 
         <ContentForm.Body>

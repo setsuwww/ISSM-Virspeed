@@ -3,10 +3,10 @@
 import { useState, useTransition } from "react"
 import { Button } from "@/_components/ui/Button"
 import { Trash2 } from "lucide-react"
-import { useToast } from "@/_context/Toast-Provider"
+import { useToast } from "@/_contexts/Toast-Provider"
 import { useRouter, useSearchParams } from "next/navigation"
-import { clearHistory } from "@/_server/admin-action/requestAction"
-import { capitalize } from "@/_function/globalFunction"
+import { clearHistory } from "@/_servers/admin-action/requestAction"
+import { capitalize } from "@/_functions/globalFunction"
 
 export function RequestClearHistory({ type, initialMode }) {
   const router = useRouter()

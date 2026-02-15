@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/_lib/prisma";
-import { timeToMinutes } from "@/_function/globalFunction";
+import { timeToMinutes } from "@/_functions/globalFunction";
 
 export async function GET(req, context) {
   const params = await context.params;

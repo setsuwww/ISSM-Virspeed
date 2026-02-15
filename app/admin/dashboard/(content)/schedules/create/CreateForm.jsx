@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation"
 import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
-import { useToast } from "@/_context/Toast-Provider"
-import { createSchedule } from "@/_server/admin-action/scheduleAction"
+import { useToast } from "@/_contexts/Toast-Provider"
+import { createSchedule } from "@/_servers/admin-action/scheduleAction"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
@@ -62,7 +62,7 @@ export default function CreateForm({ users, shifts }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Schedule Form" subheading="Create a new schedule and assign users"
+          <ContentInformation title="Schedule Form" subtitle="Create a new schedule and assign users"
             show={true} buttonText="Back" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/schedules"
           />
         </ContentForm.Header>

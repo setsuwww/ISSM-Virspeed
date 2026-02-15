@@ -1,7 +1,7 @@
 {
-  "name": "Helpdesk App",
-  "short_name": "Helpdesk",
-  "description": "Helpdesk Dashboard PWA",
+  "name": "ISSM-B-Fast",
+  "short_name": "ISSM-B-Fast",
+  "description": "ISSM-B-Fast PWA Application using Nextjs",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

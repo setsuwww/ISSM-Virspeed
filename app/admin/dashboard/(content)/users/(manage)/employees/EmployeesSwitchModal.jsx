@@ -13,7 +13,7 @@ import { Button } from "@/_components/ui/Button"
 import { ScrollArea } from "@/_components/ui/Scroll-area"
 
 import { apiFetchData } from "@/_lib/fetch"
-import { capitalize } from "@/_function/globalFunction"
+import { capitalize } from "@/_functions/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 
 export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {

@@ -6,7 +6,7 @@ import EmptyStates from "@/_components/common/EmptyStates";
 
 import { EmployeesActionHeader } from "../EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
-import { useShiftEmployeesHooks } from "@/_client/hooks/admin/useShiftEmployeesHooks";
+import { useShiftEmployeesHooks } from "@/_clients/hooks/admin/useShiftEmployeesHooks";
 
 export default function EmployeesTable({ users, divisions, shifts }) {
   const {

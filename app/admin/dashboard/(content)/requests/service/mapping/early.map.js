@@ -1,4 +1,4 @@
-import { safeFormat } from "@/_function/globalFunction"
+import { safeFormat } from "@/_functions/globalFunction"
 import { getWorkHours } from "../request.service"
 
 export function mapEarlyCheckout(data = []) {

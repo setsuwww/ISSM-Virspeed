@@ -13,9 +13,9 @@ import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants"
-import { capitalize, timeToMinutes } from "@/_function/globalFunction"
+import { capitalize, timeToMinutes } from "@/_functions/globalFunction"
 import { ChevronLeft, Loader } from "lucide-react"
-import { createDivision } from "@/_server/admin-action/divisionAction"
+import { createDivision } from "@/_servers/admin-action/divisionAction"
 import { CreateLocationByScan } from "./CreateLocationByScan"
 
 export default function CreateDivisionForm() {
@@ -65,7 +65,7 @@ export default function CreateDivisionForm() {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Division form" subheading="Insert divisions data & create new division"
+            <ContentInformation title="Division form" subtitle="Insert divisions data & create new division"
               show={true} variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
             />
           </ContentForm.Header>
@@ -92,7 +92,7 @@ export default function CreateDivisionForm() {
                 />
               </div>
 
-              <ContentInformation heading="Division Coordinates" subheading="Insert latitude and longitude for active division location"/>
+              <ContentInformation title="Division Coordinates" subtitle="Insert latitude and longitude for active division location"/>
 
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <div className="space-y-2">

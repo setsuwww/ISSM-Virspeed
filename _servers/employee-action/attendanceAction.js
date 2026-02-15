@@ -4,10 +4,10 @@ import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 import { LogAction, LogMethod } from "@prisma/client"
 
-import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_function/helpers/attendanceHelpers"
+import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_functions/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
-import { safeLog } from "@/_server/admin-action/logAction"
+import { safeLog } from "@/_servers/admin-action/logAction"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()

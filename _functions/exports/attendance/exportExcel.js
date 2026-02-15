@@ -1,4 +1,4 @@
-import { safeFormat } from "@/_function/globalFunction";
+import { safeFormat } from "@/_functions/globalFunction";
 import { exportExcelTemplate } from "../utils/ExportExcelTemplate"
 
 export const exportExcel = (attendances) => {

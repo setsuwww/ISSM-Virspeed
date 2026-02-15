@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-import { useActionHelper } from "@/_stores/common/useActionHelper";
-import { useToast } from "@/_context/Toast-Provider";
-import { deleteScheduleById, deleteSchedules } from "@/_server/admin-action/scheduleAction";
+import { useActionHelper } from "@/_stores/common/useActionStore";
+import { useToast } from "@/_contexts/Toast-Provider";
+import { deleteScheduleById, deleteSchedules } from "@/_servers/admin-action/scheduleAction";
 
 import { confirmMessages } from "@/_constants/static/handleScheduleMessage";
 

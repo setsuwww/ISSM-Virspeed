@@ -4,9 +4,9 @@ import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 
-import { attendancesStyles } from "@/_constants/themes/attendanceTheme";
+import { attendancesStyles } from "@/_constants/theme/attendanceTheme";
 import { shiftDots } from "@/_constants/shiftConstants";
-import { capitalize } from "@/_function/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -14,7 +14,7 @@ import { ClipboardClock } from "lucide-react";
 import { Clock } from "phosphor-react";
 
 import HistoryActionHeader from "./HistoryActionHeader";
-import { useUserAttendanceHistoryHooks } from "@/_client/hooks/admin/useUserAttendanceHistoryHooks";
+import { useUserAttendanceHistoryHooks } from "@/_clients/hooks/admin/useUserAttendanceHistoryHooks";
 
 export default function UserHistoryTable({ history }) {
   const {
@@ -73,8 +73,8 @@ export default function UserHistoryTable({ history }) {
 
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <div className="bg-slate-200 p-2 rounded-full">
-                    <ClipboardClock className="h-5 w-5 text-slate-600" />
+                  <div className="icon-parent">
+                    <ClipboardClock className="icon" strokeWidth={1.5} />
                   </div>
                   <div>
                     <div className="font-semibold text-slate-600">{h.day}</div>

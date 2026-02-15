@@ -13,7 +13,7 @@ export default function ScheduleFrequencies() {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <ContentInformation heading="Schedule table" subheading="Manage schedule more detail than calendar view" />
+        <ContentInformation title="Schedule table" subtitle="Manage schedule more detail than calendar view" />
         <div className="flex items-center space-x-2 mt-4 mb-4">
           {frequenciesLabel.map((f) => (
             <div key={f.label} className={`${f.color} flex items-center space-x-2 border px-2 py-0.5 rounded-full`}>

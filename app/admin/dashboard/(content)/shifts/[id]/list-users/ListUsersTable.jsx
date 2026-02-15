@@ -9,11 +9,11 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 import { Button } from "@/_components/ui/Button";
 import EmptyStates from "@/_components/common/EmptyStates";
 
-import { roleStyles } from "@/_constants/themes/userTheme";
-import { capitalize } from "@/_function/globalFunction";
+import { roleStyles } from "@/_constants/theme/userTheme";
+import { capitalize } from "@/_functions/globalFunction";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 
-import { deleteUsers, deleteUserById } from "@/_server/admin-action/userAction";
+import { deleteUsers, deleteUserById } from "@/_servers/admin-action/userAction";
 import ListUsersActionHeader from "./ListUsersActionHeader";
 
 export default function ListUsersTable({ data }) {

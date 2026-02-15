@@ -6,7 +6,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import ListUsersTable from "./ListUsersTable";
 
-import { capitalize, minutesToTime, safeFormat } from "@/_function/globalFunction";
+import { capitalize, minutesToTime, safeFormat } from "@/_functions/globalFunction";
 import LinkToPage from "./LinkToPage";
 
 export const revalidate = 60;
@@ -100,12 +100,13 @@ export default async function ShiftUsersPage({ params, searchParams }) {
       <ContentForm>
         <ContentForm.Header>
           <div className="flex flex-col gap-1">
-            <ContentInformation
-              heading="Shift Information"
-              subheading={`Working hours: ${typeof shift.startTime === "number"
-                ? minutesToTime(shift.startTime)
-                : "-"
-                } - ${typeof shift.endTime === "number"
+            <ContentInformation title="Shift Information"
+              subtitle={`Working hours:
+                ${typeof shift.startTime === "number"
+                  ? minutesToTime(shift.startTime)
+                  : "-"
+                } -
+                ${typeof shift.endTime === "number"
                   ? minutesToTime(shift.endTime)
                   : "-"
                 }`}

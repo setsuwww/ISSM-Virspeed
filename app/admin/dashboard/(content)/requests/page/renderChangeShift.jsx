@@ -3,7 +3,7 @@
 import { CircleUserRound } from "lucide-react"
 
 import { TableCell } from "@/_components/ui/Table"
-import { capitalize, wordsLimit } from "@/_function/globalFunction"
+import { capitalize, wordsLimit } from "@/_functions/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 
 import RequestStatusChangerToggle from "../RequestStatusChanger"

@@ -6,7 +6,7 @@ import { CalendarDays, Users, Repeat, Bell } from "lucide-react"
 
 import { Button } from "@/_components/ui/Button"
 
-import { capitalize } from "@/_function/globalFunction"
+import { capitalize } from "@/_functions/globalFunction"
 import { frequencyStyles } from "@/_constants/scheduleConstants"
 
 export default function ScheduleListDetails({ schedule }) {

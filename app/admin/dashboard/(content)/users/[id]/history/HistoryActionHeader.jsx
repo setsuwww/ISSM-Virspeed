@@ -8,9 +8,9 @@ import { Button } from "@/_components/ui/Button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 
-import { exportPDF } from "@/_function/exports/employee/history/exportPDF";
-import { exportWord } from "@/_function/exports/employee/history/exportWord";
-import { exportExcel } from "@/_function/exports/employee/history/exportExcel";
+import { exportPDF } from "@/_functions/exports/employee/history/exportPDF";
+import { exportWord } from "@/_functions/exports/employee/history/exportWord";
+import { exportExcel } from "@/_functions/exports/employee/history/exportExcel";
 
 export default function HistoryActionHeader({
   search, onSearchChange,

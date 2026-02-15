@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import { attendanceStatusClass } from "@/_constants/themes/attendanceTheme"
+import { attendanceStatusClass } from "@/_constants/theme/attendanceTheme"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
 import AttendancesUsers from "./AttendancesUsers"

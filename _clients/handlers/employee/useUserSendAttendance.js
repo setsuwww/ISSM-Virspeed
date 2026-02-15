@@ -10,7 +10,7 @@ import {
   userSendEarlyCheckout,
   userSendPermissionRequest,
   userSendLeaveRequest,
-} from "@/_server/employee-action/attendanceAction"
+} from "@/_servers/employee-action/attendanceAction"
 
 export function useUserSendAttendance() {
   const [isPending, startTransition] = useTransition()
@@ -78,9 +78,9 @@ export function useUserSendAttendance() {
         // Real data
         const res = await userSendCheckIn(coords)
 
-        if (res?.error) { toast.error(res.error)} 
+        if (res?.error) { toast.error(res.error)}
         else { toast.success("Checked in successfully")}
-      } 
+      }
       catch (err) { console.error(err)
         toast.error( err?.message ??
           "Check in gagal. Periksa koneksi, lokasi, atau waktu shift."

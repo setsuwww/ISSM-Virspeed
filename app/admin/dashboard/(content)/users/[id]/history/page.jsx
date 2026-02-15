@@ -5,7 +5,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import UserHistoryTable from "./HistoryTable";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import { minutesToTime, safeFormat } from "@/_function/globalFunction";
+import { minutesToTime, safeFormat } from "@/_functions/globalFunction";
 
 const PAGE_SIZE = 10;
 
@@ -103,10 +103,7 @@ export default async function UserHistoryPage({ params, searchParams }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation
-            heading={profile ? `${profile.name}` : "User"}
-            subheading={profile ? `${profile.name}'s Attendance history detail` : "User"}
-          />
+          <ContentInformation title={profile ? `${profile.name}` : "User"} subtitle={profile ? `${profile.name}'s Attendance history detail` : "User"}/>
         </ContentForm.Header>
 
         <ContentForm.Body>

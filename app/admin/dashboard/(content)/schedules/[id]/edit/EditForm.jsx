@@ -14,8 +14,8 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { updateSchedule } from "@/_server/admin-action/scheduleAction"
-import { useToast } from "@/_context/Toast-Provider"
+import { updateSchedule } from "@/_servers/admin-action/scheduleAction"
+import { useToast } from "@/_contexts/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 import { Textarea } from "@/_components/ui/Textarea"
@@ -68,7 +68,7 @@ export default function EditForm({ schedule, users }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="Edit Schedule Form" subheading="Modify existing schedule and assigned users"
+          <ContentInformation title="Edit Schedule Form" subtitle="Modify existing schedule and assigned users"
             show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/schedules"
           />
         </ContentForm.Header>

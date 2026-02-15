@@ -5,8 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/_components/ui/Checkbox";
 import UsersActionHeader from "./UsersActionHeader";
 import UsersRow from "./UsersRow";
-import { roleStyles } from "@/_constants/themes/userTheme";
-import { useUsersHooks } from "@/_client/hooks/admin/useUsersHooks";
+import { roleStyles } from "@/_constants/theme/userTheme";
+import { useUsersHooks } from "@/_clients/hooks/admin/useUsersHooks";
 import EmptyStates from "@/_components/common/EmptyStates";
 
 export default function UsersTable({ data }) {

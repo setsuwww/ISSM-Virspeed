@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import { minutesToTime } from "@/_function/globalFunction";
+import { minutesToTime } from "@/_functions/globalFunction";
 import { DashboardHeader } from "../../DashboardHeader";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
@@ -105,12 +105,8 @@ export default async function ShiftsPage({ searchParams }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation
-            heading="List shifts"
-            subheading="Manage all shift data in this table"
-            show
-            buttonText="Create Shift"
-            href="/admin/dashboard/shifts/create"
+          <ContentInformation title="List shifts" subtitle="Manage all shift data in this table"
+            show buttonText="Create Shift" href="/admin/dashboard/shifts/create"
           />
         </ContentForm.Header>
 

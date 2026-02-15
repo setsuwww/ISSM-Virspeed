@@ -114,6 +114,7 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    font-family: "Geist";
   }
   body {
     background:
@@ -124,6 +125,10 @@
       ),
       linear-gradient(180deg, #0f172a, #020617);
   }
+  button,
+  a {
+    @apply cursor-pointer;
+  }
 }
 
 @font-face {
@@ -131,17 +136,6 @@
   src: url("/fonts/Geist-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
-}
-
-@layer base {
-  * {
-    font-family: "Geist";
-  }
-
-  button,
-  a {
-    @apply cursor-pointer;
-  }
 }
 
 ::-webkit-scrollbar {

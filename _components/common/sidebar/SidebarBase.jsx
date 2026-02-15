@@ -34,7 +34,7 @@ export default function SidebarBase({ menu, user }) {
         variants={sidebarVariants}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className={clsx(
-          "h-screen bg-white border-r border-slate-200 flex flex-col shadow-lg",
+          "h-screen bg-white border-r border-slate-200 flex flex-col shadow-lg animate-transition transition-transform",
           minimized ? "w-[80px]" : "w-64"
         )}
         style={{ transformOrigin: "left center" }}

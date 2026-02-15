@@ -1,4 +1,4 @@
-import { safeFormat } from "@/_function/globalFunction"
+import { safeFormat } from "@/_functions/globalFunction"
 
 export function mapShiftChange(data = []) {
   if (!Array.isArray(data)) return []

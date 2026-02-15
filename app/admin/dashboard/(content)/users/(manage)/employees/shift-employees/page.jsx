@@ -4,7 +4,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import EmployeesTable from "./EmployeesTable";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
-import { minutesToTime } from "@/_function/globalFunction";
+import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
 
 const PAGE_SIZE = 10;
@@ -83,11 +83,7 @@ export default async function EmployeesPage({ searchParams }) {
       <ContentForm>
         <ContentForm.Header>
           <div className="flex items-center justify-between pb-3">
-            <ContentInformation
-              autoMargin={false}
-              heading="List Shift employees"
-              subheading="Manage all shift-hours employees here"
-            />
+            <ContentInformation title="List Shift employees" subtitle="Manage all shift-hours employees here" autoMargin={false} />
             <EmployeesTableButton />
           </div>
         </ContentForm.Header>

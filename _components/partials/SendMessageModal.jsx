@@ -10,7 +10,7 @@ import {
   X,
   Trash2,
 } from "lucide-react"
-import { sendMail } from "@/_server/admin-action/mailAction"
+import { sendMail } from "@/_servers/admin-action/mailAction"
 
 import {
   Dialog,

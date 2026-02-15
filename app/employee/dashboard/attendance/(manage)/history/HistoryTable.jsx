@@ -13,9 +13,9 @@ import {
 import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
-import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
-import { capitalize } from "@/_function/globalFunction"
+import { capitalize } from "@/_functions/globalFunction"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {
   const [order, setOrder] = useState(initialOrder)

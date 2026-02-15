@@ -1,7 +1,7 @@
-import { exportPDFTemplate } from "../../utils/ExportPDFTemplate";
-import { safeFormat } from "@/_function/globalFunction";
+import { exportExcelTemplate } from "../../utils/ExportExcelTemplate";
+import { safeFormat } from "@/_functions/globalFunction";
 
-export function exportPDF(history = []) {
+export function exportExcel(history = []) {
   if (!Array.isArray(history) || history.length === 0) return;
 
   const columns = [
@@ -28,7 +28,7 @@ export function exportPDF(history = []) {
     earlyCheckout: h.isEarlyCheckout ? "Yes" : "No",
   }));
 
-  exportPDFTemplate({
+  exportExcelTemplate({
     title: "Attendance History Report",
     sheetName: "History Sheet",
     columns,

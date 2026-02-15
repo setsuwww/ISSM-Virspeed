@@ -1,7 +1,7 @@
 "use client"
 
 import { LogOut, Loader } from "lucide-react"
-import { capitalize, minutesToTime } from "@/_function/globalFunction"
+import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import dayjs from "@/_lib/day"
 import "dayjs/locale/en"
 import { useTransition } from "react"

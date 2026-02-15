@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Clock, User } from "lucide-react";
 import UsersModal from "./UsersModal";
-import { minutesToTime } from "@/_function/globalFunction";
+import { minutesToTime } from "@/_functions/globalFunction";
 
 export default function TabsNormalHours({ divisions = [] }) {
   const [selected, setSelected] = useState(null);

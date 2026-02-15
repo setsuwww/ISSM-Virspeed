@@ -2,9 +2,9 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useActionHelper } from "@/_stores/common/useActionHelper";
+import { useActionHelper } from "@/_stores/common/useActionStore";
 
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_server/admin-action/divisionAction";
+import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_servers/admin-action/divisionAction";
 
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 

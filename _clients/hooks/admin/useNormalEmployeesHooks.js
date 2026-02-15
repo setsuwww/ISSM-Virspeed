@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { api } from "@/_lib/api"
 import { useConfirmStore } from "@/_stores/common/useConfirmStore"
 import { confirmMessages } from "@/_constants/static/handleEmployeeMessage"
-import { deleteUserById } from "@/_server/admin-action/userAction"
+import { deleteUserById } from "@/_servers/admin-action/userAction"
 
 const askConfirm = useConfirmStore.getState().ask
 

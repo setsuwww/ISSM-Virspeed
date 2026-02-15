@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog";
-import { getInitial } from "@/_function/globalFunction";
+import { getInitial } from "@/_functions/globalFunction";
 
 const colors = [
   "bg-rose-600",

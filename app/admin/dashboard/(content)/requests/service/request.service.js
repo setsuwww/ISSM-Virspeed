@@ -1,4 +1,4 @@
-import { minutesToTime } from "@/_function/globalFunction"
+import { minutesToTime } from "@/_functions/globalFunction"
 
 export function getWorkHours(shift, division) {
   const start = shift?.startTime ?? division?.startTime ?? null

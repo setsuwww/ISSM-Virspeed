@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
-import { timeToMinutes } from "@/_function/globalFunction"
+import { timeToMinutes } from "@/_functions/globalFunction"
 
 export async function createDivision(data) {
   try {

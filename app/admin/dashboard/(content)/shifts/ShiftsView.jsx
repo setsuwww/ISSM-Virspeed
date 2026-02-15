@@ -18,13 +18,13 @@ import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 
-import { capitalize } from "@/_function/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 
 import {
   deleteShift,
   deleteManyShifts,
-} from "@/_server/admin-action/shiftAction";
+} from "@/_servers/admin-action/shiftAction";
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
 

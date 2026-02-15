@@ -12,9 +12,9 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { Label } from "@/_components/ui/Label"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 
-import { timeToMinutes } from "@/_function/globalFunction"
-import { capitalize } from "@/_function/globalFunction"
-import { createShift, updateShift } from "@/_server/admin-action/shiftAction"
+import { timeToMinutes } from "@/_functions/globalFunction"
+import { capitalize } from "@/_functions/globalFunction"
+import { createShift, updateShift } from "@/_servers/admin-action/shiftAction"
 
 export default function ShiftForm({ divisions, shift }) {
   const router = useRouter()
@@ -70,13 +70,8 @@ export default function ShiftForm({ divisions, shift }) {
       <ContentForm>
         <form onSubmit={handleSubmit}>
           <ContentForm.Header>
-            <ContentInformation
-              heading="Shift Form"
-              subheading={isEdit ? "Update shift data" : "Create a new shift"}
-              show
-              buttonText="Back"
-              variant="outline"
-              href="/admin/dashboard/shifts"
+            <ContentInformation title="Shift Form" subtitle={isEdit ? "Update shift data" : "Create a new shift"}
+              show buttonText="Back" variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>
 
@@ -139,8 +134,8 @@ export default function ShiftForm({ divisions, shift }) {
 
           <ContentForm.Footer>
             <Button type="submit" disabled={isPending}>
-                {isPending 
-                    ? (<><Loader className="w-4 h-4 animate-spin mr-2" />{isEdit ? "Saving..." : "Creating..."}</>) 
+                {isPending
+                    ? (<><Loader className="w-4 h-4 animate-spin mr-2" />{isEdit ? "Saving..." : "Creating..."}</>)
                     : (isEdit ? "Update Shift" : "Create Shift")
                 }
             </Button>

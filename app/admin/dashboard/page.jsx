@@ -107,7 +107,7 @@ export default async function AdminDashboardPage() {
           <div className="bg-orange-50 border border-orange-100 text-orange-500 p-2 rounded-lg">
             <Zap strokeWidth={2} />
           </div>
-          <ContentInformation heading="Fast action" subheading="Access your content in one click" autoMargin={false} />
+          <ContentInformation title="Fast action" subtitle="Access your content in one click" autoMargin={false} />
         </div>
         <FastActions />
       </div>

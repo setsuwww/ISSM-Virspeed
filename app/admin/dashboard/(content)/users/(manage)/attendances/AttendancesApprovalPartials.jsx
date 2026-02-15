@@ -2,7 +2,7 @@
 
 import { Calendar, User, Users } from "lucide-react";
 import { Badge } from "@/_components/ui/Badge";
-import { capitalize } from "@/_function/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 
 export default function AttendancesApprovalPartials({
   status, users, approvalCounts, statusColorsClass, onClick,

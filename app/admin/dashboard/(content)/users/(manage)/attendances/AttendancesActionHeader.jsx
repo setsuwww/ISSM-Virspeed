@@ -7,9 +7,9 @@ import { Input } from "@/_components/ui/Input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/_components/ui/Select";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu";
 
-import { exportPDF } from "@/_function/exports/attendance/exportPDF";
-import { exportWord } from "@/_function/exports/attendance/exportWord";
-import { exportExcel } from "@/_function/exports/attendance/exportExcel";
+import { exportPDF } from "@/_functions/exports/attendance/exportPDF";
+import { exportWord } from "@/_functions/exports/attendance/exportWord";
+import { exportExcel } from "@/_functions/exports/attendance/exportExcel";
 
 export const AttendancesActionHeader = React.memo(({
   selectedDate, onDateChange,

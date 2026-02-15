@@ -12,10 +12,10 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 
-import { timeToMinutes } from "@/_function/globalFunction";
-import { capitalize } from "@/_function/globalFunction";
+import { timeToMinutes } from "@/_functions/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 
-import { createShift } from "@/_server/admin-action/shiftAction"
+import { createShift } from "@/_servers/admin-action/shiftAction"
 
 export default function CreateShiftForm({ divisions }) {
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function CreateShiftForm({ divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-0">
           <ContentForm.Header>
-            <ContentInformation heading="Shift Form" subheading="Create a new shift and assign it to an division"
+            <ContentInformation title="Shift Form" subtitle="Create a new shift and assign it to an division"
               show={true} buttonText="Back" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>

@@ -13,7 +13,7 @@ import { apiFetchData } from "@/_lib/fetch"
 import ContentForm from '@/_components/common/ContentForm';
 import { ContentInformation } from '@/_components/common/ContentInformation';
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { capitalize } from "@/_function/globalFunction"
+import { capitalize } from "@/_functions/globalFunction"
 
 function toLocalISOString(dateStr) {
   if (!dateStr) return null
@@ -89,7 +89,7 @@ export default function ChangeShiftForm({ employees = [] }) {
   return (
     <ContentForm>
       <ContentForm.Header>
-        <ContentInformation heading="Change shift form" subheading="Send a change shift request to another employee"
+        <ContentInformation title="Change shift form" subtitle="Send a change shift request to another employee"
           show buttonText="History" href="/employee/dashboard/attendance/change-shift/history" variant="outline"
         />
       </ContentForm.Header>

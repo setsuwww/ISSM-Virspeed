@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { clearAllActivityLogs } from "@/_server/admin-action/logAction"
+import { clearAllActivityLogs } from "@/_servers/admin-action/logAction"
 
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
@@ -27,10 +27,7 @@ export default function LogView({ logs }) {
       <ContentForm>
         <ContentForm.Header>
           <div className="flex items-center justify-between">
-            <ContentInformation
-              heading="Activity Logs" autoMargin
-              subheading="Audit trail for all user actions"
-            />
+            <ContentInformation title="Activity Logs" autoMargin subtitle="Audit trail for all user actions"/>
 
             <LogClearButton
               onClick={() => setOpen(true)}

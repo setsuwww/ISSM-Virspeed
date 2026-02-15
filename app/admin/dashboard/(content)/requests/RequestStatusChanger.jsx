@@ -11,7 +11,7 @@ import {
   updateLeaveRequestStatus,
   updatePermissionRequestStatus,
   updateShiftChangeRequestStatus
-} from "@/_server/admin-action/requestAction";
+} from "@/_servers/admin-action/requestAction";
 
 const statusUI = {
   PENDING: { label: "Pending", dot: "bg-yellow-400", ping: true },

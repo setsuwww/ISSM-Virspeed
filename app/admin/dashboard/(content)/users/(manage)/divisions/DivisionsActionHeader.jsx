@@ -4,9 +4,9 @@ import { Button } from "@/_components/ui/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { exportPDF } from "@/_function/exports/division/exportPDF"
-import { exportWord } from "@/_function/exports/division/exportWord"
-import { exportExcel } from "@/_function/exports/division/exportExcel"
+import { exportPDF } from "@/_functions/exports/division/exportPDF"
+import { exportWord } from "@/_functions/exports/division/exportWord"
+import { exportExcel } from "@/_functions/exports/division/exportExcel"
 
 export default function DivisionsActionHeader({
   search, onSearchChange,

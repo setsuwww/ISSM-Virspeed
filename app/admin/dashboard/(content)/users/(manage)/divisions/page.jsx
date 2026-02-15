@@ -4,7 +4,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
 import DivisionsTable from "./DivisionsTable"
 import { prisma } from "@/_lib/prisma"
-import { minutesToTime } from "@/_function/globalFunction"
+import { minutesToTime } from "@/_functions/globalFunction"
 
 const PAGE_SIZE = 10
 
@@ -36,7 +36,7 @@ export default async function Page({ searchParams }) {
       <DashboardHeader title="Divisions" subtitle="List of Division divisions" />
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="List divisions" subheading="Manage all division data in this table"
+          <ContentInformation title="List divisions" subtitle="Manage all division data in this table"
             show={true} buttonText="Create Division" href="/admin/dashboard/users/divisions/create"
           />
         </ContentForm.Header>

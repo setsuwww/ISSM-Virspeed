@@ -6,9 +6,9 @@ import { Input } from "@/_components/ui/Input";
 import { Button } from "@/_components/ui/Button";
 import { Trash2, FolderInput } from "lucide-react";
 
-import { exportPDF } from "@/_function/exports/user/exportPDF";
-import { exportWord } from "@/_function/exports/user/exportWord";
-import { exportExcel } from "@/_function/exports/user/exportExcel";
+import { exportPDF } from "@/_functions/exports/user/exportPDF";
+import { exportWord } from "@/_functions/exports/user/exportWord";
+import { exportExcel } from "@/_functions/exports/user/exportExcel";
 
 export default function ListUsersActionHeader({
   sortOrder, onSortOrderChange,

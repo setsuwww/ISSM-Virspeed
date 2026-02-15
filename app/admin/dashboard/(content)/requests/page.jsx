@@ -57,9 +57,8 @@ export default async function Page({ searchParams }) {
       <ContentForm>
         <ContentForm.Header>
           <div className="flex items-center justify-between w-full">
-            <ContentInformation
-              heading={mode === "history" ? "Request History" : "Pending Requests"}
-              subheading="Switch between request types or clear history"
+            <ContentInformation title={mode === "history" ? "Request History" : "Pending Requests"}
+              subtitle="Switch between request types or clear history"
               show={false}
             />
 

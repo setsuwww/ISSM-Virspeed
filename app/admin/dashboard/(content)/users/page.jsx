@@ -7,7 +7,7 @@ import UsersTable from "./UsersTable";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
-import { capitalize, safeFormat, minutesToTime } from "@/_function/globalFunction";
+import { capitalize, safeFormat, minutesToTime } from "@/_functions/globalFunction";
 
 const PAGE_SIZE = 10;
 export const revalidate = 60;
@@ -95,7 +95,7 @@ export default async function Page({ searchParams }) {
       <DashboardHeader title="Users" subtitle="Users data detail" />
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation heading="List users" subheading="Manage all users data in this table"
+          <ContentInformation title="List users" subtitle="Manage all users data in this table"
             show buttonText="Create Users" href="/admin/dashboard/users/create"
           />
         </ContentForm.Header>

@@ -7,9 +7,9 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/_lib/prisma"
 import { signToken, getCurrentUser, removeAuthCookie } from "@/_lib/auth"
 import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
-import { logActivity } from "@/_server/admin-action/logAction"
+import { logActivity } from "@/_servers/admin-action/logAction"
 
-import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_server/admin-action/securityAction"
+import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-action/securityAction"
 
 export async function AuthAction(prevState, formData) {
   const email = formData.get("email")?.toString()

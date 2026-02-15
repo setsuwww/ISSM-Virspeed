@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { wordsLimit } from "@/_function/globalFunction"
+import { wordsLimit } from "@/_functions/globalFunction"
 
 export function LogUserAgent({ value }) {
   const [open, setOpen] = useState(false)

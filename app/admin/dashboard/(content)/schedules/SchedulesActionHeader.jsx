@@ -8,9 +8,9 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Button } from "@/_components/ui/Button";
 import { Input } from "@/_components/ui/Input";
 
-import { exportPDF } from "@/_function/exports/schedule/exportPDF";
-import { exportWord } from "@/_function/exports/schedule/exportWord";
-import { exportExcel } from "@/_function/exports/schedule/exportExcel";
+import { exportPDF } from "@/_functions/exports/schedule/exportPDF";
+import { exportWord } from "@/_functions/exports/schedule/exportWord";
+import { exportExcel } from "@/_functions/exports/schedule/exportExcel";
 
 export default function SchedulesActionHeader({
   search, setSearch,

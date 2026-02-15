@@ -8,7 +8,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import LoadingStates from "@/_components/common/LoadingStates"
 
 import { apiFetchData } from "@/_lib/fetch"
-import { useUserSendAttendance } from "@/_client/handlers/employee/useUserSendAttendance"
+import { useUserSendAttendance } from "@/_clients/handlers/employee/useUserSendAttendance"
 
 import { MainActionCard } from "./MainActionCard"
 import { MainStats } from "./MainStats"
@@ -101,7 +101,7 @@ export default function CheckinForm() {
 
   return (
     <div className="p-8 space-y-8">
-      <ContentInformation heading="Your Statistic" subheading="Views your attendance" />
+      <ContentInformation title="Your Statistic" subtitle="Views your attendance" />
 
       <MainStats
         items={[
@@ -114,7 +114,7 @@ export default function CheckinForm() {
 
       <Card className="border border-slate-200 shadow-sm pt-4">
         <CardContent className="space-y-5">
-          <ContentInformation heading="Your Presence" subheading="Click once at cards below to send your status" />
+          <ContentInformation title="Your Presence" subtitle="Click once at cards below to send your status" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <MainActionCard icon={<LogIn />} title="Check In" description="Start your working time"
@@ -130,7 +130,7 @@ export default function CheckinForm() {
             />
           </div>
 
-          <ContentInformation heading="Send Request" subheading="Change your internal shift / attendance" />
+          <ContentInformation title="Send Request" subtitle="Change your internal shift / attendance" />
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-3">
             <MainActionCard icon={<Plane strokeWidth={1.5} />} title="Permission" description="Ask for permission"

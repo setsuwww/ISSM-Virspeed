@@ -12,11 +12,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/_components/ui/Command"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { divisionStyles } from "@/_constants/themes/divisionTheme";
+import { divisionStyles } from "@/_constants/theme/divisionTheme";
 
-import { exportPDF } from "@/_function/exports/employee/exportPDF";
-import { exportWord } from "@/_function/exports/employee/exportWord";
-import { exportExcel } from "@/_function/exports/employee/exportExcel";
+import { exportPDF } from "@/_functions/exports/employee/exportPDF";
+import { exportWord } from "@/_functions/exports/employee/exportWord";
+import { exportExcel } from "@/_functions/exports/employee/exportExcel";
 
 export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   mode = "default",

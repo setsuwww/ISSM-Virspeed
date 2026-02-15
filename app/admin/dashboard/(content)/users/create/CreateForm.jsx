@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useTransition } from "react"
-import { useToast } from "@/_context/Toast-Provider"
+import { useToast } from "@/_contexts/Toast-Provider"
 import { useRouter } from "next/navigation"
 
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
@@ -15,8 +15,8 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
-import { createUser } from "@/_server/admin-action/userAction.js"
-import { capitalize, minutesToTime } from "@/_function/globalFunction"
+import { createUser } from "@/_servers/admin-action/userAction.js"
+import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
 import { ChevronLeft, Loader } from 'lucide-react';
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
@@ -91,7 +91,7 @@ export default function CreateForm({ divisions, shifts }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Users form" subheading="Insert users data & create new user"
+            <ContentInformation title="Users form" subtitle="Insert users data & create new user"
               show variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users"
             />
           </ContentForm.Header>
@@ -123,7 +123,7 @@ export default function CreateForm({ divisions, shifts }) {
                 />
               </div>
 
-              <ContentInformation heading="Private" subheading="Users private password & role" />
+              <ContentInformation title="Private" subtitle="Users private password & role" />
 
               <div className="space-y-2 mt-8">
                 <Label htmlFor="password">

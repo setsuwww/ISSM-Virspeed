@@ -10,10 +10,10 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 
-import { safeFormat, capitalize, wordsLimit } from "@/_function/globalFunction"
-import { getAttendancesByDate } from "@/_server/admin-action/attendanceAction"
+import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
+import { getAttendancesByDate } from "@/_servers/admin-action/attendanceAction"
 import Link from "next/link"
 
 export default function AttendancesTableClient() {
@@ -48,10 +48,7 @@ export default function AttendancesTableClient() {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between my-6 gap-4">
-        <ContentInformation
-          heading="List attendances"
-          subheading={`Manage and review all attendance ${safeFormat(date, "dd-MMMM-yyyy")}`}
-        />
+        <ContentInformation title="List attendances" subtitle={`Manage and review all attendance ${safeFormat(date, "dd-MMMM-yyyy")}`}/>
 
         <AttendancesActionHeader
           selectedDate={date} onDateChange={setDate}

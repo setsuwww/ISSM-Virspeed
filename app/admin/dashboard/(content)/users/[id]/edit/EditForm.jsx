@@ -10,9 +10,9 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
-import { capitalize } from "@/_function/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 import { roleOptions } from "@/_constants/userConstants";
-import { updateUser } from "@/_server/admin-action/userAction.js";
+import { updateUser } from "@/_servers/admin-action/userAction.js";
 import { ChevronLeft, Loader } from 'lucide-react';
 
 export default function EditForm({ user, divisions }) {
@@ -58,7 +58,7 @@ export default function EditForm({ user, divisions }) {
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation heading="Public" subheading="Update user info" show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/users/employees/shift-employees" />
+            <ContentInformation title="Public" subtitle="Update user info" show={true} buttonText="Cancel" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/users/employees/shift-employees" />
           </ContentForm.Header>
 
           <ContentForm.Body>
@@ -73,7 +73,7 @@ export default function EditForm({ user, divisions }) {
                 <Input type="email" name="email" value={form.email} onChange={handleChange} required />
               </div>
 
-              <ContentInformation heading="Private" subheading="Password & Role" />
+              <ContentInformation title="Private" subtitle="Password & Role" />
 
               <div className="space-y-2 mt-6">
                 <Label>Password</Label>

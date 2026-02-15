@@ -69,10 +69,7 @@ export default function InputAssignUserShift({ users }) {
   return (
     <div className="space-y-6">
       <div className="py-2">
-        <ContentInformation
-          heading="Assign Users to Schedules"
-          subheading="Select date, time, and assign users."
-        />
+        <ContentInformation title="Assign Users to Schedules" subtitle="Select date, time, and assign users." />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

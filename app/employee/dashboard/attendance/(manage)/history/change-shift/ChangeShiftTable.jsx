@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/_components/ui/Badge"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/themes/attendanceTheme"
+import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { normalizePendingStatus, getAttendanceStatus } from "@/_constants/attendanceConstants"
 
 export default function ChangeShiftTable({ data = [] }) {

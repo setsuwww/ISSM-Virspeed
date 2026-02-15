@@ -77,7 +77,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
             <div className="bg-purple-50 border border-purple-100 text-purple-500 p-2 rounded-lg">
               <ChartNoAxesCombined strokeWidth={2} />
             </div>
-            <ContentInformation heading="Analytics" subheading={`Views statistic in ${PRESET_RANGES[rangeKey].label}`} autoMargin={false} />
+            <ContentInformation title="Analytics" subtitle={`Views statistic in ${PRESET_RANGES[rangeKey].label}`} autoMargin={false} />
           </div>
         </div>
 

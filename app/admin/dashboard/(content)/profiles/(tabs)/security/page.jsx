@@ -2,7 +2,7 @@ import { prisma } from "@/_lib/prisma"
 import { SecurityTable } from "./SecurityTable"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import ContentForm from "@/_components/common/ContentForm"
-import { safeFormat } from "@/_function/globalFunction"
+import { safeFormat } from "@/_functions/globalFunction"
 import SecurityView from "./SecurityView"
 
 export default async function SecurityPage() {

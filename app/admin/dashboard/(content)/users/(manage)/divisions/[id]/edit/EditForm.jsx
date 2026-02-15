@@ -12,10 +12,10 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
-import { minutesToTime, capitalize } from "@/_function/globalFunction";
+import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateDivision } from "@/_server/admin-action/divisionAction";
-import { useToast } from "@/_context/Toast-Provider";
+import { updateDivision } from "@/_servers/admin-action/divisionAction";
+import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditDivisionForm({ division }) {
   const router = useRouter();
@@ -47,7 +47,7 @@ export default function EditDivisionForm({ division }) {
     <ContentForm>
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
-          <ContentInformation heading="Edit Division" subheading={`Editing data for: ${division.name}`}
+          <ContentInformation title="Edit Division" subtitle={`Editing data for: ${division.name}`}
             show variant="outline" buttonText="Cancel" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
           />
         </ContentForm.Header>
@@ -64,10 +64,7 @@ export default function EditDivisionForm({ division }) {
               <Input name="location" defaultValue={division.location} required />
             </div>
 
-            <ContentInformation
-              heading="Division Coordinates"
-              subheading="Insert latitude and longitude for active division location"
-            />
+            <ContentInformation title="Division Coordinates" subtitle="Insert latitude and longitude for active division location"/>
 
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="space-y-2">

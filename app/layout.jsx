@@ -1,4 +1,4 @@
-import { ToastProvider } from "@/_context/Toast-Provider"
+import { ToastProvider } from "@/_contexts/Toast-Provider"
 import "../_styles/admin.css"
 
 export const metadata = {

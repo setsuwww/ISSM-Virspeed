@@ -7,10 +7,8 @@ export default function HistoryLayout({ children }) {
     <ContentForm>
       <ContentForm.Header>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full pb-2">
-          <ContentInformation
+          <ContentInformation title="Your Attendance History" subtitle="Review all your attendance records"
             autoMargin={false}
-            heading="Your Attendance History"
-            subheading="Review all your attendance records"
           />
           <HistoryAnotherTabs />
         </div>

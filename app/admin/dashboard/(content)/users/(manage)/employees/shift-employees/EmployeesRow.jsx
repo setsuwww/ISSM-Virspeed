@@ -10,7 +10,7 @@ import { EmployeesActionButton } from "../EmployeesActionButton";
 import { EmployeesSwitchModal } from "../EmployeesSwitchModal";
 
 import { format } from "date-fns";
-import { capitalize } from "@/_function/globalFunction";
+import { capitalize } from "@/_functions/globalFunction";
 import { shiftDots } from "@/_constants/shiftConstants";
 
 export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, toggleSelect, onHistory, onEdit, onDelete }) {
