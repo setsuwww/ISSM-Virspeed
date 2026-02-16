@@ -42,18 +42,13 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
           {!minimized && <span className="text-sm">{title}</span>}
         </div>
         {!minimized && (
-          <ChevronDown size={18}
-            className={`text-slate-400 transition-transform duration-300 ${open ? "rotate-180" : ""
-              }`}
-          />
+          <ChevronDown size={18} className={`text-slate-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}/>
         )}
       </button>
 
       {!minimized && (
         <div className="overflow-hidden transition-all duration-300" style={{ height: `${height}px` }}>
-          <div ref={contentRef}
-            className="ml-5 flex flex-col space-y-1.5 border-l-2 border-dashed border-slate-300"
-          >
+          <div ref={contentRef} className="ml-5 flex flex-col space-y-1.5 border-l-2 border-dashed border-slate-300">
             <div className="py-2 px-[14.3px]">
               {items.map((item) => (
                 <SidebarSubLink key={item.href} href={item.href} minimized={minimized}>

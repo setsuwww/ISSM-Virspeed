@@ -31,7 +31,7 @@ export default function ListUsersActionHeader({
           </SelectContent>
         </Select>
 
-        <Input placeholder="Search user..."
+        <Input placeholder="Search employee..."
           value={search} onChange={(e) => onSearchChange(e.target.value)}
           typeSearch
         />

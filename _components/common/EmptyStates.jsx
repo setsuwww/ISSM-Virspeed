@@ -19,12 +19,8 @@ export default function EmptyStates({
       </div>
 
       <div className="text-sm text-slate-400 max-w-xs">
-        <p>
-          {message}
-        </p>
-        <p>
-          {secondaryMessage}
-        </p>
+        <p>{message}</p>
+        <p>{secondaryMessage}</p>
       </div>
 
       <Button size="sm" variant="outline" onClick={() => router.push("/admin/dashboard")}>

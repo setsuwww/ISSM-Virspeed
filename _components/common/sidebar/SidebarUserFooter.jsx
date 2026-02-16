@@ -44,7 +44,6 @@ export default function SidebarUserFooter({ user, minimized }) {
           />
         </div>
 
-        {/* Text container animated */}
         <div
           className={clsx(
             "flex flex-col text-sm leading-tight transition-all duration-300",

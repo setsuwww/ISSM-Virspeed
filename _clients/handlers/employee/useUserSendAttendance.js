@@ -18,7 +18,6 @@ export function useUserSendAttendance() {
   const checkIn = () =>
     startTransition(async () => {
       try {
-        // precheck server-side
         const precheck = await userPrecheckCheckIn()
 
         if (precheck?.error) {
@@ -26,19 +25,14 @@ export function useUserSendAttendance() {
           return
         }
 
-        // without geolocation
         if (precheck?.requireLocation === false) {
           const res = await userSendCheckIn({ skipLocation: true })
 
-          if (res?.error) {
-            toast.error(res.error)
-          } else {
-            toast.success("Checked in successfully")
-          }
+          if (res?.error) { toast.error(res.error)}
+          else { toast.success("Checked in successfully")}
           return
         }
 
-        // Need geolocation
         if (!navigator.geolocation) {
           toast.error("Browser tidak mendukung geolocation")
           return
@@ -61,8 +55,7 @@ export function useUserSendAttendance() {
                 default:
                   reject(new Error("Gagal mendapatkan lokasi"))
               }
-            },
-            {
+            }, {
               enableHighAccuracy: false,
               timeout: 20000,
               maximumAge: 60000,
@@ -75,28 +68,23 @@ export function useUserSendAttendance() {
           lon: position.coords.longitude,
         }
 
-        // Real data
         const res = await userSendCheckIn(coords)
 
         if (res?.error) { toast.error(res.error)}
         else { toast.success("Checked in successfully")}
       }
       catch (err) { console.error(err)
-        toast.error( err?.message ??
-          "Check in gagal. Periksa koneksi, lokasi, atau waktu shift."
-        )
+        toast.error( err?.message ?? "Check in gagal. Periksa koneksi, lokasi, atau waktu shift.")
       }
     })
 
   const checkOut = () =>
     startTransition(async () => {
-      try {
-        const res = await userSendCheckOut()
-        res?.error
-          ? toast.error(res.error)
+      try { const res = await userSendCheckOut()
+        res?.error ? toast.error(res.error)
           : toast.success("Checked out successfully")
-      } catch (err) {
-        console.error(err)
+      }
+      catch (err) { console.error(err)
         toast.error("Checkout gagal")
       }
     })

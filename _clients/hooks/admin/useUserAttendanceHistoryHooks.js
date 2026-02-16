@@ -9,12 +9,9 @@ export function useUserAttendanceHistoryHooks(history = []) {
   const [sort, setSort] = useState("desc");
 
   const {
-    data,
-    selectedIds,
-    toggleSelect,
-    toggleSelectAll,
-    removeSelected,
-    removeAll,
+    data, selectedIds,
+    toggleSelect, toggleSelectAll,
+    removeSelected, removeAll,
   } = useHandleUserAttendanceHistory(history);
 
   const filteredData = useMemo(() => {
@@ -32,8 +29,7 @@ export function useUserAttendanceHistoryHooks(history = []) {
     }
 
     result.sort((a, b) =>
-      sort === "desc"
-        ? new Date(b.date) - new Date(a.date)
+      sort === "desc" ? new Date(b.date) - new Date(a.date)
         : new Date(a.date) - new Date(b.date)
     );
 
@@ -41,17 +37,12 @@ export function useUserAttendanceHistoryHooks(history = []) {
   }, [data, search, status, sort]);
 
   return {
-    search,
-    setSearch,
-    status,
-    setStatus,
-    sort,
-    setSort,
+    search, setSearch,
+    status, setStatus,
+    sort, setSort,
     filteredData,
     selectedIds,
-    toggleSelect,
-    toggleSelectAll,
-    removeSelected,
-    removeAll,
+    toggleSelect, toggleSelectAll,
+    removeSelected, removeAll,
   };
 }

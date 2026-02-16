@@ -2,22 +2,10 @@
 
 import { useState, useTransition } from "react"
 import useSWR from "swr"
-import {
-  Search,
-  User,
-  Send,
-  CircleUserRound,
-  X,
-  Trash2,
-} from "lucide-react"
+import { Search, User, Send, CircleUserRound, X, Trash2 } from "lucide-react"
 import { sendMail } from "@/_servers/admin-action/mailAction"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/_components/ui/Dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog"
 import { Input } from "@/_components/ui/Input"
 
 const fetcher = (url) => fetch(url).then(res => res.json())
@@ -32,8 +20,6 @@ export function SendMessageModal({ open, onClose }) {
     query.length >= 2 ? `/api/users/search?q=${query}` : null,
     fetcher
   )
-
-  /* ---------------- handlers ---------------- */
 
   const addUser = (user) => {
     setSelectedUsers(prev =>
@@ -66,8 +52,6 @@ export function SendMessageModal({ open, onClose }) {
     })
   }
 
-  /* ---------------- render ---------------- */
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent size="xl" variant="blue">
@@ -78,7 +62,6 @@ export function SendMessageModal({ open, onClose }) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* Search */}
         <div className="relative">
           <Search
             size={16}
@@ -93,7 +76,6 @@ export function SendMessageModal({ open, onClose }) {
           />
         </div>
 
-        {/* Results */}
         <div className="max-h-56 overflow-y-auto rounded-lg border divide-y">
           {isLoading && (
             <p className="text-sm text-slate-400 p-3">Searching...</p>
@@ -103,10 +85,7 @@ export function SendMessageModal({ open, onClose }) {
             const selected = selectedUsers.some(u => u.id === user.id)
 
             return (
-              <button
-                key={user.id}
-                onClick={() => addUser(user)}
-                disabled={selected}
+              <button key={user.id} onClick={() => addUser(user)} disabled={selected}
                 className={`w-full text-left p-3 transition
                   ${selected ? "bg-slate-50 opacity-60 cursor-not-allowed" : "hover:bg-slate-100"}
                 `}
