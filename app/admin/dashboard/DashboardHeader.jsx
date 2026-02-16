@@ -6,7 +6,7 @@ import Link from "next/link"
 import useSWR from "swr"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
-import { LogoutAuthAction } from "../../auth/login/action"
+import { LogoutAuthAction } from "../../../_servers/authAction"
 import { SendMessageModal } from "@/_components/partials/SendMessageModal"
 import { TimeClock } from "@/app/employee/dashboard/TimeClock"
 

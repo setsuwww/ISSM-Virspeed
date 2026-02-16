@@ -8,7 +8,7 @@ import { Button } from "@/_components/ui/Button"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import AuthForm from "../AuthForm"
 import AuthLink from "../AuthLink"
-import { AuthAction } from "./action"
+import { AuthAction } from "../../../_servers/authAction"
 import { Loader } from "lucide-react"
 
 const LoginPage = () => {
@@ -64,7 +64,7 @@ const LoginPage = () => {
         </Button>
 
         <div className="text-center text-xs italic text-slate-400 font-semibold">
-          <span>Lintasarta presented</span>
+          <span>Beefast presented</span>
         </div>
       </form>
 

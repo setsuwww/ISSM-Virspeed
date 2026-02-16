@@ -5,7 +5,7 @@ import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import dayjs from "@/_lib/day"
 import "dayjs/locale/en"
 import { useTransition } from "react"
-import { LogoutAuthAction } from "@/app/auth/login/action"
+import { LogoutAuthAction } from "@/_servers/authAction"
 import { Badge } from '@/_components/ui/Badge';
 import { shiftStyles } from '@/_constants/shiftConstants';
 import { TimeClock } from "./TimeClock"

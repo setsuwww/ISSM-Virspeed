@@ -8,6 +8,8 @@ import { api } from "@/_lib/api";
 import { useConfirmStore } from "@/_stores/common/useConfirmStore";
 import { confirmMessages } from "@/_constants/static/handleEmployeeMessage";
 
+import { deleteUserById } from "@/_servers/admin-action/userAction";
+
 const askConfirm = useConfirmStore.getState().ask;
 
 const MSG = {
@@ -85,12 +87,7 @@ export function useShiftEmployeesHooks(users) {
     const confirmed = await askConfirm(message, variant);
     if (!confirmed) return;
 
-    try {
-      await api.delete(`/users/${id}`);
-      setData((prev) => prev.filter((u) => u.id !== id));
-    } catch {
-      alert(MSG.DELETE_FAIL);
-    }
+    await deleteUserById(id)
   }, []);
 
   return {

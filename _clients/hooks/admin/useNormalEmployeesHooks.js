@@ -2,10 +2,11 @@
 
 import { useState, useMemo, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { api } from "@/_lib/api"
-import { useConfirmStore } from "@/_stores/common/useConfirmStore"
+
 import { confirmMessages } from "@/_constants/static/handleEmployeeMessage"
-import { deleteUserById } from "@/_servers/admin-action/userAction"
+
+import { useConfirmStore } from "@/_stores/common/useConfirmStore"
+import { deleteUserById, deleteUsers } from "@/_servers/admin-action/userAction"
 
 const askConfirm = useConfirmStore.getState().ask
 
@@ -16,9 +17,7 @@ export function useNormalEmployeesHooks(users = []) {
 
   const router = useRouter()
 
-  const data = useMemo(() => {
-    return users.filter((u) => u.role === "EMPLOYEE")
-  }, [users])
+  const data = useMemo(() => users.filter((u) => u.role === "EMPLOYEE"), [users])
 
   const filteredData = useMemo(() => {
     return data.filter((u) => {
@@ -27,8 +26,7 @@ export function useNormalEmployeesHooks(users = []) {
         u.email.toLowerCase().includes(search.toLowerCase())
 
       const matchDivision =
-        divisionFilter === "all" ||
-        String(u.division?.id) === divisionFilter
+        divisionFilter === "all" || String(u.division?.id) === divisionFilter
 
       return matchSearch && matchDivision
     })
@@ -42,14 +40,11 @@ export function useNormalEmployeesHooks(users = []) {
 
   const deleteSelected = async () => {
     if (!selected.length) return
-
-    const { message, variant } =
-      confirmMessages.deleteSelected(selected.length)
-
+    const { message, variant } = confirmMessages.deleteSelected(selected.length)
     const confirmed = await askConfirm(message, variant)
     if (!confirmed) return
 
-    await Promise.all(selected.map((id) => api.delete(`/users/${id}`)))
+    await deleteUsers(selected)
     setSelected([])
   }
 
@@ -67,6 +62,7 @@ export function useNormalEmployeesHooks(users = []) {
     const { message, variant } = confirmMessages.deleteOne
     const confirmed = await askConfirm(message, variant)
     if (!confirmed) return
+
     await deleteUserById(id)
   }, [])
 
