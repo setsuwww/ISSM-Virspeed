@@ -4,6 +4,8 @@ import "../_styles/admin.css"
 export const metadata = {
   title: "ISSM-B-fast",
   description: "ISSM B-Fast Application",
+  manifest: "/manifest.json",
+  themeColor: "#ffffff",
   icons: {
     icon: "/icons/liveon.png"
   }
