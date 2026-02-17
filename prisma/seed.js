@@ -26,11 +26,6 @@ async function main() {
     orderBy: { id: "asc" },
   });
 
-  if (divisionList.length === 0 || shiftList.length === 0) {
-    log.error("Divisions or Shifts not found. Seed them first!");
-    process.exit(1);
-  }
-
   /* ---------- USERS ---------- */
   log.section("USERS");
 
@@ -75,7 +70,6 @@ async function main() {
         email: usersData[i].email,
         password: hash,
         role: usersData[i].role,
-        // Assign division dan shift secara bergantian
         divisionId: divisionList[i % divisionList.length].id,
         shiftId: shiftList[i % shiftList.length].id,
       },
