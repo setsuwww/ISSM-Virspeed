@@ -1,4 +1,4 @@
-import { PrismaClient, Role, ShiftType, LocationType, LocationStatus } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { log } from "../_constants/logConstants.js";
 import ora from "ora";
@@ -6,102 +6,30 @@ import ora from "ora";
 const prisma = new PrismaClient();
 
 async function main() {
-  log.section("PRISMA STRUCTURED SEED START");
+  log.section("PRISMA USER SEED START");
 
-  const cleanSpinner = ora("Cleaning existing data...").start();
+  const cleanSpinner = ora("Cleaning existing users...").start();
 
-  await prisma.schedulesOnUsers.deleteMany();
-  await prisma.schedule.deleteMany();
-  await prisma.userShiftAssignment.deleteMany();
+  // Hapus semua user saja
   await prisma.user.deleteMany();
-  await prisma.shift.deleteMany();
-  await prisma.division.deleteMany();
-  await prisma.systemConfig.deleteMany();
-  await prisma.leaveType.deleteMany();
 
-  cleanSpinner.succeed("Database cleaned");
+  cleanSpinner.succeed("Users table cleaned");
 
-  /* ---------- SYSTEM CONFIG ---------- */
-  log.section("SYSTEM CONFIG");
+  /* ---------- FETCH DIVISIONS & SHIFTS ---------- */
+  log.section("DIVISIONS & SHIFTS");
 
-  const configSpinner = ora("Creating system configs...").start();
-
-  const systemConfigs = await prisma.systemConfig.createMany({
-    data: [
-      { allWfaActive: false },
-      { allWfaActive: true },
-    ],
+  const divisionList = await prisma.division.findMany({
+    orderBy: { id: "asc" },
   });
 
-  configSpinner.succeed(`Inserted ${systemConfigs.count} system configs`);
-
-  /* ---------- DIVISIONS ---------- */
-  log.section("DIVISIONS");
-
-  const divisionSpinner = ora("Creating divisions...").start();
-
-  const divisions = await prisma.division.createMany({
-    data: [
-      {
-        name: "Finance",
-        location: "Jakarta Selatan",
-        type: LocationType.WFO,
-        status: LocationStatus.ACTIVE,
-        longitude: 106.82,
-        latitude: -6.21,
-        radius: 100,
-        startTime: 8 * 60,
-        endTime: 17 * 60,
-      },
-      {
-        name: "IT Support",
-        location: "Branch, Jakarta Selatan",
-        type: LocationType.WFA,
-        status: LocationStatus.ACTIVE,
-        longitude: 107.61,
-        latitude: -6.91,
-        radius: 120,
-        startTime: 9 * 60,
-        endTime: 18 * 60,
-      },
-    ],
+  const shiftList = await prisma.shift.findMany({
+    orderBy: { id: "asc" },
   });
 
-  divisionSpinner.succeed(`Inserted ${divisions.count} divisions`);
-
-  const divisionList = await prisma.division.findMany();
-
-  /* ---------- SHIFTS ---------- */
-  log.section("SHIFTS");
-
-  const shiftTemplates = [
-    { type: ShiftType.MORNING, baseName: "M", start: 8 * 60, end: 16 * 60 },
-    { type: ShiftType.AFTERNOON, baseName: "A", start: 16 * 60, end: 24 * 60 },
-    { type: ShiftType.EVENING, baseName: "E", start: 0, end: 8 * 60 },
-  ];
-
-  const shiftData = [];
-
-  for (const d of divisionList) {
-    for (const t of shiftTemplates) {
-      shiftData.push({
-        name: `${t.baseName} - ${d.name}`,
-        type: t.type,
-        startTime: t.start,
-        endTime: t.end,
-        divisionId: d.id,
-        isActive: true,
-      });
-    }
+  if (divisionList.length === 0 || shiftList.length === 0) {
+    log.error("Divisions or Shifts not found. Seed them first!");
+    process.exit(1);
   }
-
-  const shiftSpinner = ora("Creating shifts...").start();
-
-  const shifts = await prisma.shift.createMany({ data: shiftData });
-
-  shiftSpinner.succeed(`Inserted ${shifts.count} shifts`);
-
-  const shiftList = await prisma.shift.findMany();
 
   /* ---------- USERS ---------- */
   log.section("USERS");
@@ -136,7 +64,7 @@ async function main() {
     { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
   ];
 
-  const userSpinner = ora("Creating users...").start();
+  const userSpinner = ora("Creating users with shifts and divisions...").start();
 
   for (let i = 0; i < usersData.length; i++) {
     const hash = await bcrypt.hash("password123", 10);
@@ -147,37 +75,21 @@ async function main() {
         email: usersData[i].email,
         password: hash,
         role: usersData[i].role,
+        // Assign division dan shift secara bergantian
         divisionId: divisionList[i % divisionList.length].id,
         shiftId: shiftList[i % shiftList.length].id,
       },
     });
   }
 
-  userSpinner.succeed(`Inserted ${usersData.length} users`);
-
-  /* ---------- LEAVE TYPES ---------- */
-  log.section("LEAVE TYPES");
-
-  const leaveSpinner = ora("Creating leave types...").start();
-
-  const leaveTypes = await prisma.leaveType.createMany({
-    data: [
-      { code: "ANNUAL", name: "Cuti Tahunan", category: "ANNUAL", maxDays: 12 },
-      { code: "SICK", name: "Cuti Sakit", category: "SICK", maxDays: 365 },
-      { code: "MATERNITY", name: "Cuti Melahirkan", category: "MATERNITY", maxDays: 90 },
-    ],
-  });
-
-  leaveSpinner.succeed(`Inserted ${leaveTypes.count} leave types`);
-
-  log.section("SEED COMPLETED");
-  log.success("All dummy data successfully generated");
+  userSpinner.succeed(`Inserted ${usersData.length} users with shifts & divisions`);
+  log.section("USER SEED COMPLETED");
+  log.success("All users successfully generated");
 }
-
 
 main()
   .catch((e) => {
-    log.error("Seeding failed");
+    log.error("User seeding failed");
     console.error(e);
     process.exit(1);
   })

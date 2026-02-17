@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `schedule` ADD COLUMN `frequency` ENUM('DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ONCE') NOT NULL DEFAULT 'ONCE';
