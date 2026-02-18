@@ -7,7 +7,7 @@ import { CalendarDays, Users, Repeat, Bell } from "lucide-react"
 import { Button } from "@/_components/ui/Button"
 
 import { capitalize } from "@/_functions/globalFunction"
-import { frequencyStyles } from "@/_constants/scheduleConstants"
+import { frequencyStyles } from "@/_constants/theme/scheduleTheme"
 
 export default function ScheduleListDetails({ schedule }) {
   const [expanded, setExpanded] = useState(false)

@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma";
-import { DivisionShiftsCards } from "../../users/(manage)/attendances/AttendancesCardStats";
+import { AttendancesCard } from "../../users/(manage)/attendances/AttendancesCardStats";
 
 export default async function DivisionPage({ params }) {
   const divisionId = parseInt(params.id);
@@ -43,5 +43,5 @@ export default async function DivisionPage({ params }) {
     id: division.id, name: division.name, location: division.location, shifts: shiftsWithAttendance,
   };
 
-  return <DivisionShiftsCards division={divisionData} />;
+  return <AttendancesCard division={divisionData} />;
 }
