@@ -50,7 +50,7 @@ export default function AttendancesUsers({
                   <DialogTitle>Attendance Dialog</DialogTitle>
                 </VisuallyHidden>
 
-                <div className="p-3 rounded-xl bg-indigo-100">
+                <div className="p-3 rounded-lg bg-indigo-100">
                   <User className="h-6 w-6 text-indigo-600" />
                 </div>
 

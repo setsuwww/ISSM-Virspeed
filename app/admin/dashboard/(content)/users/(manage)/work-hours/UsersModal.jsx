@@ -33,7 +33,7 @@ export default function UsersModal({ open, onClose, title, users }) {
               <DialogTitle>Users Detail Dialog</DialogTitle>
             </VisuallyHidden>
 
-            <div className="p-3 rounded-xl bg-indigo-100">
+            <div className="p-3 rounded-lg bg-indigo-100">
               <Calendar className="h-6 w-6 text-indigo-600" />
             </div>
 
@@ -62,7 +62,7 @@ export default function UsersModal({ open, onClose, title, users }) {
           <ScrollArea className="max-h-80 px-2 pb-6">
             <ul className="space-y-1 px-4 pb-2">
               {filteredUsers.map((u) => (
-                <li key={u.id} className="flex items-center gap-3 py-3 rounded-xl hover:bg-slate-100 transition">
+                <li key={u.id} className="flex items-center gap-3 py-3 rounded-lg hover:bg-slate-100 transition">
                   <span className="px-3 py-2 bg-slate-700 text-slate-50 text-xs rounded-full">
                     {u.name?.charAt(0).toUpperCase()}
                   </span>

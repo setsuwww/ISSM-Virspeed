@@ -95,7 +95,7 @@ export default function ChangeShiftForm({ employees = [] }) {
       </ContentForm.Header>
 
       <ContentForm.Body>
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl border border-slate-200">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border border-slate-200">
           <div className="space-y-2">
             <Label>Select Employee</Label>
 

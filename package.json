@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "prisma:seed": "node prisma/seed.js",
+    "prisma:att-seed": "node prisma/seedAttendance.js",
     "prisma:test": "node prisma/seed.test.js",
     "dev": "next dev --turbopack",
     "build": "next build",

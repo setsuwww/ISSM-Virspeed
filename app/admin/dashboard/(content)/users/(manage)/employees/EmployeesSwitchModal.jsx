@@ -69,7 +69,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
         <div className="border-b px-6 py-5 shrink-0">
           <DialogHeader>
             <div className="flex items-center gap-4 p-4">
-              <div className="p-3 rounded-xl bg-indigo-100">
+              <div className="p-3 rounded-lg bg-indigo-100">
                 <CalendarSync className="h-6 w-6 text-indigo-600" />
               </div>
 
@@ -132,7 +132,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
 
           {/* Users list */}
           <section className="flex flex-1 flex-col overflow-hidden">
-            <ScrollArea className="max-h-100 rounded-xl border bg-white p-3">
+            <ScrollArea className="max-h-100 rounded-lg border bg-white p-3">
               {loadingUsers ? (
                 <div className="flex items-center justify-center gap-2 py-10 text-xs text-slate-400">
                   <Loader className="h-4 w-4 animate-spin" />
@@ -147,7 +147,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
                   {filteredUsers.map((u) => (
                     <label
                       key={u.id}
-                      className={`group flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition
+                      className={`group flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition
                         ${selectedId === u.id
                           ? "border-slate-600"
                           : "border-slate-200 hover:bg-slate-50"

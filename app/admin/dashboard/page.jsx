@@ -102,7 +102,7 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
-      <div className="p-4 space-y-4 bg-white rounded-xl border border-slate-200 shadow-xs">
+      <div className="p-4 space-y-4 bg-white rounded-lg border border-slate-200 shadow-xs">
         <div className="flex items-center space-x-3">
           <div className="bg-orange-50 border border-orange-100 text-orange-500 p-2 rounded-lg">
             <Zap strokeWidth={2} />

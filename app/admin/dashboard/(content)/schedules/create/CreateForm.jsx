@@ -105,8 +105,8 @@ export default function CreateForm({ users, shifts }) {
 
             <div className="flex items-center justify-between pt-6 border-t border-slate-200">
               <div className="text-sm text-slate-600">
-                <span className="bg-sky-100 text-sky-800 px-3 py-1 rounded-xl">{totalAssignedUsers()} Users assigned</span> •{" "}
-                <span className="ml-1 bg-green-100 text-green-800 px-3 py-1 rounded-xl">{events.length} Dates scheduled</span>
+                <span className="bg-sky-100 text-sky-800 px-3 py-1 rounded-lg">{totalAssignedUsers()} Users assigned</span> •{" "}
+                <span className="ml-1 bg-green-100 text-green-800 px-3 py-1 rounded-lg">{events.length} Dates scheduled</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button type="button" variant="outline" disabled={loading}>

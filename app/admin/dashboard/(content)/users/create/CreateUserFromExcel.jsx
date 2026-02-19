@@ -114,7 +114,7 @@ export function CreateUserFromExcel({ onImported }) {
         }}
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
-        className={`bg-slate-50/50 rounded-xl border border-dashed p-8 transition mb-2
+        className={`bg-slate-50/50 rounded-lg border border-dashed p-8 transition mb-2
           ${dragActive
             ? "border-emerald-500 bg-emerald-500/5"
             : "border-slate-300"}`}

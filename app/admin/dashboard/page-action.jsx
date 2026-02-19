@@ -60,7 +60,7 @@ export default function FastActions() {
         ))}
       </div>
 
-      <form onSubmit={handleSearch} className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl pl-3 pr-0.5 py-1 focus:caret-sky-300 focus-within:border-sky-300 focus-within:ring-4 focus-within:ring-sky-100 transition-colors">
+      <form onSubmit={handleSearch} className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg pl-3 pr-0.5 py-1 focus:caret-sky-300 focus-within:border-sky-300 focus-within:ring-4 focus-within:ring-sky-100 transition-colors">
         <Search className="text-gray-400 w-4 h-4 group-focus-within:text-sky-500 transition-colors" />
         <input type="text" placeholder="Search Url..."
           value={searchUrl} onChange={(e) => setSearchUrl(e.target.value)}

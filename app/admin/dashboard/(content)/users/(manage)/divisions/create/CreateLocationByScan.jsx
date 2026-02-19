@@ -46,7 +46,7 @@ export function CreateLocationByScan({ onLocationCaptured }) {
     <>
       <Label className="mb-3">Scan area <span className="font-light text-slate-400">(Get current coordinates)</span><span className="text-xs bg-sky-100 px-2 text-sky-600 rounded-full">SCAN</span></Label>
 
-      <div className="bg-slate-50/50 rounded-xl border border-dashed p-8 transition mb-6 flex flex-col items-start justify-start gap-4">
+      <div className="bg-slate-50/50 rounded-lg border border-dashed p-8 transition mb-6 flex flex-col items-start justify-start gap-4">
         {/* Radar Icon */}
         <div
           className={`group relative flex flex h-12 w-12 items-center justify-center rounded-md border transition

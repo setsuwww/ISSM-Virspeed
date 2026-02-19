@@ -70,7 +70,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
   ], []);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+    <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <div className="">
           <div className="flex items-center space-x-3">

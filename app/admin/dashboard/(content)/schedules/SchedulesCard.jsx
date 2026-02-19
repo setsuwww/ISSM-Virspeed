@@ -56,7 +56,7 @@ export default function SchedulesCard({ data }) {
 
             return (
               <div key={schedule.id}
-                className="rounded-xl ring-1 ring-slate-200 border-b-2 border-slate-200 bg-white shadow-sm transition-all flex flex-col"
+                className="rounded-lg ring-1 ring-slate-200 border-b-2 border-slate-200 bg-white shadow-sm transition-all flex flex-col"
               >
                 <div className="flex flex-row items-center justify-between px-4 py-4">
                   <div className="flex items-center gap-3">

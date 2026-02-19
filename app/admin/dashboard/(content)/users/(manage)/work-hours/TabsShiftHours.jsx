@@ -20,7 +20,7 @@ export default function TabsShiftHours({ shifts = [] }) {
           <div
             key={shift.id}
             onClick={() => setSelected(shift)}
-            className="cursor-pointer group rounded-xl border border-slate-200 p-4 hover:shadow transition"
+            className="cursor-pointer group rounded-lg border border-slate-200 p-4 hover:shadow transition"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
