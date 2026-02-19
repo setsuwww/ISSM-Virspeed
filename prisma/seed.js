@@ -1,92 +1,93 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, Role, ShiftType, LocationType, LocationStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { log } from "../_constants/logConstants.js";
 import ora from "ora";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  log.section("PRISMA USER SEED START");
+  const spinner = ora("Seeding divisions, shifts, and users...").start();
 
-  const cleanSpinner = ora("Cleaning existing users...").start();
+  try {
+    // --- Hapus data lama ---
+    await prisma.user.deleteMany();
+    await prisma.shift.deleteMany();
+    await prisma.division.deleteMany();
 
-  // Hapus semua user saja
-  await prisma.user.deleteMany();
+    // --- Buat divisions ---
+    const divisionsData = [
+      { name: "Web Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
+      { name: "Mobile Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
+      { name: "Desktop Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
+    ];
+    await prisma.division.createMany({ data: divisionsData });
 
-  cleanSpinner.succeed("Users table cleaned");
+    // --- Ambil divisions yang baru dibuat ---
+    const divisionList = await prisma.division.findMany();
 
-  /* ---------- FETCH DIVISIONS & SHIFTS ---------- */
-  log.section("DIVISIONS & SHIFTS");
+    // --- Buat shifts ---
+    const shiftsData = [
+      { name: "Shift Pagi", type: ShiftType.MORNING, startTime: 7, endTime: 15 },
+      { name: "Shift Siang", type: ShiftType.AFTERNOON, startTime: 15, endTime: 23 },
+      { name: "Shift Malam", type: ShiftType.EVENING, startTime: 23, endTime: 7 },
+    ];
+    await prisma.shift.createMany({ data: shiftsData });
 
-  const divisionList = await prisma.division.findMany({
-    orderBy: { id: "asc" },
-  });
+    // --- Ambil shifts yang baru dibuat ---
+    const shiftList = await prisma.shift.findMany();
 
-  const shiftList = await prisma.shift.findMany({
-    orderBy: { id: "asc" },
-  });
+    // --- Buat users 1 per shift + 1 per division ---
+    const usersData = [
+      { name: "Mikasa", email: "mikasa@next.com", role: Role.ADMIN },
+      { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
+      { name: "Brian", email: "brian@next.com", role: Role.EMPLOYEE },
+      { name: "Charlie", email: "charlie@next.com", role: Role.EMPLOYEE },
+      { name: "Drake", email: "drake@next.com", role: Role.EMPLOYEE },
+      { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
+      { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
+      { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
+      { name: "Harry", email: "harry@next.com", role: Role.EMPLOYEE },
+      { name: "Iris", email: "iris@next.com", role: Role.EMPLOYEE },
+      { name: "John", email: "john@next.com", role: Role.EMPLOYEE },
+      { name: "Katherine", email: "katherine@next.com", role: Role.EMPLOYEE },
+      { name: "Levi", email: "levi@next.com", role: Role.EMPLOYEE },
+      { name: "Monica", email: "monica@next.com", role: Role.EMPLOYEE },
+      { name: "Noah", email: "noah@next.com", role: Role.EMPLOYEE },
+      { name: "Odelio", email: "odelio@next.com", role: Role.EMPLOYEE },
+      { name: "Prilly", email: "prilly@next.com", role: Role.EMPLOYEE },
+      { name: "Qian", email: "qian@next.com", role: Role.EMPLOYEE },
+      { name: "Raymond", email: "raymond@next.com", role: Role.EMPLOYEE },
+      { name: "Stevan", email: "stevan@next.com", role: Role.EMPLOYEE },
+      { name: "Thomas", email: "thomas@next.com", role: Role.EMPLOYEE },
+      { name: "Ulrich", email: "ulrich@next.com", role: Role.EMPLOYEE },
+      { name: "Veline", email: "veline@next.com", role: Role.EMPLOYEE },
+      { name: "Wilson", email: "wilson@next.com", role: Role.EMPLOYEE },
+      { name: "Xin", email: "xin@next.com", role: Role.EMPLOYEE },
+      { name: "Yohannes", email: "yohannes@next.com", role: Role.EMPLOYEE },
+      { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
+    ];
 
-  /* ---------- USERS ---------- */
-  log.section("USERS");
+    for (let i = 0; i < usersData.length; i++) {
+      const hash = await bcrypt.hash("password123", 10);
 
-  const usersData = [
-    { name: "Mikasa", email: "mikasa@next.com", role: Role.ADMIN },
-    { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
-    { name: "Brian", email: "brian@next.com", role: Role.EMPLOYEE },
-    { name: "Charlie", email: "charlie@next.com", role: Role.EMPLOYEE },
-    { name: "Drake", email: "drake@next.com", role: Role.EMPLOYEE },
-    { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
-    { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
-    { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
-    { name: "Harry", email: "harry@next.com", role: Role.EMPLOYEE },
-    { name: "Iris", email: "iris@next.com", role: Role.EMPLOYEE },
-    { name: "John", email: "john@next.com", role: Role.EMPLOYEE },
-    { name: "Katherine", email: "katherine@next.com", role: Role.EMPLOYEE },
-    { name: "Levi", email: "levi@next.com", role: Role.EMPLOYEE },
-    { name: "Monica", email: "monica@next.com", role: Role.EMPLOYEE },
-    { name: "Noah", email: "noah@next.com", role: Role.EMPLOYEE },
-    { name: "Odelio", email: "odelio@next.com", role: Role.EMPLOYEE },
-    { name: "Prilly", email: "prilly@next.com", role: Role.EMPLOYEE },
-    { name: "Qian", email: "qian@next.com", role: Role.EMPLOYEE },
-    { name: "Raymond", email: "raymond@next.com", role: Role.EMPLOYEE },
-    { name: "Stevan", email: "stevan@next.com", role: Role.EMPLOYEE },
-    { name: "Thomas", email: "thomas@next.com", role: Role.EMPLOYEE },
-    { name: "Ulrich", email: "ulrich@next.com", role: Role.EMPLOYEE },
-    { name: "Veline", email: "veline@next.com", role: Role.EMPLOYEE },
-    { name: "Wilson", email: "wilson@next.com", role: Role.EMPLOYEE },
-    { name: "Xin", email: "xin@next.com", role: Role.EMPLOYEE },
-    { name: "Yohannes", email: "yohannes@next.com", role: Role.EMPLOYEE },
-    { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
-  ];
+      await prisma.user.create({
+        data: {
+          name: usersData[i].name,
+          email: usersData[i].email,
+          password: hash,
+          role: usersData[i].role,
+          divisionId: divisionList[i % divisionList.length].id, // rotasi division
+          shiftId: shiftList[i % shiftList.length].id,         // rotasi shift
+        },
+      });
+    }
 
-  const userSpinner = ora("Creating users with shifts and divisions...").start();
-
-  for (let i = 0; i < usersData.length; i++) {
-    const hash = await bcrypt.hash("password123", 10);
-
-    await prisma.user.create({
-      data: {
-        name: usersData[i].name,
-        email: usersData[i].email,
-        password: hash,
-        role: usersData[i].role,
-        divisionId: divisionList[i % divisionList.length].id,
-        shiftId: shiftList[i % shiftList.length].id,
-      },
-    });
+    spinner.succeed(`Seeded ${usersData.length} users, ${shiftsData.length} shifts, ${divisionsData.length} divisions`);
+  } catch (err) {
+    spinner.fail("Seeding failed");
+    console.error(err);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  userSpinner.succeed(`Inserted ${usersData.length} users with shifts & divisions`);
-  log.section("USER SEED COMPLETED");
-  log.success("All users successfully generated");
 }
 
-main()
-  .catch((e) => {
-    log.error("User seeding failed");
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main();
