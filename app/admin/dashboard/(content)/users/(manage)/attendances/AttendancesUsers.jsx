@@ -122,7 +122,7 @@ export default function AttendancesUsers({
 
                           {u.attendanceStatus === "PERMISSION" && (
                             <Badge variant="outline" className={attendancesStyles[u.approval]}>
-                              {capitalize(u.approval || "Pending")}
+                              {capitalize(u.approval || "PENDING")}
                             </Badge>
                           )}
                         </div>

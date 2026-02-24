@@ -30,7 +30,7 @@ export default function HistoryActionHeader({
         </ButtonGroup> */}
 
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger size="sm" className="w-auto">
+          <SelectTrigger className="w-auto">
             <span className="font-semibold text-slate-600 mr-1">Status:</span>
             <SelectValue />
           </SelectTrigger>
@@ -44,7 +44,7 @@ export default function HistoryActionHeader({
         </Select>
 
         <Select value={sort} onValueChange={onSortChange}>
-          <SelectTrigger size="sm" className="w-auto">
+          <SelectTrigger className="w-auto">
             <span className="font-semibold text-slate-600 mr-1">Sort:</span>
             <SelectValue />
           </SelectTrigger>
@@ -59,7 +59,7 @@ export default function HistoryActionHeader({
           <Input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            size="sm"
+
             className="pl-9"
             placeholder="Search date..." typeSearch
           />
@@ -68,7 +68,6 @@ export default function HistoryActionHeader({
 
       <div className="flex items-center gap-2">
         <Button
-          size="sm"
           variant="ghost"
           className="text-rose-500"
           disabled={selectedCount === 0}
@@ -78,7 +77,6 @@ export default function HistoryActionHeader({
         </Button>
 
         <Button
-          size="sm"
           variant="ghost"
           className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
           onClick={onRemoveAll}
@@ -89,7 +87,7 @@ export default function HistoryActionHeader({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost" className="bg-lime-100/50 hover:bg-lime-100 text-lime-600">
+            <Button variant="ghost" className="bg-lime-100/50 hover:bg-lime-100 text-lime-600">
               <FolderInput size={16} />
               Export
             </Button>

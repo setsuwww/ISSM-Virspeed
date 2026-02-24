@@ -8,6 +8,7 @@ export const attendancesStyles = {
   APPROVED: "text-white bg-teal-500 border-teal-500",
   REJECTED: "text-white bg-rose-500 border-rose-500",
   PENDING: "text-white bg-yellow-500 border-yellow-500",
+  "PENDING": "text-white bg-yellow-500 border-yellow-500",
 }
 
 export const attendanceAction = {

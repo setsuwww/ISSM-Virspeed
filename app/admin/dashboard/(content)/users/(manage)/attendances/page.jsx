@@ -3,8 +3,12 @@ import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesCard } from "./AttendancesCardStats"
 import AttendancesTableClient from "./AttendancesTable"
+import { Pagination } from "@/app/admin/dashboard/Pagination"
+
 import { prisma } from "@/_lib/prisma"
 import { minutesToTime } from "@/_functions/globalFunction"
+
+const PAGE_SIZE = 10
 
 async function getAttendancesByUserToday() {
   const startOfDay = new Date()
@@ -15,7 +19,10 @@ async function getAttendancesByUserToday() {
 
   const attendances = await prisma.attendance.findMany({
     where: {
-      date: { gte: startOfDay, lte: endOfDay },
+      date: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
     },
     select: {
       userId: true,
@@ -24,46 +31,57 @@ async function getAttendancesByUserToday() {
     },
   })
 
-  return new Map(
-    attendances.map((a) => [a.userId, a])
-  )
+  return new Map(attendances.map((a) => [a.userId, a]))
 }
 
-async function getShifts() {
+async function getShifts(page) {
   const attendanceMap = await getAttendancesByUserToday()
 
-  const shifts = await prisma.shift.findMany({
-    where: {
-      type: { in: ["MORNING", "AFTERNOON", "EVENING"] },
+  const whereClause = {
+    type: {
+      in: ["MORNING", "AFTERNOON", "EVENING"],
     },
-    select: {
-      id: true,
-      name: true,
-      type: true,
-      startTime: true,
-      endTime: true,
-      division: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      users: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          shift: {
-            select: {
-              type: true,
-            }
-          }
-        },
-      },
-    },
-  })
+  }
 
-  return shifts.map((shift) => ({
+  const [total, shifts] = await Promise.all([
+    prisma.shift.count({ where: whereClause }),
+
+    prisma.shift.findMany({
+      where: whereClause,
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        startTime: true,
+        endTime: true,
+        division: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            shift: {
+              select: {
+                type: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+  ])
+
+  const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1)
+
+  const formatted = shifts.map((shift) => ({
     id: shift.id,
     name: shift.name,
     type: shift.type,
@@ -78,7 +96,7 @@ async function getShifts() {
         id: user.id,
         name: user.name,
         email: user.email,
-        shiftType: user.shift.type ?? "Normal",
+        shiftType: user.shift?.type ?? "Normal",
         attendanceStatus:
           attendance?.status &&
           ["ABSENT", "LATE", "PERMISSION"].includes(attendance.status)
@@ -88,10 +106,15 @@ async function getShifts() {
       }
     }),
   }))
+
+  return { data: formatted, totalPages }
 }
 
-export default async function AttendancesPage() {
-  const shifts = await getShifts()
+export default async function AttendancesPage({ searchParams }) {
+  const currentPage = Math.max(Number(searchParams?.page ?? "1"), 1)
+  const page = Math.max(Number(searchParams?.page ?? "1"), 1)
+
+  const { data: shifts, totalPages } = await getShifts(currentPage)
 
   return (
     <section className="space-y-6">
@@ -102,12 +125,24 @@ export default async function AttendancesPage() {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation title="Shift attendance" subtitle="View employees attendance at this today"/>
+          <ContentInformation
+            title="Shift attendance"
+            subtitle="View employees attendance today"
+          />
         </ContentForm.Header>
 
         <ContentForm.Body>
           <AttendancesCard shifts={shifts} />
-          <AttendancesTableClient />
+
+          {/* Client interactive table */}
+          <AttendancesTableClient initialPage={page} />
+
+          {/* Server pagination */}
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            basePath="/admin/dashboard/attendances"
+          />
         </ContentForm.Body>
       </ContentForm>
     </section>

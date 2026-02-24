@@ -16,19 +16,29 @@ import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
 import { getAttendancesByDate } from "@/_servers/admin-action/attendanceAction"
 import Link from "next/link"
 
-export default function AttendancesTableClient() {
+export default function AttendancesTableClient({ initialPage = 1 }) {
+  const [page, setPage] = useState(initialPage)
+  const [totalPages, setTotalPages] = useState(1)
+
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
+
   const [sortOrder, setSortOrder] = useState("desc")
   const [filterShift, setFilterShift] = useState("ALL")
+
   const [data, setData] = useState([])
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
-    startTransition(async () => {
-      const result = await getAttendancesByDate(date)
-      setData(result)
-    })
+    setPage(1)
   }, [date])
+
+  useEffect(() => {
+    startTransition(async () => {
+      const result = await getAttendancesByDate(date, page)
+      setData(result.data)
+      setTotalPages(result.totalPages)
+    })
+  }, [date, page])
 
   const filteredData = useMemo(() => {
     return data.filter(att => {
@@ -48,7 +58,7 @@ export default function AttendancesTableClient() {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between my-6 gap-4">
-        <ContentInformation title="List attendances" subtitle={`Manage and review all attendance ${safeFormat(date, "dd-MMMM-yyyy")}`}/>
+        <ContentInformation title="List attendances" subtitle={`Manage and review all attendance ${safeFormat(date, "dd-MMMM-yyyy")}`} />
 
         <AttendancesActionHeader
           selectedDate={date} onDateChange={setDate}
@@ -132,7 +142,7 @@ export default function AttendancesTableClient() {
                       {wordsLimit(att.reason, 5)}
                       {att.status === "PERMISSION" && (
                         <Link href="/admin/dashboard/requests" className="ml-1">
-                          <ChevronRight className="w-5 h-5 text-blue-500"/>
+                          <ChevronRight className="w-5 h-5 text-blue-500" />
                         </Link>
                       )}
                     </div>
@@ -151,6 +161,29 @@ export default function AttendancesTableClient() {
           </TableBody>
         </Table>
       )}
+      <div className="flex justify-end mt-4 gap-2">
+        {page > 1 && (
+          <button
+            onClick={() => setPage((p) => p - 1)}
+            className="px-3 py-1 border rounded"
+          >
+            Prev
+          </button>
+        )}
+
+        <span className="px-3 py-1 text-sm">
+          {page} / {totalPages}
+        </span>
+
+        {page < totalPages && (
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            className="px-3 py-1 border rounded"
+          >
+            Next
+          </button>
+        )}
+      </div>
     </>
   )
 }
