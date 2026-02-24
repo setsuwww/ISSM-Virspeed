@@ -1,5 +1,5 @@
 # Information System Shift Management
-_A modern shift and attendance management system built with Next.js, Shadcn/UI, and MySQL._
+_A modern shift and attendance management system built with Next.js, Shadcn/UI, and Postgresqlk._
 
 ---
 
@@ -7,7 +7,7 @@ _A modern shift and attendance management system built with Next.js, Shadcn/UI, 
 
 **Information System Shift Management** adalah aplikasi web yang dirancang untuk membantu perusahaan dalam mengatur jadwal kerja, manajemen shift, dan kehadiran karyawan secara efisien.
 
-Sistem ini dibuat dengan **Next.js (App Router)** di sisi frontend/backend, menggunakan **Shadcn/UI** untuk komponen antarmuka yang elegan, dan **MySQL** sebagai basis data utama.
+Sistem ini dibuat dengan **Next.js (App Router)** di sisi frontend/backend, menggunakan **Shadcn/UI** untuk komponen antarmuka yang elegan, dan **Postgresqlk** sebagai basis data utama.
 
 Untuk proyek berskala besar, stack dapat di-upgrade menjadi:
 
@@ -22,19 +22,19 @@ Prisma ORM + PostgreSQL, Golang (optional microservices / backend service)
 | Layer | Technology |
 |:------|:------------|
 | **Frontend & Backend // Fullstack** | [Next.js 14+](https://nextjs.org/) |
-| **UI Components** | [Shadcn/UI](https://ui.shadcn.com/) [Tailwind CSS](https://tailwindcss.com/) |
-| **Database** | [MySQL](https://www.mysql.com/) [Prisma ORM](https://www.prisma.io/) |
-| **Icons** | [Lucide](https://lucide.dev/) | [Phosphor](//https://phosphoricons.com/) |
+| **UI Components** | [Shadcn/UI](https://ui.shadcn.com/) · [Tailwind CSS](https://tailwindcss.com/) |
+| **Database** | [PostgreSQL](https://www.postgresql.org/) · [Prisma ORM](https://www.prisma.io/) · [Neon Cloud](https://neon.com/) |
+| **Icons** | [Lucide](https://lucide.dev/) · [Phosphor](https://phosphoricons.com/) |
 
 ---
 
 ## Features
 
-✅ **Helpers Feature**  
+✅ **Helpers Feature**
 Search, Filter, Sort, Selecting, Select All, Delete Selected, Delete All, Export, Pagination.
 Create, Read, Update, Delete, Views detail.
 
-✅ **Role-based Access Control**  
+✅ **Role-based Access Control**
 Admin, Coordinator(Next plan), Employee, User
 
 ---
@@ -56,7 +56,7 @@ npm install
 pnpm install
 # or
 yarn install
-# or 
+# or
 bun install
 ```
 
@@ -64,7 +64,7 @@ bun install
 
 ### 3. Setup Environtment
 
-DATABASE_URL="mysql://username:password@localhost:3306/your_db_name"
+DATABASE_URL="postgresql://username:password@localhost:3306/your_db_name"
 JWT_SECRET="your-secret-key"
 
 ---
@@ -93,7 +93,7 @@ bunx prisma generate
 ```
 
 ```bash
-npm run prisma:seed 
+npm run prisma:seed
 # or
 pnpm run prisma:seed
 # or
@@ -106,7 +106,7 @@ npm run dev
 pnpm run dev
 # or
 yarn run dev
-# or 
+# or
 bun run dev
 ```
 
