@@ -20,6 +20,7 @@ import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
 import { ChevronLeft, Loader } from 'lucide-react';
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
+import UserExcelTemplate from "./UserExcelTemplate"
 
 export default function CreateForm({ divisions, shifts }) {
   const router = useRouter()
@@ -100,7 +101,9 @@ export default function CreateForm({ divisions, shifts }) {
             <div className="space-y-6">
               <div>
                 <CreateUserFromExcel onImported={() => setInputMode("EXCEL")} />
+                  <UserExcelTemplate />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="username">
                   Username <span className="text-rose-500">*</span>
