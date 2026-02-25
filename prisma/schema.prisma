@@ -313,6 +313,7 @@ model Attendance {
   adminReason         String?
   checkInTime         DateTime?
   checkOutTime        DateTime?
+  workMinutes         Int?
   earlyCheckoutReason String?
   userId              String
   shiftId             Int

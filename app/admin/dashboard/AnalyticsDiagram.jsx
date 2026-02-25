@@ -6,6 +6,7 @@ import { AreaDiagram } from "./DashboardDiagram";
 import { Button } from "@/_components/ui/Button";
 import { ChartNoAxesCombined } from "lucide-react";
 import { ContentInformation } from "@/_components/common/ContentInformation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 
 const PRESET_RANGES = {
   last7: { label: "7 Days", getRange: () => ({ start: subDays(new Date(), 6), end: new Date() }) },
@@ -17,6 +18,7 @@ const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 
 export default function AnalyticsDiagram({ attendanceRaw = [] }) {
   const [rangeKey, setRangeKey] = useState("last7");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const parsedAttendances = useMemo(() => {
     return attendanceRaw.map((r) => ({
@@ -53,6 +55,8 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
       const key = a.date.toISOString().split("T")[0];
       if (!map[key]) continue;
 
+      if (statusFilter !== "all" && a.status !== statusFilter) continue;
+
       if (a.status === "PRESENT") map[key].present += 1;
       else if (a.status === "LATE") map[key].late += 1;
       else if (a.status === "ABSENT" || a.status === "ALPHA") map[key].absent += 1;
@@ -60,14 +64,19 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
     }
 
     return Object.keys(map).sort().map((k) => map[k]);
-  }, [parsedAttendances, start, end]);
+  }, [parsedAttendances, start, end, statusFilter]);
 
-  const series = useMemo(() => [
-    { key: "absent", color: "#ffa2a2", label: "Absent" },
-    { key: "late", color: "#ffdf20", label: "Late" },
-    { key: "present", color: "#7bf1a8", label: "Present" },
-    { key: "permission", color: "#3b82f6", label: "Permission" },
-  ], []);
+  const series = useMemo(() => {
+    const base = [
+      { key: "absent", color: "#ffa2a2", label: "Absent" },
+      { key: "late", color: "#ffdf20", label: "Late" },
+      { key: "present", color: "#7bf1a8", label: "Present" },
+      { key: "permission", color: "#3b82f6", label: "Permission" },
+    ]
+    if (statusFilter === "all") return base;
+
+    return base.filter(s => s.key.toUpperCase() === statusFilter);
+  }, [statusFilter]);
 
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-xs">
@@ -93,6 +102,19 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
               </Button>
             ))}
           </div>
+          <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val)}>
+            <SelectTrigger className="w-auto px-3 whitespace-nowrap" size="sm">
+              <span className="font-semibold text-slate-600 mr-1">Attendance:</span>
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="ABSENT">Absent</SelectItem>
+              <SelectItem value="LATE">Late</SelectItem>
+              <SelectItem value="PRESENT">Present</SelectItem>
+              <SelectItem value="PERMISSION">Permission</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

@@ -7,7 +7,7 @@ function ContentForm({ children }) {
 }
 
 ContentForm.Header = function Header({ children }) {
-  return <div className="border-b border-slate-200 px-6 pt-4 pb-1 rounded-t-lg">{children}</div>;
+  return <div className="bg-slate-50/50 border-b border-slate-200 px-6 pt-4 pb-1 rounded-t-lg">{children}</div>;
 };
 
 ContentForm.Body = function Body({ children }) {

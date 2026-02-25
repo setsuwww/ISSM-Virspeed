@@ -166,3 +166,25 @@ export function calculateWorkHours(checkIn, checkOut, breakHours = 1) {
 
   return Number(Math.max(hours, 0).toFixed(2))
 }
+
+export function calculateWorkMinutes(
+  checkInTime,
+  checkOutTime
+) {
+  if (!checkInTime || !checkOutTime) return null;
+
+  const diffMs = checkOutTime.getTime() - checkInTime.getTime();
+
+  if (diffMs <= 0) return null;
+
+  return Math.floor(diffMs / 60000);
+}
+
+export function formatWorkHours(minutes) {
+  if (!minutes) return "-";
+
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  return `${hours}h ${mins}m`;
+}
