@@ -4,7 +4,7 @@ import { minutesToTime } from "@/_functions/globalFunction";
 import { DashboardHeader } from "../../DashboardHeader";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
-import { ShiftsView } from "./ShiftsView";
+import { ShiftsTable } from "./ShiftsTable";
 
 const PAGE_SIZE = 10;
 export const revalidate = 60;
@@ -111,7 +111,7 @@ export default async function ShiftsPage({ searchParams }) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <ShiftsView data={tableData} />
+          <ShiftsTable data={tableData} />
           <Pagination
             page={page}
             totalPages={totalPages}

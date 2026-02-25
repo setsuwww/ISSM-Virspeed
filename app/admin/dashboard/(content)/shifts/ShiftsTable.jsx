@@ -5,20 +5,12 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useCallback, useTransition } from "react";
 import { UserCircle } from "phosphor-react";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/_components/ui/Table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
 
 import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 
-import { capitalize } from "@/_functions/globalFunction";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 
 import {
@@ -28,7 +20,7 @@ import {
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
 
-export function ShiftsView({ data }) {
+export function ShiftsTable({ data }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -164,7 +156,7 @@ export function ShiftsView({ data }) {
 
               <TableCell>
                 <Badge className={shiftStyles[shift.type]}>
-                  {capitalize(shift.type)}
+                  {shift.type}
                 </Badge>
               </TableCell>
 
@@ -177,7 +169,7 @@ export function ShiftsView({ data }) {
                   className="flex items-center gap-1 text-sky-500"
                 >
                   <UserCircle size={22} />
-                  {shift.usersCount}
+                  {shift.usersCount} Users
                 </Link>
               </TableCell>
 
