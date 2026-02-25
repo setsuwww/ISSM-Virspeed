@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CircleUserRound } from "lucide-react";
+import { CircleUserRound, Globe } from "lucide-react";
 import { format } from "date-fns";
 
 import { TableRow, TableCell } from "@/_components/ui/Table";
@@ -61,6 +61,7 @@ export const EmployeesRow = React.memo(
 
         <TableCell>
           <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100">
+            <Globe />
             {user.division?.name}
           </Badge>
         </TableCell>
