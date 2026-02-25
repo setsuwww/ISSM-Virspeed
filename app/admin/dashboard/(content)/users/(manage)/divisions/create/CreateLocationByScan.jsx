@@ -75,6 +75,11 @@ export function CreateLocationByScan({ onLocationCaptured }) {
         )}
 
         {/* Display coordinates */}
+        <h1 className="text-2xl text-sky-600">
+          Buat fitur dimana ada button "Take coordinate"
+          Copy latitude, longitude, coordinate, radius
+          Lalu Paste sesuai field
+        </h1>
 
         {/* Scan button */}
         <Button
