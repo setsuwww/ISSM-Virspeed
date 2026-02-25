@@ -60,24 +60,37 @@ export async function bulkCreateUser(rows) {
       shift,
     } = row
 
-    if (!name || !email || !password || !division) continue
+    // normalize workMode
+    const mode = workMode?.toUpperCase() === "SHIFT" ? "SHIFT" : "WORK_HOURS"
 
-    const exists = await prisma.user.findUnique({ where: { email } })
-    if (exists) continue
+    // skip row jika data penting kosong
+    if (!name || !email || !password || !division) {
+      console.log("Skipping row (missing data):", row)
+      continue
+    }
 
+    // cari division
     const divisionData = await prisma.division.findFirst({
-      where: { name: division },
+      where: { name: division?.trim() },
       include: { shifts: true },
     })
 
-    if (!divisionData) continue
+    if (!divisionData) {
+      console.log("Skipping row (division not found):", division)
+      continue
+    }
 
     let shiftId = null
-    if (workMode === "SHIFT" && shift) {
-      const shiftData = divisionData.shifts.find(
-        (s) => s.name === shift
-      )
+    if (mode === "SHIFT" && shift) {
+      const shiftData = divisionData.shifts.find(s => s.name.trim() === shift.trim())
       if (shiftData) shiftId = shiftData.id
+      else console.log("Shift not found in division:", shift)
+    }
+
+    const exists = await prisma.user.findUnique({ where: { email } })
+    if (exists) {
+      console.log("Skipping row (email exists):", email)
+      continue
     }
 
     const hashed = await bcrypt.hash(password, 10)
@@ -96,10 +109,8 @@ export async function bulkCreateUser(rows) {
     created++
   }
 
-  return {
-    success: true,
-    count: created,
-  }
+  console.log("Total inserted:", created)
+  return { success: true, count: created }
 }
 
 export async function updateUser(data) {
@@ -141,25 +152,6 @@ export async function deleteUsers(ids) {
   } catch (error) {
     throw new Error("Failed to delete users.")
   }
-}
-
-export async function getUserWithId(id) {
-  return prisma.user.findUnique({
-    where: { id: id }, select: { id: true, name: true, email: true, role: true },
-  });
-}
-
-export async function updateUserWithId(id, data) {
-  const { name, email, password, role, shiftId } = data;
-  if (!name || !email || !role) throw new Error("Name, email, and role required");
-
-  const dataToUpdate = { name, email, role, shiftId: shiftId ?? null };
-  if (password?.trim()) { dataToUpdate.password = await bcrypt.hash(password, 10) }
-
-  return prisma.user.update({
-    where: { id: id },
-    data: dataToUpdate,
-  });
 }
 
 export async function deleteUserById(id) {

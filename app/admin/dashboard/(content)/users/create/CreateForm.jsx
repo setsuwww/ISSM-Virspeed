@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useMemo, useTransition } from "react"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { ChevronLeft, Loader } from 'lucide-react';
 import { useRouter } from "next/navigation"
-
+import { useToast } from "@/_contexts/Toast-Provider"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 
 import { Button } from "@/_components/ui/Button"
@@ -15,10 +15,10 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
-import { createUser } from "@/_servers/admin-action/userAction.js"
+import { bulkCreateUser, createUser } from "@/_servers/admin-action/userAction"
 import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
-import { ChevronLeft, Loader } from 'lucide-react';
+
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
 import UserExcelTemplate from "./UserExcelTemplate"
 
@@ -31,6 +31,7 @@ export default function CreateForm({ divisions, shifts }) {
     divisionId: "", workMode: "WORK_HOURS", shiftId: "",
   })
 
+  const [excelRows, setExcelRows] = useState([])
   const [inputMode, setInputMode] = useState("MANUAL")
   const [isPending, startTransition] = useTransition()
 
@@ -46,17 +47,38 @@ export default function CreateForm({ divisions, shifts }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (inputMode === "EXCEL") {
-      addToast("Excel import already processed. Manual submit disabled.", {
-        type: "warning",
-      })
-      return
-    }
-
-    const fd = new FormData()
-    Object.entries(form).forEach(([key, value]) => fd.append(key, value))
-
     startTransition(async () => {
+      if (inputMode === "EXCEL") {
+        if (!excelRows.length) {
+          addToast("No Excel data to import", { type: "error" })
+          return
+        }
+
+        try {
+          const res = await bulkCreateUser(excelRows)
+
+          if (res.success) {
+            addToast(`${res.count} users imported`, {
+              type: "success",
+              title: "Import Success",
+            })
+            router.push("/admin/dashboard/users")
+          } else {
+            addToast(res.message || "Failed to import users", {
+              type: "error",
+            })
+          }
+        } catch (err) {
+          addToast("Error importing Excel users", { type: "error" })
+          console.error(err)
+        }
+
+        return
+      }
+
+      const fd = new FormData()
+      Object.entries(form).forEach(([key, value]) => fd.append(key, value))
+
       const res = await createUser(fd)
       if (res.success) {
         addToast(res.message || "User created successfully!", {
@@ -65,8 +87,7 @@ export default function CreateForm({ divisions, shifts }) {
         })
         e.target.reset()
         router.push("/admin/dashboard/users")
-      }
-      else {
+      } else {
         addToast(res.message || "Failed to create user.", {
           type: "error",
           title: "Error",
@@ -100,8 +121,20 @@ export default function CreateForm({ divisions, shifts }) {
           <ContentForm.Body>
             <div className="space-y-6">
               <div>
-                <CreateUserFromExcel onImported={() => setInputMode("EXCEL")} />
-                  <UserExcelTemplate />
+                <CreateUserFromExcel
+                  onImported={(rows) => {
+                    setInputMode("EXCEL")
+                    setExcelRows(rows)
+                  }}
+                />
+                {excelRows.length > 0 && (
+                  <div className="mt-4 p-2 border rounded">
+                    {excelRows.map((row, idx) => (
+                      <p key={idx}>{row.name} - {row.email} - {row.password} - {row.role} - {row.workMode} - {row.shift ? row.shift : "Null" }</p>
+                    ))}
+                  </div>
+                )}
+                <UserExcelTemplate />
               </div>
 
               <div className="space-y-2">
