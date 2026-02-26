@@ -124,9 +124,9 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
 
                   <TableCell>
                     <div className="font-number text-sm text-slate-600 tracking-tight">
-                      {safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} -{" "}
-                      {formatWorkHours(att.workHours)} -{" "}
-                      {safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}
+                      <span className="bg-green-50 text-green-500">{safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} </span>-{" "}
+                      <span className="bg-slate-50 text-slate-500">{formatWorkHours(att.workHours)} </span>-{" "}
+                      <span className="bg-red-50 text-red-500">{safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}</span>
                     </div>
                   </TableCell>
 
