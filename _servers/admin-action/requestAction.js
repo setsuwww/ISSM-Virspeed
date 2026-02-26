@@ -2,6 +2,7 @@
 
 import { prisma } from "@/_lib/prisma";
 import { revalidatePath } from "next/cache";
+import { calculateWorkMinutes } from "@/_functions/helpers/attendanceHelpers"
 
 export async function updatePermissionRequestStatus(id, newStatus, adminReason = null) {
   const permissionId = Number(id);
@@ -64,7 +65,11 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
   return { success: true };
 }
 
-export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReason = null) {
+export async function updateEarlyCheckoutRequestStatus(
+  id,
+  newStatus,
+  adminReason = null
+) {
   const requestId = Number(id);
   if (!Number.isInteger(requestId)) {
     throw new Error("Invalid early checkout request ID");
@@ -72,7 +77,7 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
 
   const request = await prisma.earlyCheckoutRequest.findUnique({
     where: { id: requestId },
-    select: { attendanceId: true },
+    include: { attendance: true },
   });
 
   if (!request) {
@@ -81,21 +86,40 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
 
   const now = new Date();
 
-  await prisma.earlyCheckoutRequest.update({
-    where: { id: requestId },
-    data: {
-      status: newStatus,
-      ...(adminReason ? { adminReason } : {}),
-      reviewedAt: now,
-    },
-  });
-
-  if (newStatus === "APPROVED" && request.attendanceId) {
-    await prisma.attendance.update({
-      where: { id: request.attendanceId },
-      data: { checkOutTime: now },
+  await prisma.$transaction(async (tx) => {
+    await tx.earlyCheckoutRequest.update({
+      where: { id: requestId },
+      data: {
+        status: newStatus,
+        ...(adminReason ? { adminReason } : {}),
+        reviewedAt: now,
+      },
     });
-  }
+
+    if (newStatus === "APPROVED") {
+      if (!request.attendance?.checkInTime) {
+        throw new Error("Check-in time not found");
+      }
+
+      const workMinutes = calculateWorkMinutes(
+        request.attendance.checkInTime,
+        now
+      );
+
+      if (workMinutes == null) {
+        throw new Error("Invalid work duration");
+      }
+
+      await tx.attendance.update({
+        where: { id: request.attendanceId },
+        data: {
+          checkOutTime: now,
+          workMinutes,
+          earlyCheckoutReason: request.reason,
+        },
+      });
+    }
+  });
 
   revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");

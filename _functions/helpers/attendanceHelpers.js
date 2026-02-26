@@ -114,6 +114,20 @@ export function getDistanceMeters(pointA, pointB) {
   return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
+export async function isEarlyCheckout(shiftId, checkoutTime) {
+  const shift = await prisma.shift.findUnique({
+    where: { id: shiftId },
+    select: { startTime: true, endTime: true },
+  });
+
+  if (!shift?.endTime) return false;
+
+  const shiftEnd = minutesToTodayTime(shift.endTime);
+  const checkout = getNowJakarta(checkoutTime);
+
+  return checkout.isBefore(shiftEnd);
+}
+
 export async function canUserCheckout(shiftId) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
@@ -155,33 +169,25 @@ export function addWorkDays(startDate, days) {
   return date
 }
 
-export function calculateWorkHours(checkIn, checkOut, breakHours = 1) {
-  if (!checkIn || !checkOut) return 0
-
-  const inTime = new Date(checkIn)
-  const outTime = new Date(checkOut)
-
-  let hours = (outTime - inTime) / (1000 * 60 * 60)
-  hours -= breakHours
-
-  return Number(Math.max(hours, 0).toFixed(2))
+export function calculateWorkMinutes(checkInTime, checkOutTime) {
+  if (!checkInTime || !checkOutTime) return null;
+  const diffMs = checkOutTime.getTime() - checkInTime.getTime();
+  if (diffMs <= 0) return null;
+  return Math.floor(diffMs / 60000); // presisi menit
 }
 
-export function calculateWorkMinutes(
+export function calculateWorkHours(
   checkInTime,
   checkOutTime
 ) {
-  if (!checkInTime || !checkOutTime) return null;
+  const minutes = calculateWorkMinutes(checkInTime, checkOutTime);
+  if (minutes == null) return null;
 
-  const diffMs = checkOutTime.getTime() - checkInTime.getTime();
-
-  if (diffMs <= 0) return null;
-
-  return Math.floor(diffMs / 60000);
+  return Number((minutes / 60).toFixed(2));
 }
 
 export function formatWorkHours(minutes) {
-  if (!minutes) return "-";
+  if (minutes == null) return "-";
 
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;

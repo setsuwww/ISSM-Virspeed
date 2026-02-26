@@ -4,7 +4,13 @@ import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 import { LogAction, LogMethod } from "@prisma/client"
 
-import { determineAttendanceStatus, evaluateAttendancePolicy, canUserCheckout, addWorkDays } from "@/_functions/helpers/attendanceHelpers"
+import {
+  determineAttendanceStatus,
+  evaluateAttendancePolicy,
+  canUserCheckout,
+  addWorkDays,
+  calculateWorkMinutes
+} from "@/_functions/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
 import { safeLog } from "@/_servers/admin-action/logAction"
@@ -110,42 +116,14 @@ export async function userSendCheckIn(coords = null) {
 }
 
 export async function userSendCheckOut() {
-  const user = await getCurrentUser()
-  if (!user?.shiftId) return { error: "User tidak memiliki shift aktif" }
+  const user = await getCurrentUser();
+  if (!user?.shiftId) return { error: "User tidak memiliki shift aktif" };
 
-  const allowed = await canUserCheckout(user.shiftId)
-  if (!allowed) return { error: "Belum waktunya checkout" }
+  const allowed = await canUserCheckout(user.shiftId);
+  if (!allowed) return { error: "Belum waktunya checkout" };
 
-  const now = getNowJakarta()
-  const today = getTodayStartJakarta().toDate()
-
-  await prisma.attendance.updateMany({
-    where: {
-      userId: user.id,
-      shiftId: user.shiftId,
-      date: today,
-      checkOutTime: null,
-    },
-    data: { checkOutTime: now.toDate() },
-  })
-
-  await safeLog({
-    userId: user.id,
-    url: "/employee/attendance/main/check-out",
-    action: LogAction.SUBMIT,
-    method: LogMethod.POST,
-    data: { checkoutTime: now.toDate() },
-  })
-
-  return { success: true }
-}
-
-export async function userSendEarlyCheckout(reason) {
-  const user = await getCurrentUser()
-  if (!user?.shiftId) return { error: "Unauthorized" }
-  if (!reason?.trim()) return { error: "Reason is required" }
-
-  const today = getTodayStartJakarta().toDate()
+  const now = getNowJakarta();
+  const today = getTodayStartJakarta().toDate();
 
   const attendance = await prisma.attendance.findUnique({
     where: {
@@ -155,16 +133,86 @@ export async function userSendEarlyCheckout(reason) {
         date: today,
       },
     },
-  })
-  if (!attendance) return { error: "Attendance not found" }
+  });
+
+  if (!attendance?.checkInTime)
+    return { error: "Check-in belum dilakukan" };
+
+  if (attendance.checkOutTime)
+    return { error: "Sudah checkout sebelumnya" };
+
+  const checkoutTime = now.toDate();
+
+  const workMinutes = calculateWorkMinutes(
+    attendance.checkInTime,
+    checkoutTime
+  );
+
+  if (workMinutes == null)
+    return { error: "Checkout tidak valid" };
+
+  await prisma.attendance.update({
+    where: { id: attendance.id },
+    data: {
+      checkOutTime: checkoutTime,
+      workMinutes,
+    },
+  });
+
+  await safeLog({
+    userId: user.id,
+    url: "/employee/attendance/main/check-out",
+    action: LogAction.SUBMIT,
+    method: LogMethod.POST,
+    data: {
+      checkoutTime,
+      workMinutes,
+    },
+  });
+
+  return { success: true };
+}
+
+export async function userSendEarlyCheckout(reason) {
+  const user = await getCurrentUser();
+  if (!user?.shiftId) return { error: "Unauthorized" };
+  if (!reason?.trim()) return { error: "Reason is required" };
+
+  const today = getTodayStartJakarta().toDate();
+  const attendance = await prisma.attendance.findUnique({
+    where: {
+      userId_shiftId_date: {
+        userId: user.id,
+        shiftId: user.shiftId,
+        date: today,
+      },
+    },
+  });
+
+  if (!attendance?.checkInTime)
+    return { error: "Check-in belum dilakukan" };
+  if (attendance.checkOutTime)
+    return { error: "Sudah checkout sebelumnya" };
+
+  const now = getNowJakarta();
+  const workMinutes = calculateWorkMinutes(attendance.checkInTime, now.toDate());
 
   const request = await prisma.earlyCheckoutRequest.create({
     data: {
       userId: user.id,
       attendanceId: attendance.id,
       reason,
+      status: "PENDING",
     },
-  })
+  });
+
+  await prisma.attendance.update({
+    where: { id: attendance.id },
+    data: {
+      workMinutes,
+      earlyCheckoutReason: reason,
+    },
+  });
 
   await safeLog({
     userId: user.id,
@@ -175,10 +223,11 @@ export async function userSendEarlyCheckout(reason) {
       attendanceId: attendance.id,
       requestId: request.id,
       reason,
+      workMinutes,
     },
-  })
+  });
 
-  return { success: true }
+  return { success: true };
 }
 
 export async function userSendPermissionRequest(reason) {

@@ -6,46 +6,22 @@ import AttendancesTableClient from "./AttendancesTable"
 import { Pagination } from "@/app/admin/dashboard/Pagination"
 
 import { prisma } from "@/_lib/prisma"
-import { minutesToTime } from "@/_functions/globalFunction"
+import { getAttendancesByDate } from "@/_servers/admin-action/attendanceAction"
 
 const PAGE_SIZE = 10
 
-async function getAttendancesByUserToday() {
-  const startOfDay = new Date()
-  startOfDay.setHours(0, 0, 0, 0)
+async function getShiftsWithWorkMinutes(page) {
+  const currentDate = new Date().toISOString().split("T")[0]
 
-  const endOfDay = new Date()
-  endOfDay.setHours(23, 59, 59, 999)
-
-  const attendances = await prisma.attendance.findMany({
-    where: {
-      date: {
-        gte: startOfDay,
-        lte: endOfDay,
-      },
-    },
-    select: {
-      userId: true,
-      status: true,
-      approval: true,
-    },
-  })
-
-  return new Map(attendances.map((a) => [a.userId, a]))
-}
-
-async function getShifts(page) {
-  const attendanceMap = await getAttendancesByUserToday()
+  // Panggil server action
+  const { data: attendancesToday } = await getAttendancesByDate(currentDate, page)
 
   const whereClause = {
-    type: {
-      in: ["MORNING", "AFTERNOON", "EVENING"],
-    },
+    type: { in: ["MORNING", "AFTERNOON", "EVENING"] },
   }
 
   const [total, shifts] = await Promise.all([
     prisma.shift.count({ where: whereClause }),
-
     prisma.shift.findMany({
       where: whereClause,
       skip: (page - 1) * PAGE_SIZE,
@@ -57,64 +33,44 @@ async function getShifts(page) {
         type: true,
         startTime: true,
         endTime: true,
-        division: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        users: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            shift: {
-              select: {
-                type: true,
-              },
-            },
-          },
-        },
+        division: { select: { id: true, name: true } },
+        users: { select: { id: true, name: true, email: true, shift: { select: { type: true } } } },
       },
     }),
   ])
 
-  const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1)
+  const attendanceMap = new Map(attendancesToday.map(a => [a.userId, a]))
 
-  const formatted = shifts.map((shift) => ({
+  const formatted = shifts.map(shift => ({
     id: shift.id,
     name: shift.name,
     type: shift.type,
     divisionName: shift.division?.name ?? "-",
-    startTime: minutesToTime(shift.startTime),
-    endTime: minutesToTime(shift.endTime),
-
-    users: shift.users.map((user) => {
+    startTime: shift.startTime,
+    endTime: shift.endTime,
+    users: shift.users.map(user => {
       const attendance = attendanceMap.get(user.id)
-
       return {
         id: user.id,
         name: user.name,
         email: user.email,
         shiftType: user.shift?.type ?? "Normal",
-        attendanceStatus:
-          attendance?.status &&
-          ["ABSENT", "LATE", "PERMISSION"].includes(attendance.status)
-            ? attendance.status
-            : "PRESENT",
+        attendanceStatus: attendance?.status ?? "PRESENT",
         approval: attendance?.approval ?? "",
+        workMinutes: attendance?.workMinutes ?? 0, // <= field utama
       }
     }),
   }))
 
+  const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1)
   return { data: formatted, totalPages }
 }
 
 export default async function AttendancesPage({ searchParams }) {
   const currentPage = Math.max(Number(searchParams?.page ?? "1"), 1)
-  const page = Math.max(Number(searchParams?.page ?? "1"), 1)
+  const page = currentPage
 
-  const { data: shifts, totalPages } = await getShifts(currentPage)
+  const { data: shifts, totalPages } = await getShiftsWithWorkMinutes(currentPage)
 
   return (
     <section className="space-y-6">
@@ -134,10 +90,8 @@ export default async function AttendancesPage({ searchParams }) {
         <ContentForm.Body>
           <AttendancesCard shifts={shifts} />
 
-          {/* Client interactive table */}
-          <AttendancesTableClient initialPage={page} />
+          <AttendancesTableClient initialPage={page} shifts={shifts} />
 
-          {/* Server pagination */}
           <Pagination
             page={currentPage}
             totalPages={totalPages}

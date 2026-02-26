@@ -15,6 +15,7 @@ import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
 import { getAttendancesByDate } from "@/_servers/admin-action/attendanceAction"
 import Link from "next/link"
+import { formatWorkHours } from "@/_functions/helpers/attendanceHelpers"
 
 export default function AttendancesTableClient({ initialPage = 1 }) {
   const [page, setPage] = useState(initialPage)
@@ -124,6 +125,7 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
                   <TableCell>
                     <div className="font-number text-sm text-slate-600 tracking-tight">
                       {safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} -{" "}
+                      {formatWorkHours(att.workHours)} -{" "}
                       {safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}
                     </div>
                   </TableCell>
