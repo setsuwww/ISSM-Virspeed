@@ -1,4 +1,3 @@
-// app/api/users/search/route.ts
 import { NextResponse } from "next/server"
 import { prisma } from "@/_lib/prisma"
 
