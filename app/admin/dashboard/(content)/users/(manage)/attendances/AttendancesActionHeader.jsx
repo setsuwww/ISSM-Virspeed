@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { exportPDF } from "@/_functions/exports/attendance/exportPDF";
 import { exportWord } from "@/_functions/exports/attendance/exportWord";
 import { exportExcel } from "@/_functions/exports/attendance/exportExcel";
+import { Label } from "@/_components/ui/Label";
 
 export const AttendancesActionHeader = React.memo(({
   selectedDate, onDateChange,
@@ -24,6 +25,7 @@ export const AttendancesActionHeader = React.memo(({
 
       <div className="flex items-center gap-3 flex-wrap">
 
+        <Label>Date :</Label>
         <Input type="date" typeSearch
           value={selectedDate} onChange={(e) => onDateChange(e.target.value)}
           className="w-auto px-3 py-2"

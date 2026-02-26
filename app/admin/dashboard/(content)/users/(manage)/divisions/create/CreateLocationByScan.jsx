@@ -40,6 +40,15 @@ export function CreateLocationByScan({ onLocationCaptured }) {
     )
   }
 
+  const handleUseCoordinate = () => {
+    if (!coords) return
+
+    onLocationCaptured?.({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+    })
+  }
+
   const removeCoords = () => setCoords(null)
 
   return (
@@ -70,28 +79,34 @@ export function CreateLocationByScan({ onLocationCaptured }) {
           </div>
         ) : (
           <p className="text-sm text-slate-600 text-center">
-            Click <span className="font-semibold">"Scan Location"</span> to capture your current location
+            Click <span className="font-semibold">"Scan Location"</span> to capture your current location expecially
           </p>
         )}
 
-        {/* Display coordinates */}
-        <h1 className="text-2xl text-sky-600">
-          Buat fitur dimana ada button "Take coordinate"
-          Copy latitude, longitude, coordinate, radius
-          Lalu Paste sesuai field
-        </h1>
+        <div className="flex gap-2">
 
-        {/* Scan button */}
-        <Button
-          type="button"
-          variant="positive"
-          disabled={loading}
-          onClick={handleScan}
-          className="flex items-center gap-2 from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 focus:ring-sky-300"
-        >
-          <MapPin className="h-4 w-4" />
-          {loading ? "Scanning..." : "Scan Location"}
-        </Button>
+          {/* Scan Button */}
+          <Button
+            type="button"
+            variant="outline"
+            disabled={loading}
+            onClick={handleScan}
+            className="flex items-center gap-2 bg-white"
+          >
+            <MapPin className="h-4 w-4" />
+            {loading ? "Scanning..." : "Scan Coordinate"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="positive"
+            disabled={!coords}
+            onClick={handleUseCoordinate}
+            className="flex items-center gap-2 from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 focus:ring-sky-300"
+          >
+            Take Coordinate
+          </Button>
+        </div>
       </div>
     </>
   )

@@ -157,7 +157,7 @@ export function CreateUserFromExcel({ onImported }) {
         </div>
 
         {/* actions */}
-        <div className="mt-4 flex gap-3">
+        <div className="mt-4 flex gap-2">
           <Button type="button" variant="outline" className="bg-white" onClick={downloadTemplate}>
             <Download className="h-4 w-4" />
             Download Template

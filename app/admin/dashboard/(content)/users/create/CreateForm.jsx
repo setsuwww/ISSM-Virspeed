@@ -127,13 +127,6 @@ export default function CreateForm({ divisions, shifts }) {
                     setExcelRows(rows)
                   }}
                 />
-                {excelRows.length > 0 && (
-                  <div className="mt-4 p-2 border rounded">
-                    {excelRows.map((row, idx) => (
-                      <p key={idx}>{row.name} - {row.email} - {row.password} - {row.role} - {row.workMode} - {row.shift ? row.shift : "Null" }</p>
-                    ))}
-                  </div>
-                )}
                 <UserExcelTemplate />
               </div>
 

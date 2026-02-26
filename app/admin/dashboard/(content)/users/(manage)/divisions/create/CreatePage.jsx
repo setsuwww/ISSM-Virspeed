@@ -28,7 +28,8 @@ export default function CreateDivisionForm() {
   const [loading, setLoading] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  const handleChange = (e) => { const { name, value } = e.target
+  const handleChange = (e) => {
+    const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -36,10 +37,12 @@ export default function CreateDivisionForm() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e) => {e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     setLoading(true)
 
-    const payload = {...form,
+    const payload = {
+      ...form,
       longitude: form.longitude ? parseFloat(form.longitude) : null,
       latitude: form.latitude ? parseFloat(form.latitude) : null,
       radius: form.radius ? parseInt(form.radius) : null,
@@ -47,12 +50,21 @@ export default function CreateDivisionForm() {
       endTime: form.endTime ? timeToMinutes(form.endTime) : null,
     }
 
-    startTransition(async () => { const result = await createDivision(payload)
+    startTransition(async () => {
+      const result = await createDivision(payload)
       setLoading(false)
 
-      if (result.success) { router.push("/admin/dashboard/users/divisions")}
+      if (result.success) { router.push("/admin/dashboard/users/divisions") }
       else { alert(result.message) }
     })
+  }
+
+  const handleLocationCaptured = ({ latitude, longitude }) => {
+    setForm((prev) => ({
+      ...prev,
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+    }))
   }
   return (
     <section>
@@ -71,7 +83,7 @@ export default function CreateDivisionForm() {
           </ContentForm.Header>
 
           <ContentForm.Body>
-            <CreateLocationByScan />
+            <CreateLocationByScan onLocationCaptured={handleLocationCaptured} />
 
             <div className="space-y-6">
               <div className="space-y-2">
@@ -92,7 +104,7 @@ export default function CreateDivisionForm() {
                 />
               </div>
 
-              <ContentInformation title="Division Coordinates" subtitle="Insert latitude and longitude for active division location"/>
+              <ContentInformation title="Division Coordinates" subtitle="Insert latitude and longitude for active division location" />
 
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <div className="space-y-2">
