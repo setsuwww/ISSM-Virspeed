@@ -66,7 +66,7 @@ export function CreateLocationByScan({ onLocationCaptured }) {
             <button
               type="button"
               onClick={removeCoords}
-              className="absolute -top-2 -right-2 p-1 items-center justify-center rounded-full bg-white border border-slate-300 text-red-500 hover:bg-slate-100 hover:text-red-700"
+              className="animate-bouncy hidden group-hover:flex absolute -top-2 -right-2 p-1 items-center justify-center rounded-full bg-white border border-slate-300 text-red-500 hover:bg-slate-100 hover:text-red-700"
             >
               <X className="w-3 h-3" strokeWidth={2} />
             </button>

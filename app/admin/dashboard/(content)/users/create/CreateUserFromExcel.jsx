@@ -5,9 +5,9 @@ import { useToast } from "@/_contexts/Toast-Provider"
 import { parseUserExcel } from "@/_lib/excel"
 
 import { Button } from "@/_components/ui/Button"
-import { File, FileXls, Download } from "phosphor-react"
+import { FileXls } from "phosphor-react"
 import { Label } from "@/_components/ui/Label"
-import { Search, X } from "lucide-react"
+import { File, DownloadIcon, X } from "lucide-react"
 
 export function CreateUserFromExcel({ onImported }) {
   const { addToast } = useToast()
@@ -159,7 +159,7 @@ export function CreateUserFromExcel({ onImported }) {
         {/* actions */}
         <div className="mt-4 flex gap-2">
           <Button type="button" variant="outline" className="bg-white" onClick={downloadTemplate}>
-            <Download className="h-4 w-4" />
+            <DownloadIcon className="h-4 w-4" />
             Download Template
           </Button>
 
@@ -169,7 +169,6 @@ export function CreateUserFromExcel({ onImported }) {
             disabled={loading}
             onClick={() => fileInputRef.current?.click()}
           >
-            <Search className="h-4 w-4" />
             {loading ? "Importing..." : selectedFile ? "Replace File" : "Browse File"}
           </Button>
         </div>

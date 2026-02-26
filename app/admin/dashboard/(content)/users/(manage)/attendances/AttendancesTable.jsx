@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useMemo } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye, ChevronRight } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
@@ -8,6 +9,7 @@ import { Badge } from "@/_components/ui/Badge"
 import EmptyStates from "@/_components/common/EmptyStates"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
+import { Pagination } from "../../../../Pagination"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
@@ -18,7 +20,11 @@ import Link from "next/link"
 import { formatWorkHours } from "@/_functions/helpers/attendanceHelpers"
 
 export default function AttendancesTableClient({ initialPage = 1 }) {
-  const [page, setPage] = useState(initialPage)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const page = Number(searchParams.get("page")) || 1
+
   const [totalPages, setTotalPages] = useState(1)
 
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
@@ -28,10 +34,6 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
 
   const [data, setData] = useState([])
   const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    setPage(1)
-  }, [date])
 
   useEffect(() => {
     startTransition(async () => {
@@ -125,8 +127,8 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
                   <TableCell>
                     <div className="font-number text-sm text-slate-600 tracking-tight">
                       <span className="bg-green-50 text-green-500">{safeFormat(att.checkInTime, "hh:mm a").toUpperCase()} </span>-{" "}
-                      <span className="bg-slate-50 text-slate-500">{formatWorkHours(att.workHours)} </span>-{" "}
-                      <span className="bg-red-50 text-red-500">{safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()}</span>
+                      <span className="bg-red-50 text-red-500">{safeFormat(att.checkOutTime, "hh:mm a").toUpperCase()} </span>-{" "}
+                      <span className="bg-slate-50 text-slate-500">{formatWorkHours(att.workHours)} </span>
                     </div>
                   </TableCell>
 
@@ -163,29 +165,14 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
           </TableBody>
         </Table>
       )}
-      <div className="flex justify-end mt-4 gap-2">
-        {page > 1 && (
-          <button
-            onClick={() => setPage((p) => p - 1)}
-            className="px-3 py-1 border rounded"
-          >
-            Prev
-          </button>
-        )}
-
-        <span className="px-3 py-1 text-sm">
-          {page} / {totalPages}
-        </span>
-
-        {page < totalPages && (
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1 border rounded"
-          >
-            Next
-          </button>
-        )}
-      </div>
+      {totalPages > 1 && (
+        <Pagination
+          key={page}
+          page={page}
+          totalPages={totalPages}
+          basePath="/admin/dashboard/users/attendances"
+        />
+      )}
     </>
   )
 }
