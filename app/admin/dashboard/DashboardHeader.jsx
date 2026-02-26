@@ -1,20 +1,18 @@
 "use client"
 
 import React, { useTransition } from "react"
-import { LogOut, Inbox, AtSign, Clock } from "lucide-react"
+import { LogOut, Inbox, Clock } from "lucide-react"
 import Link from "next/link"
 import useSWR from "swr"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
 import { LogoutAuthAction } from "../../../_servers/authAction"
-import { SendMessageModal } from "@/_components/partials/SendMessageModal"
 import { TimeClock } from "@/app/employee/dashboard/TimeClock"
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export const DashboardHeader = React.memo(function DashboardHeader({ title, subtitle, useColor = false }) {
   const [isPending, startTransition] = useTransition()
-  const [openMail, setOpenMail] = React.useState(false)
 
   const { data } = useSWR("/api/system-config/admin-notification",
     fetcher,
@@ -52,15 +50,6 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
             <TimeClock />
           </div>
 
-          {/* <Tooltip>
-            <button onClick={() => setOpenMail(true)} className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
-              <TooltipTrigger asChild><AtSign size={20} strokeWidth={2} /></TooltipTrigger>
-              <TooltipContent>
-                <p>Send Message</p>
-              </TooltipContent>
-            </button>
-          </Tooltip> */}
-
           <Tooltip>
             <Link href="/admin/dashboard/requests" className={`hover:text-sky-600 relative px-2 ${rightActionClass} hover:bg-white hover:border-slate-300/90`}>
               <TooltipTrigger><Inbox size={20} strokeWidth={2} /></TooltipTrigger>
@@ -84,11 +73,6 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
           </button>
         </div>
       </div>
-
-      <SendMessageModal
-        open={openMail}
-        onClose={setOpenMail}
-      />
     </header>
   )
 })

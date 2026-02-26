@@ -6,14 +6,7 @@ import { useRouter } from "next/navigation";
 import { PlusSquare } from "lucide-react";
 
 export const ContentInformation = React.memo(function ContentInformation({
-  title,
-  subtitle,
-  show = false,
-  buttonText = "Create",
-  href,
-  autoMargin = "mb-3",
-  variant = "primary",
-  buttonIcon,
+  title, subtitle, show = false, buttonText = "Create", href, autoMargin = "mb-3", variant = "primary", buttonIcon,
 }) {
 
   const hasHeader = title || subtitle;
