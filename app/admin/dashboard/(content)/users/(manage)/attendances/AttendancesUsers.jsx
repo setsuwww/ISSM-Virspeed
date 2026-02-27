@@ -13,15 +13,12 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { capitalize } from "@/_functions/globalFunction"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { shiftStyles } from '@/_constants/shiftConstants';
+import { useDebounce } from "@/_stores/common/useDebounce"
 
-export default function AttendancesUsers({
-  selectedStatus,
-  shifts = [],
-  allUsers = [],
-  onClose,
-}) {
+export default function AttendancesUsers({ selectedStatus, shifts = [], allUsers = [], onClose }) {
   const [shiftFilter, setShiftFilter] = useState("all")
   const [search, setSearch] = useState("")
+  const debouncedSearch = useDebounce(search, 500)
   const searchInputRef = useRef(null)
 
   const isOpen = Boolean(selectedStatus)
@@ -33,10 +30,10 @@ export default function AttendancesUsers({
       (u) =>
         u.attendanceStatus === selectedStatus &&
         (shiftFilter === "all" || u._shiftType === shiftFilter) &&
-        (u.name?.toLowerCase().includes(search.toLowerCase()) ||
-          u.email?.toLowerCase().includes(search.toLowerCase()))
+        (u.name?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          u.email?.toLowerCase().includes(debouncedSearch.toLowerCase()))
     ).length
-  }, [allUsers, selectedStatus, shiftFilter, search])
+  }, [allUsers, selectedStatus, shiftFilter, debouncedSearch])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

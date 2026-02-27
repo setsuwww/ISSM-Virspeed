@@ -23,27 +23,13 @@ export async function logQuery({ page = 1, limit = 20, userId, action }) {
   if (action) where.action = action
 
   const logs = await prisma.activityLog.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    skip: (page - 1) * limit,
-    take: limit,
+    where, orderBy: { createdAt: "desc" }, skip: (page - 1) * limit, take: limit,
     select: {
-      id: true,
-      url: true,
-      action: true,
-      method: true,
+      id: true, url: true, action: true, method: true,
       data: true,
-      ipAddress: true,
-      userAgent: true,
+      ipAddress: true, userAgent: true,
       createdAt: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-        },
-      },
+      user: { select: { id: true, name: true, email: true, role: true }},
     },
   })
 
@@ -68,13 +54,7 @@ export async function logQuery({ page = 1, limit = 20, userId, action }) {
 
 export async function logActivity({ userId, url, action, data, method }) {
   await prisma.activityLog.create({
-    data: {
-      userId,
-      url,
-      action,
-      method,
-      data,
-    },
+    data: { userId, url, action, method, data },
   })
 }
 

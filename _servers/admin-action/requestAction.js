@@ -5,17 +5,14 @@ import { revalidatePath } from "next/cache";
 import { calculateWorkMinutes } from "@/_functions/helpers/attendanceHelpers"
 
 export async function updatePermissionRequestStatus(id, newStatus, adminReason = null) {
-  const permissionId = Number(id);
-  if (!Number.isInteger(permissionId)) {
+  const permId = Number(id);
+  if (!Number.isInteger(permId)) {
     throw new Error("Invalid permission ID");
   }
 
   await prisma.attendance.update({
-    where: { id: permissionId },
-    data: {
-      approval: newStatus,
-      ...(adminReason ? { adminReason: adminReason } : {}),
-    },
+    where: { id: permId },
+    data: { approval: newStatus, ...(adminReason ? { adminReason: adminReason } : {})},
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -25,17 +22,14 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
 }
 
 export async function updateShiftChangeRequestStatus(id, newStatus, adminReason = null) {
-  const scId = Number(id);
-  if (!Number.isInteger(scId)) {
+  const shchId = Number(id);
+  if (!Number.isInteger(shchId)) {
     throw new Error("Invalid shift sc ID");
   }
 
   await prisma.shiftChangeRequest.update({
-    where: { id: scId },
-    data: {
-      status: newStatus,
-      ...(adminReason ? { rejectReason: adminReason } : {}),
-    },
+    where: { id: shchId },
+    data: { status: newStatus, ...(adminReason ? { rejectReason: adminReason } : {})},
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -52,11 +46,7 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
 
   await prisma.leaveRequest.update({
     where: { id: leaveId },
-    data: {
-      status: newStatus,
-      ...(adminReason ? { adminReason } : {}),
-      updatedAt: new Date(),
-    },
+    data: {  status: newStatus,  ...(adminReason ? { adminReason } : {}), updatedAt: new Date()},
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -65,11 +55,7 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
   return { success: true };
 }
 
-export async function updateEarlyCheckoutRequestStatus(
-  id,
-  newStatus,
-  adminReason = null
-) {
+export async function updateEarlyCheckoutRequestStatus( id, newStatus, adminReason = null) {
   const requestId = Number(id);
   if (!Number.isInteger(requestId)) {
     throw new Error("Invalid early checkout request ID");
@@ -145,7 +131,6 @@ export async function clearHistory(type) {
       })
       break
     case "permission":
-      // sesuaikan jika ada model PermissionRequest
       await prisma.permissionRequest?.deleteMany({
         where: { status: { in: ["APPROVED", "REJECTED"] } },
       })
