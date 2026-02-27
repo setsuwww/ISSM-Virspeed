@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { parseISO, subDays, isWithinInterval, addDays } from "date-fns";
+import { ChartNoAxesCombined } from "lucide-react";
+import { parseISO, subDays, isWithinInterval, addDays, format } from "date-fns";
+
 import { AreaDiagram } from "./DashboardDiagram";
 import { Button } from "@/_components/ui/Button";
-import { ChartNoAxesCombined } from "lucide-react";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
 
@@ -14,12 +15,17 @@ const PRESET_RANGES = {
   last30: { label: "30 Days", getRange: () => ({ start: subDays(new Date(), 29), end: new Date() }) },
 };
 
-const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// Helper untuk format label hari
+function getDayLabel(date, totalDays) {
+  const fmt = totalDays === 7 ? "EEEE" : "EEE"; // full vs short
+  return format(date, fmt);
+}
 
 export default function AnalyticsDiagram({ attendanceRaw = [] }) {
   const [rangeKey, setRangeKey] = useState("last7");
   const [statusFilter, setStatusFilter] = useState("all");
 
+  // Parse tanggal
   const parsedAttendances = useMemo(() => {
     return attendanceRaw.map((r) => ({
       date: parseISO(r.date),
@@ -27,6 +33,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
     }));
   }, [attendanceRaw]);
 
+  // Hitung start & end
   const { start, end } = useMemo(() => {
     const { getRange } = PRESET_RANGES[rangeKey];
     const r = getRange();
@@ -35,13 +42,19 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
     return r;
   }, [rangeKey]);
 
+  // Total hari di range
+  const totalDays = useMemo(() => (end - start) / (1000 * 60 * 60 * 24) + 1, [start, end]);
+
+  // Generate chartData
   const chartData = useMemo(() => {
     const map = {};
 
+    // Init map per tanggal
     for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
       const key = d.toISOString().split("T")[0];
       map[key] = {
-        date: key, name: dayNames[d.getDay()],
+        date: key,
+        name: getDayLabel(d, totalDays),
         present: 0,
         late: 0,
         absent: 0,
@@ -49,6 +62,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
       };
     }
 
+    // Hitung attendance per tanggal
     for (const a of parsedAttendances) {
       if (!a.date) continue;
       if (!isWithinInterval(a.date, { start, end })) continue;
@@ -64,18 +78,18 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
     }
 
     return Object.keys(map).sort().map((k) => map[k]);
-  }, [parsedAttendances, start, end, statusFilter]);
+  }, [parsedAttendances, start, end, statusFilter, totalDays]);
 
+  // Series chart
   const series = useMemo(() => {
     const base = [
-      { key: "absent", color: "#ffa2a2", label: "Absent" },
-      { key: "late", color: "#ffdf20", label: "Late" },
-      { key: "present", color: "#7bf1a8", label: "Present" },
-      { key: "permission", color: "#3b82f6", label: "Permission" },
-    ]
+      { key: "absent", color: "#fb2c36", label: "Absent" },
+      { key: "late", color: "#efb100", label: "Late" },
+      { key: "present", color: "#00bba7", label: "Present" },
+      { key: "permission", color: "#2b7fff", label: "Permission" },
+    ];
     if (statusFilter === "all") return base;
-
-    return base.filter(s => s.key.toUpperCase() === statusFilter);
+    return base.filter((s) => s.key.toUpperCase() === statusFilter);
   }, [statusFilter]);
 
   return (

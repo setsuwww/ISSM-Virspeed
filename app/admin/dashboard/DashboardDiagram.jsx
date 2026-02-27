@@ -27,20 +27,20 @@ export const AreaDiagram = React.memo(function AreaDiagram({ title, description,
           <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
         )}
       </CardHeader>
-      <CardContent className="h-[440px]">
+      <CardContent className="h-[360px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={chartMargin}>
             <defs>
               {seriesToUse.map((s, idx) => (
                 <linearGradient key={s.key} id={`gradient-${s.key}-${idx}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={s.color} stopOpacity={0.6} />
-                  <stop offset="90%" stopColor={s.color} stopOpacity={0.1} />
+                  <stop offset="5%" stopColor={s.color} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={s.color} stopOpacity={0} />
                 </linearGradient>
               ))}
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#cee0fa95" />
-            <XAxis dataKey="name" tick={{ fontSize: 8, fill: "#6b7280" }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#c4c4c495" />
+            <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#6b7280" }} />
             <YAxis tick={{ fontSize: 8, fill: "#6b7280" }} />
             <Tooltip
               contentStyle={tooltipStyle}
@@ -49,10 +49,10 @@ export const AreaDiagram = React.memo(function AreaDiagram({ title, description,
             {seriesToUse.map((s, idx) => (
               <Area
                 key={s.key}
-                type="monotone"
+                type="linear"
                 dataKey={s.key}
                 stroke={s.color}
-                strokeWidth={2}
+                strokeWidth={1.5}
                 fill={`url(#gradient-${s.key}-${idx})`}
                 fillOpacity={1}
                 dot={false}
