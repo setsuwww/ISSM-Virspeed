@@ -1,10 +1,10 @@
 "use client";
 
-import { Calendar, User, Users } from "lucide-react";
-import { Badge } from "@/_components/ui/Badge";
+import React from "react";
+import { Calendar, User } from "lucide-react";
 import { capitalize } from "@/_functions/globalFunction";
 
-export default function AttendancesApprovalPartials({
+function AttendancesApprovalPartials({
   status, users, approvalCounts, statusColorsClass, onClick,
 }) {
   return (
@@ -53,3 +53,5 @@ export default function AttendancesApprovalPartials({
     </div>
   );
 }
+
+export default React.memo(AttendancesApprovalPartials)

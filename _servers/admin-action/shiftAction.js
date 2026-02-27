@@ -11,23 +11,14 @@ export async function createShift(payload) {
   }
 
   await prisma.shift.create({
-    data: {
-      type,
-      name,
-      startTime,
-      endTime,
-      divisionId,
-    },
+    data: { type, name, startTime, endTime, divisionId },
   });
 
   revalidatePath("/admin/dashboard/shifts");
   return { success: true };
 }
 
-export async function updateShift(
-  id,
-  payload
-) {
+export async function updateShift( id, payload ) {
   if (!id) return { error: "Shift ID required" };
 
   await prisma.shift.update({

@@ -6,16 +6,12 @@ import { revalidatePath } from "next/cache"
 
 export async function createUser(formData) {
   try {
-    const name = formData.get("name")
-    const email = formData.get("email")
-    const password = formData.get("password")
-    const role = formData.get("role") || "USER"
-    const divisionId = formData.get("divisionId") !== "NONE" ? parseInt(formData.get("divisionId")) : null
-    const workMode = formData.get("workMode")
-    const shiftId =
-      workMode === "SHIFT" && formData.get("shiftId") !== "NONE"
-        ? parseInt(formData.get("shiftId"))
-        : null
+    const formObject = Object.fromEntries(formData.entries())
+    let { name, email, password, role, divisionId, shiftId, workMode } = formObject
+
+    role = role || "USER"
+    divisionId = divisionId !== "NONE" ? parseInt(divisionId) : null
+    shiftId = workMode === "SHIFT" && shiftId !== "NONE" ? parseInt(shiftId) : null
 
     if (!name || !email || !password) { throw new Error("Name, email, and password are required.") }
 

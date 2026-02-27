@@ -1,3 +1,5 @@
+export const defaultStatuses = ["ABSENT", "LATE", "PERMISSION"]
+
 export const statusStyleKey = {
   PENDING: "Pending",
   PENDING_ADMIN: "Pending",

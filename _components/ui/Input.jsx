@@ -8,11 +8,54 @@ const sizeClasses = {
   lg: "h-10 px-4 text-base",
 };
 
-function Input({ className, type = "text", size = "md", typeSearch = false, typeDate = false, value, onChange, ...props }) {
+function Input({
+  className,
+  type = "text",
+  size = "md",
+  typeSearch = false,
+  typeDate = false,
+  value,
+  onChange,
+  debounceDelay = 500,
+  ...props
+}) {
+  const [internalValue, setInternalValue] = React.useState(value || "");
+  const debounceRef = React.useRef(null);
 
-  const baseClasses = "file:text-slate-600 placeholder:text-slate-500 flex w-full min-w-0 rounded-lg border transition-[color,box-shadow,border] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
-  const defaultFocus = "border-slate-300/60 bg-white focus-visible:border-slate-300 focus-visible:ring-[4px] focus-visible:ring-slate-100 shadow-2xs";
-  const searchFocus = "border-slate-300/90 bg-slate-100/80 focus-visible:border focus-visible:border-slate-500/50 focus-visible:ring-2 focus-visible:ring-slate-300/50 caret-slate-400";
+  React.useEffect(() => {
+    setInternalValue(value || "");
+  }, [value]);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+
+    if (!typeSearch) {
+      onChange?.(e);
+      return;
+    }
+
+    setInternalValue(newValue);
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      onChange?.({
+        ...e,
+        target: { ...e.target, value: newValue },
+      });
+    }, debounceDelay);
+  };
+
+  const baseClasses =
+    "file:text-slate-600 placeholder:text-slate-500 flex w-full min-w-0 rounded-lg border transition-[color,box-shadow,border] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
+
+  const defaultFocus =
+    "border-slate-300/60 bg-white focus-visible:border-slate-300 focus-visible:ring-[4px] focus-visible:ring-slate-100 shadow-2xs";
+
+  const searchFocus =
+    "border-slate-300/90 bg-slate-100/80 focus-visible:border focus-visible:border-slate-500/50 focus-visible:ring-2 focus-visible:ring-slate-300/50 caret-slate-400";
 
   if (typeDate) {
     return (
@@ -32,16 +75,6 @@ function Input({ className, type = "text", size = "md", typeSearch = false, type
           )}
           {...props}
         />
-
-        {value && (
-          <span className="absolute right-3 text-xs text-slate-400 pointer-events-none">
-            {new Date(value).toLocaleDateString("id-ID", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
-          </span>
-        )}
       </div>
     );
   }
@@ -49,8 +82,8 @@ function Input({ className, type = "text", size = "md", typeSearch = false, type
   return (
     <input
       type={type}
-      value={value}
-      onChange={onChange}
+      value={typeSearch ? internalValue : value}
+      onChange={handleChange}
       className={cn(
         baseClasses,
         sizeClasses[size],

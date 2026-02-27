@@ -14,3 +14,8 @@ export const confirmMessages = {
     variant: "danger",
   }),
 };
+
+export const MSG = {
+  NO_SELECTED: "No employees selected.",
+  UPDATE_FAIL: "Failed to update user state",
+};

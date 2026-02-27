@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import { useState, useMemo, useCallback } from "react";
 import { useHandleDivisions } from "../../handlers/admin/useHandleDivisions";
+import { useDebounce } from "@/_stores/common/useDebounce";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -14,12 +15,13 @@ export function useDivisionsHooks(initialData) {
   const listData = swrResult?.data ?? initialData ?? [];
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedIds, setSelectedIds] = useState([]);
 
   const filteredData = useMemo(() => {
-    const q = (search || "").toString().toLowerCase();
+    const q = (debouncedSearch || "").toString().toLowerCase();
     return listData.filter((division) => {
       const name = (division.name || "").toString().toLowerCase();
       const matchSearch = !q || name.includes(q);
@@ -27,7 +29,7 @@ export function useDivisionsHooks(initialData) {
       const matchStatus = statusFilter === "all" || division.status === statusFilter;
       return matchSearch && matchType && matchStatus;
     });
-  }, [listData, search, typeFilter, statusFilter]);
+  }, [listData, debouncedSearch, typeFilter, statusFilter]);
 
   const handlers = useHandleDivisions({
     filteredData,

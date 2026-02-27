@@ -1,85 +1,80 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { api } from "@/_lib/api";
-
 import { useConfirmStore } from "@/_stores/common/useConfirmStore";
-import { confirmMessages } from "@/_constants/static/handleEmployeeMessage";
-
+import { confirmMessages, MSG } from "@/_constants/static/handleEmployeeMessage";
 import { deleteUserById } from "@/_servers/admin-action/userAction";
+import { useDebounce } from "@/_stores/common/useDebounce";
 
 const askConfirm = useConfirmStore.getState().ask;
 
-const MSG = {
-  NO_SELECTED: "No employees selected.",
-  UPDATE_FAIL: "Failed to update user state",
-  DELETE_FAIL: "Failed to delete user",
-};
-
-export function useShiftEmployeesHooks(users) {
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState([]);
-  const [divisionFilter, setDivisionFilter] = useState("all");
-  const [shiftFilter, onShiftFilterChange] = useState("all");
-
+export function useShiftEmployeesHooks(users = []) {
   const router = useRouter();
 
-  const data = useMemo(() => (users || []).filter((u) => u.role === "EMPLOYEE"),
-    [users]
-  );
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 400);
+
+  const [selected, setSelected] = useState([]);
+  const [divisionFilter, setDivisionFilter] = useState("all");
+  const [shiftFilter, setShiftFilter] = useState("all");
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const employees = (users || []).filter((u) => u.role === "EMPLOYEE");
+    setData(employees);
+  }, [users]);
 
   const filteredData = useMemo(() => {
+    if (!data.length) return [];
+
+    const q = debouncedSearch.trim().toLowerCase();
+
     return data.filter((u) => {
-      const matchSearch = u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase());
+      const name = (u.name || "").toLowerCase();
+      const email = (u.email || "").toLowerCase();
+
+      const matchSearch = !q || name.includes(q) || email.includes(q);
       const matchDivision = divisionFilter === "all" || u.division?.id === Number(divisionFilter);
       const matchShift = shiftFilter === "all" || u.shift?.type === shiftFilter;
 
       return matchSearch && matchDivision && matchShift;
     });
-  }, [data, search, divisionFilter, shiftFilter]);
+  }, [data, debouncedSearch, divisionFilter, shiftFilter]);
 
-  const toggleSelect = (id) => setSelected((prev) => prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]);
+  const toggleSelect = useCallback((id) => {
+    setSelected((prev) =>
+      prev.includes(id)
+        ? prev.filter((s) => s !== id)
+        : [...prev, id]
+    );
+  }, []);
 
-  const deleteSelected = async () => {
+  const clearSelection = useCallback(() => {
+    setSelected([]);
+  }, []);
+
+  const deleteSelected = useCallback(async () => {
     if (!selected.length) {
       alert(MSG.NO_SELECTED);
       return;
     }
 
-    const { message, variant } = confirmMessages.deleteSelected(selected.length);
+    const { message, variant } =
+      confirmMessages.deleteSelected(selected.length);
+
     const confirmed = await askConfirm(message, variant);
     if (!confirmed) return;
 
-    setData((prev) => prev.filter((u) => !selected.includes(u.id)));
-    setSelected([]);
-  };
+    setData((prev) =>
+      prev.filter((u) => !selected.includes(u.id))
+    );
 
-  const deleteAll = async () => {
-    const { message, variant } = confirmMessages.deleteAll(filteredData.length);
-    const confirmed = await askConfirm(message, variant);
-    if (!confirmed) return;
-
-    setData([]);
-    setSelected([]);
-  };
-
-  const onEdit = useCallback((id) => {
-    router.push(`/admin/dashboard/users/${id}/edit`);
-  }, [router]);
-
-  const onHistory = useCallback((id) => {
-    router.push(`/admin/dashboard/users/${id}/history`);
-  }, [router]);
-
-  const onSwitch = useCallback(async (id, newActiveState) => {
-    try {
-      await api.patch(`/users/${id}`, { active: newActiveState });
-      setData((prev) => prev.map((u) => u.id === id ? { ...u, active: newActiveState } : u));
-    }
-    catch { alert(MSG.UPDATE_FAIL); }
-  }, []);
+    clearSelection();
+  }, [selected, clearSelection]);
 
   const onDelete = useCallback(async (id) => {
     const { message, variant } = confirmMessages.deleteOne;
@@ -87,15 +82,43 @@ export function useShiftEmployeesHooks(users) {
     const confirmed = await askConfirm(message, variant);
     if (!confirmed) return;
 
-    await deleteUserById(id)
+    await deleteUserById(id);
+
+    setData((prev) =>
+      prev.filter((u) => u.id !== id)
+    );
   }, []);
 
+  const onSwitch = useCallback(async (id, newActiveState) => {
+    try {
+      await api.patch(`/users/${id}`, {
+        active: newActiveState,
+      });
+
+      setData((prev) =>
+        prev.map((u) => u.id === id
+          ? { ...u, active: newActiveState } : u
+        )
+      );
+    } catch { alert(MSG.UPDATE_FAIL)}
+  }, []);
+
+  const onEdit = useCallback(
+    (id) => { router.push(`/admin/dashboard/users/${id}/edit`)},
+    [router]
+  );
+
+  const onHistory = useCallback(
+    (id) => {router.push(`/admin/dashboard/users/${id}/history`)},
+    [router]
+  );
+
   return {
-    search, setSearch, selected, setSelected,
-    data, filteredData,
+    data,
+    search, setSearch,
+    selected, filteredData,
     divisionFilter, setDivisionFilter,
-    shiftFilter, onShiftFilterChange,
-    toggleSelect, deleteSelected, deleteAll,
-    onHistory, onSwitch, onEdit, onDelete,
+    shiftFilter, setShiftFilter,
+    toggleSelect, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };
 }

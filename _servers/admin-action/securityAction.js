@@ -7,7 +7,6 @@ import { revalidatePath } from "next/cache"
 const MAX_SCORE = 100
 const WINDOW_MINUTES = 15
 
-
 export async function blockUser(userId) {
   await prisma.user.update({
     where: { id: userId },
@@ -40,19 +39,19 @@ export async function unblockUser(userId) {
   })
 }
 
-export async function markSuspicious(log) {
-  if (log.userId) {
+export async function markSuspicious(userId) {
+  if (userId.userId) {
     await prisma.user.update({
-      where: { id: log.userId },
+      where: { id: userId.userId },
       data: { isFlagged: true },
     })
   }
 
   await prisma.suspiciousActivity.create({
     data: {
-      userId: log.userId,
-      ip: log.ip,
-      reason: `Flagged from security log: ${log.action}`,
+      userId: userId.userId,
+      ip: userId.ip,
+      reason: `Flagged from security Log: ${userId.action}`,
       score: 50,
     },
   })
@@ -67,12 +66,13 @@ export async function unmarkSuspicious(userId) {
   })
 }
 
-export async function logSecurity({
-  userId,
-  action,
-  ip,
-  userAgent,
-}) {
+export async function reportSuspicious({ userId, ip, reason, score }) {
+  await prisma.suspiciousActivity.create({
+    data: { userId, ip, reason, score },
+  })
+}
+
+export async function logSecurity({ userId, action, ip, userAgent }) {
   await prisma.securityLog.create({
     data: {
       userId,
@@ -83,30 +83,12 @@ export async function logSecurity({
   })
 }
 
-export async function reportSuspicious({
-  userId,
-  ip,
-  reason,
-  score,
-}) {
-  await prisma.suspiciousActivity.create({
-    data: {
-      userId,
-      ip,
-      reason,
-      score,
-    },
-  })
-}
-
 export async function checkAndLockUser(userId) {
   const since = new Date(Date.now() - WINDOW_MINUTES * 60 * 1000)
 
   const activities = await prisma.suspiciousActivity.findMany({
     where: {
-      userId,
-      createdAt: { gte: since },
-      resolved: false,
+      userId, createdAt: { gte: since }, resolved: false,
     },
   })
 

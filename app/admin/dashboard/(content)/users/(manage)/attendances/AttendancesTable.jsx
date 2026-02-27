@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useMemo } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye, ChevronRight } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
@@ -21,12 +21,8 @@ import { formatWorkHours } from "@/_functions/helpers/attendanceHelpers"
 
 export default function AttendancesTableClient({ initialPage = 1 }) {
   const searchParams = useSearchParams()
-  const router = useRouter()
-
   const page = Number(searchParams.get("page")) || 1
-
   const [totalPages, setTotalPages] = useState(1)
-
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
 
   const [sortOrder, setSortOrder] = useState("desc")

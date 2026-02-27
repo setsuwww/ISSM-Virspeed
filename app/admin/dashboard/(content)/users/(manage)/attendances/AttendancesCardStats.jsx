@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react"
 import { attendanceStatusClass } from "@/_constants/theme/attendanceTheme"
+import { defaultStatuses } from "@/_constants/attendanceConstants"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
 import AttendancesUsers from "./AttendancesUsers"
@@ -21,10 +22,8 @@ export function AttendancesCard({ shifts = [] }) {
     )
   }, [shifts])
 
-  const handleOpen = useCallback((status) => { setSelectedStatus(status)}, [])
+  const handleOpen = useCallback((status, hasUsers) => {if (hasUsers) setSelectedStatus(status)}, []);
   const handleClose = useCallback(() => { setSelectedStatus(null)}, [])
-
-  const defaultStatuses = useMemo(() => ["ABSENT", "LATE", "PERMISSION"], [])
 
   const statusSummary = useMemo(() => {
     return defaultStatuses.map((status) => {
@@ -66,7 +65,7 @@ export function AttendancesCard({ shifts = [] }) {
           <AttendancesApprovalPartials key={status} status={status} users={users}
             approvalCounts={approvalCounts}
             statusColorsClass={attendanceStatusClass}
-            onClick={() => users.length > 0 && handleOpen(status)}
+            onClick={() => handleOpen(status, users.length > 0)}
           />
         ))}
       </div>
