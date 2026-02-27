@@ -13,7 +13,8 @@ export async function createUser(formData) {
     divisionId = divisionId !== "NONE" ? parseInt(divisionId) : null
     shiftId = workMode === "SHIFT" && shiftId !== "NONE" ? parseInt(shiftId) : null
 
-    if (!name || !email || !password) { throw new Error("Name, email, and password are required.") }
+    if (!name || !email) { throw new Error("Name, and email, are required.") }
+    password = password && password.trim() !== "" ? password : "secretPW1234"
 
     const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) { throw new Error("User with this email already exists.") }
