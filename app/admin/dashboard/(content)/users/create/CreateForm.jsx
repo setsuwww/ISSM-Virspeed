@@ -162,8 +162,8 @@ export default function CreateForm({ divisions, shifts }) {
                   value={form.password}
                   onChange={handleChange}
                 />
-                <div className="flex items-center space-x-2">
-                  <Info />Password is optional and set "secretPW123" as default password
+                <div className="flex items-center gap-x-1 text-xs text-slate-400 mt-1">
+                  <Info size={16} strokeWidth={1} />Password is optional and set "secretPW123" as default password
                 </div>
               </div>
 
@@ -238,11 +238,11 @@ export default function CreateForm({ divisions, shifts }) {
                         ))}
                       </SelectContent>
                     </Select>
+                    {availableShifts.length === 0 && (
+                      <ContentList type="w" items={["There is no shift detected or created in this division to assign"]} />
+                    )}
                   </div>
 
-                  {availableShifts.length === 0 && (
-                    <ContentList type="w" items={["There is no shift detected or created in this division to assign"]} />
-                  )}
                 </>
               )}
             </div>
