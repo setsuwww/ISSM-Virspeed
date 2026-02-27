@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useTransition } from "react"
-import { ChevronLeft, Loader } from 'lucide-react';
+import { ChevronLeft, Info, Loader } from 'lucide-react';
 import { useRouter } from "next/navigation"
 import { useToast } from "@/_contexts/Toast-Provider"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
@@ -161,8 +161,10 @@ export default function CreateForm({ divisions, shifts }) {
                 <Input placeholder="Users password" type="password" name="password" disabled={inputMode === "EXCEL"}
                   value={form.password}
                   onChange={handleChange}
-                  required
                 />
+                <div className="flex items-center space-x-2">
+                  <Info />Password is optional and set "secretPW123" as default password
+                </div>
               </div>
 
               <div className="space-y-2">
