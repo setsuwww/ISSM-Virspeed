@@ -116,6 +116,6 @@ export function useNormalEmployeesHooks(users = []) {
     search, setSearch,
     selected, filteredData,
     divisionFilter, setDivisionFilter,
-    toggleSelect, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
+    toggleSelect, setSelected, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftRight, Eye } from "lucide-react";
+import { ArrowLeftRight, ClockFading } from "lucide-react";
 import { Button } from "@/_components/ui/Button";
 
 export const EmployeesActionButton = ({ mode = "default", onHistory, onSwitch, onEdit, onDelete }) => {
@@ -10,12 +10,12 @@ export const EmployeesActionButton = ({ mode = "default", onHistory, onSwitch, o
   return (
     <div className="flex items-center space-x-2">
       <Button size="icon" variant="ghost" className="rounded-full" onClick={onHistory}>
-        <Eye strokeWidth={1.5} />
+        <ClockFading strokeWidth={1.5} />
       </Button>
 
       {showShift && (
         <Button size="icon" variant="ghost" className="rounded-full" onClick={onSwitch}>
-          <ArrowLeftRight strokeWidth={1.5} />
+          <ArrowLeftRight strokeWidth={2} />
         </Button>
       )}
 

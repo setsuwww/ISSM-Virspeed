@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
-import { CalendarFold, CircleUserRound, Loader, ChevronDown, Eye, ChevronRight } from "lucide-react"
+import { CalendarFold, CircleUserRound, Loader, ChevronDown, ClockFading, ChevronRight } from "lucide-react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
@@ -94,7 +94,7 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
                       </div>
                       <span>{safeFormat(att.date, "dd-MM-yyyy")}</span>
                       <Link href={`/admin/dashboard/users/${att.user?.id}/history`} className="bg-blue-100 hover:bg-blue-200/50 text-blue-500 hover:text-blue-700 p-1 rounded-full">
-                        <Eye size={16} />
+                        <ClockFading size={16} strokeWidth={2} />
                       </Link>
                     </div>
                   </TableCell>

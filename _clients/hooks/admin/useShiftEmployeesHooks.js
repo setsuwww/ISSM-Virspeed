@@ -119,6 +119,6 @@ export function useShiftEmployeesHooks(users = []) {
     selected, filteredData,
     divisionFilter, setDivisionFilter,
     shiftFilter, setShiftFilter,
-    toggleSelect, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
+    toggleSelect, setSelected, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };
 }
