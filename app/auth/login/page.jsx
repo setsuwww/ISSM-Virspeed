@@ -53,7 +53,7 @@ const LoginPage = () => {
               Remember Me
             </Label>
           </div>
-          <AuthLink href="/forgot-password" link="Forgot Password?" />
+          <AuthLink href="/auth/forgot-password" link="Forgot Password?" />
         </div>
 
         <Button type="submit" disabled={pending} className="w-full text-base font-semibold bg-yellow-500 hover:bg-yellow-700 py-2">

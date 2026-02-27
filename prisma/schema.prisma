@@ -163,10 +163,11 @@ model User {
   division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
   shift    Shift?    @relation("ShiftUsers", fields: [shiftId], references: [id])
 
-  schedules    SchedulesOnUsers[]
-  reminders    ScheduleReminder[]
-  customShifts UserShiftAssignment[]
-  attendances  Attendance[]
+  schedules           SchedulesOnUsers[]
+  reminders           ScheduleReminder[]
+  customShifts        UserShiftAssignment[]
+  passwordResetTokens PasswordResetToken[]
+  attendances         Attendance[]
 
   earlyCheckoutRequests EarlyCheckoutRequest[]
   shiftRequests         ShiftChangeRequest[]   @relation("RequestedUser")
@@ -212,6 +213,21 @@ model UserShiftAssignment {
   shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
 
   @@unique([userId, shiftId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([tokenHash])
 }
 
 model Schedule {

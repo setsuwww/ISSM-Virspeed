@@ -2,6 +2,7 @@
 
 import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
+import crypto from "crypto";
 import { revalidatePath } from "next/cache"
 
 export async function updateProfile(data) {
@@ -85,4 +86,56 @@ export async function updateChangePassword(data) {
     console.error("updateChangePassword error:", error)
     return { success: false, message: "Gagal mengubah password." }
   }
+}
+
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import crypto from "crypto";
+import { transporter } from "@/lib/mailer";
+
+export async function forgotPasswordAction(formData) {
+  const email = formData.get("email");
+
+  if (!email) return;
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  // Selalu tampilkan success di frontend
+  if (!user) {
+    return;
+  }
+
+  const rawToken = crypto.randomBytes(32).toString("hex");
+
+  const tokenHash = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 30);
+
+  await prisma.passwordResetToken.create({
+    data: {
+      userId: user.id,
+      tokenHash,
+      expiresAt,
+    },
+  });
+
+  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${rawToken}`;
+
+  await transporter.sendMail({
+    from: `"Your App" <${process.env.SMTP_USER}>`,
+    to: user.email,
+    subject: "Reset Your Password",
+    html: `
+      <p>Hello ${user.name},</p>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetLink}">${resetLink}</a>
+      <p>This link expires in 30 minutes.</p>
+    `,
+  });
 }
