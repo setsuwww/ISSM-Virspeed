@@ -28,8 +28,6 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     [filteredData, setSelectedIds]
   );
 
-  const isAllSelected = filteredData.length > 0 && selectedIds.length === filteredData.length;
-
   const deleteSelected = useCallback(async () => {
     if (!selectedIds.length) {
       toast.error("No users selected.");
@@ -89,7 +87,7 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
   );
 
   return {
-    toggleSelect, selectAll, isAllSelected, deleteSelected, deleteAll,
+    toggleSelect, selectAll, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser
   };
 }

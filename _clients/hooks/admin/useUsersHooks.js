@@ -32,13 +32,13 @@ export function useUsersHooks(initialData) {
 
   const {
     toggleSelect, selectAll,
-    isAllSelected, deleteSelected, deleteAll,
+    deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,
   } = useHandleUsers({ filteredData, selectedIds, setSelectedIds })
 
   return {
     search, roleFilter, shiftFilter,
-    selectedIds, selectedIdsSet, isAllSelected, filteredData,
+    selectedIds, selectedIdsSet, filteredData,
     handleSearchChange, handleRoleFilterChange, handleShiftFilterChange,
     toggleSelect, selectAll, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,

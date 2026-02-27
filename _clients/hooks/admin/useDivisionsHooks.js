@@ -4,12 +4,14 @@ import useSWR from "swr";
 import { useState, useMemo, useCallback } from "react";
 import { useHandleDivisions } from "../../handlers/admin/useHandleDivisions";
 import { useDebounce } from "@/_stores/common/useDebounce";
+import { getDivisions } from "@/_servers/admin-action/divisionAction";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export function useDivisionsHooks(initialData) {
-  const { data: swrResult, mutate } = useSWR("/api/divisions", fetcher, {
-    fallbackData: { data: initialData, total: initialData.length },
+  const fetcher = async () => await getDivisions();
+
+  const { data: swrResult, mutate } = useSWR("divisions", fetcher, {
+    fallbackData: initialData,
   });
 
   const listData = swrResult?.data ?? initialData ?? [];

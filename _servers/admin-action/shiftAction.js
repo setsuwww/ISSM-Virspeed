@@ -30,7 +30,7 @@ export async function updateShift( id, payload ) {
   return { success: true };
 }
 
-export async function deleteShift(id) {
+export async function deleteShiftById(id) {
   if (!id) return { error: "Shift ID required" };
 
   await prisma.shift.delete({
@@ -41,7 +41,7 @@ export async function deleteShift(id) {
   return { success: true };
 }
 
-export async function deleteManyShifts(ids) {
+export async function deleteShifts(ids) {
   if (!ids || ids.length === 0) {
     return { error: "No IDs provided" };
   }

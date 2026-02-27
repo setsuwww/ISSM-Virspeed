@@ -12,8 +12,9 @@ import EmptyStates from "@/_components/common/EmptyStates";
 export default function UsersTable({ data }) {
   const {
     search, handleSearchChange,
-    roleFilter, handleRoleFilterChange, shiftFilter, handleShiftFilterChange,
-    filteredData, selectedIds, selectedIdsSet, isAllSelected,
+    roleFilter, handleRoleFilterChange,
+    shiftFilter, handleShiftFilterChange,
+    filteredData, selectedIds, selectedIdsSet,
     toggleSelect, selectAll, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,
   } = useUsersHooks(data);
@@ -32,7 +33,7 @@ export default function UsersTable({ data }) {
         <TableHeader>
           <TableRow>
             <TableHead className="flex items-center">
-              <Checkbox checked={isAllSelected} onCheckedChange={selectAll} />
+              <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={selectAll} />
             </TableHead>
             <TableHead>Username</TableHead>
             <TableHead>Role</TableHead>

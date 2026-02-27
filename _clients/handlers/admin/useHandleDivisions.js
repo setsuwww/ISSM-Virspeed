@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionStore";
 
-import { toggleDivisionStatus, deleteDivision, deleteAllDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_servers/admin-action/divisionAction";
+import { toggleDivisionStatus, deleteDivisionById, deleteDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_servers/admin-action/divisionAction";
 
 import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
 
@@ -60,7 +60,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
   const onDelete = useCallback(async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
-      () => withTry(() => deleteDivision(id),
+      () => withTry(() => deleteDivisionById(id),
         "Division successfully removed.", "Failed to delete division."
       ),
       confirmMessages.deleteOne(name).variant
@@ -74,7 +74,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
     await withConfirm(message,
       async () => {
-        await withTry(() => Promise.all(selectedIds.map(deleteDivision)),
+        await withTry(() => Promise.all(selectedIds.map(deleteDivisionById)),
           `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
         );
         setSelectedIds([]);
@@ -89,7 +89,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
     await withConfirm(message,
       async () => {
-        await withTry(deleteAllDivisions,
+        await withTry(deleteDivisions,
           "All divisions removed.", "Failed to delete all divisions."
         );
         mutate?.();

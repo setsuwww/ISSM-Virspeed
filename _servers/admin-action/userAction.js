@@ -138,6 +138,11 @@ export async function updateUser(data) {
   }
 }
 
+export async function deleteUserById(id) {
+  await prisma.user.delete({ where: { id: id } });
+  return { success: true };
+}
+
 export async function deleteUsers(ids) {
   try {
     if (!ids || !Array.isArray(ids)) throw new Error("Invalid request")
@@ -149,9 +154,4 @@ export async function deleteUsers(ids) {
   } catch (error) {
     throw new Error("Failed to delete users.")
   }
-}
-
-export async function deleteUserById(id) {
-  await prisma.user.delete({ where: { id: id } });
-  return { success: true };
 }

@@ -2,6 +2,7 @@ import PageTransition from "../admin/dashboard/page-transition";
 
 export const metadata = {
   title: "Beefast | Auth",
+  description: "Authentication form",
 };
 
 export default function AuthLayout({

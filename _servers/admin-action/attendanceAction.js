@@ -26,7 +26,6 @@ export async function getAttendancesByDate(date, page = 1) {
     prisma.attendance.count({ where: whereClause }),
   ])
 
-  // convert workMinutes ke workHours
   const data = attendances.map(a => ({
     ...a,
     workHours: a.workMinutes ? (a.workMinutes / 60).toFixed(2) : "0.00",

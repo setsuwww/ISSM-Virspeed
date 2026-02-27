@@ -5,7 +5,7 @@ export const metadata = {
   title: "ISSM-B-fast",
   description: "ISSM B-Fast Application",
   manifest: "/manifest.json",
-  themeColor: "#ffffff",
+  viewport: "#ffffff",
   icons: {
     icon: "/icons/liveon.png"
   }

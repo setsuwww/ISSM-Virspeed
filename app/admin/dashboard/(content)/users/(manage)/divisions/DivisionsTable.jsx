@@ -30,7 +30,7 @@ export default function DivisionsTable({ data }) {
   } = useDivisionsHooks(data)
 
   const {
-    allActive, confirmOpen, pendingStatus, loading, fetchConfig,
+    allActive, confirmOpen, pendingStatus, fetchConfig,
     handleBulkToggle, confirmBulkToggle, closeDialog,
   } = useDivisionStore()
 

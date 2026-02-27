@@ -14,8 +14,8 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 
 import {
-  deleteShift,
-  deleteManyShifts,
+  deleteShiftById,
+  deleteShifts,
 } from "@/_servers/admin-action/shiftAction";
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
@@ -79,14 +79,14 @@ export function ShiftsTable({ data }) {
 
   const handleDelete = (id) => {
     startTransition(async () => {
-      await deleteShift(id);
+      await deleteShiftById(id);
       router.refresh();
     });
   };
 
   const handleDeleteSelected = () => {
     startTransition(async () => {
-      await deleteManyShifts(selectedIds);
+      await deleteShifts(selectedIds);
       setSelectedIds([]);
       router.refresh();
     });
@@ -94,7 +94,7 @@ export function ShiftsTable({ data }) {
 
   const handleDeleteAll = () => {
     startTransition(async () => {
-      await deleteManyShifts(
+      await deleteShifts(
         filteredData.map((s) => s.id)
       );
       setSelectedIds([]);

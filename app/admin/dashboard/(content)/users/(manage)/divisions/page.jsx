@@ -1,51 +1,36 @@
-import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
-import ContentForm from "@/_components/common/ContentForm"
-import { ContentInformation } from "@/_components/common/ContentInformation"
-import { Pagination } from "@/app/admin/dashboard/Pagination"
-import DivisionsTable from "./DivisionsTable"
-import { prisma } from "@/_lib/prisma"
-import { minutesToTime } from "@/_functions/globalFunction"
-
-const PAGE_SIZE = 10
+import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
+import ContentForm from "@/_components/common/ContentForm";
+import { ContentInformation } from "@/_components/common/ContentInformation";
+import { Pagination } from "@/app/admin/dashboard/Pagination";
+import DivisionsTable from "./DivisionsTable";
+import { getDivisions } from "@/_servers/admin-action/divisionAction";
 
 export default async function Page({ searchParams }) {
-  const params = await searchParams
-  const page = Number(params?.page) || 1
-  const [divisions, total] = await Promise.all([
-    prisma.division.findMany({
-      skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true, name: true, location: true, type: true, status: true,
-        latitude: true, longitude: true, radius: true,
-        startTime: true, endTime: true, createdAt: true, updatedAt: true,
-      },
-    }),
-    prisma.division.count(),
-  ])
+  const page = Number(searchParams?.page) || 1;
 
-  const totalPages = Math.ceil(total / PAGE_SIZE)
-  const formattedDivisions = divisions.map((division) => ({
-    ...division,
-    startTime: minutesToTime(division.startTime),
-    endTime: minutesToTime(division.endTime)
-  }))
+  const { data: divisions, total } = await getDivisions({ page });
+
+  const totalPages = Math.ceil(total / 10);
 
   return (
     <section>
       <DashboardHeader title="Divisions" subtitle="List of Division divisions" />
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation title="List divisions" subtitle="Manage all division data in this table"
-            show={true} buttonText="Create Division" href="/admin/dashboard/users/divisions/create"
+          <ContentInformation
+            title="List divisions"
+            subtitle="Manage all division data in this table"
+            show={true}
+            buttonText="Create Division"
+            href="/admin/dashboard/users/divisions/create"
           />
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <DivisionsTable data={formattedDivisions} />
+          <DivisionsTable data={divisions} />
           <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/divisions" />
         </ContentForm.Body>
       </ContentForm>
     </section>
-  )
+  );
 }

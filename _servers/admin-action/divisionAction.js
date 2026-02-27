@@ -2,7 +2,40 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
-import { timeToMinutes } from "@/_functions/globalFunction"
+import { timeToMinutes, minutesToTime } from "@/_functions/globalFunction"
+
+const PAGE_SIZE = 10;
+
+export async function getDivisions({ page = 1, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const where = {
+    ...(search && { name: { contains: search, mode: "insensitive" } }),
+    ...(typeFilter !== "all" && { type: typeFilter }),
+    ...(statusFilter !== "all" && { status: statusFilter }),
+  };
+
+  const [divisions, total] = await Promise.all([
+    prisma.division.findMany({
+      where, skip, take: PAGE_SIZE, orderBy: { createdAt: "desc" },
+      select: {
+        id: true, name: true,
+        location: true, type: true, status: true,
+        startTime: true, endTime: true,
+        createdAt: true, updatedAt: true,
+      },
+    }),
+    prisma.division.count({ where }),
+  ]);
+
+  const formattedDivisions = divisions.map((division) => ({
+    ...division,
+    startTime: minutesToTime(division.startTime),
+    endTime: minutesToTime(division.endTime),
+  }));
+
+  return { data: formattedDivisions, total };
+}
 
 export async function createDivision(data) {
   try {
@@ -31,17 +64,6 @@ export async function updateDivisionStatus(id, newStatus) {
   catch (error) { return { success: false }}
 }
 
-export async function bulkDeleteDivisions(ids) {
-  try {
-    await prisma.division.deleteMany({
-      where: { id: { in: ids } },
-    })
-    revalidatePath("/admin/dashboard/users/divisions")
-    return { success: true }
-  }
-  catch (error) { return { success: false }}
-}
-
 export async function bulkToggleSelectedDivision({ ids, isActive }) {
   try {
     await prisma.division.updateMany({
@@ -53,6 +75,38 @@ export async function bulkToggleSelectedDivision({ ids, isActive }) {
     return { success: true };
   }
   catch (error) { return { success: false }}
+}
+
+export async function bulkToggle({ activateType, deactivateType, isActive }) {
+  try {
+    if (isActive) {
+      await prisma.division.updateMany({
+        where: { type: activateType },
+        data: { status: "ACTIVE" },
+      });
+
+      await prisma.division.updateMany({
+        where: { type: deactivateType },
+        data: { status: "INACTIVE" },
+      });
+
+    } else {
+      await prisma.division.updateMany({
+        where: { type: activateType },
+        data: { status: "INACTIVE" },
+      });
+
+      await prisma.division.updateMany({
+        where: { type: deactivateType },
+        data: { status: "ACTIVE" },
+      });
+    }
+
+    revalidatePath("/admin/dashboard/users/divisions");
+    return { success: true, message: "Global toggle updated."};
+
+  }
+  catch (error) { return { success: false, error: error.message || "Unknown error"}}
 }
 
 export async function toggleDivisionType(id) {
@@ -88,36 +142,17 @@ export async function toggleDivisionType(id) {
   }
 }
 
-export async function bulkToggle({ activateType, deactivateType, isActive }) {
-  try {
-    if (isActive) {
-      await prisma.division.updateMany({
-        where: { type: activateType },
-        data: { status: "ACTIVE" },
-      });
+export async function toggleDivisionStatus(id) {
+  const division = await prisma.division.findUnique({ where: { id } })
+  if (!division) throw new Error("Division not found")
 
-      await prisma.division.updateMany({
-        where: { type: deactivateType },
-        data: { status: "INACTIVE" },
-      });
+  const newStatus = division.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+  await prisma.division.update({
+    where: { id },
+    data: { status: newStatus },
+  })
 
-    } else {
-      await prisma.division.updateMany({
-        where: { type: activateType },
-        data: { status: "INACTIVE" },
-      });
-
-      await prisma.division.updateMany({
-        where: { type: deactivateType },
-        data: { status: "ACTIVE" },
-      });
-    }
-
-    revalidatePath("/admin/dashboard/users/divisions");
-    return { success: true, message: "Global toggle updated."};
-
-  }
-  catch (error) { return { success: false, error: error.message || "Unknown error"}}
+  revalidatePath("/admin/dashboard/users/divisions")
 }
 
 export async function updateDivision(id, data) {
@@ -148,25 +183,12 @@ export async function updateDivision(id, data) {
   catch (error) { return { success: false, message: error.message || "Failed to update division" }}
 }
 
-export async function deleteDivision(id) {
+export async function deleteDivisionById(id) {
   await prisma.division.delete({ where: { id } })
   revalidatePath("/admin/dashboard/users/divisions")
 }
 
-export async function deleteAllDivisions() {
+export async function deleteDivisions() {
   await prisma.division.deleteMany()
-  revalidatePath("/admin/dashboard/users/divisions")
-}
-
-export async function toggleDivisionStatus(id) {
-  const division = await prisma.division.findUnique({ where: { id } })
-  if (!division) throw new Error("Division not found")
-
-  const newStatus = division.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
-  await prisma.division.update({
-    where: { id },
-    data: { status: newStatus },
-  })
-
   revalidatePath("/admin/dashboard/users/divisions")
 }
