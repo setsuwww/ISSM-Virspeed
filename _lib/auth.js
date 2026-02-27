@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
 import { prisma } from "./prisma"
+import { cache } from "react"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined")
@@ -40,7 +41,7 @@ export async function getUserFromCookie() {
   }
 }
 
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async () => {
   const decoded = await getUserFromCookie()
   if (!decoded?.id) return null
 
@@ -48,4 +49,4 @@ export async function getCurrentUser() {
     where: { id: decoded.id },
     include: { shift: true, division: true },
   })
-}
+})

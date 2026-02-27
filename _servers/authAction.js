@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { prisma } from "@/_lib/prisma"
-import { signToken, getCurrentUser, removeAuthCookie } from "@/_lib/auth"
+import { signToken, removeAuthCookie, getUserFromCookie } from "@/_lib/auth"
 import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
 import { logActivity } from "@/_servers/admin-action/logAction"
 
@@ -69,7 +69,6 @@ export async function AuthAction(prevState, formData) {
     return { error: "Invalid credentials" }
   }
 
-  // LOGIN SUCCESS
   const token = signToken({
     id: user.id,
     name: user.name,
@@ -91,7 +90,6 @@ export async function AuthAction(prevState, formData) {
     userAgent: ua,
   })
 
-  // reset suspicious
   await prisma.suspiciousActivity.updateMany({
     where: { userId: user.id, resolved: false },
     data: { resolved: true },
@@ -112,11 +110,11 @@ export async function AuthAction(prevState, formData) {
 }
 
 export async function LogoutAuthAction() {
-  const user = await getCurrentUser()
+  const decoded = await getUserFromCookie()
 
-  if (user?.id) {
+  if (decoded?.id) {
     await logSecurity({
-      userId: user.id,
+      userId: decoded.id,
       action: SecurityAction.LOGOUT,
     })
   }

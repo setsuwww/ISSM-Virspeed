@@ -20,6 +20,7 @@ import { profilesRoleStyles, roleStyles } from "@/_constants/theme/userTheme"
 import { capitalize, minutesToTime, safeFormat } from "@/_functions/globalFunction"
 import { format } from "date-fns"
 import { ContentInformation } from "@/_components/common/ContentInformation"
+import Link from "next/link"
 
 export function ProfileView({ user }) {
   const router = useRouter()
@@ -48,15 +49,6 @@ export function ProfileView({ user }) {
         Data profil tidak tersedia.
       </p>
     )
-  }
-
-  const handleClose = () => {
-    setIsClosing(true)
-
-    setTimeout(() => {
-      setIsClosing(false)
-      setIsEditing(false)
-    }, 250)
   }
 
   const handleSave = async () => {
@@ -115,14 +107,11 @@ export function ProfileView({ user }) {
     }
 
     toast.success("Akun berhasil dihapus")
-
-    await LogoutAuthAction()
-    router.replace("/login")
+    router.replace("/auth/logout")
   }
 
   const handleLogout = async () => {
-    await LogoutAuthAction()
-    router.replace("/login")
+    router.replace("/auth/logout")
   }
 
   return (
@@ -210,41 +199,51 @@ export function ProfileView({ user }) {
                   </DialogHeader>
 
                   <div className="grid gap-4 py-2">
-                    <Input
-                      type="password"
-                      placeholder="Current password"
-                      value={passwordForm.currentPassword}
-                      onChange={(e) =>
-                        setPasswordForm({
-                          ...passwordForm,
-                          currentPassword: e.target.value,
-                        })
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Label>Current</Label>
+                      <Input
+                        type="password"
+                        placeholder="Current password"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) =>
+                          setPasswordForm({
+                            ...passwordForm,
+                            currentPassword: e.target.value,
+                          })
+                        }
+                      />
+                      <Link href="/admin/dashboard/profile" className="text-xs text-blue-500 hover:text-blue-300" >Forgot password?</Link>
+                    </div>
 
-                    <Input
-                      type="password"
-                      placeholder="New password"
-                      value={passwordForm.newPassword}
-                      onChange={(e) =>
-                        setPasswordForm({
-                          ...passwordForm,
-                          newPassword: e.target.value,
-                        })
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Label>New</Label>
+                      <Input
+                        type="password"
+                        placeholder="New password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) =>
+                          setPasswordForm({
+                            ...passwordForm,
+                            newPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
 
-                    <Input
-                      type="password"
-                      placeholder="Confirm new password"
-                      value={passwordForm.confirmPassword}
-                      onChange={(e) =>
-                        setPasswordForm({
-                          ...passwordForm,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Label>Confirm</Label>
+                      <Input
+                        type="password"
+                        placeholder="Confirm new password"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) =>
+                          setPasswordForm({
+                            ...passwordForm,
+                            confirmPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                   </div>
 
                   <DialogFooter>
