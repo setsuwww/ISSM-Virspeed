@@ -89,48 +89,66 @@ export async function updateChangePassword(data) {
   }
 }
 
-export async function forgotPasswordAction(formData) {
-  const email = formData.get("email");
+export async function sendResetEmail(user) {
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 jam
 
-  if (!email) return;
-
-  const user = await prisma.user.findUnique({
-    where: { email },
+  // simpan token
+  await prisma.passwordResetToken.create({
+    data: { userId: user.id, token, expiresAt },
   });
 
-  // Selalu tampilkan success di frontend
-  if (!user) {
-    return;
+  // kirim email
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+
+  const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${token}`;
+  await transporter.sendMail({
+    from: '"Support" <support@example.com>',
+    to: user.email,
+    subject: "Reset Password",
+    html: `Click <a href="${resetLink}">here</a> to reset your password. Link valid 1 hour.`,
+  });
+}
+
+export async function forgotPasswordAction(formData) {
+  const { email } = Object.fromEntries(formData.entries());
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) await sendResetEmail(user);
+
+  return { success: true, message: "If the email is registered, a reset link has been sent." };
+}
+
+export async function resendPasswordReset(email) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    await prisma.passwordResetToken.deleteMany({
+      where: { userId: user.id, expiresAt: { gt: new Date() } },
+    });
+    await sendResetEmail(user);
   }
 
-  const rawToken = crypto.randomBytes(32).toString("hex");
+  return { success: true, message: "If the email is registered, a reset link has been sent." };
+}
 
-  const tokenHash = crypto
-    .createHash("sha256")
-    .update(rawToken)
-    .digest("hex");
+export async function resetPassword(token, newPassword) {
+  const resetEntry = await prisma.passwordResetToken.findUnique({ where: { token } });
+  if (!resetEntry || resetEntry.expiresAt < new Date()) {
+    return { success: false, message: "Invalid or expired token" };
+  }
 
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 30);
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-  await prisma.passwordResetToken.create({
-    data: {
-      userId: user.id,
-      tokenHash,
-      expiresAt,
-    },
+  await prisma.user.update({
+    where: { id: resetEntry.userId },
+    data: { password: hashedPassword, tokenVersion: { increment: 1 } },
   });
 
-  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${rawToken}`;
+  // hapus token setelah dipakai
+  await prisma.passwordResetToken.delete({ where: { id: resetEntry.id } });
 
-  await transporter.sendMail({
-    from: `"Your App" <${process.env.SMTP_USER}>`,
-    to: user.email,
-    subject: "Reset Your Password",
-    html: `
-      <p>Hello ${user.name},</p>
-      <p>Click the link below to reset your password:</p>
-      <a href="${resetLink}">${resetLink}</a>
-      <p>This link expires in 30 minutes.</p>
-    `,
-  });
+  return { success: true, message: "Password updated" };
 }

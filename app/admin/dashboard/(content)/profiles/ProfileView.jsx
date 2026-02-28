@@ -212,7 +212,7 @@ export function ProfileView({ user }) {
                           })
                         }
                       />
-                      <Link href="/admin/dashboard/profile" className="text-xs text-blue-500 hover:text-blue-300" >Forgot password?</Link>
+                      <Link href="/auth/forgot-password" className="text-xs text-blue-500 hover:text-blue-300" >Forgot password?</Link>
                     </div>
 
                     <div className="space-y-2">
