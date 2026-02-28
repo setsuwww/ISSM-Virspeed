@@ -56,16 +56,13 @@ const LoginPage = () => {
           <AuthLink href="/auth/forgot-password" link="Forgot Password?" />
         </div>
 
-        <Button type="submit" disabled={pending} className="w-full text-base font-semibold bg-yellow-500 hover:bg-yellow-700 py-2">
+        <Button type="submit" disabled={pending} className="w-full text-base font-semibold bg-violet-500 hover:bg-violet-700 py-2">
           {pending
             ? (<div className="flex items-center space-x-1 gap-x-1"><Loader className="animate-spin"/>Logging in...</div>)
             : "Login"
           }
         </Button>
 
-        <div className="text-center text-xs italic text-slate-400 font-semibold">
-          <span>Beefast presented</span>
-        </div>
       </form>
 
       {state?.error && (
