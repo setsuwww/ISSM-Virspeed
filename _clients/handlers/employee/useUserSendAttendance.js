@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { useTransition } from "react"
-import { toast } from "sonner"
+import { useTransition } from "react";
+import { useToast } from "@/_contexts/Toast-Provider";
+import { useActionHelper } from "@/_stores/common/useActionStore";
 
 import {
   userPrecheckCheckIn,
@@ -10,33 +11,32 @@ import {
   userSendEarlyCheckout,
   userSendPermissionRequest,
   userSendLeaveRequest,
-} from "@/_servers/employee-action/attendanceAction"
+} from "@/_servers/employee-action/attendanceAction";
 
 export function useUserSendAttendance() {
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
+  const toast = useToast();
+  const { withTry } = useActionHelper();
 
   const checkIn = () =>
     startTransition(async () => {
       try {
-        const precheck = await userPrecheckCheckIn()
+        const precheck = await userPrecheckCheckIn();
 
-        if (precheck?.error) {
-          toast.error(precheck.error)
-          return
-        }
+        if (precheck?.error) return toast.error(precheck.error);
 
+        // skipLocation case
         if (precheck?.requireLocation === false) {
-          const res = await userSendCheckIn({ skipLocation: true })
-
-          if (res?.error) { toast.error(res.error)}
-          else { toast.success("Checked in successfully")}
-          return
+          await withTry(
+            () => userSendCheckIn({ skipLocation: true }),
+            "Checked in successfully",
+            "Check in gagal"
+          );
+          return;
         }
 
-        if (!navigator.geolocation) {
-          toast.error("Browser tidak mendukung geolocation")
-          return
-        }
+        if (!navigator.geolocation)
+          return toast.error("Browser tidak mendukung geolocation");
 
         const position = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
@@ -44,90 +44,65 @@ export function useUserSendAttendance() {
             (err) => {
               switch (err.code) {
                 case err.PERMISSION_DENIED:
-                  reject(new Error("Izin lokasi ditolak"))
-                  break
+                  reject(new Error("Izin lokasi ditolak"));
+                  break;
                 case err.POSITION_UNAVAILABLE:
-                  reject(new Error("Lokasi tidak tersedia"))
-                  break
+                  reject(new Error("Lokasi tidak tersedia"));
+                  break;
                 case err.TIMEOUT:
-                  reject(new Error("Lokasi terlalu lama didapatkan (timeout)"))
-                  break
+                  reject(new Error("Lokasi terlalu lama didapatkan (timeout)"));
+                  break;
                 default:
-                  reject(new Error("Gagal mendapatkan lokasi"))
+                  reject(new Error("Gagal mendapatkan lokasi"));
               }
-            }, {
-              enableHighAccuracy: false,
-              timeout: 20000,
-              maximumAge: 60000,
-            }
-          )
-        })
+            },
+            { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
+          );
+        });
 
-        const coords = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        }
+        const coords = { lat: position.coords.latitude, lon: position.coords.longitude };
 
-        const res = await userSendCheckIn(coords)
-
-        if (res?.error) { toast.error(res.error)}
-        else { toast.success("Checked in successfully")}
+        await withTry(() => userSendCheckIn(coords), "Checked in successfully", "Check in gagal");
+      } catch (err) {
+        console.error(err);
+        toast.error(err?.message ?? "Check in gagal. Periksa koneksi, lokasi, atau waktu shift.");
       }
-      catch (err) { console.error(err)
-        toast.error( err?.message ?? "Check in gagal. Periksa koneksi, lokasi, atau waktu shift.")
-      }
-    })
+    });
 
   const checkOut = () =>
-    startTransition(async () => {
-      try { const res = await userSendCheckOut()
-        res?.error ? toast.error(res.error)
-          : toast.success("Checked out successfully")
-      }
-      catch (err) { console.error(err)
-        toast.error("Checkout gagal")
-      }
-    })
+    startTransition(() =>
+      withTry(() => userSendCheckOut(), "Checked out successfully", "Checkout gagal")
+    );
 
   const earlyCheckout = (reason, onSuccess) =>
-    startTransition(async () => {
-      const res = await userSendEarlyCheckout(reason)
-      if (res?.error) {
-        toast.error(res.error)
-        return
-      }
-      toast.success("Early checkout request sent")
-      onSuccess?.()
-    })
+    startTransition(() =>
+      withTry(
+        () => userSendEarlyCheckout(reason),
+        "Early checkout request sent",
+        "Early checkout request gagal",
+        { onSuccess }
+      )
+    );
 
   const permission = (reason, onSuccess) =>
-    startTransition(async () => {
-      const res = await userSendPermissionRequest(reason)
-      if (res?.error) {
-        toast.error(res.error)
-        return
-      }
-      toast.success("Permission request sent")
-      onSuccess?.()
-    })
+    startTransition(() =>
+      withTry(
+        () => userSendPermissionRequest(reason),
+        "Permission request sent",
+        "Permission request gagal",
+        { onSuccess }
+      )
+    );
 
   const leave = (payload, onSuccess) =>
-    startTransition(async () => {
-      const res = await userSendLeaveRequest(payload)
-      if (res?.error) {
-        toast.error(res.error)
-        return
-      }
-      toast.success("Leave request sent")
-      onSuccess?.()
-    })
+    startTransition(() =>
+      withTry(
+        () => userSendLeaveRequest(payload),
+        "Leave request sent",
+        "Leave request gagal",
+        { onSuccess }
+      )
+    );
 
-  return {
-    isPending,
-    checkIn,
-    checkOut,
-    earlyCheckout,
-    permission,
-    leave,
-  }
+  return { isPending, checkIn, checkOut, earlyCheckout, permission, leave };
 }

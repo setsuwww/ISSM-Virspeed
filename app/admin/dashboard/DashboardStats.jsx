@@ -7,7 +7,7 @@ import Link from "next/link"
 function DashboardStatsComponent({
   title, link, textlink, caption, value, valueColor = "", icon, color, dark = false, badges
 }) {
-  const base = "p-5 rounded-2xl flex items-center gap-4 transition-colors"
+  const base = "px-5 py-7 rounded-2xl flex items-center gap-4 transition-colors"
   const theme = dark ? "ring ring-slate-500 bg-slate-600 text-slate-100 hover:border-slate-200" : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300"
   const defaultIcon = dark ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"
 

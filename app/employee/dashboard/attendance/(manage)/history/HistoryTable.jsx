@@ -18,6 +18,7 @@ import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
 import { capitalize } from "@/_functions/globalFunction"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {
+  // Belum diurut from terbaru
   const [order, setOrder] = useState(initialOrder)
   const [statusFilter, setStatusFilter] = useState("all")
   const [search, setSearch] = useState("")
