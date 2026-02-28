@@ -4,6 +4,7 @@ import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
 import crypto from "crypto";
 import { revalidatePath } from "next/cache"
+import { transporter } from "@/_lib/mail";
 
 export async function updateProfile(data) {
   const { id, name, email, divisionId, shiftId } = data
@@ -87,12 +88,6 @@ export async function updateChangePassword(data) {
     return { success: false, message: "Gagal mengubah password." }
   }
 }
-
-"use server";
-
-import { prisma } from "@/lib/prisma";
-import crypto from "crypto";
-import { transporter } from "@/lib/mailer";
 
 export async function forgotPasswordAction(formData) {
   const email = formData.get("email");
