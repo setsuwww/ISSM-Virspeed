@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 
-export const AreaDiagram = React.memo(function AreaDiagram({ title, description, data, series }) {
+export const DashboardDiagram = React.memo(function DashboardDiagram({ title, description, data, series }) {
   const seriesToUse = series ?? [{ key: "value", color: "#4f46e5", label: "Value" }];
 
   const chartMargin = { top: 10, right: 20, left: 0, bottom: 0 };

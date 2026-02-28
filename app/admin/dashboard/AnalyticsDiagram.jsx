@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { ChartNoAxesCombined } from "lucide-react";
 import { parseISO, subDays, isWithinInterval, addDays, format } from "date-fns";
 
-import { AreaDiagram } from "./DashboardDiagram";
+import { DashboardDiagram } from "./DashboardDiagram";
 import { Button } from "@/_components/ui/Button";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select";
@@ -16,9 +16,12 @@ const PRESET_RANGES = {
 };
 
 // Helper untuk format label hari
-function getDayLabel(date, totalDays) {
-  const fmt = totalDays === 7 ? "EEEE" : "EEE"; // full vs short
-  return format(date, fmt);
+function getDayLabel(date, rangeKey) {
+  if (rangeKey === "last7") {
+    return format(date, "EEEE");
+  } else {
+    return format(date, "dd EE"); // Mon 27, Tue 28, ...
+  }
 }
 
 export default function AnalyticsDiagram({ attendanceRaw = [] }) {
@@ -54,7 +57,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
       const key = d.toISOString().split("T")[0];
       map[key] = {
         date: key,
-        name: getDayLabel(d, totalDays),
+        name: getDayLabel(d, rangeKey),
         present: 0,
         late: 0,
         absent: 0,
@@ -132,7 +135,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
         </div>
       </div>
 
-      <AreaDiagram
+      <DashboardDiagram
         data={chartData}
         series={series}
       />
