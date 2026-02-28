@@ -1,28 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import EmptyStates from "@/_components/common/EmptyStates";
 import { Table, TableBody, TableHead, TableHeader, TableCell, TableRow } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
 
 import { EmployeesActionHeader } from "../EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
+
+import { useHandleUsers } from "@/_clients/handlers/admin/useHandleUsers";
 import { useNormalEmployeesHooks } from "@/_clients/hooks/admin/useNormalEmployeesHooks";
 
 export default function EmployeesTable({ users = [], divisions = [] }) {
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const {
     search, setSearch,
-    selected, setSelected,
-    data, filteredData, divisionFilter, setDivisionFilter,
-    toggleSelect, deleteSelected,
-    onHistory, onEdit, onDelete,
+    filteredData,
+    divisionFilter, setDivisionFilter
   } = useNormalEmployeesHooks(users);
+
+  const {
+    toggleSelect, selectAll,
+    deleteSelected, deleteAll,
+    handleDeleteUser,
+    handleEditUser
+  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds});
 
   return (
     <div className="space-y-4">
       <EmployeesActionHeader mode="work-hours"
         search={search} setSearch={setSearch}
-        selected={selected} onDeleteSelected={deleteSelected} onDeleteAll={() => { }}
-        filteredData={filteredData} divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
+        selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
+        filteredData={filteredData}
+        divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
         divisions={divisions}
       />
 
@@ -31,9 +42,12 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
           <TableRow>
             <TableHead className="flex items-center">
               <Checkbox
-                checked={data.length > 0 && selected.length === data.length}
+                checked={
+                  filteredData.length > 0 &&
+                  selectedIds.length === filteredData.length
+                }
                 onCheckedChange={(value) =>
-                  setSelected(value ? data.map((u) => u.id) : [])
+                  selectAll(!!value)
                 }
               />
             </TableHead>
@@ -57,16 +71,15 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
               <EmployeesRow
                 key={user.id}
                 user={user}
-                selected={selected}
+                selected={selectedIds}
                 toggleSelect={toggleSelect}
-                onHistory={() => onHistory(user.id)}
-                onEdit={() => onEdit(user.id)}
-                onDelete={() => onDelete(user.id)}
+                onEdit={() => handleEditUser(user.id)}
+                onDelete={() => handleDeleteUser(user.id)}
               />
             ))
           )}
-      </TableBody>
-    </Table>
-    </div >
+        </TableBody>
+      </Table>
+    </div>
   );
 }

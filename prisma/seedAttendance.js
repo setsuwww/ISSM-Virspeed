@@ -17,7 +17,6 @@ async function main() {
   const spinner = ora("Seeding attendance...").start();
 
   try {
-    // --- Ambil 20 user teratas (atau lebih jika mau) ---
     const users = await prisma.user.findMany({ take: 20 });
     if (users.length === 0) throw new Error("No users found, seed users first");
 

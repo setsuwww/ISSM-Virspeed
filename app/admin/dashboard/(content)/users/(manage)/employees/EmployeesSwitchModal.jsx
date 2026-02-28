@@ -17,8 +17,7 @@ import { capitalize } from "@/_functions/globalFunction"
 import { shiftStyles } from "@/_constants/shiftConstants"
 
 export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
-  const { selectedId, search, setSelectedId, setSearch, reset } =
-    useEmployeeSwitchStore()
+  const { selectedId, search, setSelectedId, setSearch, reset } = useEmployeeSwitchStore()
 
   const queryClient = useQueryClient()
 

@@ -163,13 +163,13 @@ export default function CreateForm({ divisions, shifts }) {
                   onChange={handleChange}
                 />
                 <div className="flex items-center gap-x-1 text-xs text-slate-400 mt-1">
+                  <Info size={16} strokeWidth={1} />Optional field, the default password is <span className="text-slate-600 font-bold"> "secretPW1234" </span>
                 </div>
-                  <Info size={16} strokeWidth={1} />Password is optional and set <span className="text-slate-600 font-bold"> "secretPW1234" </span> as default password
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="role">Role <span className="text-rose-500">*</span></Label>
-                <RadioButton name="role"
+                <RadioButton name="role" disabled={inputMode === "EXCEL"}
                   options={roleOptions} value={form.role}
                   onChange={(v) => handleCustomChange("role", v)}
                 />
@@ -177,7 +177,7 @@ export default function CreateForm({ divisions, shifts }) {
 
               <div className="space-y-2">
                 <Label htmlFor="divisionId">Division Assignment</Label>
-                <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)}>
+                <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)} disabled={inputMode === "EXCEL"}>
                   <SelectTrigger className="w-1/2">
                     <SelectValue placeholder="Select an division" />
                   </SelectTrigger>
@@ -194,7 +194,7 @@ export default function CreateForm({ divisions, shifts }) {
 
               <div className="space-y-2">
                 <Label>Work Mode</Label>
-                <RadioButton name="workMode" value={form.workMode}
+                <RadioButton name="workMode" value={form.workMode} disabled={inputMode === "EXCEL"}
                   onChange={(v) => handleCustomChange("workMode", v)}
                   options={[
                     { label: "Work Hours", value: "WORK_HOURS" },
@@ -222,7 +222,7 @@ export default function CreateForm({ divisions, shifts }) {
                   <div className="space-y-2">
                     <Label htmlFor="shiftId">Shift Assignment</Label>
                     <Select value={form.shiftId} onValueChange={(v) => handleCustomChange("shiftId", v)}
-                      disabled={availableShifts.length === 0}
+                      disabled={availableShifts.length === 0 && inputMode === "EXCEL"}
                     >
                       <SelectTrigger className="w-1/2">
                         <SelectValue placeholder={
@@ -250,8 +250,13 @@ export default function CreateForm({ divisions, shifts }) {
 
           <ContentForm.Footer>
             <Button type="submit" disabled={isPending}>
-              {isPending
-                ? (<><Loader className="w-4 h-4 animate-spin" /> Creating...</>)
+              {isPending ? (
+                <span className="flex items-center gap-2">
+                  <Loader className="w-4 h-4 animate-spin" />
+                  Creating...
+                </span>
+              ) : inputMode === "EXCEL"
+                ? "Import User"
                 : "Create User"
               }
             </Button>

@@ -15,7 +15,8 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
   const toast = useToast();
 
   const toggleSelect = useCallback(
-    (id) => { setSelectedIds((prev) => prev.includes(id)
+    (id) => {
+      setSelectedIds((prev) => prev.includes(id)
         ? prev.filter((sid) => sid !== id)
         : [...prev, id]
       );
@@ -26,22 +27,9 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
     setSelectedIds((prev) => prev.length === filteredData.length ? [] : filteredData.map((s) => s.id));
   }, [filteredData, setSelectedIds]);
 
-  const handleDeleteSchedule = useCallback(
-    async (id) => { const { message, variant } = confirmMessages.deleteOne;
-
-      await withConfirm(
-        message,() =>
-          withTry(() => deleteScheduleById(id),
-            "Schedule deleted successfully.", "Failed to delete schedule."
-          ), variant
-      );
-      setSelectedIds((prev) => prev.filter((sid) => sid !== id));
-      reloadData();
-    }, [setSelectedIds, reloadData]
-  );
-
   const deleteSelected = useCallback(async () => {
-    if (!selectedIds.length) { toast.error("No schedules selected.");
+    if (!selectedIds.length) {
+      toast.error("No schedules selected.");
       return;
     }
 
@@ -50,7 +38,8 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
     );
 
     await withConfirm(message,
-      async () => { await withTry(() => deleteSchedules(selectedIds),
+      async () => {
+        await withTry(() => deleteSchedules(selectedIds),
           "Selected schedules deleted.", "Failed to delete selected schedules."
         );
         setSelectedIds([]);
@@ -60,7 +49,8 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
   }, [selectedIds, setSelectedIds, reloadData, toast]);
 
   const deleteAll = useCallback(async () => {
-    if (!filteredData.length) { toast.error("No schedules available.");
+    if (!filteredData.length) {
+      toast.error("No schedules available.");
       return;
     }
 
@@ -69,7 +59,8 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
     );
 
     await withConfirm(message,
-      async () => { await withTry(() => deleteSchedules(filteredData.map((s) => s.id)),
+      async () => {
+        await withTry(() => deleteSchedules(filteredData.map((s) => s.id)),
           "All schedules deleted.", "Failed to delete all schedules."
         );
         setSelectedIds([]);
@@ -78,6 +69,21 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
       variant
     );
   }, [filteredData, setSelectedIds, reloadData, toast]);
+
+  const handleDeleteSchedule = useCallback(
+    async (id) => {
+      const { message, variant } = confirmMessages.deleteOne;
+
+      await withConfirm(
+        message, () =>
+        withTry(() => deleteScheduleById(id),
+          "Schedule deleted successfully.", "Failed to delete schedule."
+        ), variant
+      );
+      setSelectedIds((prev) => prev.filter((sid) => sid !== id));
+      reloadData();
+    }, [setSelectedIds, reloadData]
+  );
 
   const handleEditSchedule = useCallback(
     (id) => router.push(`/admin/dashboard/schedules/${id}/edit`), [router]

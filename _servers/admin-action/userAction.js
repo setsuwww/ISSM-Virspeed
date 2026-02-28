@@ -47,26 +47,14 @@ export async function bulkCreateUser(rows) {
   let created = 0
 
   for (const row of rows) {
-    const {
-      name,
-      email,
-      password,
-      role = "EMPLOYEE",
-      division,
-      workMode = "WORK_HOURS",
-      shift,
-    } = row
-
-    // normalize workMode
+    const { name, email, password, role = "EMPLOYEE", division, workMode = "WORK_HOURS", shift } = row
     const mode = workMode?.toUpperCase() === "SHIFT" ? "SHIFT" : "WORK_HOURS"
 
-    // skip row jika data penting kosong
-    if (!name || !email || !password || !division) {
+    if (!name || !email || !division) {
       console.log("Skipping row (missing data):", row)
       continue
     }
 
-    // cari division
     const divisionData = await prisma.division.findFirst({
       where: { name: division?.trim() },
       include: { shifts: true },
@@ -90,7 +78,8 @@ export async function bulkCreateUser(rows) {
       continue
     }
 
-    const hashed = await bcrypt.hash(password, 10)
+    const rawPassword = password && password.trim() !== "" ? password : "secretPW1234"
+    const hashed = await bcrypt.hash(rawPassword, 10)
 
     await prisma.user.create({
       data: {

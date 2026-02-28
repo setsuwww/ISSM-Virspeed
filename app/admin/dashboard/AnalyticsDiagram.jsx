@@ -15,12 +15,11 @@ const PRESET_RANGES = {
   last30: { label: "30 Days", getRange: () => ({ start: subDays(new Date(), 29), end: new Date() }) },
 };
 
-// Helper untuk format label hari
 function getDayLabel(date, rangeKey) {
   if (rangeKey === "last7") {
     return format(date, "EEEE");
   } else {
-    return format(date, "dd EE"); // Mon 27, Tue 28, ...
+    return format(date, "dd EE");
   }
 }
 

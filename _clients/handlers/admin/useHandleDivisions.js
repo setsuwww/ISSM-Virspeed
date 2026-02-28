@@ -18,7 +18,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
     );
   }, [setSelectedIds]);
 
-  const toggleSelectAll = useCallback((checked) => {
+  const selectAll = useCallback((checked) => {
     setSelectedIds(checked ? filteredData.map((d) => d.id) : []);
   }, [filteredData, setSelectedIds]);
 
@@ -54,18 +54,41 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
     [withConfirm, withTry, mutate]
   );
 
-  const onEdit = useCallback((id) => {
+  const onBulkGlobalUpdate = async (isActive) => {
+    await withTry(() => bulkToggle({
+      activateType: "WFA", deactivateType: "WFO",
+      isActive,
+    }),
+      "Bulk status updated.", "Failed to update global toggle."
+    );
+    mutate?.();
+  };
+
+  const onBulkUpdate = async (ids, mode) => {
+    const { message, variant } = confirmMessages.bulkUpdate(ids.length, mode);
+
+    await withConfirm(message,
+      () => withTry(() => bulkToggleSelectedDivision({
+        ids, isActive: mode === "ACTIVE",
+      }),
+        `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
+      ), variant
+    ).then(() => mutate?.());
+  };
+
+  const handleEditDivision = useCallback((id) => {
     router.push(`/admin/dashboard/users/divisions/${id}/edit`);
   }, [router]);
 
-  const onDelete = useCallback(async (id, name) =>
+  const handleDeleteDivision = useCallback(async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
       () => withTry(() => deleteDivisionById(id),
         "Division successfully removed.", "Failed to delete division."
       ),
       confirmMessages.deleteOne(name).variant
     ).then(() => mutate?.()),
-    [withTry, mutate]);
+    [withTry, mutate]
+  );
 
   const handleDeleteSelected = async () => {
     if (!selectedIds.length) return toast.error("No divisions selected.");
@@ -97,41 +120,18 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
     );
   };
 
-  const onBulkGlobalUpdate = async (isActive) => {
-    await withTry(() => bulkToggle({
-      activateType: "WFA", deactivateType: "WFO",
-      isActive,
-    }),
-      "Bulk status updated.", "Failed to update global toggle."
-    );
-    mutate?.();
-  };
-
-  const onBulkUpdate = async (ids, mode) => {
-    const { message, variant } = confirmMessages.bulkUpdate(ids.length, mode);
-
-    await withConfirm(message,
-      () => withTry(() => bulkToggleSelectedDivision({
-        ids, isActive: mode === "ACTIVE",
-      }),
-        `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
-      ), variant
-    ).then(() => mutate?.());
-  };
-
   return {
     toggleSelect,
-    toggleSelectAll,
+    selectAll,
 
     onToggleStatus,
     onToggleType,
-    onDelete,
+    handleEditDivision,
+    handleDeleteDivision,
     handleDeleteSelected,
     handleDeleteAll,
 
     onBulkGlobalUpdate,
     onBulkUpdate,
-
-    onEdit,
   };
 }

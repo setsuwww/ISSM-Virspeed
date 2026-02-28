@@ -22,7 +22,7 @@ export default function DivisionsTable({ data }) {
     typeFilter, setTypeFilter,
     statusFilter, setStatusFilter,
     filteredData, selectedIds,
-    toggleSelect, toggleSelectAll,
+    toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
     handleActivateSelected, handleInactivateSelected,
     onEdit, onDelete, onToggleStatus, onToggleType,
@@ -64,7 +64,7 @@ export default function DivisionsTable({ data }) {
             <TableRow>
               <TableHead className="flex items-center">
                 <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length}
-                  onCheckedChange={toggleSelectAll}
+                  onCheckedChange={selectAll}
                 />
               </TableHead>
               <TableHead>Name</TableHead>

@@ -11,48 +11,22 @@ const PAGE_SIZE = 10;
 
 async function getEmployees(page = 1) {
   return prisma.user.findMany({
-    where: {
-      role: "EMPLOYEE",
-      shiftId: null,
-      divisionId: { not: null },
-      division: {
-        startTime: { not: null },
-        endTime: { not: null },
-      },
+    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
+      division: { startTime: { not: null }, endTime: { not: null }},
     },
-    skip: (page - 1) * PAGE_SIZE,
-    take: PAGE_SIZE,
-    orderBy: { createdAt: "desc" },
+    skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE, orderBy: { createdAt: "desc" },
     select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
-      division: {
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          startTime: true,
-          endTime: true,
-        },
-      },
+      id: true, name: true, email: true, role: true,
+      createdAt: true, updatedAt: true,
+      division: { select: { id: true, name: true, type: true, startTime: true, endTime: true }},
     },
   });
 }
 
 async function getDivisions() {
   return prisma.division.findMany({
-    where: {
-      status: "ACTIVE",
-    },
-    select: {
-      id: true,
-      name: true,
-      type: true,
-    },
+    where: { status: "ACTIVE" },
+    select: { id: true, name: true, type: true },
     orderBy: {
       name: "asc",
     },
@@ -61,10 +35,7 @@ async function getDivisions() {
 
 async function getEmployeeCount() {
   return prisma.user.count({
-    where: {
-      role: "EMPLOYEE",
-      shiftId: null,
-      divisionId: { not: null },
+    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
       division: {
         startTime: { not: null },
         endTime: { not: null },
@@ -117,7 +88,7 @@ export default async function EmployeesWorkHoursPage({ searchParams }) {
           <Pagination
             page={page}
             totalPages={totalPages}
-            basePath="/admin/dashboard/users/employees/work-hours"
+            basePath="/admin/dashboard/users/employees/normal-employees"
           />
         </ContentForm.Body>
       </ContentForm>

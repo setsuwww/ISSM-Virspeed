@@ -1,43 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import { Table, TableBody, TableHead, TableHeader, TableCell, TableRow } from "@/_components/ui/Table";
 import { Checkbox } from "@/_components/ui/Checkbox";
 import EmptyStates from "@/_components/common/EmptyStates";
 
 import { EmployeesActionHeader } from "../EmployeesActionHeader";
 import { EmployeesRow } from "./EmployeesRow";
+
+import { useHandleUsers } from "@/_clients/handlers/admin/useHandleUsers";
 import { useShiftEmployeesHooks } from "@/_clients/hooks/admin/useShiftEmployeesHooks";
 
 export default function EmployeesTable({ users, divisions, shifts }) {
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const {
     search, setSearch,
-    selected, setSelected,
-    data, filteredData,
+    filteredData,
     divisionFilter, setDivisionFilter,
-    shiftFilter, onShiftFilterChange,
-    toggleSelect, deleteSelected,
-    deleteAll,
-    onHistory, onSwitch, onEdit, onDelete,
+    shiftFilter, setShiftFilter
   } = useShiftEmployeesHooks(users, shifts);
+
+  const {
+    toggleSelect, selectAll,
+    deleteSelected, deleteAll,
+    handleDeleteUser, handleEditUser, handleSwitchUser,
+  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds });
 
   return (
     <div className="space-y-4">
       <EmployeesActionHeader
         search={search} setSearch={setSearch}
-        selected={selected} onDeleteSelected={deleteSelected}
-        onDeleteAll={deleteAll} filteredData={filteredData}
+        selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
+        filteredData={filteredData}
         divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
-        shiftFilter={shiftFilter} onShiftFilterChange={onShiftFilterChange}
-        divisions={divisions}
-        shifts={shifts}
+        shiftFilter={shiftFilter} setShiftFilter={setShiftFilter}
+        divisions={divisions} shifts={shifts}
       />
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="flex items-center">
-              <Checkbox checked={selected.length === data.length && data.length > 0}
-                onCheckedChange={(value) => setSelected(value ? data.map((u) => u.id) : [])}
+              <Checkbox
+                checked={
+                  filteredData.length > 0 &&
+                  selectedIds.length === filteredData.length
+                }
+                onCheckedChange={(value) =>
+                  selectAll(!!value)
+                }
               />
             </TableHead>
             <TableHead>Employees</TableHead>
@@ -52,7 +64,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
           {filteredData.length === 0 ? (
             <TableRow>
               <TableCell colSpan={6} className="py-10 text-center">
-                <EmptyStates/>
+                <EmptyStates />
               </TableCell>
             </TableRow>
           ) : (
@@ -60,12 +72,11 @@ export default function EmployeesTable({ users, divisions, shifts }) {
               <EmployeesRow
                 key={user.id}
                 user={user}
-                selected={selected}
+                selected={selectedIds}
                 toggleSelect={toggleSelect}
-                onHistory={() => onHistory(user.id)}
-                onSwitch={onSwitch}
-                onEdit={() => onEdit(user.id)}
-                onDelete={() => onDelete(user.id)}
+                onSwitch={() => handleSwitchUser(user.id)}
+                onEdit={() => handleEditUser(user.id)}
+                onDelete={() => handleDeleteUser(user.id)}
               />
             ))
           )}

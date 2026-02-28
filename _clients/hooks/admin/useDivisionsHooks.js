@@ -6,7 +6,6 @@ import { useHandleDivisions } from "../../handlers/admin/useHandleDivisions";
 import { useDebounce } from "@/_stores/common/useDebounce";
 import { getDivisions } from "@/_servers/admin-action/divisionAction";
 
-
 export function useDivisionsHooks(initialData) {
   const fetcher = async () => await getDivisions();
 
@@ -41,9 +40,9 @@ export function useDivisionsHooks(initialData) {
   });
 
   const {
-    toggleSelect, toggleSelectAll,
+    toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
-    onEdit, onDelete,
+    handleEditDivision, handleDeleteDivision,
     onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
 
@@ -64,9 +63,9 @@ export function useDivisionsHooks(initialData) {
     statusFilter, setStatusFilter, filteredData,
     selectedIds,
 
-    toggleSelect, toggleSelectAll,
+    toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
-    onEdit, onDelete, handleActivateSelected, handleInactivateSelected,
+    handleEditDivision, handleDeleteDivision, handleActivateSelected, handleInactivateSelected,
     onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   };
 }

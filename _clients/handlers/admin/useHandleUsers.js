@@ -44,7 +44,7 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
         setSelectedIds([]);
       }, variant
     );
-  }, [selectedIds, toast, setSelectedIds]);
+  }, [selectedIds, setSelectedIds, toast]);
 
   const deleteAll = useCallback(async () => {
     if (!filteredData.length) {
@@ -86,8 +86,22 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     }, [router]
   );
 
+  const handleSwitchUser = useCallback(async (id, newActiveState) => {
+    try {
+      await api.patch(`/users/${id}`, {
+        active: newActiveState,
+      });
+
+      setData((prev) =>
+        prev.map((u) => u.id === id
+          ? { ...u, active: newActiveState } : u
+        )
+      );
+    } catch { alert(MSG.UPDATE_FAIL) }
+  }, []);
+
   return {
     toggleSelect, selectAll, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser
+    handleEditUser, handleDeleteUser, handleSwitchUser
   };
 }
