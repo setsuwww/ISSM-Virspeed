@@ -36,8 +36,8 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
         )}
       >
         <div className="flex items-center gap-x-3">
-          <div className="p-1.5 bg-yellow-500/10 rounded-md">
-            <Icon size={18} className="text-yellow-500" />
+          <div className="p-1.5 bg-violet-500/10 rounded-md">
+            <Icon size={18} className="text-violet-500" />
           </div>
           {!minimized && <span className="text-sm">{title}</span>}
         </div>

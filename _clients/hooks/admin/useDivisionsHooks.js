@@ -60,8 +60,8 @@ export function useDivisionsHooks(initialData) {
   return {
     mutate, search, setSearch,
     typeFilter, setTypeFilter,
-    statusFilter, setStatusFilter, filteredData,
-    selectedIds,
+    statusFilter, setStatusFilter,
+    filteredData, selectedIds,
 
     toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,

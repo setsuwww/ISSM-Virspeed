@@ -73,7 +73,6 @@ export default function EditShiftForm({ shift, divisions }) {
     finally { setLoading(false)}
   }
 
-
   return (
     <section>
       <DashboardHeader

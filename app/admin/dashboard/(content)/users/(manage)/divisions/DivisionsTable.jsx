@@ -25,7 +25,7 @@ export default function DivisionsTable({ data }) {
     toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
     handleActivateSelected, handleInactivateSelected,
-    onEdit, onDelete, onToggleStatus, onToggleType,
+    handleEditDivision, handleDeleteDivision, onToggleStatus, onToggleType,
     onBulkGlobalUpdate,
   } = useDivisionsHooks(data)
 
@@ -47,14 +47,10 @@ export default function DivisionsTable({ data }) {
       />
 
       <DivisionsActionHeader
-        search={search}
-        onSearchChange={setSearch}
-        typeFilter={typeFilter}
-        onTypeFilterChange={setTypeFilter}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        onDeleteSelected={handleDeleteSelected}
-        onDeleteAll={handleDeleteAll}
+        search={search} onSearchChange={setSearch}
+        typeFilter={typeFilter} onTypeFilterChange={setTypeFilter}
+        statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
+        onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
         filteredData={filteredData}
       />
 
@@ -92,8 +88,8 @@ export default function DivisionsTable({ data }) {
                   onSelect={() => toggleSelect(division.id)}
                   onToggleStatus={onToggleStatus}
                   onToggleType={onToggleType}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
+                  onEdit={handleEditDivision}
+                  onDelete={handleDeleteDivision}
                 />
               ))
             )}

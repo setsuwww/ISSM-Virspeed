@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
 import { CircleUserRound, RefreshCcw } from "lucide-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
@@ -12,33 +11,26 @@ import EmptyStates from "@/_components/common/EmptyStates";
 import { roleStyles } from "@/_constants/theme/userTheme";
 import { capitalize } from "@/_functions/globalFunction";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
-
-import { deleteUsers, deleteUserById } from "@/_servers/admin-action/userAction";
 import ListUsersActionHeader from "./ListUsersActionHeader";
 
+import { useHandleUsers } from "@/_clients/handlers/admin/useHandleUsers";
+
 export default function ListUsersTable({ data }) {
-  const router = useRouter();
-
   const [users, setUsers] = useState(data);
-
   const [selectedIds, setSelectedIds] = useState([]);
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("A-Z");
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
 
-  useEffect(() => {
-    setUsers(data);
-  }, [data]);
+  useEffect(() => setUsers(data), [data]);
 
   const filteredData = useMemo(() => {
     let result = [...users];
 
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter(
-        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
-      );
+      result = result.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
     }
 
     if (sortOrder === "A-Z") result.sort((a, b) => a.name.localeCompare(b.name));
@@ -47,66 +39,11 @@ export default function ListUsersTable({ data }) {
     return result;
   }, [users, search, sortOrder]);
 
-  const toggleSelect = useCallback((id) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
-  }, []);
-
-  const toggleSelectAll = useCallback(() => {
-    setSelectedIds(
-      selectedIds.length === filteredData.length
-        ? []
-        : filteredData.map((u) => u.id)
-    );
-  }, [filteredData, selectedIds]);
-
-  const handleEditUser = useCallback(
-    (id) => router.push(`/admin/users/${id}/edit`),
-    [router]
-  );
-
-  const handleDeleteUser = useCallback(
-    async (id) => {
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-      setSelectedIds((prev) => prev.filter((x) => x !== id));
-
-      try {
-        await deleteUserById(id);
-      } catch {
-        router.refresh();
-      }
-    },
-    [router]
-  );
-
-  const handleDeleteSelected = useCallback(async () => {
-    if (!selectedIds.length) return;
-
-    setUsers((prev) => prev.filter((u) => !selectedIds.includes(u.id)));
-    setSelectedIds([]);
-
-    try {
-      await deleteUsers(selectedIds);
-    } catch {
-      router.refresh();
-    }
-  }, [selectedIds, router]);
-
-  const handleDeleteAll = useCallback(async () => {
-    if (!filteredData.length) return;
-
-    const ids = filteredData.map((u) => u.id);
-
-    setUsers([]);
-    setSelectedIds([]);
-
-    try {
-      await deleteUsers(ids);
-    } catch {
-      router.refresh();
-    }
-  }, [filteredData, router]);
+  const {
+    toggleSelect, selectAll,
+    deleteSelected, deleteAll,
+    handleEditUser, handleDeleteUser
+  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds });
 
   const handleSwapShift = (userId) => {
     setCurrentUserId(userId);
@@ -119,7 +56,7 @@ export default function ListUsersTable({ data }) {
         search={search} onSearchChange={setSearch}
         sortOrder={sortOrder} onSortOrderChange={setSortOrder}
         selectedCount={selectedIds.length}
-        onDeleteSelected={handleDeleteSelected} onDeleteAll={handleDeleteAll}
+        onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
       />
 
@@ -130,8 +67,9 @@ export default function ListUsersTable({ data }) {
           <TableHeader>
             <TableRow>
               <TableHead>
-                <Checkbox checked={selectedIds.length > 0 && selectedIds.length === filteredData.length}
-                  onCheckedChange={toggleSelectAll}
+                <Checkbox
+                  checked={selectedIds.length > 0 && selectedIds.length === filteredData.length}
+                  onCheckedChange={() => selectAll(selectedIds.length !== filteredData.length)}
                 />
               </TableHead>
               <TableHead>User</TableHead>
@@ -146,7 +84,10 @@ export default function ListUsersTable({ data }) {
             {filteredData.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>
-                  <Checkbox checked={selectedIds.includes(user.id)} onCheckedChange={() => toggleSelect(user.id)} />
+                  <Checkbox
+                    checked={selectedIds.includes(user.id)}
+                    onCheckedChange={() => toggleSelect(user.id)}
+                  />
                 </TableCell>
 
                 <TableCell>
@@ -170,9 +111,7 @@ export default function ListUsersTable({ data }) {
                 <TableCell>
                   <div>
                     <div className="font-semibold">{user.divisionName}</div>
-                    <div className="text-xs text-slate-400">
-                      {user.startTime} - {user.endTime}
-                    </div>
+                    <div className="text-xs text-slate-400">{user.startTime} - {user.endTime}</div>
                   </div>
                 </TableCell>
 

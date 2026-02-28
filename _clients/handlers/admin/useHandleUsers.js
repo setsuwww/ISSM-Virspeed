@@ -65,6 +65,12 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     setSelectedIds([]);
   }, [filteredData, setSelectedIds, toast]);
 
+  const handleEditUser = useCallback(
+    async (id) => {
+      router.push(`/admin/dashboard/users/${id}/edit`);
+    }, [router]
+  );
+
   const handleDeleteUser = useCallback(
     async (id) => {
       const { message, variant } = confirmMessages.deleteOne;
@@ -78,12 +84,6 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
         }, variant
       );
     }, [toast, setSelectedIds]
-  );
-
-  const handleEditUser = useCallback(
-    async (id) => {
-      router.push(`/admin/dashboard/users/${id}/edit`);
-    }, [router]
   );
 
   const handleSwitchUser = useCallback(async (id, newActiveState) => {
