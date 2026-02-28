@@ -16,7 +16,7 @@ export default function SidebarBase({ menu, user }) {
   const sidebarVariants = {
     hidden: { x: -100, opacity: 0, scale: 0.98, filter: "blur(4px)" },
     visible: { x: 0, opacity: 1, scale: 1, filter: "blur(0px)" },
-    exit: { x: -80, opacity: 0, scale: 0.98, filter: "blur(3px)" },
+    exit: { x: -80, opacity: 0, scale: 0.98, filter: "blur(2px)" },
   }
 
   const linkVariants = {
