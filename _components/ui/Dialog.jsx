@@ -25,7 +25,6 @@ const variantStyles = {
     border: "border-rose-500",
     title: "text-rose-700",
   },
-
   blue: {
     border: "border-blue-500",
     title: "text-blue-700",

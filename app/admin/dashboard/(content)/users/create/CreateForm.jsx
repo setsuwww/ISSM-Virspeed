@@ -163,8 +163,8 @@ export default function CreateForm({ divisions, shifts }) {
                   onChange={handleChange}
                 />
                 <div className="flex items-center gap-x-1 text-xs text-slate-400 mt-1">
-                  <Info size={16} strokeWidth={1} />Password is optional and set "secretPW123" as default password
                 </div>
+                  <Info size={16} strokeWidth={1} />Password is optional and set <span className="text-slate-600 font-bold"> "secretPW1234" </span> as default password
               </div>
 
               <div className="space-y-2">

@@ -147,7 +147,7 @@ export function ProfileView({ user }) {
 
         <CardContent className="space-y-6 px-6">
           <Dialog open={activeModal !== null} onOpenChange={() => setActiveModal(null)}>
-            <DialogContent className="sm:max-w-md animate-bouncy">
+            <DialogContent className="sm:max-w-md animate-bouncy" variant={activeModal === "edit" ? "blue" : "warning"}>
 
               {activeModal === "edit" && (
                 <>
