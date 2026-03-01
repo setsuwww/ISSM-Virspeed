@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
 import RequestsDataTable from "./RequestsTable"
 import { motion, AnimatePresence } from "framer-motion"
 
