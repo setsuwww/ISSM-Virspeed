@@ -1,10 +1,12 @@
 "use client"
 
 import { CircleUserRound } from "lucide-react"
+
 import { TableCell } from "@/_components/ui/Table"
 import { capitalize, wordsLimit } from "@/_functions/globalFunction"
-import RequestStatusChangerToggle from "../RequestStatusChanger"
 import { shiftDots } from "@/_constants/shiftConstants"
+
+import RequestStatusChangerToggle from "../RequestStatusChanger"
 
 export default function RenderEarlyCheckout({ r }) {
   return (

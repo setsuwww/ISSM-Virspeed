@@ -1,4 +1,3 @@
-// app/admin/dashboard/(content)/requests/page.jsx
 export const revalidate = 0
 export const runtime = "nodejs"
 
