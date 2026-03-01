@@ -12,51 +12,6 @@ const exampleRows = [
     workMode: "WORK_HOURS",
     shift: null,
   },
-  {
-    name: "Charlie",
-    email: "charlie@example.com",
-    password: "charlie123",
-    role: "EMPLOYEE",
-    division: "IT Support",
-    workMode: "WORK_HOURS",
-    shift: null,
-  },
-  {
-    name: "Emily",
-    email: "emily@example.com",
-    password: "emily123",
-    role: "EMPLOYEE",
-    division: "IT Support",
-    workMode: "WORK_HOURS",
-    shift: null,
-  },
-  {
-    name: "Bruce",
-    email: "bruce@example.com",
-    password: "bruce321",
-    role: "USER",
-    division: "Finance",
-    workMode: "SHIFT",
-    shift: "MORNING",
-  },
-  {
-    name: "Dirman",
-    email: "dirman@example.com",
-    password: "dirman321",
-    role: "USER",
-    division: "Finance",
-    workMode: "SHIFT",
-    shift: "AFTERNOON",
-  },
-  {
-    name: "Frank",
-    email: "frank@example.com",
-    password: "frank123",
-    role: "USER",
-    division: "Finance",
-    workMode: "SHIFT",
-    shift: "EVENING",
-  },
 ]
 
 export default function UserExcelTemplate() {
@@ -66,7 +21,7 @@ export default function UserExcelTemplate() {
         <div>
           <h3 className="font-medium mb-4 text-green-800">JSON Expected <span className="text-xs bg-green-100 px-2 text-green-600 rounded-full">EXAMPLE</span></h3>
           <pre className="bg-green-50 border border-green-300 text-green-800 rounded p-3 overflow-x-auto text-xs">
-            {JSON.stringify([exampleRows[0]], null, 2)}
+            {JSON.stringify(exampleRows, null, 2)}
           </pre>
         </div>
       </div>
