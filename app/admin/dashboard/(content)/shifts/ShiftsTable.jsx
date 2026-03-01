@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useMemo, useState, useCallback, useTransition } from "react";
 import { UserCircle } from "phosphor-react";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
@@ -13,107 +11,33 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 
 import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
 
-import {
-  deleteShiftById,
-  deleteShifts,
-} from "@/_servers/admin-action/shiftAction";
-
 import ShiftsActionHeader from "./ShiftsActionHeader";
+import { useHandleShifts } from "@/_clients/handlers/admin/useHandleShifts";
 
 export function ShiftsTable({ data }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sortFilter, setSortFilter] = useState("A-Z");
-  const [shiftFilter, setShiftFilter] = useState("ALL");
+  const {
+    search, setSearch,
+    sortFilter, setSortFilter,
+    shiftFilter, setShiftFilter,
+    selectedIds,
+    filteredData,
+    isAllSelected,
+    isPending,
 
-  const filteredData = useMemo(() => {
-    let result = data;
-
-    if (search) {
-      const q = search.toLowerCase();
-      result = result.filter((s) =>
-        s.name.toLowerCase().includes(q)
-      );
-    }
-
-    if (shiftFilter !== "ALL") {
-      result = result.filter((s) => s.type === shiftFilter);
-    }
-
-    const sorted = [...result];
-
-    if (sortFilter === "A-Z") {
-      sorted.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    if (sortFilter === "Z-A") {
-      sorted.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    return sorted;
-  }, [data, search, shiftFilter, sortFilter]);
-
-  const toggleSelect = useCallback((id) => {
-    setSelectedIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
-    );
-  }, []);
-
-  const toggleSelectAll = useCallback(
-    (checked) => {
-      setSelectedIds(
-        checked ? filteredData.map((s) => s.id) : []
-      );
-    },
-    [filteredData]
-  );
-
-  const isAllSelected =
-    filteredData.length > 0 &&
-    selectedIds.length === filteredData.length;
-
-  const handleDelete = (id) => {
-    startTransition(async () => {
-      await deleteShiftById(id);
-      router.refresh();
-    });
-  };
-
-  const handleDeleteSelected = () => {
-    startTransition(async () => {
-      await deleteShifts(selectedIds);
-      setSelectedIds([]);
-      router.refresh();
-    });
-  };
-
-  const handleDeleteAll = () => {
-    startTransition(async () => {
-      await deleteShifts(
-        filteredData.map((s) => s.id)
-      );
-      setSelectedIds([]);
-      router.refresh();
-    });
-  };
+    toggleSelect, selectAll,
+    handleEditShift, handleDeleteShift,
+    deleteSelected, deleteAll,
+  } = useHandleShifts(data);
 
   return (
     <div className="space-y-4">
       <ShiftsActionHeader
-        search={search}
-        onSearchChange={setSearch}
-        shiftFilter={shiftFilter}
-        onShiftFilterChange={setShiftFilter}
-        sortFilter={sortFilter}
-        onSortFilterChange={setSortFilter}
+        search={search} onSearchChange={setSearch}
+        shiftFilter={shiftFilter} onShiftFilterChange={setShiftFilter}
+        sortFilter={sortFilter} onSortFilterChange={setSortFilter}
         selectedCount={selectedIds.length}
-        onDeleteSelected={handleDeleteSelected}
-        onDeleteAll={handleDeleteAll}
+        onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
       />
 
@@ -121,10 +45,7 @@ export function ShiftsTable({ data }) {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Checkbox
-                checked={isAllSelected}
-                onCheckedChange={toggleSelectAll}
-              />
+              <Checkbox checked={isAllSelected} onCheckedChange={selectAll}/>
             </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
@@ -139,8 +60,7 @@ export function ShiftsTable({ data }) {
           {filteredData.map((shift) => (
             <TableRow key={shift.id}>
               <TableCell>
-                <Checkbox
-                  checked={selectedIds.includes(shift.id)}
+                <Checkbox checked={selectedIds.includes(shift.id)}
                   onCheckedChange={() =>
                     toggleSelect(shift.id)
                   }
@@ -164,36 +84,18 @@ export function ShiftsTable({ data }) {
               <TableCell>{shift.division}</TableCell>
 
               <TableCell>
-                <Link
-                  href={`/admin/dashboard/shifts/${shift.id}/list-users`}
-                  className="flex items-center gap-1 text-sky-500"
-                >
+                <Link href={`/admin/dashboard/shifts/${shift.id}/list-users`} className="flex items-center gap-1 text-sky-500">
                   <UserCircle size={22} />
                   {shift.usersCount} Users
                 </Link>
               </TableCell>
 
               <TableCell className="space-x-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    router.push(
-                      `/admin/dashboard/shifts/${shift.id}/edit`
-                    )
-                  }
-                >
+                <Button size="sm" variant="outline" onClick={() => handleEditShift(shift.id)}>
                   Edit
                 </Button>
 
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  disabled={isPending}
-                  onClick={() =>
-                    handleDelete(shift.id)
-                  }
-                >
+                <Button size="sm" variant="destructive" disabled={isPending} onClick={() => handleDeleteShift(shift.id)}>
                   Delete
                 </Button>
               </TableCell>
