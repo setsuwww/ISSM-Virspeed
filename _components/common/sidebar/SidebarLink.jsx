@@ -18,7 +18,7 @@ export function SidebarLink({ href, icon: Icon, children, minimized, badge = 0 }
       )}
     >
       <div className="relative">
-        <div className="p-1.5 bg-violet-600/10 rounded-md">
+        <div className="p-1.5 bg-violet-500/10 border rounded-md">
           <Icon className="text-violet-500 shrink-0" size={18} />
         </div>
 
