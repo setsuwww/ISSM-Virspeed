@@ -24,7 +24,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
   const {
     toggleSelect, selectAll,
     deleteSelected, deleteAll,
-    handleDeleteUser, handleEditUser, handleSwitchUser,
+    handleDeleteUser, handleEditUser, handleHistoryUser, handleSwitchUser,
   } = useHandleUsers({ filteredData, selectedIds, setSelectedIds });
 
   return (
@@ -74,6 +74,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
                 user={user}
                 selected={selectedIds}
                 toggleSelect={toggleSelect}
+                onHistory={() => handleHistoryUser(user.id)}
                 onSwitch={() => handleSwitchUser(user.id)}
                 onEdit={() => handleEditUser(user.id)}
                 onDelete={() => handleDeleteUser(user.id)}

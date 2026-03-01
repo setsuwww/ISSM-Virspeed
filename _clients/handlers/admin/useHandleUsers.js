@@ -86,6 +86,12 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
         }, [toast, setSelectedIds]
     );
 
+    const handleHistoryUser = useCallback(
+        async (id) => {
+            router.push(`/admin/dashboard/users/${id}/history`);
+        }, [router]
+    );
+
     const handleSwitchUser = useCallback(async (id, newActiveState) => {
         try {
             await api.patch(`/users/${id}`, {
@@ -103,6 +109,6 @@ export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     return {
         toggleSelect, selectAll,
         deleteSelected, deleteAll,
-        handleEditUser, handleDeleteUser, handleSwitchUser
+        handleEditUser, handleDeleteUser, handleHistoryUser, handleSwitchUser
     };
 }
