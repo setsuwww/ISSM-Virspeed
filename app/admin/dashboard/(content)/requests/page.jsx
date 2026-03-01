@@ -61,7 +61,7 @@ export default async function Page({ searchParams }) {
               show={false}
             />
 
-            <RequestClearHistory type="shift" initialMode={mode} />
+            <RequestClearHistory type="changeshift" initialMode={mode} />
           </div>
         </ContentForm.Header>
 

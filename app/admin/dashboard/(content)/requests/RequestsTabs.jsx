@@ -64,13 +64,7 @@ export default function RequestsTabs({
           {tabs
             .filter((t) => t.key === activeTab)
             .map((t) => (
-              <motion.div
-                key={t.key}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
+              <motion.div key={t.key} custom={direction} variants={variants} initial="enter" animate="center" exit="exit"
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 className="absolute top-0 left-0 w-full h-full"
               >

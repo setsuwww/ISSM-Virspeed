@@ -115,7 +115,7 @@ export async function updateEarlyCheckoutRequestStatus( id, newStatus, adminReas
 
 export async function clearHistory(type) {
   switch (type) {
-    case "shift":
+    case "changeshift":
       await prisma.shiftChangeRequest.deleteMany({
         where: { status: { in: ["APPROVED", "REJECTED"] } },
       })
