@@ -70,7 +70,7 @@ export function SecurityTable({ logs: initialLogs }) {
                   log.action
                 )}`}
               >
-                {log.action}
+                {log.action.replace("_", " ")}
               </span>
             </TableCell>
 

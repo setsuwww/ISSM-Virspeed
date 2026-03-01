@@ -11,97 +11,98 @@ import { useActionHelper } from "@/_stores/common/useActionStore";
 import { confirmMessages } from "@/_constants/static/handleUserMessage";
 
 export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
-  const toast = useToast();
-  const router = useRouter();
-  const { withConfirm, withTry } = useActionHelper();
+    const toast = useToast();
+    const router = useRouter();
+    const { withConfirm, withTry } = useActionHelper();
 
-  const toggleSelect = useCallback(
-    (id) => {
-      setSelectedIds((prev) =>
-        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-      );
-    }, [setSelectedIds]
-  );
+    const toggleSelect = useCallback(
+        (id) => {
+            setSelectedIds((prev) =>
+                prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+            );
+        }, [setSelectedIds]
+    );
 
-  const selectAll = useCallback(
-    (checked) => setSelectedIds(checked ? filteredData.map((u) => u.id) : []),
-    [filteredData, setSelectedIds]
-  );
+    const selectAll = useCallback(
+        (checked) => setSelectedIds(checked ? filteredData.map((u) => u.id) : []),
+        [filteredData, setSelectedIds]
+    );
 
-  const deleteSelected = useCallback(async () => {
-    if (!selectedIds.length) {
-      toast.error("No users selected.");
-      return;
-    }
+    const deleteSelected = useCallback(async () => {
+        if (!selectedIds.length) {
+            toast.error("No users selected.");
+            return;
+        }
 
-    const { message, variant } = confirmMessages.deleteSelected(selectedIds.length);
+        const { message, variant } = confirmMessages.deleteSelected(selectedIds.length);
 
-    await withConfirm(message,
-      async () => {
-        await withTry(() => deleteUsers(selectedIds),
-          "Selected users deleted.", "Failed to delete selected users."
+        await withConfirm(message,
+            async () => {
+                await withTry(() => deleteUsers(selectedIds),
+                    "Selected users deleted.", "Failed to delete selected users."
+                );
+                setSelectedIds([]);
+            }, variant
         );
+    }, [selectedIds, setSelectedIds, toast]);
+
+    const deleteAll = useCallback(async () => {
+        if (!filteredData.length) {
+            toast.error("No users available.");
+            return;
+        }
+
+        const { message, variant } = confirmMessages.deleteAll(
+            filteredData.length
+        );
+
+        await withConfirm(message,
+            async () => withTry(() => deleteUsers(filteredData.map((u) => u.id)),
+                "All users have been deleted.", "Failed to delete all users."
+            ), variant
+        );
+
         setSelectedIds([]);
-      }, variant
-    );
-  }, [selectedIds, setSelectedIds, toast]);
+    }, [filteredData, setSelectedIds, toast]);
 
-  const deleteAll = useCallback(async () => {
-    if (!filteredData.length) {
-      toast.error("No users available.");
-      return;
-    }
-
-    const { message, variant } = confirmMessages.deleteAll(
-      filteredData.length
+    const handleEditUser = useCallback(
+        async (id) => {
+            router.push(`/admin/dashboard/users/${id}/edit`);
+        }, [router]
     );
 
-    await withConfirm(message,
-      async () => withTry(() => deleteUsers(filteredData.map((u) => u.id)),
-        "All users have been deleted.", "Failed to delete all users."
-      ), variant
+    const handleDeleteUser = useCallback(
+        async (id) => {
+            const { message, variant } = confirmMessages.deleteOne;
+
+            await withConfirm(message,
+                async () => {
+                    await withTry(() => deleteUserById(id),
+                        "User deleted successfully.", "Failed to delete user."
+                    );
+                    setSelectedIds((prev) => prev.filter((x) => x !== id));
+                }, variant
+            );
+        }, [toast, setSelectedIds]
     );
 
-    setSelectedIds([]);
-  }, [filteredData, setSelectedIds, toast]);
+    const handleSwitchUser = useCallback(async (id, newActiveState) => {
+        try {
+            await api.patch(`/users/${id}`, {
+                active: newActiveState,
+            });
 
-  const handleEditUser = useCallback(
-    async (id) => {
-      router.push(`/admin/dashboard/users/${id}/edit`);
-    }, [router]
-  );
+            setData((prev) =>
+                prev.map((u) => u.id === id
+                    ? { ...u, active: newActiveState } : u
+                )
+            );
+        } catch { alert(MSG.UPDATE_FAIL) }
+    }, []);
 
-  const handleDeleteUser = useCallback(
-    async (id) => {
-      const { message, variant } = confirmMessages.deleteOne;
-
-      await withConfirm(message,
-        async () => {
-          await withTry(() => deleteUserById(id),
-            "User deleted successfully.", "Failed to delete user."
-          );
-          setSelectedIds((prev) => prev.filter((x) => x !== id));
-        }, variant
-      );
-    }, [toast, setSelectedIds]
-  );
-
-  const handleSwitchUser = useCallback(async (id, newActiveState) => {
-    try {
-      await api.patch(`/users/${id}`, {
-        active: newActiveState,
-      });
-
-      setData((prev) =>
-        prev.map((u) => u.id === id
-          ? { ...u, active: newActiveState } : u
-        )
-      );
-    } catch { alert(MSG.UPDATE_FAIL) }
-  }, []);
-
-  return {
-    toggleSelect, selectAll, deleteSelected, deleteAll,
-    handleEditUser, handleDeleteUser, handleSwitchUser
-  };
+    return {
+        toggleSelect, selectAll,
+        deleteSelected, deleteAll,
+        handleEditUser, handleDeleteUser, handleSwitchUser
+    };
 }
