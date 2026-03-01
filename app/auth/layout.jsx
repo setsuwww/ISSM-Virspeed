@@ -1,7 +1,7 @@
 import PageTransition from "../admin/dashboard/page-transition";
 
 export const metadata = {
-  title: "Beefast | Auth",
+  title: "Virspeed | Auth",
   description: "Authentication form",
 };
 

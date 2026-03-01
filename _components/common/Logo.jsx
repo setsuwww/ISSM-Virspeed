@@ -17,7 +17,7 @@ export function Logo({ minimized, onToggle }) {
       {!minimized && (
         <>
           <div className="text-xl font-bold text-violet-500 whitespace-nowrap">
-            Vir<span className="text-gray-800">speed.</span>
+            Vir<span className="text-slate-700">speed.</span>
           </div>
 
           <ChevronLeft size={18} className="ml-1 text-slate-400 group-hover:text-slate-700 transition" />
