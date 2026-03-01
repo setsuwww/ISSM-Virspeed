@@ -9,7 +9,7 @@ export function Logo({ minimized, onToggle }) {
     )}
     >
       <Image src="/icons/virspeed.png" className="rounded-lg"
-        width={36} height={36}
+        width={34} height={34}
         alt="Liveon icon"
         priority
       />
