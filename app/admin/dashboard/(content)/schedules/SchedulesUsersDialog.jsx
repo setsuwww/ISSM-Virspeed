@@ -4,15 +4,6 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog";
 import { getInitial } from "@/_functions/globalFunction";
 
-const colors = [
-  "bg-rose-600",
-  "bg-amber-600",
-  "bg-yellow-600",
-  "bg-lime-600",
-  "bg-sky-600",
-  "bg-violet-600",
-];
-
 export default function ScheduleUsersDialog({ users }) {
   const [open, setOpen] = useState(false);
 
@@ -64,9 +55,7 @@ export default function ScheduleUsersDialog({ users }) {
               <div key={u.user.id} className="flex items-center justify-between border-b py-2">
                 <div className="flex items-center gap-3">
 
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border border-white shadow text-white
-                      ${colors[i % colors.length]}
-                    `}
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm bg-slate-800 border border-white shadow text-white"
                   >
                     {getInitial(u.user.name)}
                   </div>

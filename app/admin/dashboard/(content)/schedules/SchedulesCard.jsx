@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { CalendarClock } from "lucide-react";
 import { format } from "date-fns";
 
@@ -16,7 +15,6 @@ import EmptyStates from "@/_components/common/EmptyStates";
 import { useSchedulesHooks } from "@/_clients/hooks/admin/useSchedulesHooks";
 
 export default function SchedulesCard({ data }) {
-  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState([]);
 
   const {
@@ -32,10 +30,8 @@ export default function SchedulesCard({ data }) {
     handleEditSchedule,
     handleDeleteSchedule,
   } = useHandleSchedules({
-    selectedIds,
-    setSelectedIds,
+    selectedIds, setSelectedIds,
     filteredData,
-    reloadData: () => router.refresh(),
   });
 
   return (
