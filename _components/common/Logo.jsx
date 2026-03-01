@@ -8,7 +8,7 @@ export function Logo({ minimized, onToggle }) {
       minimized && "justify-center w-full"
     )}
     >
-      <Image src="/icons/liveon.png" className="rounded-lg"
+      <Image src="/icons/virspeed.png" className="rounded-lg"
         width={36} height={36}
         alt="Liveon icon"
         priority

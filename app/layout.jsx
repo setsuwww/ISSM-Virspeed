@@ -7,7 +7,7 @@ export const metadata = {
   manifest: "/manifest.json",
   viewport: "#ffffff",
   icons: {
-    icon: "/icons/liveon.png"
+    icon: "/icons/virspeed.png"
   }
 }
 
