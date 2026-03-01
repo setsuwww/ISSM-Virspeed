@@ -5,7 +5,6 @@ import RequestsTabs from "./RequestsTabs"
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
-import { RequestClearHistory } from "./RequestClearHistory"
 
 import {
   fetchShiftRequests,
@@ -61,7 +60,6 @@ export default async function Page({ searchParams }) {
               show={false}
             />
 
-            <RequestClearHistory type="changeshift" initialMode={mode} />
           </div>
         </ContentForm.Header>
 

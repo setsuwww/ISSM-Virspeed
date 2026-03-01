@@ -12,7 +12,7 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
 
   await prisma.attendance.update({
     where: { id: permId },
-    data: { approval: newStatus, ...(adminReason ? { adminReason: adminReason } : {})},
+    data: { approval: newStatus, ...(adminReason ? { adminReason: adminReason } : {}) },
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -29,7 +29,7 @@ export async function updateShiftChangeRequestStatus(id, newStatus, adminReason 
 
   await prisma.shiftChangeRequest.update({
     where: { id: shchId },
-    data: { status: newStatus, ...(adminReason ? { rejectReason: adminReason } : {})},
+    data: { status: newStatus, ...(adminReason ? { rejectReason: adminReason } : {}) },
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -46,7 +46,7 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
 
   await prisma.leaveRequest.update({
     where: { id: leaveId },
-    data: {  status: newStatus,  ...(adminReason ? { adminReason } : {}), updatedAt: new Date()},
+    data: { status: newStatus, ...(adminReason ? { adminReason } : {}), updatedAt: new Date() },
   });
 
   revalidatePath("/admin/dashboard/requests");
@@ -55,7 +55,7 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
   return { success: true };
 }
 
-export async function updateEarlyCheckoutRequestStatus( id, newStatus, adminReason = null) {
+export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReason = null) {
   const requestId = Number(id);
   if (!Number.isInteger(requestId)) {
     throw new Error("Invalid early checkout request ID");
@@ -131,9 +131,12 @@ export async function clearHistory(type) {
       })
       break
     case "permission":
-      await prisma.permissionRequest?.deleteMany({
-        where: { status: { in: ["APPROVED", "REJECTED"] } },
-      })
+      await prisma.attendance.deleteMany({
+        where: {
+          status: "PERMISSION",
+          approval: { in: ["APPROVED", "REJECTED"] },
+        },
+      });
       break
     default:
       throw new Error("Invalid request type")

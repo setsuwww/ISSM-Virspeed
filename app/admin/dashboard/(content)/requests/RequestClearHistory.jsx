@@ -16,7 +16,7 @@ export function RequestClearHistory({ type, initialMode }) {
   } = useHandleRequest({ type, initialMode })
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 mt-2">
       <Button
         onClick={handleClearHistory}
         disabled={mode === "pending" || isPending}

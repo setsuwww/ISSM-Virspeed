@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/_components/ui/Tabs"
 import RequestsDataTable from "./RequestsTable"
 import { motion, AnimatePresence } from "framer-motion"
+import { RequestClearHistory } from "./RequestClearHistory"
 
 export default function RequestsTabs({
   permissionRequests = [], changeShiftRequests = [], earlyCheckoutRequests = [], leaveRequests = [],
@@ -19,7 +20,7 @@ export default function RequestsTabs({
   ]
 
   const [activeTab, setActiveTab] = useState("permission")
-  const [direction, setDirection] = useState(0) // 1 = right, -1 = left
+  const [direction, setDirection] = useState(0)
 
   const handleTabChange = (value) => {
     const newIndex = tabs.findIndex((t) => t.key === value)
@@ -44,11 +45,10 @@ export default function RequestsTabs({
                 <span>{t.label}</span>
                 {t.data?.length > 0 && (
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-md ${
-                      isHistory
+                    className={`text-[10px] px-2 py-0.5 rounded-md ${isHistory
                         ? "bg-yellow-50 text-yellow-600 border border-yellow-200"
                         : "bg-sky-50 text-sky-700 border border-sky-200"
-                    }`}
+                      }`}
                   >
                     {t.data.length}
                   </span>
@@ -57,6 +57,11 @@ export default function RequestsTabs({
             </TabsTrigger>
           ))}
         </TabsList>
+
+        <RequestClearHistory
+          type={activeTab}
+          initialMode={mode}
+        />
       </div>
 
       <div className="relative mt-6 h-[400px] overflow-hidden">
