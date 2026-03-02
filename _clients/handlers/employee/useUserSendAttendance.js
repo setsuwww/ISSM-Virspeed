@@ -25,35 +25,32 @@ export function useUserSendAttendance() {
 
         if (precheck?.error) return toast.error(precheck.error);
 
-        // skipLocation case
         if (precheck?.requireLocation === false) {
-          await withTry(
-            () => userSendCheckIn({ skipLocation: true }),
-            "Checked in successfully",
-            "Check in gagal"
-          );
+          const result = await userSendCheckIn({ skipLocation: true });
+          if (result?.error) return toast.error(result.error);
+          toast.success("Checked in successfully");
           return;
         }
 
         if (!navigator.geolocation)
-          return toast.error("Browser tidak mendukung geolocation");
+          return toast.error("Browser is not support geolocation");
 
-        const position = await new Promise((resolve, reject) => {
+        const position = await new Promise < GeolocationPosition > ((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
             resolve,
             (err) => {
               switch (err.code) {
                 case err.PERMISSION_DENIED:
-                  reject(new Error("Izin lokasi ditolak"));
+                  reject(new Error("Location permission denied!"));
                   break;
                 case err.POSITION_UNAVAILABLE:
-                  reject(new Error("Lokasi tidak tersedia"));
+                  reject(new Error("Location is unavailable!"));
                   break;
                 case err.TIMEOUT:
-                  reject(new Error("Lokasi terlalu lama didapatkan (timeout)"));
+                  reject(new Error("Location is long to catch, request timeout!"));
                   break;
                 default:
-                  reject(new Error("Gagal mendapatkan lokasi"));
+                  reject(new Error("Failed to get location!"));
               }
             },
             { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
@@ -61,25 +58,35 @@ export function useUserSendAttendance() {
         });
 
         const coords = { lat: position.coords.latitude, lon: position.coords.longitude };
+        const result = await userSendCheckIn(coords);
 
-        await withTry(() => userSendCheckIn(coords), "Checked in successfully", "Check in gagal");
+        if (result?.error) {
+          toast.error(result.error);
+        } else {
+          toast.success("Checked in successfully");
+        }
       } catch (err) {
-        console.error(err);
-        toast.error(err?.message ?? "Check in gagal. Periksa koneksi, lokasi, atau waktu shift.");
+        toast.error(err?.message ?? "Checkin failes. Check your internet, location or your time-shift");
       }
     });
 
   const checkOut = () =>
-    startTransition(() =>
-      withTry(() => userSendCheckOut(), "Checked out successfully", "Checkout gagal")
-    );
+    startTransition(async () => {
+      try {
+        const result = await userSendCheckOut();
+
+        if (result?.error) { toast.error(result.error)}
+        else { toast.success("Checked out successfully")}
+      }
+      catch (err) { toast.error(err?.message ?? "Checkout failes. Check your internet, location or your time-shift")}
+    });
 
   const earlyCheckout = (reason, onSuccess) =>
     startTransition(() =>
       withTry(
         () => userSendEarlyCheckout(reason),
         "Early checkout request sent",
-        "Early checkout request gagal",
+        "Early checkout request failed to sent",
         { onSuccess }
       )
     );
@@ -89,7 +96,7 @@ export function useUserSendAttendance() {
       withTry(
         () => userSendPermissionRequest(reason),
         "Permission request sent",
-        "Permission request gagal",
+        "Permission request failed to sent",
         { onSuccess }
       )
     );
@@ -99,7 +106,7 @@ export function useUserSendAttendance() {
       withTry(
         () => userSendLeaveRequest(payload),
         "Leave request sent",
-        "Leave request gagal",
+        "Leave request failed to sent",
         { onSuccess }
       )
     );
