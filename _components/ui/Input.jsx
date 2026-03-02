@@ -55,7 +55,7 @@ function Input({
     "border-slate-300/60 bg-white focus-visible:border-slate-300 focus-visible:ring-[4px] focus-visible:ring-slate-100 shadow-2xs";
 
   const searchFocus =
-    "border-slate-300/90 bg-slate-100/80 focus-visible:border focus-visible:border-slate-500/50 focus-visible:ring-2 focus-visible:ring-slate-300/50 caret-slate-400";
+    "border-slate-300/90 bg-slate-100/80 focus-visible:border focus-visible:border-slate-500/50 focus-visible:ring-4 focus-visible:ring-slate-300/40 caret-slate-400";
 
   if (typeDate) {
     return (

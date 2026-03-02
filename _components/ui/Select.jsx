@@ -51,7 +51,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="group-hover:text-slate-600 group-hover:scale-110 text-slate-400/80 size-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        <ChevronDownIcon className="group-hover:text-slate-600 group-hover:scale-125 text-slate-400/80 size-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
 
