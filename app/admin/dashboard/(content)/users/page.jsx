@@ -1,4 +1,3 @@
-import { prisma } from "@/_lib/prisma";
 import { notFound } from "next/navigation";
 import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
@@ -8,44 +7,25 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize, safeFormat, minutesToTime } from "@/_functions/globalFunction";
+import { getUserCount, getUsers } from "@/_servers/admin-action/userAction";
 
-const PAGE_SIZE = 10;
 export const revalidate = 60;
 
-async function getUsers(page = 1) {
-  return prisma.user.findMany({
-    skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true, name: true, email: true, role: true,
-      createdAt: true, updatedAt: true,
-      shift: { select: { name: true, type: true, startTime: true, endTime: true } },
-      division: {
-        select: {
-          name: true, startTime: true, endTime: true,
-          shifts: {
-            select: { name: true, startTime: true, endTime: true },
-            where: { isActive: true },
-          },
-        },
-      },
-    },
-  });
-}
-
-async function getUserCount() {
-  return prisma.user.count();
-}
-
 export default async function Page({ searchParams }) {
-  const params = await searchParams
+  const params = await searchParams;
+
   const page = Number(params?.page) || 1;
 
+  const allowedLimits = [10, 20, 30];
+  const limit = allowedLimits.includes(Number(params?.limit)) ? Number(params?.limit) : 10;
+
   const [users, total] = await Promise.all([
-    getUsers(page), getUserCount(),
+    getUsers(page, limit),
+    getUserCount(),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
   if (page > totalPages && totalPages > 0) return notFound();
 
   const tableData = users.map((u) => {
@@ -102,7 +82,7 @@ export default async function Page({ searchParams }) {
 
         <ContentForm.Body>
           <UsersTable data={tableData} />
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users" />
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users" limit={limit} />
         </ContentForm.Body>
       </ContentForm>
     </section>

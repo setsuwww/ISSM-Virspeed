@@ -64,15 +64,22 @@ export const Pagination = React.memo(function ({
       />
 
       <div className="flex items-center gap-1">
-        {page > 1 && (
+
+        {/* LEFT */}
+        {page === 1 ? (
+          <span className="p-2 text-slate-300 cursor-not-allowed">
+            <ChevronLeft size={18} />
+          </span>
+        ) : (
           <Link
             href={`${basePath}?page=${page - 1}&limit=${limit}`}
-            className="pagination-btn"
+            className="p-2 text-slate-600 hover:text-slate-800"
           >
             <ChevronLeft size={18} />
           </Link>
         )}
 
+        {/* PAGE NUMBERS */}
         {getPages(page, totalPages).map((p, i) =>
           p === "…" ? (
             <span key={i} className="px-3 text-slate-400">
@@ -82,23 +89,28 @@ export const Pagination = React.memo(function ({
             <Link
               key={i}
               href={`${basePath}?page=${p}&limit=${limit}`}
-              className={`pagination-btn ${
-                p === page ? "active" : ""
-              }`}
+              className={`pagination-btn ${p === page ? "active" : ""
+                }`}
             >
               {p}
             </Link>
           )
         )}
 
-        {page < totalPages && (
+        {/* RIGHT */}
+        {page === totalPages ? (
+          <span className="p-2 text-slate-300 cursor-not-allowed">
+            <ChevronRight size={18} />
+          </span>
+        ) : (
           <Link
             href={`${basePath}?page=${page + 1}&limit=${limit}`}
-            className="pagination-btn"
+            className="p-2 text-slate-600 hover:text-slate-800"
           >
             <ChevronRight size={18} />
           </Link>
         )}
+
       </div>
     </div>
   );

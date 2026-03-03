@@ -4,6 +4,31 @@ import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
 import { revalidatePath } from "next/cache"
 
+export async function getUsers(page, limit) {
+  return prisma.user.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, name: true, email: true, role: true,
+      createdAt: true, updatedAt: true,
+      shift: {
+        select: { name: true, type: true, startTime: true, endTime: true },
+      },
+      division: { select: {
+          name: true, startTime: true, endTime: true,
+          shifts: { select: { name: true, startTime: true, endTime: true },
+            where: { isActive: true },
+          },
+      }},
+    },
+  });
+}
+
+export async function getUserCount() {
+  return prisma.user.count();
+}
+
 export async function createUser(formData) {
   try {
     const formObject = Object.fromEntries(formData.entries())

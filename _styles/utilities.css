@@ -129,7 +129,7 @@
   }
 
   .pagination-btn {
-    @apply min-w-[34.8px] h-9 flex items-center justify-center rounded-lg border text-sm font-medium transition;
+    @apply min-w-[34.8px] h-9 flex items-center justify-center rounded-full border border-slate-400 hover:border-slate-800 hover:bg-slate-50 text-sm font-medium transition;
   }
   .pagination-btn.active {
     @apply bg-indigo-600 text-white border-indigo-600;

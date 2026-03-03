@@ -4,10 +4,8 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
 import { timeToMinutes, minutesToTime } from "@/_functions/globalFunction"
 
-const PAGE_SIZE = 10;
-
-export async function getDivisions({ page = 1, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
-  const skip = (page - 1) * PAGE_SIZE;
+export async function getDivisions({ page = 1, limit = 10, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
+  const skip = (page - 1) * limit;
 
   const where = {
     ...(search && { name: { contains: search, mode: "insensitive" } }),
@@ -17,7 +15,7 @@ export async function getDivisions({ page = 1, search = "", typeFilter = "all", 
 
   const [divisions, total] = await Promise.all([
     prisma.division.findMany({
-      where, skip, take: PAGE_SIZE, orderBy: { createdAt: "desc" },
+      where, skip, take: limit, orderBy: { createdAt: "desc" },
       select: {
         id: true, name: true,
         location: true, type: true, status: true,
