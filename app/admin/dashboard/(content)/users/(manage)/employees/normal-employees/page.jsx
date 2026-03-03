@@ -1,4 +1,3 @@
-import { prisma } from "@/_lib/prisma";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import ContentForm from "@/_components/common/ContentForm";
 import EmployeesTable from "./EmployeesTable";
@@ -6,54 +5,23 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
-
-const PAGE_SIZE = 10;
-
-async function getEmployees(page = 1) {
-  return prisma.user.findMany({
-    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
-      division: { startTime: { not: null }, endTime: { not: null }},
-    },
-    skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE, orderBy: { createdAt: "desc" },
-    select: {
-      id: true, name: true, email: true, role: true,
-      createdAt: true, updatedAt: true,
-      division: { select: { id: true, name: true, type: true, startTime: true, endTime: true }},
-    },
-  });
-}
-
-async function getDivisions() {
-  return prisma.division.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true, name: true, type: true },
-    orderBy: {
-      name: "asc",
-    },
-  });
-}
-
-async function getEmployeeCount() {
-  return prisma.user.count({
-    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
-      division: {
-        startTime: { not: null },
-        endTime: { not: null },
-      },
-    },
-  });
-}
+import { getNormalEmployees, getNormalEmployeeCount, getSEDivisions } from "@/_servers/admin-action/userAction";
 
 export const revalidate = 60;
 
-export default async function EmployeesWorkHoursPage({ searchParams }) {
+export default async function Page({ searchParams }) {
   const params = await searchParams
   const page = Number(params?.page) || 1;
+  const allowedLimits = [10, 20, 30];
+
+  const limit = allowedLimits.includes(Number(params?.limit))
+    ? Number(params?.limit)
+    : 10;
 
   const [users, total, divisions] = await Promise.all([
-    getEmployees(page),
-    getEmployeeCount(),
-    getDivisions(),
+    getNormalEmployees({ page, limit }),
+    getNormalEmployeeCount(),
+    getSEDivisions(),
   ]);
 
   const serializedUsers = users.map((u) => ({
@@ -68,7 +36,7 @@ export default async function EmployeesWorkHoursPage({ searchParams }) {
       : null,
   }));
 
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const totalPages = Math.ceil(total / limit);
   if (page > totalPages && totalPages > 0)
     return <div className="p-4">Page not found</div>;
 

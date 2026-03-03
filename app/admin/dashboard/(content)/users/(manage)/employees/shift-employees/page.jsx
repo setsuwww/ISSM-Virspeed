@@ -1,4 +1,3 @@
-import { prisma } from "@/_lib/prisma";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import ContentForm from "@/_components/common/ContentForm";
 import EmployeesTable from "./EmployeesTable";
@@ -6,58 +5,22 @@ import { DashboardHeader } from "@/app/admin/dashboard/DashboardHeader";
 import { Pagination } from "@/app/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
-
-const PAGE_SIZE = 10;
-
-async function getEmployees(page = 1) {
-  return prisma.user.findMany({
-    where: { role: "EMPLOYEE", shiftId: { not: null } },
-    skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE,
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true, name: true, email: true, role: true,
-      createdAt: true, updatedAt: true,
-      shift: {
-        select: {
-          id: true, name: true, type: true,
-          startTime: true, endTime: true,
-        },
-      },
-      division: { select: { id: true, name: true, type: true } },
-    },
-  });
-}
-
-async function getEmployeeCount() {
-  return prisma.user.count({
-    where: { role: "EMPLOYEE", shiftId: { not: null } },
-  });
-}
-
-async function getFilterData() {
-  const [divisions, shifts] = await Promise.all([
-    prisma.division.findMany({
-      select: { id: true, name: true, type: true },
-      orderBy: { name: "asc" },
-    }),
-    prisma.shift.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, type: true },
-      orderBy: { name: "asc" },
-    }),
-  ]);
-  return { divisions, shifts };
-}
+import { getShiftEmployees, getShiftEmployeeCount, getSEFilterData } from "@/_servers/admin-action/userAction";
 
 export const revalidate = 60;
 
-export default async function EmployeesPage({ searchParams }) {
+export default async function Page({ searchParams }) {
   const params = await searchParams
   const page = Number(params?.page) || 1;
+  const allowedLimits = [10, 20, 30];
+
+  const limit = allowedLimits.includes(Number(params?.limit))
+    ? Number(params?.limit)
+    : 10;
 
   const [[users, total], { divisions, shifts }] = await Promise.all([
-    Promise.all([getEmployees(page), getEmployeeCount()]),
-    getFilterData(),
+    Promise.all([getShiftEmployees({ page, limit }), getShiftEmployeeCount()]),
+    getSEFilterData(),
   ]);
 
   const serializedUsers = users.map((u) => ({
@@ -73,9 +36,8 @@ export default async function EmployeesPage({ searchParams }) {
       : null,
   }));
 
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  if (page > totalPages && totalPages > 0)
-    return <div className="p-4">Page not found</div>;
+  const totalPages = Math.ceil(total / limit);
+  if (page > totalPages && totalPages > 0) return <div className="p-4">Page not found</div>;
 
   return (
     <section>
@@ -90,7 +52,7 @@ export default async function EmployeesPage({ searchParams }) {
 
         <ContentForm.Body>
           <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts} />
-          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees/shift-employees" />
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees/shift-employees" limit={limit} />
         </ContentForm.Body>
       </ContentForm>
     </section>
