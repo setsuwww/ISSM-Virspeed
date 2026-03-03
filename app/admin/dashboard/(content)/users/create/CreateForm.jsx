@@ -20,7 +20,6 @@ import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
 
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
-import UserExcelTemplate from "./UserExcelTemplate"
 
 export default function CreateForm({ divisions, shifts }) {
   const router = useRouter()
@@ -127,7 +126,6 @@ export default function CreateForm({ divisions, shifts }) {
                     setExcelRows(rows)
                   }}
                 />
-                <UserExcelTemplate />
               </div>
 
               <div className="space-y-2">
