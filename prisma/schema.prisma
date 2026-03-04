@@ -37,7 +37,6 @@ enum SecurityAction {
 
 enum Role {
   ADMIN
-  COORDINATOR
   EMPLOYEE
   USER
 }

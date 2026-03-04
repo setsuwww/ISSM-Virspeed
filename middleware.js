@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
@@ -6,7 +5,6 @@ const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanMalingKancut2025";
 
 const roleRoutes = {
   ADMIN: "/admin/dashboard",
-  COORDINATOR: "/coordinator/dashboard",
   EMPLOYEE: "/employee/dashboard",
   USER: "/user/dashboard",
 };
@@ -30,7 +28,6 @@ export async function middleware(req) {
     if (publicPaths.includes(path)) return NextResponse.next();
 
     if (path.startsWith("/admin") && payload.role !== "ADMIN") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
-    if (path.startsWith("/coordinator") && payload.role !== "COORDINATOR") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
     if (path.startsWith("/employee") && payload.role !== "EMPLOYEE") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
     if (path.startsWith("/user") && payload.role !== "USER") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
 
@@ -43,5 +40,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/coordinator/:path*", "/employee/:path*", "/user/:path*"],
+  matcher: ["/admin/:path*", "/employee/:path*", "/user/:path*"],
 };
