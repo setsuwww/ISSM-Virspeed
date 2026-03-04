@@ -40,10 +40,10 @@ Contoh: Admin hanya bisa ke `/admin/dashboard`, Employee hanya ke `/employee/das
 Sistem ini juga sudah dibekali fitur testing dan prototyping dengan Jest, library testing khusus Javascript yang cepat untuk di run, cocok untuk mempercepat pembuatan fitur tanpa membuat data manual melalui form, dan kesana kemari dari browser ke code-editor,
 Sistem ini juga bagus dari segi performa, baik animasi-transisi antar page, atau pun pengambilan dan rendering data berat.
 
-Untuk proyek berskala besar, stack dapat di-upgrade menjadi:
+Untuk proyek berskala besar, stack dapat di-upgrade dengan menggunakan stack stack berikut:
 
 Next.js + TypeScript, Shadcn/UI + Tailwind CSS + Framer-motion
-Zustand (state management), TanStack Query (data fetching / caching), WebSocket (real-time update), Redis (caching), Resend (Mail service)
+Zustand (state management), TanStack Query (data fetching / caching), Pusher (real-time update), Redis (caching), Resend (Mail service)
 Prisma ORM + Cloud postgresql (Neon)
 
 ---
@@ -61,7 +61,7 @@ Prisma ORM + Cloud postgresql (Neon)
 # Features
 
 ✅ **Helpers Feature**
-Search, Filter, Sort, Selecting, Select All, Delete Selected, Delete All, Export, Pagination.
+Search, Filter, Sort, Selecting, Select All, Delete Selected, Delete All, Export, Data-entries & Pagination.
 Create, Read, Update, Delete, Views detail.
 
 ✅ **Role-based Access Control**
@@ -146,9 +146,11 @@ bun run dev
 
 ---
 
-Open app-server
-
 Open Virspeed/prisma/seed.js to see the accounts listed when running **npm run prisma:seed**
 Open Virspeed/prisma/seedAttendance.js to see the attendance-demo when running **npm run prisma:att-seed**
 
+Open localhost://port and try to login
+
 # Thankyou
+## Love your work
+### Happy coding, make it chill...

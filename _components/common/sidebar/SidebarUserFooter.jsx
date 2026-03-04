@@ -24,7 +24,7 @@ export default function SidebarUserFooter({ user, minimized }) {
     >
       <div
         className={clsx(
-          "group flex items-center bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-sm cursor-pointer overflow-hidden",
+          "group flex items-center bg-white border border-slate-300 hover:bg-slate-50 rounded-full shadow-sm cursor-pointer overflow-hidden",
           "transition-all duration-300 ease-in-out",
           minimized
             ? "h-12 w-12 justify-center"
@@ -34,7 +34,7 @@ export default function SidebarUserFooter({ user, minimized }) {
         <div
           className={clsx(
             profilesRoleStyles[formattedRole],
-            "text-white rounded-lg flex items-center justify-center transition-all duration-300",
+            "text-white rounded-full flex items-center justify-center transition-all duration-300",
             minimized ? "w-8 h-8" : "p-2"
           )}
         >

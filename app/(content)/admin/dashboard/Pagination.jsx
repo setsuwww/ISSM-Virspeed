@@ -52,8 +52,6 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
 
   return (
     <div className="flex items-center justify-between mt-4 px-1">
-
-
       {showPagination && (
         <>
           <SelectEntriesPagination

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useTransition } from "react"
+import React, { useEffect, useTransition } from "react"
 import { LogOut, Inbox, Clock } from "lucide-react"
 import Link from "next/link"
 import useSWR from "swr"
@@ -8,21 +8,37 @@ import useSWR from "swr"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
 import { LogoutAuthAction } from "../../../../_servers/authAction"
 import { TimeClock } from "../../employee/dashboard/TimeClock"
+import Pusher from "pusher-js"
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export const DashboardHeader = React.memo(function DashboardHeader({ title, subtitle, useColor = false }) {
   const [isPending, startTransition] = useTransition()
 
-  const { data } = useSWR("/api/system-config/admin-notification",
-    fetcher,
-    {
-      refreshInterval: 60000,
-      revalidateOnFocus: true,
-      revalidateIfStale: true,
-      dedupingInterval: 30000,
+  const { data } = useSWR(
+    "/api/system-config/admin-notification",
+    fetcher
+  )
+
+  useEffect(() => {
+    const pusher = new Pusher(
+      process.env.NEXT_PUBLIC_PUSHER_KEY,
+      {
+        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+      }
+    )
+
+    const channel = pusher.subscribe("admin-channel")
+
+    channel.bind("notification-update", () => {
+      mutate("/api/system-config/admin-notification")
+    })
+
+    return () => {
+      pusher.unsubscribe("admin-channel")
+      pusher.disconnect()
     }
-  );
+  }, [])
 
   const hasNotifications = data?.hasNotifications || false
 

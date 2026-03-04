@@ -14,6 +14,7 @@ import {
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
 import { safeLog } from "@/_servers/admin-action/logAction"
+import { pusherServer } from "@/_lib/pusher"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
@@ -88,7 +89,7 @@ export async function userSendCheckIn(coords = null) {
   }
 
   let status;
-  try { status = await determineAttendanceStatus(user.shiftId)}
+  try { status = await determineAttendanceStatus(user.shiftId) }
   catch (err) { return { error: err.message } }
 
   const attendance = await prisma.attendance.upsert({
@@ -217,6 +218,12 @@ export async function userSendEarlyCheckout(reason) {
     },
   });
 
+  await pusherServer.trigger(
+    "admin-channel",
+    "notification-update",
+    { message: "early-checkout-created" }
+  )
+
   await prisma.attendance.update({
     where: { id: attendance.id },
     data: {
@@ -270,6 +277,12 @@ export async function userSendPermissionRequest(reason) {
       reason,
     },
   })
+
+  await pusherServer.trigger(
+    "admin-channel",
+    "notification-update",
+    { message: "permission-created" }
+  )
 
   await safeLog({
     userId: user.id,
@@ -344,6 +357,12 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
       reason: reason?.trim() || null,
     },
   })
+
+  await pusherServer.trigger(
+    "admin-channel",
+    "notification-update",
+    { message: "leave-created" }
+  )
 
   await safeLog({
     userId: user.id,

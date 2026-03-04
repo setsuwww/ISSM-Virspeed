@@ -120,7 +120,7 @@ model SecurityLog {
   userAgent String?
   createdAt DateTime       @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -134,7 +134,7 @@ model SuspiciousActivity {
   resolved  Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([resolved])
@@ -322,7 +322,7 @@ model Attendance {
   userId              String
   shiftId             Int
 
-  user  User  @relation(fields: [userId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -349,7 +349,7 @@ model EarlyCheckoutRequest {
   requestedAt DateTime  @default(now())
   reviewedAt  DateTime?
 
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   attendance Attendance? @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -384,7 +384,7 @@ model LeaveRequest {
   approvedById String?
   approvedBy   User?   @relation("LeaveApprovedBy", fields: [approvedById], references: [id])
 
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
 
   createdAt DateTime @default(now())
@@ -397,7 +397,7 @@ model LeaveRequest {
 model ShiftChangeRequest {
   id Int @id @default(autoincrement())
 
-  user   User   @relation("RequestedUser", fields: [userId], references: [id])
+  user   User   @relation("RequestedUser", fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   requestedBy   User   @relation("RequestedByAdmin", fields: [requestedById], references: [id])

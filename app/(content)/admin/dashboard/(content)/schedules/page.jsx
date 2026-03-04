@@ -69,7 +69,9 @@ export default async function Page({ searchParams }) {
           <ScheduleCard data={schedules} />
         </ContentForm.Body>
 
-        <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/schedules" />
+        <div className="p-4">
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/schedules" />
+        </div>
       </ContentForm>
     </section>
   );
