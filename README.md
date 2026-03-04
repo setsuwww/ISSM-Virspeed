@@ -3,22 +3,42 @@ _A modern shift and attendance management system built with Next.js, Shadcn/UI, 
 
 ---
 
-## Overview
+# Overview
 
 **Information System Shift Management** adalah aplikasi web yang dirancang untuk membantu perusahaan dalam mengatur jadwal kerja, manajemen shift, dan kehadiran karyawan secara efisien.
 
 Sistem SaaS ini dibuat dengan **Next.js (App Router)** pada sisi frontend, masih satu stack dengan Nextjs, aplikasi ini juga menggunakan Server-action dan sedikit API-Routes pada sisi backend yang kemungkinan bug di bagian Endpoint menjadi lebih sedikit dan jauh lebih aman karena tidak bisa di tembak secara asal, Sistem ini juga sudah dilengkapi untuk menangani Cyber-attack seperti
 
-SQL Injection
-Brute force
-DoS / DDoS
-XXS
-CSRF
-Auth & Session
-Authorization content / RBAC (Role Based Access)
+# Web Security Topics
+
+Daftar topik terkait keamanan aplikasi web yang penting untuk dipahami:
+
+### 1. SQL Injection
+Teknik menyerang aplikasi dengan memasukkan kode SQL berbahaya ke input form atau parameter URL untuk mengakses atau memodifikasi database tanpa izin.
+
+### 2. Brute Force
+Serangan mencoba banyak kombinasi username dan password secara otomatis untuk mendapatkan akses ke akun pengguna.
+
+### 3. DoS / DDoS
+- **DoS (Denial of Service):** Serangan yang membuat server atau aplikasi tidak bisa melayani request normal.
+- **DDoS (Distributed DoS):** Serangan DoS yang dilakukan dari banyak sumber (botnet) secara bersamaan.
+
+### 4. XSS (Cross-Site Scripting)
+Serangan yang menyuntikkan script berbahaya (JavaScript) ke halaman web sehingga dapat mencuri data pengguna atau mengubah tampilan.
+
+### 5. CSRF (Cross-Site Request Forgery)
+Serangan yang memaksa user yang sudah login untuk melakukan aksi yang tidak diinginkan pada aplikasi web.
+
+### 6. Auth & Session
+- Mengamankan proses autentikasi user.
+- Mengelola sesi (session) dengan aman menggunakan cookie, token JWT, atau mekanisme lain.
+
+### 7. Authorization / RBAC (Role-Based Access Control)
+Membatasi akses konten atau fitur aplikasi berdasarkan **role** pengguna.
+Contoh: Admin hanya bisa ke `/admin/dashboard`, Employee hanya ke `/employee/dashboard`.
 
 Sistem ini juga sudah dibekali fitur testing dan prototyping dengan Jest, library testing khusus Javascript yang cepat untuk di run, cocok untuk mempercepat pembuatan fitur tanpa membuat data manual melalui form, dan kesana kemari dari browser ke code-editor,
-Sistem ini juga bagus dari segi performa, baik transisi antar page, maupun pengambilan atau rendering data berat.
+Sistem ini juga bagus dari segi performa, baik animasi-transisi antar page, atau pun pengambilan dan rendering data berat.
 
 Untuk proyek berskala besar, stack dapat di-upgrade menjadi:
 
@@ -28,7 +48,7 @@ Prisma ORM + Cloud postgresql (Neon)
 
 ---
 
-## Tech Stack
+# Tech Stack
 
 | Layer | Technology |
 |:------|:------------|
@@ -38,7 +58,7 @@ Prisma ORM + Cloud postgresql (Neon)
 | **Icons** | [Lucide](https://lucide.dev/) · [Phosphor](https://phosphoricons.com/) |
 | **Library** | **Backend:** [@prisma/client](https://www.npmjs.com/package/@prisma/client) · [bcryptjs](https://www.npmjs.com/package/bcryptjs) · [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) <br> **Frontend:** [react](https://reactjs.org/) · [framer-motion](https://www.framer.com/motion/) · [zustand](https://zustand-demo.pmnd.rs/) |
 
-## Features
+# Features
 
 ✅ **Helpers Feature**
 Search, Filter, Sort, Selecting, Select All, Delete Selected, Delete All, Export, Pagination.
@@ -49,10 +69,10 @@ Admin, Coordinator(Next plan), Employee, User
 
 ---
 
-### 1. Clone Repository
+## 1. Clone Repository
 
 ```bash
-git clone https://github.com/setsuwww/b-fast.git
+git clone https://github.com/setsuwww/ISSM-Virspeed.git
 cd b-fast
 ```
 
@@ -87,8 +107,7 @@ Edit : .env
 ## 4. Run Application
 
 Turn on your local webserver
-Laragon, XAMPP, MAMP / MAMP Pro, WampServer, AMPPS, Docker, Vagrant, Local by Flywheel, Devilbox
-and whatever
+Laragon, XAMPP, MAMP / MAMP Pro, WampServer, AMPPS, Docker, Vagrant, Local by Flywheel, Devilbox, Laravel herd, and Whatever is that -_-
 
 
 ```bash
