@@ -27,9 +27,9 @@ export async function middleware(req) {
 
     if (publicPaths.includes(path)) return NextResponse.next();
 
-    if (path.startsWith("/admin") && payload.role !== "ADMIN") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
-    if (path.startsWith("/employee") && payload.role !== "EMPLOYEE") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
-    if (path.startsWith("/user") && payload.role !== "USER") return NextResponse.redirect(new URL(roleRoutes[payload.role], req.url));
+    if (path.startsWith("/admin") && payload.role !== "ADMIN") return NextResponse.redirect(new URL("/forbidden", req.url));
+    if (path.startsWith("/employee") && payload.role !== "EMPLOYEE") return NextResponse.redirect(new URL("/forbidden", req.url));
+    if (path.startsWith("/user") && payload.role !== "USER") return NextResponse.redirect(new URL("/forbidden", req.url));
 
 
     return NextResponse.next();

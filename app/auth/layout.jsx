@@ -1,4 +1,4 @@
-import PageTransition from "../admin/dashboard/page-transition";
+import PageTransition from "../(content)/admin/dashboard/page-transition";
 
 export const metadata ={
   title: "Virspeed | Auth",
