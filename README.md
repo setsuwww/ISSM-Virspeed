@@ -36,7 +36,7 @@ Prisma ORM + Cloud postgresql (Neon)
 | **UI Components** | [Shadcn/UI](https://ui.shadcn.com/) · [Tailwind CSS](https://tailwindcss.com/) |
 | **Database** | [PostgreSQL](https://www.postgresql.org/) · [Prisma ORM](https://www.prisma.io/) · [Neon Cloud](https://neon.com/) |
 | **Icons** | [Lucide](https://lucide.dev/) · [Phosphor](https://phosphoricons.com/) |
-| **Library** | **Backend:** [@prisma/client](https://www.npmjs.com/package/@prisma/client) · [bcryptjs](https://www.npmjs.com/package/bcryptjs) · [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) <br> **Frontend:** [react](https://reactjs.org/) · [framer-motion](https://www.framer.com/motion/) · [@radix-ui/react-*](https://www.radix-ui.com/) |
+| **Library** | **Backend:** [@prisma/client](https://www.npmjs.com/package/@prisma/client) · [bcryptjs](https://www.npmjs.com/package/bcryptjs) · [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) <br> **Frontend:** [react](https://reactjs.org/) · [framer-motion](https://www.framer.com/motion/) · [zustand](https://zustand-demo.pmnd.rs/) |
 
 ## Features
 
