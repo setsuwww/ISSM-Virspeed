@@ -127,8 +127,9 @@ bun run dev
 
 ---
 
-Open app-server port at
+Open app-server
 
-Open B-fast/prisma/seed.js to see the accounts listed when running **npm run prisma:seed**
+Open Virspeed/prisma/seed.js to see the accounts listed when running **npm run prisma:seed**
+Open Virspeed/prisma/seedAttendance.js to see the attendance-demo when running **npm run prisma:att-seed**
 
 # Thankyou
