@@ -17,6 +17,8 @@ CSRF
 Auth & Session
 Authorization content / RBAC (Role Based Access)
 
+Sistem ini juga sudah dibekali fitur testing dan prototyping dengan Jest, library testing khusus Javascript yang cepat untuk di run, cocok untuk mempercepat pembuatan fitur tanpa membuat data manual melalui form, dan kesana kemari dari browser ke code-editor
+
 Untuk proyek berskala besar, stack dapat di-upgrade menjadi:
 
 Next.js + TypeScript, Shadcn/UI + Tailwind CSS + Framer-motion
@@ -72,8 +74,13 @@ bun install
 
 ### 3. Setup Environtment
 
-DATABASE_URL="postgresql://username:password@localhost:3306/your_db_name"
-JWT_SECRET="your-secret-key"
+View : .env
+
+```bash
+cp .env.example .env
+```
+
+Edit : .env
 
 ---
 
