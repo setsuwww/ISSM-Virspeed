@@ -1,7 +1,7 @@
 import '@/_styles/admin.css'
 import '@/_styles/utilities.css'
 
-export const metadata = {
+export const metadata ={
   title: "Admin | Dashboard",
   description: "Admin Content",
 };

@@ -165,7 +165,6 @@ model User {
 
   schedules           SchedulesOnUsers[]
   reminders           ScheduleReminder[]
-  customShifts        UserShiftAssignment[]
   passwordResetTokens PasswordResetToken[]
   attendances         Attendance[]
 
@@ -181,6 +180,9 @@ model User {
   activityLogs         ActivityLog[]
   securityLogs         SecurityLog[]
   suspiciousActivities SuspiciousActivity[]
+
+  failedAttempts Int       @default(0)
+  lockedUntil    DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -201,18 +203,6 @@ model UserLeaveBalance {
   updatedAt DateTime @updatedAt
 
   @@id([userId, leaveTypeId, year])
-}
-
-model UserShiftAssignment {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  shiftId    Int
-  assignedAt DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id])
-  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, shiftId])
 }
 
 model PasswordResetToken {
@@ -308,8 +298,7 @@ model Shift {
   divisionId Int?
   division   Division? @relation(fields: [divisionId], references: [id])
 
-  users       User[]                @relation("ShiftUsers")
-  assignments UserShiftAssignment[]
+  users       User[]       @relation("ShiftUsers")
   attendances Attendance[]
 
   oldShiftRequests    ShiftChangeRequest[] @relation("OldShift")

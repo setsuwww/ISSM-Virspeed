@@ -1,6 +1,6 @@
 import PageTransition from "../admin/dashboard/page-transition";
 
-export const metadata = {
+export const metadata ={
   title: "Virspeed | Auth",
   description: "Authentication form",
 };

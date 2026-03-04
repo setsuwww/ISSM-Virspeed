@@ -10,10 +10,20 @@ import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
 import { logActivity } from "@/_servers/admin-action/logAction"
 
 import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-action/securityAction"
+import { loginRateLimit } from "@/_lib/rate-limit"
 
 export async function AuthAction(prevState, formData) {
-  const email = formData.get("email")?.toString()
-  const password = formData.get("password")?.toString()
+  const h = await headers()
+  const ipAddr = h.get("x-forwarded-for") ?? "127.0.0.1"
+  const userAgent = h.get("user-agent") ?? ""
+
+  const { success: allowed } = await loginRateLimit.limit(ipAddr)
+  if (!allowed) {
+    return { error: "Too many login attempts, try again later" }
+  }
+
+  const email = formData.get("email")?.toString() ?? ""
+  const password = formData.get("password")?.toString() ?? ""
 
   if (!email || !password) {
     return { error: "Email & password required" }
@@ -21,27 +31,25 @@ export async function AuthAction(prevState, formData) {
 
   const user = await prisma.user.findUnique({ where: { email } })
 
+  const fakeHash = "$2a$12$KbQiN4N3z5uJgL3z3lW9weu7s7cFjFjFjFjFjFjFjFjFjFjFjFjF"
+  const hashToCompare = user ? user.password : fakeHash
+  const isValidPassword = await bcrypt.compare(password, hashToCompare)
+
   if (!user) {
     await reportSuspicious({
-      ip: headers().get("x-forwarded-for") ?? "",
+      ip: ipAddr,
       reason: "Login with unknown email",
       score: 40,
     })
     return { error: "Invalid credentials" }
   }
 
-  if (user.isLocked) {
-    return {
-      error: "Account locked due to suspicious activity",
-    }
+  const now = new Date()
+  if (user.isLocked || (user.lockedUntil && user.lockedUntil > now)) {
+    return { error: "Account locked due to suspicious activity" }
   }
 
-  const ip = headers().get("x-forwarded-for") ?? ""
-  const ua = headers().get("user-agent") ?? ""
-
-  const valid = await bcrypt.compare(password, user.password)
-
-  if (!valid) {
+  if (!isValidPassword) {
     await logActivity({
       userId: user.id,
       url: "/auth/login",
@@ -53,26 +61,36 @@ export async function AuthAction(prevState, formData) {
     await logSecurity({
       userId: user.id,
       action: SecurityAction.LOGIN_FAILED,
-      ip,
-      userAgent: ua,
+      ip: ipAddr,
+      userAgent,
     })
 
     await reportSuspicious({
       userId: user.id,
-      ip,
+      ip: ipAddr,
       reason: "Invalid password",
       score: 35,
     })
 
     await checkAndLockUser(user.id)
 
+    await new Promise(r => setTimeout(r, 500))
+
     return { error: "Invalid credentials" }
   }
 
-  const token = signToken({
-    id: user.id,
-    name: user.name,
-    role: user.role,
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { failedAttempts: 0, lockedUntil: null },
+  })
+
+  const token = signToken({ id: user.id, name: user.name, role: user.role })
+  cookies().set("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 7 hari
   })
 
   await logActivity({
@@ -86,8 +104,8 @@ export async function AuthAction(prevState, formData) {
   await logSecurity({
     userId: user.id,
     action: SecurityAction.LOGIN_SUCCESS,
-    ip,
-    userAgent: ua,
+    ip: ipAddr,
+    userAgent,
   })
 
   await prisma.suspiciousActivity.updateMany({
@@ -95,18 +113,12 @@ export async function AuthAction(prevState, formData) {
     data: { resolved: true },
   })
 
-  cookies().set("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  })
-
-  if (user.role === "ADMIN") redirect("/admin/dashboard")
-  if (user.role === "USER") redirect("/user/dashboard")
-  if (user.role === "COORDINATOR") redirect("/coordinator/dashboard")
-  redirect("/employee/dashboard")
+  switch (user.role) {
+    case "ADMIN": redirect("/admin/dashboard")
+    case "USER": redirect("/user/dashboard")
+    case "COORDINATOR": redirect("/coordinator/dashboard")
+    default: redirect("/employee/dashboard")
+  }
 }
 
 export async function LogoutAuthAction() {

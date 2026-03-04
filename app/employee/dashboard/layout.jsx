@@ -1,7 +1,8 @@
 import '@/_styles/employees.css'
 
-export const metadata = {
+export const metadata ={
   title: "Employee | Dashboard",
+  description : "Employee content"
 };
 
 import { Toaster } from "sonner"
