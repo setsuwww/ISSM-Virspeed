@@ -7,7 +7,7 @@ _A modern shift and attendance management system built with Next.js, Shadcn/UI, 
 
 **Information System Shift Management** adalah aplikasi web yang dirancang untuk membantu perusahaan dalam mengatur jadwal kerja, manajemen shift, dan kehadiran karyawan secara efisien.
 
-Sistem ini dibuat dengan **Next.js (App Router)** pada sisi frontend, masih satu stack dengan Nextjs, aplikasi ini juga menggunakan Server-action dan sedikit API-Routes pada sisi backend yang kemungkinan bug di bagian Endpoint menjadi lebih sedikit dan jauh lebih aman karena tidak bisa di tembak secara asal, Sistem ini juga sudah dilengkapi untuk menangani Cyber-attack seperti
+Sistem SaaS ini dibuat dengan **Next.js (App Router)** pada sisi frontend, masih satu stack dengan Nextjs, aplikasi ini juga menggunakan Server-action dan sedikit API-Routes pada sisi backend yang kemungkinan bug di bagian Endpoint menjadi lebih sedikit dan jauh lebih aman karena tidak bisa di tembak secara asal, Sistem ini juga sudah dilengkapi untuk menangani Cyber-attack seperti
 
 SQL Injection
 Brute force
@@ -17,7 +17,8 @@ CSRF
 Auth & Session
 Authorization content / RBAC (Role Based Access)
 
-Sistem ini juga sudah dibekali fitur testing dan prototyping dengan Jest, library testing khusus Javascript yang cepat untuk di run, cocok untuk mempercepat pembuatan fitur tanpa membuat data manual melalui form, dan kesana kemari dari browser ke code-editor
+Sistem ini juga sudah dibekali fitur testing dan prototyping dengan Jest, library testing khusus Javascript yang cepat untuk di run, cocok untuk mempercepat pembuatan fitur tanpa membuat data manual melalui form, dan kesana kemari dari browser ke code-editor,
+Sistem ini juga bagus dari segi performa, baik transisi antar page, maupun pengambilan atau rendering data berat.
 
 Untuk proyek berskala besar, stack dapat di-upgrade menjadi:
 
@@ -35,6 +36,7 @@ Prisma ORM + Cloud postgresql (Neon)
 | **UI Components** | [Shadcn/UI](https://ui.shadcn.com/) · [Tailwind CSS](https://tailwindcss.com/) |
 | **Database** | [PostgreSQL](https://www.postgresql.org/) · [Prisma ORM](https://www.prisma.io/) · [Neon Cloud](https://neon.com/) |
 | **Icons** | [Lucide](https://lucide.dev/) · [Phosphor](https://phosphoricons.com/) |
+| **Library** | [Lucide](https://lucide.dev/) · [Phosphor](https://phosphoricons.com/) |
 
 ---
 
