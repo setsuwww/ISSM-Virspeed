@@ -15,9 +15,9 @@ async function main() {
 
     // --- Buat divisions ---
     const divisionsData = [
-      { name: "Web Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
-      { name: "Mobile Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
-      { name: "Desktop Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE },
+      { name: "Web Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
+      { name: "Mobile Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
+      { name: "Desktop Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
     ];
     await prisma.division.createMany({ data: divisionsData });
 

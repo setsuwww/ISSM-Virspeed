@@ -52,49 +52,43 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
 
   return (
     <div className="flex items-center justify-between mt-4 px-1">
+      <SelectEntriesPagination
+        limit={limit}
+        basePath={basePath}
+      />
       {showPagination && (
-        <>
-          <SelectEntriesPagination
-            limit={limit}
-            basePath={basePath}
-          />
-          <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1">
+          {page === 1 ? (
+            <span className="p-2 text-slate-400 cursor-not-allowed">
+              <ChevronLeft size={18} />
+            </span>
+          ) : (
+            <Link href={`${basePath}?page=${page - 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
+              <ChevronLeft size={18} />
+            </Link>
+          )}
 
-            {page === 1 ? (
-              <span className="p-2 text-slate-400 cursor-not-allowed">
-                <ChevronLeft size={18} />
-              </span>
+          {getPages(page, totalPages).map((p, i) =>
+            p === "…" ? (
+              <span key={i} className="px-3 text-slate-400">…</span>
             ) : (
-              <Link
-                href={`${basePath}?page=${page - 1}&limit=${limit}`}
-                className="p-2 text-slate-600 hover:text-slate-800"
-              >
-                <ChevronLeft size={18} />
+              <Link key={i} href={`${basePath}?page=${p}&limit=${limit}`} className={`pagination-btn ${p === page ? "active" : ""}`}>
+                {p}
               </Link>
-            )}
+            )
+          )}
 
-            {getPages(page, totalPages).map((p, i) =>
-              p === "…" ? (
-                <span key={i} className="px-3 text-slate-400">…</span>
-              ) : (
-                <Link key={i} href={`${basePath}?page=${p}&limit=${limit}`} className={`pagination-btn ${p === page ? "active" : ""}`}>
-                  {p}
-                </Link>
-              )
-            )}
+          {page === totalPages ? (
+            <span className="p-2 text-slate-400 cursor-not-allowed">
+              <ChevronRight size={18} />
+            </span>
+          ) : (
+            <Link href={`${basePath}?page=${page + 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
+              <ChevronRight size={18} />
+            </Link>
+          )}
 
-            {page === totalPages ? (
-              <span className="p-2 text-slate-400 cursor-not-allowed">
-                <ChevronRight size={18} />
-              </span>
-            ) : (
-              <Link href={`${basePath}?page=${page + 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800">
-                <ChevronRight size={18} />
-              </Link>
-            )}
-
-          </div>
-        </>
+        </div>
       )}
     </div>
   );

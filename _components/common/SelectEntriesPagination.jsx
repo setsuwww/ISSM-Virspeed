@@ -30,7 +30,7 @@ export function SelectEntriesPagination({ limit, basePath }) {
         value={String(limit)}
         onValueChange={handleLimitChange}
       >
-        <SelectTrigger className="w-[80px] h-8">
+        <SelectTrigger className="w-[66px] h-8 rounded-full">
           <SelectValue placeholder="10" />
         </SelectTrigger>
         <SelectContent>
