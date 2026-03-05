@@ -13,9 +13,7 @@ export const revalidate = 60;
 
 export default async function Page({ searchParams }) {
   const params = await searchParams;
-
   const page = Number(params?.page) || 1;
-
   const allowedLimits = [10, 20, 30];
   const limit = allowedLimits.includes(Number(params?.limit)) ? Number(params?.limit) : 10;
 

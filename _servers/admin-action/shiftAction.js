@@ -3,7 +3,7 @@
 import { prisma } from "@/_lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function getShifts({ page = 1, limit = 10}) {
+export async function getShifts(page, limit) {
   return prisma.shift.findMany({
     where: { type: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
     skip: (page - 1) * limit,
