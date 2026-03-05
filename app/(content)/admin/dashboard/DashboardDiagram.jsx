@@ -3,13 +3,16 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
+import { Calendar } from "lucide-react";
 
-const CustomCursor = ({ points, stroke, seriesColors }) => {
+const CustomCursor = ({ points, seriesColors, isAll }) => {
   if (!points || !points.length) return null;
 
   const { x } = points[0];
 
-  const color = seriesColors?.[0] ?? stroke ?? "#000000";
+  const color = isAll
+    ? "#94a3b8"
+    : seriesColors?.[0] ?? "#94a3b8";
 
   return (
     <line
@@ -31,7 +34,10 @@ const CustomTooltip = ({ active, payload, label }) => {
     <div
       className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm text-sm"
     >
-      <p className="mb-2 font-medium text-slate-700">{label}</p>
+      <div className="flex items-center space-x-1 mb-4">
+        <Calendar className="w-4 h-4" />
+        <p className="font-medium text-slate-700">{label}</p>
+      </div>
 
       <div className="space-y-1">
         {payload.map((entry, index) => (
@@ -81,7 +87,14 @@ export const DashboardDiagram = React.memo(function DashboardDiagram({ title, de
             <CartesianGrid strokeDasharray="2 2" stroke="#c4c4c495" />
             <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#6b7280" }} />
             <YAxis width={20} interval={0} tick={{ fontSize: 8, fill: "#6b7280" }} />
-            <Tooltip content={<CustomTooltip />} cursor={<CustomCursor seriesColors={seriesToUse.map(s => s.color)} />} />
+            <Tooltip content={<CustomTooltip />}
+              cursor={
+                <CustomCursor
+                  seriesColors={seriesToUse.map(s => s.color)}
+                  isAll={seriesToUse.length > 1}
+                />
+              }
+            />
             <Legend wrapperStyle={{ fontSize: "12px", color: "#0f5fff" }} />
             {seriesToUse.map((s, idx) => (
               <Area
