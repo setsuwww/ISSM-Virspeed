@@ -3,6 +3,39 @@
 import { prisma } from "@/_lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export async function getShifts({ page = 1, limit = 10}) {
+  return prisma.shift.findMany({
+    where: { type: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { type: "asc" },
+    select: {
+      id: true,
+      type: true,
+      name: true,
+      startTime: true,
+      endTime: true,
+      users: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          attendances: {
+            select: { shiftId: true, status: true, reason: true },
+          },
+        },
+      },
+      division: { select: { name: true } },
+    },
+  });
+}
+
+export async function getShiftCount() {
+  return prisma.shift.count({
+    where: { type: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
+  });
+}
+
 export async function createShift(payload) {
   const { type, name, startTime, endTime, divisionId } = payload;
 
@@ -18,7 +51,7 @@ export async function createShift(payload) {
   return { success: true };
 }
 
-export async function updateShift( id, payload ) {
+export async function updateShift(id, payload) {
   if (!id) return { error: "Shift ID required" };
 
   await prisma.shift.update({

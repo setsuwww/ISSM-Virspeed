@@ -13,53 +13,6 @@ export default async function ShiftsPage({ searchParams }) {
   const params = await searchParams
   const page = Number(params?.page) || 1;
 
-  async function getShifts(page = 1) {
-    return prisma.shift.findMany({
-      where: { type: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-      orderBy: { type: "asc" },
-      select: {
-        id: true,
-        type: true,
-        name: true,
-        startTime: true,
-        endTime: true,
-        users: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            attendances: {
-              select: { shiftId: true, status: true, reason: true },
-            },
-          },
-        },
-        assignments: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                attendances: {
-                  select: { shiftId: true, status: true, reason: true },
-                },
-              },
-            },
-          },
-        },
-        division: { select: { name: true } },
-      },
-    });
-  }
-
-  async function getShiftCount() {
-    return prisma.shift.count({
-      where: { type: { in: ["MORNING", "AFTERNOON", "EVENING"] } },
-    });
-  }
-
   const [shifts, total] = await Promise.all([
     getShifts(page),
     getShiftCount(),
@@ -72,7 +25,7 @@ export default async function ShiftsPage({ searchParams }) {
     const start = minutesToTime(s.startTime);
     const end = minutesToTime(s.endTime);
 
-    const allUsers = [...s.users, ...s.assignments.map((a) => a.user)];
+    const allUsers = [...s.users];
     const uniqueUsers = Array.from(
       new Map(allUsers.map((u) => [u.id, u])).values()
     );

@@ -61,7 +61,7 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
           <div className="flex items-center gap-1">
 
             {page === 1 ? (
-              <span className="p-2 text-slate-300 cursor-not-allowed">
+              <span className="p-2 text-slate-400 cursor-not-allowed">
                 <ChevronLeft size={18} />
               </span>
             ) : (
@@ -84,7 +84,7 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
             )}
 
             {page === totalPages ? (
-              <span className="p-2 text-slate-300 cursor-not-allowed">
+              <span className="p-2 text-slate-400 cursor-not-allowed">
                 <ChevronRight size={18} />
               </span>
             ) : (
