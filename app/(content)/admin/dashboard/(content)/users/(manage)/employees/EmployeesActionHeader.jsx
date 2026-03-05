@@ -74,13 +74,13 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
         <Popover open={openDivision} onOpenChange={setOpenDivision}>
           <PopoverTrigger asChild>
             <Button variant="outline" role="combobox" aria-expanded={openDivision}
-              className="w-fit flex items-center justify-between rounded-md hover:bg-transparent border-slate-300 shadox-sm"
+              className="group w-fit flex items-center justify-between rounded-md hover:bg-transparent border-slate-300 shadow-[0_0.5px_1px_rgba(0,0,0,0.20)]"
             >
               <div className="flex items-center text-slate-500">
                 <span className="font-semibold text-slate-600 mr-2">Division:</span>
                 <span className="text-slate-400">{selectedDivision}</span>
               </div>
-              <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+              <ChevronsUpDown className="ml-2 h-4 w-4 text-slate-400 group-hover:text-slate-600 group-hover:scale-125 transition" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>

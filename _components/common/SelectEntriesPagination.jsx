@@ -26,10 +26,7 @@ export function SelectEntriesPagination({ limit, basePath }) {
     <div className="flex items-center gap-2 text-sm text-slate-600">
       <span>Show</span>
 
-      <Select
-        value={String(limit)}
-        onValueChange={handleLimitChange}
-      >
+      <Select value={String(limit)} onValueChange={handleLimitChange}>
         <SelectTrigger className="w-[66px] h-8 rounded-full">
           <SelectValue placeholder="10" />
         </SelectTrigger>

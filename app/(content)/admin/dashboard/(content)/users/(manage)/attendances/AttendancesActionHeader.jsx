@@ -28,7 +28,7 @@ export const AttendancesActionHeader = React.memo(({
         <Label>Date :</Label>
         <Input type="date" typeSearch
           value={selectedDate} onChange={(e) => onDateChange(e.target.value)}
-          className="w-auto px-3 py-2"
+          className="w-auto px-3 py-2 appearance-none"
         />
 
         <Select value={filterShift} onValueChange={onFilterShiftChange}>

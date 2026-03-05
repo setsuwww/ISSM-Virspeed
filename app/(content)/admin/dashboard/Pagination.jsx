@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { MoveLeft, MoveRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -60,11 +60,11 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
         <div className="flex items-center gap-1">
           {page === 1 ? (
             <span className="p-2 text-slate-400 cursor-not-allowed">
-              <ChevronLeft size={18} />
+              <MoveLeft size={18} />
             </span>
           ) : (
-            <Link href={`${basePath}?page=${page - 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
-              <ChevronLeft size={18} />
+            <Link href={`${basePath}?page=${page - 1}&limit=${limit}`} className="flex items-center text-xs p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
+              <MoveLeft size={18} />
             </Link>
           )}
 
@@ -80,11 +80,11 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
 
           {page === totalPages ? (
             <span className="p-2 text-slate-400 cursor-not-allowed">
-              <ChevronRight size={18} />
+              <MoveRight size={18} />
             </span>
           ) : (
             <Link href={`${basePath}?page=${page + 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
-              <ChevronRight size={18} />
+              <MoveRight size={18} />
             </Link>
           )}
 
