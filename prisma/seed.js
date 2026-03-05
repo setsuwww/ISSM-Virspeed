@@ -26,9 +26,9 @@ async function main() {
 
     // --- Buat shifts ---
     const shiftsData = [
-      { name: "Shift Pagi", type: ShiftType.MORNING, startTime: 9, endTime: 12 },
-      { name: "Shift Siang", type: ShiftType.AFTERNOON, startTime: 12, endTime: 15 },
-      { name: "Shift Malam", type: ShiftType.EVENING, startTime: 15, endTime: 18 },
+      { name: "Shift Pagi", type: ShiftType.MORNING, startTime: 540, endTime: 720 },
+      { name: "Shift Siang", type: ShiftType.AFTERNOON, startTime: 720, endTime: 900 },
+      { name: "Shift Malam", type: ShiftType.EVENING, startTime: 900, endTime: 1080 },
     ];
     await prisma.shift.createMany({ data: shiftsData });
 
