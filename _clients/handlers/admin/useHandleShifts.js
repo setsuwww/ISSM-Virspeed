@@ -61,9 +61,7 @@ export function useHandleShifts(data) {
     [filteredData]
   );
 
-  const isAllSelected =
-    filteredData.length > 0 &&
-    selectedIds.length === filteredData.length;
+  const isAllSelected = filteredData.length > 0 && selectedIds.length === filteredData.length;
 
   const handleEditShift = useCallback(
     (id) => {

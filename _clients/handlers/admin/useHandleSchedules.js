@@ -70,6 +70,10 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
     );
   }, [filteredData, setSelectedIds, reloadData, toast]);
 
+  const handleEditSchedule = useCallback(
+    (id) => router.push(`/admin/dashboard/schedules/${id}/edit`), [router]
+  );
+
   const handleDeleteSchedule = useCallback(
     async (id) => {
       const { message, variant } = confirmMessages.deleteOne;
@@ -83,10 +87,6 @@ export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, 
       setSelectedIds((prev) => prev.filter((sid) => sid !== id));
       reloadData();
     }, [setSelectedIds, reloadData]
-  );
-
-  const handleEditSchedule = useCallback(
-    (id) => router.push(`/admin/dashboard/schedules/${id}/edit`), [router]
   );
 
   return {

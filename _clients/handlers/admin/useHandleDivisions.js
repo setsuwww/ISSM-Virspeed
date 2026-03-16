@@ -35,8 +35,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
     async (division) => {
       const nextType = division.type === "WFA" ? "WFO" : "WFA";
 
-      await withConfirm(
-        `Switch division "${division.name}" from ${division.type} to ${nextType}?`,
+      await withConfirm(`Switch division "${division.name}" from ${division.type} to ${nextType}?`,
         async () => {
           const result = await withTry(
             () => toggleDivisionType(division.id),
@@ -67,8 +66,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
   const onBulkUpdate = async (ids, mode) => {
     const { message, variant } = confirmMessages.bulkUpdate(ids.length, mode);
 
-    await withConfirm(message,
-      () => withTry(() => bulkToggleSelectedDivision({
+    await withConfirm(message, () => withTry(() => bulkToggleSelectedDivision({
         ids, isActive: mode === "ACTIVE",
       }),
         `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."

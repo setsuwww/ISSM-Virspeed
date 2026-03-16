@@ -32,8 +32,7 @@ export function useHandleRequest({ type, initialMode }) {
     }
 
     startTransition(async () => {
-      await withConfirm(
-        "Are you sure you want to clear all history for this tab?",
+      await withConfirm("Are you sure you want to clear all history for this tab?",
         async () => {
           await withTry(
             () => clearHistory(type),
