@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, CircleUserRound } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/_components/ui/Dialog";
@@ -59,12 +59,12 @@ export default function UsersModal({ open, onClose, title, users }) {
             <p className="text-sm text-slate-500">No users found.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-80 px-2 pb-6">
+          <ScrollArea className="max-h-90 px-2 pb-6">
             <ul className="space-y-1 px-4 pb-2">
               {filteredUsers.map((u) => (
-                <li key={u.id} className="flex items-center gap-3 py-3 rounded-lg hover:bg-slate-100 transition">
-                  <span className="px-3 py-2 bg-slate-700 text-slate-50 text-xs rounded-full">
-                    {u.name?.charAt(0).toUpperCase()}
+                <li key={u.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 transition">
+                  <span className="icon-parent">
+                    <CircleUserRound className="icon" strokeWidth={1} />
                   </span>
 
                   <div className="flex flex-col">
