@@ -103,18 +103,20 @@ export default async function UserHistoryPage({ params, searchParams }) {
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation title={profile ? `${profile.name}` : "User"} subtitle={profile ? `${profile.name}'s Attendance history detail` : "User"}/>
+          <ContentInformation title={profile ? `${profile.name}` : "User"} subtitle={profile ? `${profile.name}'s Attendance history detail` : "User"} />
         </ContentForm.Header>
 
         <ContentForm.Body>
           <UserHistoryTable history={serializedHistory} />
         </ContentForm.Body>
 
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          basePath={`/admin/dashboard/users/${id}/history`}
-        />
+        <div className="p-6" >
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            basePath={`/admin/dashboard/users/${id}/history`}
+          />
+        </div>
       </ContentForm>
     </section>
   );
