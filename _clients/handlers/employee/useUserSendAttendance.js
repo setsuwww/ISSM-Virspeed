@@ -35,7 +35,7 @@ export function useUserSendAttendance() {
         if (!navigator.geolocation)
           return toast.error("Browser is not support geolocation");
 
-        const position = await new Promise < GeolocationPosition > ((resolve, reject) => {
+        const position = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
             resolve,
             (err) => {

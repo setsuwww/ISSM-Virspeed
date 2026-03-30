@@ -132,20 +132,32 @@ export default function CheckinForm() {
 
           <ContentInformation title="Send Request" subtitle="Change your internal shift / attendance" />
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-3">
-            <MainActionCard icon={<Plane strokeWidth={1.5} />} title="Permission" description="Ask for permission"
-              color="gowsh-blue" onClick={() => openModal(MODAL.PERMISSION)}
-              loading={isPending}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-3">
+
+            <MainActionCard
+              variant="dual"
+              icon={<Plane strokeWidth={1.5} />}
+              title="Send Request"
+              description="Permission or leave request"
+              color="gowsh-blue"
+              dropdownItems={[
+                {
+                  label: "Permission",
+                  bgColor: "bg-sky-100 text-sky-700",
+                  icon: <AlertTriangle size={16} strokeWidth={2}/>,
+                  onClick: () => openModal(MODAL.PERMISSION),
+                },
+                {
+                  label: "Leave Request",
+                  bgColor: "bg-violet-100 text-violet-700",
+                  icon: <Plane size={16} strokeWidth={2}/>,
+                  onClick: () => openModal(MODAL.LEAVE),
+                },
+              ]}
             />
 
             <MainActionCard icon={<AlertTriangle strokeWidth={1.5} />} title="Early Checkout" description="Checkout before scheduled time"
               color="gowsh-amber" onClick={() => openModal(MODAL.EARLY)}
-              loading={isPending}
-            />
-
-            <MainActionCard icon={<Plane strokeWidth={1.5} />} title="Leave" description="Ask for leave"
-              color="gowsh-violet"
-              onClick={() => openModal(MODAL.LEAVE)}
               loading={isPending}
             />
 
