@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { useState, useMemo, useCallback } from "react";
 import { useHandleLocations } from "../../handlers/admin/useHandleLocations";
 import { useDebounce } from "@/_stores/common/useDebounce";
-import { getLocations } from "@/_servers/admin-action/divisionAction";
+import { getLocations } from "@/_servers/admin-action/locationAction";
 
 export function useLocationsHooks(initialData) {
   const fetcher = async () => await getLocations();

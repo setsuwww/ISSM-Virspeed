@@ -11,10 +11,10 @@ import { ChevronLeft, Loader } from "lucide-react";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
-import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
+import { typeOptions, statusOptions } from "@/_constants/locationConstants";
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateLocation } from "@/_servers/admin-action/divisionAction";
+import { updateLocation } from "@/_servers/admin-action/locationAction";
 import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditLocationForm({ division }) {

@@ -3,7 +3,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination";
 import LocationsTable from "./LocationsTable";
-import { getLocations } from "@/_servers/admin-action/divisionAction";
+import { getLocations } from "@/_servers/admin-action/locationAction";
 
 export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1;

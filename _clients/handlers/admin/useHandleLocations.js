@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionStore";
 
-import { toggleLocationStatus, deleteLocationById, deleteLocations, bulkToggleSelectedLocation, bulkToggle, toggleLocationType } from "@/_servers/admin-action/divisionAction";
+import { toggleLocationStatus, deleteLocationById, deleteLocations, bulkToggleSelectedLocation, bulkToggle, toggleLocationType } from "@/_servers/admin-action/locationAction";
 
 import { confirmMessages } from "@/_constants/static/handleLocationMessage";
 
