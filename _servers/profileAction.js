@@ -4,7 +4,6 @@ import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
 import crypto from "crypto";
 import { revalidatePath } from "next/cache"
-import { transporter } from "@/_lib/mail";
 
 export async function updateProfile(data) {
   const { id, name, email, divisionId, shiftId } = data
