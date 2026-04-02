@@ -4,10 +4,10 @@ import { apiFetchData } from "@/_lib/fetch"
 export const useLocationStore = create((set, get) => ({
   allActive: false, pendingStatus: null, confirmOpen: false, loading: true,
 
-  openSwitchType(division) {
+  openSwitchType(location) {
     set({
       switchTypeOpen: true,
-      pendingLocation: division,
+      pendingLocation: location,
     })
   },
 

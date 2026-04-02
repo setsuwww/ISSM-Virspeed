@@ -7,8 +7,8 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 async function getWorkHoursData() {
-  const [divisions, shifts] = await Promise.all([
-    prisma.division.findMany({
+  const [locations, shifts] = await Promise.all([
+    prisma.location.findMany({
       select: {
         id: true,
         name: true,
@@ -40,11 +40,11 @@ async function getWorkHoursData() {
     }),
   ]);
 
-  return { divisions, shifts };
+  return { locations, shifts };
 }
 
 export default async function Page() {
-  const { divisions, shifts } = await getWorkHoursData();
+  const { locations, shifts } = await getWorkHoursData();
 
   return (
     <section>
@@ -60,7 +60,7 @@ export default async function Page() {
 
         <ContentForm.Body>
           <WorkHoursTabs
-            divisions={divisions}
+            locations={locations}
             shifts={shifts}
           />
         </ContentForm.Body>

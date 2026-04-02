@@ -2,16 +2,16 @@ import { prisma } from "@/_lib/prisma";
 import { AttendancesCard } from "../../users/(manage)/attendances/AttendancesCardStats";
 
 export default async function LocationPage({ params }) {
-  const divisionId = parseInt(params.id);
+  const locationId = parseInt(params.id);
 
-  const division = await prisma.division.findUnique({
-    where: { id: divisionId },
+  const location = await prisma.location.findUnique({
+    where: { id: locationId },
     include: { shifts: { include: { users: { include: { attendances: true } } } } },
   });
 
-  if (!division) return <p>division not found</p>;
+  if (!location) return <p>location not found</p>;
 
-  const shiftsWithAttendance = division.shifts.map((shift) => {
+  const shiftsWithAttendance = location.shifts.map((shift) => {
     const usersWithStatus = shift.users.map((user) => {
       const today = new Date();
       const attendance = user.attendances.find(
@@ -39,9 +39,9 @@ export default async function LocationPage({ params }) {
     };
   });
 
-  const divisionData = {
-    id: division.id, name: division.name, location: division.location, shifts: shiftsWithAttendance,
+  const locationData = {
+    id: location.id, name: location.name, location: location.location, shifts: shiftsWithAttendance,
   };
 
-  return <AttendancesCard division={divisionData} />;
+  return <AttendancesCard location={locationData} />;
 }

@@ -22,25 +22,25 @@ export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, 
     setSelectedIds(checked ? filteredData.map((d) => d.id) : []);
   }, [filteredData, setSelectedIds]);
 
-  const onToggleStatus = useCallback(async (division) => {
+  const onToggleStatus = useCallback(async (location) => {
     await withTry(
-      () => toggleLocationStatus(division.id),
-      `Location "${division.name}" status updated.`,
-      "Failed to update division status."
+      () => toggleLocationStatus(location.id),
+      `Location "${location.name}" status updated.`,
+      "Failed to update location status."
     );
     mutate?.();
   }, [withTry, mutate]);
 
   const onToggleType = useCallback(
-    async (division) => {
-      const nextType = division.type === "WFA" ? "WFO" : "WFA";
+    async (location) => {
+      const nextType = location.type === "WFA" ? "WFO" : "WFA";
 
-      await withConfirm(`Switch division "${division.name}" from ${division.type} to ${nextType}?`,
+      await withConfirm(`Switch location "${location.name}" from ${location.type} to ${nextType}?`,
         async () => {
           const result = await withTry(
-            () => toggleLocationType(division.id),
+            () => toggleLocationType(location.id),
             `Location switched to ${nextType}.`,
-            "Failed to switch division type."
+            "Failed to switch location type."
           );
 
           if (result?.success) {
@@ -75,13 +75,13 @@ export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, 
   };
 
   const handleEditLocation = useCallback((id) => {
-    router.push(`/admin/dashboard/users/divisions/${id}/edit`);
+    router.push(`/admin/dashboard/users/locations/${id}/edit`);
   }, [router]);
 
   const handleDeleteLocation = useCallback(async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
       () => withTry(() => deleteLocationById(id),
-        "Location successfully removed.", "Failed to delete division."
+        "Location successfully removed.", "Failed to delete location."
       ),
       confirmMessages.deleteOne(name).variant
     ).then(() => mutate?.()),
@@ -89,14 +89,14 @@ export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, 
   );
 
   const handleDeleteSelected = async () => {
-    if (!selectedIds.length) return toast.error("No divisions selected.");
+    if (!selectedIds.length) return toast.error("No locations selected.");
 
     const { message, variant } = confirmMessages.deleteSelected(selectedIds.length);
 
     await withConfirm(message,
       async () => {
         await withTry(() => Promise.all(selectedIds.map(deleteLocationById)),
-          `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
+          `${selectedIds.length} locations removed.`, "Failed to delete selected locations."
         );
         setSelectedIds([]);
         mutate?.();
@@ -111,7 +111,7 @@ export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, 
     await withConfirm(message,
       async () => {
         await withTry(deleteLocations,
-          "All divisions removed.", "Failed to delete all divisions."
+          "All locations removed.", "Failed to delete all locations."
         );
         mutate?.();
       }, variant

@@ -156,10 +156,10 @@ model User {
   isFlagged    Boolean @default(false)
   tokenVersion Int     @default(0)
 
-  divisionId Int?
+  locationId Int?
   shiftId    Int?
 
-  division Location? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
   shift    Shift?    @relation("ShiftUsers", fields: [shiftId], references: [id])
 
   schedules           SchedulesOnUsers[]
@@ -228,10 +228,10 @@ model Schedule {
   startTime   String?
   endDate     DateTime?
   endTime     String?
-  divisionId  Int?
+  locationId  Int?
   isActive    Boolean       @default(true)
 
-  division  Location?          @relation(fields: [divisionId], references: [id])
+  location  Location?          @relation(fields: [locationId], references: [id])
   users     SchedulesOnUsers[]
   reminders ScheduleReminder[]
 
@@ -294,8 +294,8 @@ model Shift {
   endTime   Int
   isActive  Boolean   @default(true)
 
-  divisionId Int?
-  division   Location? @relation(fields: [divisionId], references: [id])
+  locationId Int?
+  location   Location? @relation(fields: [locationId], references: [id])
 
   users       User[]       @relation("ShiftUsers")
   attendances Attendance[]
@@ -329,8 +329,8 @@ model Attendance {
   updatedAt DateTime @updatedAt
 
   earlyCheckoutRequests EarlyCheckoutRequest[]
-  divisionType          LocationType?
-  divisionStatus        LocationStatus?
+  locationType          LocationType?
+  locationStatus        LocationStatus?
 
   @@unique([userId, shiftId, date])
   @@index([userId, date])

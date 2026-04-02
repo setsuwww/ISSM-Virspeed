@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
       id: true,
       name: true,
       email: true,
-      divisionId: true,
+      locationId: true,
       shift: {
         select: { type: true },
       },

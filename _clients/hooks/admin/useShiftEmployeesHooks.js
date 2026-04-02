@@ -18,7 +18,7 @@ export function useShiftEmployeesHooks(users = []) {
   const debouncedSearch = useDebounce(search, 400);
 
   const [selected, setSelected] = useState([]);
-  const [divisionFilter, setLocationFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
   const [shiftFilter, setShiftFilter] = useState("all");
 
   const [data, setData] = useState([]);
@@ -38,12 +38,12 @@ export function useShiftEmployeesHooks(users = []) {
       const email = (u.email || "").toLowerCase();
 
       const matchSearch = !q || name.includes(q) || email.includes(q);
-      const matchLocation = divisionFilter === "all" || u.division?.id === Number(divisionFilter);
+      const matchLocation = locationFilter === "all" || u.location?.id === Number(locationFilter);
       const matchShift = shiftFilter === "all" || u.shift?.type === shiftFilter;
 
       return matchSearch && matchLocation && matchShift;
     });
-  }, [data, debouncedSearch, divisionFilter, shiftFilter]);
+  }, [data, debouncedSearch, locationFilter, shiftFilter]);
 
   const toggleSelect = useCallback((id) => {
     setSelected((prev) =>
@@ -117,7 +117,7 @@ export function useShiftEmployeesHooks(users = []) {
     data,
     search, setSearch,
     selected, filteredData,
-    divisionFilter, setLocationFilter,
+    locationFilter, setLocationFilter,
     shiftFilter, setShiftFilter,
     toggleSelect, setSelected, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };

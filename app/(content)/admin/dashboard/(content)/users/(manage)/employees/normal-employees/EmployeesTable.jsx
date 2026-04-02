@@ -11,13 +11,13 @@ import { EmployeesRow } from "./EmployeesRow";
 import { useHandleUsers } from "@/_clients/handlers/admin/useHandleUsers";
 import { useNormalEmployeesHooks } from "@/_clients/hooks/admin/useNormalEmployeesHooks";
 
-export default function EmployeesTable({ users = [], divisions = [] }) {
+export default function EmployeesTable({ users = [], locations = [] }) {
   const [selectedIds, setSelectedIds] = useState([]);
 
   const {
     search, setSearch,
     filteredData,
-    divisionFilter, setLocationFilter
+    locationFilter, setLocationFilter
   } = useNormalEmployeesHooks(users);
 
   const {
@@ -33,8 +33,8 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
         search={search} setSearch={setSearch}
         selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
-        divisionFilter={divisionFilter} setLocationFilter={setLocationFilter}
-        divisions={divisions}
+        locationFilter={locationFilter} setLocationFilter={setLocationFilter}
+        locations={locations}
       />
 
       <Table>

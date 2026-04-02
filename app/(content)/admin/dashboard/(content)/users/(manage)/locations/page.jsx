@@ -13,7 +13,7 @@ export default async function Page({ searchParams }) {
     ? Number(searchParams?.limit)
     : 10;
 
-  const { data: divisions, total } = await getLocations({
+  const { data: locations, total } = await getLocations({
     page,
     limit,
   });
@@ -24,27 +24,27 @@ export default async function Page({ searchParams }) {
     <section>
       <DashboardHeader
         title="Locations"
-        subtitle="List of Location divisions"
+        subtitle="List of Location locations"
       />
 
       <ContentForm>
         <ContentForm.Header>
           <ContentInformation
-            title="List divisions"
-            subtitle="Manage all division data in this table"
+            title="List locations"
+            subtitle="Manage all location data in this table"
             show
             buttonText="Create Location"
-            href="/admin/dashboard/users/divisions/create"
+            href="/admin/dashboard/users/locations/create"
           />
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <LocationsTable data={divisions} />
+          <LocationsTable data={locations} />
 
           <Pagination
             page={page}
             totalPages={totalPages}
-            basePath="/admin/dashboard/users/divisions"
+            basePath="/admin/dashboard/users/locations"
             limit={limit}
           />
         </ContentForm.Body>

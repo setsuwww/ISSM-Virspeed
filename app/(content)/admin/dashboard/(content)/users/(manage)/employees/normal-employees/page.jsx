@@ -18,7 +18,7 @@ export default async function Page({ searchParams }) {
     ? Number(params?.limit)
     : 10;
 
-  const [users, total, divisions] = await Promise.all([
+  const [users, total, locations] = await Promise.all([
     getNormalEmployees({ page, limit }),
     getNormalEmployeeCount(),
     getSELocations(),
@@ -28,10 +28,10 @@ export default async function Page({ searchParams }) {
     ...u,
     createdAt: u.createdAt.toISOString(),
     updatedAt: u.updatedAt.toISOString(),
-    workHours: u.division
+    workHours: u.location
       ? {
-        startTime: minutesToTime(u.division.startTime),
-        endTime: minutesToTime(u.division.endTime),
+        startTime: minutesToTime(u.location.startTime),
+        endTime: minutesToTime(u.location.endTime),
       }
       : null,
   }));
@@ -52,7 +52,7 @@ export default async function Page({ searchParams }) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <EmployeesTable users={serializedUsers} divisions={divisions} />
+          <EmployeesTable users={serializedUsers} locations={locations} />
           <Pagination
             page={page}
             totalPages={totalPages}

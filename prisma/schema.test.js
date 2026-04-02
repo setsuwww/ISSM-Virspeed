@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 describe("Prisma schema test", () => {
   const createdIds = {
     users: [],
-    divisions: [],
+    locations: [],
     shifts: [],
     leaveTypes: [],
   };
@@ -20,8 +20,8 @@ describe("Prisma schema test", () => {
     if (createdIds.users.length) {
       await prisma.user.deleteMany({ where: { id: { in: createdIds.users } } });
     }
-    if (createdIds.divisions.length) {
-      await prisma.division.deleteMany({ where: { id: { in: createdIds.divisions } } });
+    if (createdIds.locations.length) {
+      await prisma.location.deleteMany({ where: { id: { in: createdIds.locations } } });
     }
     if (createdIds.shifts.length) {
       await prisma.shift.deleteMany({ where: { id: { in: createdIds.shifts } } });
@@ -33,13 +33,13 @@ describe("Prisma schema test", () => {
     await prisma.$disconnect();
   });
 
-  it("should create sample divisions, users, shifts, and leave types", async () => {
-    // 1. Create 4 divisions
+  it("should create sample locations, users, shifts, and leave types", async () => {
+    // 1. Create 4 locations
     for (let i = 1; i <= 4; i++) {
-      const div = await prisma.division.create({
+      const div = await prisma.location.create({
         data: { name: `Location ${i}` },
       });
-      createdIds.divisions.push(div.id);
+      createdIds.locations.push(div.id);
     }
 
     // 2. Create 4 shifts
@@ -71,7 +71,7 @@ describe("Prisma schema test", () => {
           email: `user${i}@test.com`,
           password: "password123",
           role: "USER",
-          divisionId: createdIds.divisions[i - 1],
+          locationId: createdIds.locations[i - 1],
           shiftId: createdIds.shifts[i - 1],
         },
       });

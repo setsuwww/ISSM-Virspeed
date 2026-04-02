@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import TabsNormalHours from "./TabsNormalHours";
 import TabsShiftHours from "./TabsShiftHours";
 
-export default function WorkHoursTabs({ divisions, shifts }) {
+export default function WorkHoursTabs({ locations, shifts }) {
   const [activeTab, setActiveTab] = useState("normal");
   const [direction, setDirection] = useState(0);
 
@@ -50,7 +50,7 @@ export default function WorkHoursTabs({ divisions, shifts }) {
               transition={{ type: "spring", stiffness: 200, damping: 25 }}
               className="absolute top-0 left-0 w-full"
             >
-              <TabsNormalHours divisions={divisions} />
+              <TabsNormalHours locations={locations} />
             </motion.div>
           )}
 

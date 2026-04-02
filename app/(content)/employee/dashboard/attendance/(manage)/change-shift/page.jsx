@@ -11,7 +11,7 @@ export default async function Page() {
   const employees = await prisma.user.findMany({
     where: {
       role: "EMPLOYEE",
-      divisionId: user.divisionId,
+      locationId: user.locationId,
       shiftId: { not: null },
       id: { not: user.id },
     },

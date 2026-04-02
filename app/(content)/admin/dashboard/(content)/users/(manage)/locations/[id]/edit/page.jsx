@@ -6,7 +6,7 @@ import EditLocationForm from "./EditForm";
 export const revalidate = 60;
 
 async function getLocation(id) {
-  const division = await prisma.division.findUnique({
+  const location = await prisma.location.findUnique({
     where: { id },
     select: {
       id: true, name: true,
@@ -17,23 +17,23 @@ async function getLocation(id) {
     },
   });
 
-  if (!division) return null;
-  return division;
+  if (!location) return null;
+  return location;
 }
 
 export default async function Page({ params }) {
   const { id } = params;
-  const division = await getLocation(Number(id));
+  const location = await getLocation(Number(id));
 
-  if (!division) return notFound();
+  if (!location) return notFound();
 
   return (
     <section>
       <DashboardHeader
         title={`Edit Location`}
-        subtitle="Update division details and configuration"
+        subtitle="Update location details and configuration"
       />
-      <EditLocationForm division={division} />
+      <EditLocationForm location={location} />
     </section>
   );
 }

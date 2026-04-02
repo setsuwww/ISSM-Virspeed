@@ -1,8 +1,8 @@
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
-export function exportLocation(divisions = []) {
-  if (!divisions.length) {
+export function exportLocation(locations = []) {
+  if (!locations.length) {
     alert("Tidak ada data divisi untuk diekspor!")
     return
   }
@@ -21,7 +21,7 @@ export function exportLocation(divisions = []) {
     "Name", "Location", "Type", "Status", "Start Time", "End Time", "Created At",
   ]
 
-  const tableRows = divisions.map((d) => [
+  const tableRows = locations.map((d) => [
     d.name || "-",
     d.location || "-",
     d.type || "-",
@@ -40,5 +40,5 @@ export function exportLocation(divisions = []) {
     headStyles: { fillColor: [33, 150, 243], textColor: 255 },
   })
 
-  doc.save(`divisions_${today.replace(/\s/g, "_")}.pdf`)
+  doc.save(`locations_${today.replace(/\s/g, "_")}.pdf`)
 }

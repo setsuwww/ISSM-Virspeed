@@ -5,24 +5,24 @@ import ora from "ora";
 const prisma = new PrismaClient();
 
 async function main() {
-  const spinner = ora("Seeding divisions, shifts, and users...").start();
+  const spinner = ora("Seeding locations, shifts, and users...").start();
 
   try {
     // --- Hapus data lama ---
     await prisma.user.deleteMany();
     await prisma.shift.deleteMany();
-    await prisma.division.deleteMany();
+    await prisma.location.deleteMany();
 
-    // --- Buat divisions ---
-    const divisionsData = [
+    // --- Buat locations ---
+    const locationsData = [
       { name: "Web Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
       { name: "Mobile Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
       { name: "Desktop Developer", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
     ];
-    await prisma.division.createMany({ data: divisionsData });
+    await prisma.location.createMany({ data: locationsData });
 
-    // --- Ambil divisions yang baru dibuat ---
-    const divisionList = await prisma.division.findMany();
+    // --- Ambil locations yang baru dibuat ---
+    const locationList = await prisma.location.findMany();
 
     // --- Buat shifts ---
     const shiftsData = [
@@ -35,7 +35,7 @@ async function main() {
     // --- Ambil shifts yang baru dibuat ---
     const shiftList = await prisma.shift.findMany();
 
-    // --- Buat users 1 per shift + 1 per division ---
+    // --- Buat users 1 per shift + 1 per location ---
     const usersData = [
       { name: "Mikasa", email: "mikasa@next.com", role: Role.ADMIN },
       { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
@@ -75,13 +75,13 @@ async function main() {
           email: usersData[i].email,
           password: hash,
           role: usersData[i].role,
-          divisionId: divisionList[i % divisionList.length].id, // rotasi division
+          locationId: locationList[i % locationList.length].id, // rotasi location
           shiftId: shiftList[i % shiftList.length].id,         // rotasi shift
         },
       });
     }
 
-    spinner.succeed(`Seeded ${usersData.length} users, ${shiftsData.length} shifts, ${divisionsData.length} divisions`);
+    spinner.succeed(`Seeded ${usersData.length} users, ${shiftsData.length} shifts, ${locationsData.length} locations`);
   } catch (err) {
     spinner.fail("Seeding failed");
     console.error(err);

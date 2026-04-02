@@ -77,13 +77,13 @@ export function CreateUserFromExcel({ onImported }) {
       email: "",
       password: "",
       role: "EMPLOYEE",
-      division: "",
+      location: "",
       workMode: "WORK_HOURS",
       shift: "",
     }))
 
     const ws = XLSX.utils.json_to_sheet(data, {
-      header: ["name", "email", "password", "role", "division", "workMode", "shift"],
+      header: ["name", "email", "password", "role", "location", "workMode", "shift"],
     })
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, "Users")

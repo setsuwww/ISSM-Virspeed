@@ -1,8 +1,8 @@
 import { minutesToTime } from "@/_functions/globalFunction"
 
-export function getWorkHours(shift, division) {
-  const start = shift?.startTime ?? division?.startTime ?? null
-  const end = shift?.endTime ?? division?.endTime ?? null
+export function getWorkHours(shift, location) {
+  const start = shift?.startTime ?? location?.startTime ?? null
+  const end = shift?.endTime ?? location?.endTime ?? null
 
   return {
     startTime: start,

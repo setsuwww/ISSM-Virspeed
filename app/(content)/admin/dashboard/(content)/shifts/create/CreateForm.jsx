@@ -17,21 +17,21 @@ import { capitalize } from "@/_functions/globalFunction";
 
 import { createShift } from "@/_servers/admin-action/shiftAction"
 
-export default function CreateShiftForm({ divisions }) {
+export default function CreateShiftForm({ locations }) {
   const router = useRouter();
 
   const [type, setType] = useState("MORNING");
   const [name, setName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [divisionId, setLocationId] = useState("NONE");
+  const [locationId, setLocationId] = useState("NONE");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (divisionId === "NONE") {
-      alert("Please select an division for this shift!");
+    if (locationId === "NONE") {
+      alert("Please select an location for this shift!");
       return;
     }
 
@@ -39,7 +39,7 @@ export default function CreateShiftForm({ divisions }) {
       type, name,
       startTime: timeToMinutes(startTime),
       endTime: timeToMinutes(endTime),
-      divisionId: parseInt(divisionId),
+      locationId: parseInt(locationId),
     };
 
     try {
@@ -52,12 +52,12 @@ export default function CreateShiftForm({ divisions }) {
 
   return (
     <section>
-      <DashboardHeader title="Create Shift" subtitle="Assign a shift to an division" />
+      <DashboardHeader title="Create Shift" subtitle="Assign a shift to an location" />
 
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-0">
           <ContentForm.Header>
-            <ContentInformation title="Shift Form" subtitle="Create a new shift and assign it to an division"
+            <ContentInformation title="Shift Form" subtitle="Create a new shift and assign it to an location"
               show={true} buttonText="Back" buttonIcon={<ChevronLeft />} variant="outline" href="/admin/dashboard/shifts"
             />
           </ContentForm.Header>
@@ -65,18 +65,18 @@ export default function CreateShiftForm({ divisions }) {
           <ContentForm.Body>
             <div className="flex flex-col space-y-0">
               <div className="space-y-2">
-                <Label htmlFor="division-select">
+                <Label htmlFor="location-select">
                   Location <span className="text-rose-500">*</span>
                 </Label>
-                <Select value={divisionId} onValueChange={setLocationId}>
-                  <SelectTrigger id="division-select" className="w-full mt-1">
-                    <SelectValue placeholder="Select an division" />
+                <Select value={locationId} onValueChange={setLocationId}>
+                  <SelectTrigger id="location-select" className="w-full mt-1">
+                    <SelectValue placeholder="Select an location" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="NONE">-</SelectItem>
-                    {divisions.map((division) => (
-                      <SelectItem key={division.id} value={String(division.id)}>
-                        {capitalize(division.name)}
+                    {locations.map((location) => (
+                      <SelectItem key={location.id} value={String(location.id)}>
+                        {capitalize(location.name)}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -15,14 +15,14 @@ import { roleOptions } from "@/_constants/userConstants";
 import { updateUser } from "@/_servers/admin-action/userAction.js";
 import { ChevronLeft, Loader } from 'lucide-react';
 
-export default function EditForm({ user, divisions }) {
+export default function EditForm({ user, locations }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [form, setForm] = useState({
     id: user.id, name: user.name, email: user.email,
     password: "", role: user.role,
-    divisionId: user.divisionId ? String(user.divisionId) : "",
+    locationId: user.locationId ? String(user.locationId) : "",
     shiftId: user.shiftId ? String(user.shiftId) : "",
   });
 
@@ -45,7 +45,7 @@ export default function EditForm({ user, divisions }) {
     });
   }
 
-  const selectedLocation = divisions.find((o) => String(o.id) === form.divisionId);
+  const selectedLocation = locations.find((o) => String(o.id) === form.locationId);
   const availableShifts = selectedLocation?.shifts || [];
 
   return (
@@ -92,12 +92,12 @@ export default function EditForm({ user, divisions }) {
 
               <div className="space-y-2">
                 <Label>Location Assignment</Label>
-                <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)}>
+                <Select value={form.locationId} onValueChange={(v) => handleCustomChange("locationId", v)}>
                   <SelectTrigger className="w-1/2">
-                    <SelectValue placeholder="Select an division" />
+                    <SelectValue placeholder="Select an location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {divisions.map((o) => (
+                    {locations.map((o) => (
                       <SelectItem key={o.id} value={String(o.id)}>
                         {capitalize(o.name)}
                       </SelectItem>

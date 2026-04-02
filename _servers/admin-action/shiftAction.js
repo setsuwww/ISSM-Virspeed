@@ -25,7 +25,7 @@ export async function getShifts(page, limit) {
           },
         },
       },
-      division: { select: { name: true } },
+      location: { select: { name: true } },
     },
   });
 }
@@ -37,14 +37,14 @@ export async function getShiftCount() {
 }
 
 export async function createShift(payload) {
-  const { type, name, startTime, endTime, divisionId } = payload;
+  const { type, name, startTime, endTime, locationId } = payload;
 
-  if (!type || !name || !divisionId) {
+  if (!type || !name || !locationId) {
     return { error: "Invalid payload" };
   }
 
   await prisma.shift.create({
-    data: { type, name, startTime, endTime, divisionId },
+    data: { type, name, startTime, endTime, locationId },
   });
 
   revalidatePath("/admin/dashboard/shifts");

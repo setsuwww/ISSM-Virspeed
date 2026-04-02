@@ -13,8 +13,8 @@ export async function getLocations({ page = 1, limit = 10, search = "", typeFilt
     ...(statusFilter !== "all" && { status: statusFilter }),
   };
 
-  const [divisions, total] = await Promise.all([
-    prisma.division.findMany({
+  const [locations, total] = await Promise.all([
+    prisma.location.findMany({
       where, skip, take: limit, orderBy: { createdAt: "desc" },
       select: {
         id: true, name: true,
@@ -23,13 +23,13 @@ export async function getLocations({ page = 1, limit = 10, search = "", typeFilt
         createdAt: true, updatedAt: true,
       },
     }),
-    prisma.division.count({ where }),
+    prisma.location.count({ where }),
   ]);
 
-  const formattedLocations = divisions.map((division) => ({
-    ...division,
-    startTime: minutesToTime(division.startTime),
-    endTime: minutesToTime(division.endTime),
+  const formattedLocations = locations.map((location) => ({
+    ...location,
+    startTime: minutesToTime(location.startTime),
+    endTime: minutesToTime(location.endTime),
   }));
 
   return { data: formattedLocations, total };
@@ -37,7 +37,7 @@ export async function getLocations({ page = 1, limit = 10, search = "", typeFilt
 
 export async function createLocation(data) {
   try {
-    const newLocation = await prisma.division.create({
+    const newLocation = await prisma.location.create({
       data: {
         name: data.name,
         location: data.location, longitude: data.longitude, latitude: data.latitude, radius: data.radius,
@@ -45,18 +45,18 @@ export async function createLocation(data) {
         startTime: data.startTime, endTime: data.endTime,
       },
     })
-    revalidatePath("/admin/dashboard/users/divisions")
-    return { success: true, division: newLocation }
+    revalidatePath("/admin/dashboard/users/locations")
+    return { success: true, location: newLocation }
   }
-  catch (error) { return { success: false, message: "Failed to create division" } }
+  catch (error) { return { success: false, message: "Failed to create location" } }
 }
 
 export async function updateLocationStatus(id, newStatus) {
   try {
-    await prisma.division.update({
+    await prisma.location.update({
       where: { id }, data: { status: newStatus },
     })
-    revalidatePath("/admin/dashboard/users/divisions")
+    revalidatePath("/admin/dashboard/users/locations")
     return { success: true }
   }
   catch (error) { return { success: false } }
@@ -64,12 +64,12 @@ export async function updateLocationStatus(id, newStatus) {
 
 export async function bulkToggleSelectedLocation({ ids, isActive }) {
   try {
-    await prisma.division.updateMany({
+    await prisma.location.updateMany({
       where: { id: { in: ids } },
       data: { status: isActive ? "ACTIVE" : "INACTIVE" }
     });
 
-    revalidatePath("/admin/dashboard/users/divisions");
+    revalidatePath("/admin/dashboard/users/locations");
     return { success: true };
   }
   catch (error) { return { success: false } }
@@ -78,29 +78,29 @@ export async function bulkToggleSelectedLocation({ ids, isActive }) {
 export async function bulkToggle({ activateType, deactivateType, isActive }) {
   try {
     if (isActive) {
-      await prisma.division.updateMany({
+      await prisma.location.updateMany({
         where: { type: activateType },
         data: { status: "ACTIVE" },
       });
 
-      await prisma.division.updateMany({
+      await prisma.location.updateMany({
         where: { type: deactivateType },
         data: { status: "INACTIVE" },
       });
 
     } else {
-      await prisma.division.updateMany({
+      await prisma.location.updateMany({
         where: { type: activateType },
         data: { status: "INACTIVE" },
       });
 
-      await prisma.division.updateMany({
+      await prisma.location.updateMany({
         where: { type: deactivateType },
         data: { status: "ACTIVE" },
       });
     }
 
-    revalidatePath("/admin/dashboard/users/divisions");
+    revalidatePath("/admin/dashboard/users/locations");
     return { success: true, message: "Global toggle updated." };
 
   }
@@ -109,23 +109,23 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
 
 export async function toggleLocationType(id) {
   try {
-    const division = await prisma.division.findUnique({
+    const location = await prisma.location.findUnique({
       where: { id },
       select: { type: true },
     });
 
-    if (!division) {
+    if (!location) {
       return { success: false, message: "Location not found" };
     }
 
-    const nextType = division.type === "WFA" ? "WFO" : "WFA";
+    const nextType = location.type === "WFA" ? "WFO" : "WFA";
 
-    await prisma.division.update({
+    await prisma.location.update({
       where: { id },
       data: { type: nextType },
     });
 
-    revalidatePath("/admin/dashboard/users/divisions");
+    revalidatePath("/admin/dashboard/users/locations");
 
     return {
       success: true,
@@ -135,22 +135,22 @@ export async function toggleLocationType(id) {
   } catch (error) {
     return {
       success: false,
-      message: error.message || "Failed to switch division type",
+      message: error.message || "Failed to switch location type",
     };
   }
 }
 
 export async function toggleLocationStatus(id) {
-  const division = await prisma.division.findUnique({ where: { id } })
-  if (!division) throw new Error("Location not found")
+  const location = await prisma.location.findUnique({ where: { id } })
+  if (!location) throw new Error("Location not found")
 
-  const newStatus = division.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
-  await prisma.division.update({
+  const newStatus = location.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+  await prisma.location.update({
     where: { id },
     data: { status: newStatus },
   })
 
-  revalidatePath("/admin/dashboard/users/divisions")
+  revalidatePath("/admin/dashboard/users/locations")
 }
 
 export async function updateLocation(id, data) {
@@ -162,7 +162,7 @@ export async function updateLocation(id, data) {
 
     if (!name || !location) return { success: false, message: "Name and location are required" }
 
-    const updatedLocation = await prisma.division.update({
+    const updatedLocation = await prisma.location.update({
       where: { id: Number(id) },
       data: {
         name, location,
@@ -174,19 +174,19 @@ export async function updateLocation(id, data) {
       },
     })
 
-    revalidatePath("/admin/dashboard/users/divisions")
+    revalidatePath("/admin/dashboard/users/locations")
 
     return { success: true, data: updatedLocation }
   }
-  catch (error) { return { success: false, message: error.message || "Failed to update division" } }
+  catch (error) { return { success: false, message: error.message || "Failed to update location" } }
 }
 
 export async function deleteLocationById(id) {
-  await prisma.division.delete({ where: { id } })
-  revalidatePath("/admin/dashboard/users/divisions")
+  await prisma.location.delete({ where: { id } })
+  revalidatePath("/admin/dashboard/users/locations")
 }
 
 export async function deleteLocations() {
-  await prisma.division.deleteMany()
-  revalidatePath("/admin/dashboard/users/divisions")
+  await prisma.location.deleteMany()
+  revalidatePath("/admin/dashboard/users/locations")
 }

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/_components/ui/Command"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { divisionStyles } from "@/_constants/theme/locationTheme";
+import { locationStyles } from "@/_constants/theme/locationTheme";
 
 import { exportPDF } from "@/_functions/exports/employee/exportPDF";
 import { exportWord } from "@/_functions/exports/employee/exportWord";
@@ -22,16 +22,16 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   mode = "default",
   search, setSearch,
   selected = [], onDeleteSelected, onDeleteAll,
-  divisionFilter, setLocationFilter,
+  locationFilter, setLocationFilter,
   filteredData = [],
   shiftFilter, onShiftFilterChange,
-  divisions = [],
+  locations = [],
 }) {
-  const [divisionQuery, setLocationQuery] = useState("")
+  const [locationQuery, setLocationQuery] = useState("")
   const [openLocation, setOpenLocation] = useState(false)
   const [statusFilter, setStatusFilter] = useState([])
 
-  const selectedLocation = divisionFilter === "all" ? "All" : divisions.find((d) => String(d.id) === divisionFilter)?.name ?? "Select Location"
+  const selectedLocation = locationFilter === "all" ? "All" : locations.find((d) => String(d.id) === locationFilter)?.name ?? "Select Location"
 
   const toggleStatus = (status) => {
     setStatusFilter((prev) =>
@@ -42,13 +42,13 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   const isWorkHours = mode === "work-hours"
   const showShift = !isWorkHours
 
-  const filteredLocations = divisions.filter((d) => {
+  const filteredLocations = locations.filter((d) => {
     const matchStatus =
       statusFilter.length === 0 || statusFilter.includes(d.type)
 
     const matchQuery =
-      divisionQuery === "" ||
-      d.name.toLowerCase().includes(divisionQuery.toLowerCase())
+      locationQuery === "" ||
+      d.name.toLowerCase().includes(locationQuery.toLowerCase())
 
     return matchStatus && matchQuery
   })
@@ -86,12 +86,12 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>
             <Command>
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200">
-                <CommandInput placeholder="Search division..." withBorder={false} value={divisionQuery} onValueChange={setLocationQuery} />
+                <CommandInput placeholder="Search location..." withBorder={false} value={locationQuery} onValueChange={setLocationQuery} />
                 <div className="flex gap-1">
                   {["WFO", "WFA"].map((type) => (
                     <Badge key={type} onClick={() => toggleStatus(type)} variant={statusFilter.includes(type) ? "secondary" : "outline"}
                       className={cn("cursor-pointer text-xs select-none text-slate-500",
-                        statusFilter.includes(type) && divisionStyles[type]
+                        statusFilter.includes(type) && locationStyles[type]
                       )}
                     >
                       {type}
@@ -101,7 +101,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
               </div>
 
               <CommandList>
-                <CommandEmpty>No division found.</CommandEmpty>
+                <CommandEmpty>No location found.</CommandEmpty>
                 <CommandGroup>
                   <CommandItem value="all" onSelect={() => {
                     setLocationFilter("all")
@@ -110,7 +110,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
                   }}
                   >
                     All
-                    <Check className={cn("mr-2 h-4 w-4", divisionFilter === "all" ? "opacity-100" : "opacity-0")} />
+                    <Check className={cn("mr-2 h-4 w-4", locationFilter === "all" ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
 
                   {filteredLocations.map((d) => (
@@ -127,7 +127,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          divisionFilter === String(d.id) ? "opacity-100" : "opacity-0"
+                          locationFilter === String(d.id) ? "opacity-100" : "opacity-0"
                         )}
                       />
                     </CommandItem>

@@ -23,7 +23,7 @@ export const adminMenu = [
     label: "Location",
     icon: "Building2",
     items: [
-      { label: "Locations", href: "/admin/dashboard/users/divisions" },
+      { label: "Locations", href: "/admin/dashboard/users/locations" },
       { label: "Shift Employees", href: "/admin/dashboard/users/employees/shift-employees" },
       { label: "Normal Employees", href: "/admin/dashboard/users/employees/normal-employees" },
       { label: "Attendances", href: "/admin/dashboard/users/attendances" },

@@ -22,7 +22,7 @@ export default async function ShiftUsersPage({ params, searchParams }) {
       select: {
         id: true, type: true, name: true,
         startTime: true, endTime: true,
-        division: {
+        location: {
           select: { id: true, name: true },
         },
         users: {
@@ -48,7 +48,7 @@ export default async function ShiftUsersPage({ params, searchParams }) {
       createdAt: true,
       updatedAt: true,
 
-      division: {
+      location: {
         select: {
           name: true,
         },
@@ -70,7 +70,7 @@ export default async function ShiftUsersPage({ params, searchParams }) {
     email: u.email,
     role: u.role,
 
-    divisionName: u.division?.name ?? "N/A",
+    locationName: u.location?.name ?? "N/A",
 
     shiftType: u.shift?.type ?? "-",
 

@@ -5,31 +5,31 @@ import { Clock, User } from "lucide-react";
 import UsersModal from "./UsersModal";
 import { minutesToTime } from "@/_functions/globalFunction";
 
-export default function TabsNormalHours({ divisions = [] }) {
+export default function TabsNormalHours({ locations = [] }) {
   const [selected, setSelected] = useState(null);
 
-  if (!Array.isArray(divisions) || divisions.length === 0) {
+  if (!Array.isArray(locations) || locations.length === 0) {
     return (
       <p className="text-sm text-slate-400">
-        No division data available
+        No location data available
       </p>
     );
   }
 
-  const openModal = (division) => {
+  const openModal = (location) => {
     setSelected({
-      ...division,
-      users: division.users ?? [],
+      ...location,
+      users: location.users ?? [],
     });
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-      {divisions.map((division) => {
-        const users = division.users ?? [];
+      {locations.map((location) => {
+        const users = location.users ?? [];
 
         return (
-          <div key={division.id} onClick={() => openModal(division)}
+          <div key={location.id} onClick={() => openModal(location)}
             className="cursor-pointer group rounded-lg border border-slate-200 p-4 hover:shadow transition"
           >
             <div className="flex items-center justify-between">
@@ -40,13 +40,13 @@ export default function TabsNormalHours({ divisions = [] }) {
 
                 <div>
                   <h3 className="text-sm font-semibold text-slate-600">
-                    {division.name}
+                    {location.name}
                   </h3>
 
                   <p className="text-xs text-slate-400 mt-0.5">
-                    {division.startTime != null && division.endTime != null
-                      ? `${minutesToTime(division.startTime)} – ${minutesToTime(
-                        division.endTime
+                    {location.startTime != null && location.endTime != null
+                      ? `${minutesToTime(location.startTime)} – ${minutesToTime(
+                        location.endTime
                       )}`
                       : "No working hours"}
                   </p>
@@ -61,7 +61,7 @@ export default function TabsNormalHours({ divisions = [] }) {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    openModal(division);
+                    openModal(location);
                   }}
                   className="p-1.5 rounded-md text-slate-500 hover:bg-slate-100"
                 >

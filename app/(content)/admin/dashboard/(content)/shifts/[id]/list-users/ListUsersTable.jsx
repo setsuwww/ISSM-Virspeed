@@ -110,7 +110,7 @@ export default function ListUsersTable({ data }) {
 
                 <TableCell>
                   <div>
-                    <div className="font-semibold">{user.divisionName}</div>
+                    <div className="font-semibold">{user.locationName}</div>
                     <div className="text-xs text-slate-400">{user.startTime} - {user.endTime}</div>
                   </div>
                 </TableCell>

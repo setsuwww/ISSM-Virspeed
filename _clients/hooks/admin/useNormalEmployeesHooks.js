@@ -18,7 +18,7 @@ export function useNormalEmployeesHooks(users = []) {
   const debouncedSearch = useDebounce(search, 400);
 
   const [selected, setSelected] = useState([]);
-  const [divisionFilter, setLocationFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
 
   const [data, setData] = useState([]);
 
@@ -37,11 +37,11 @@ export function useNormalEmployeesHooks(users = []) {
       const email = (u.email || "").toLowerCase();
 
       const matchSearch = !q || name.includes(q) || email.includes(q);
-      const matchLocation = divisionFilter === "all" || u.division?.id === Number(divisionFilter);
+      const matchLocation = locationFilter === "all" || u.location?.id === Number(locationFilter);
 
       return matchSearch && matchLocation;
     });
-  }, [data, debouncedSearch, divisionFilter]);
+  }, [data, debouncedSearch, locationFilter]);
 
   const toggleSelect = useCallback((id) => {
     setSelected((prev) =>
@@ -115,7 +115,7 @@ export function useNormalEmployeesHooks(users = []) {
     data,
     search, setSearch,
     selected, filteredData,
-    divisionFilter, setLocationFilter,
+    locationFilter, setLocationFilter,
     toggleSelect, setSelected, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };
 }

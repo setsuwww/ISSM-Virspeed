@@ -18,7 +18,7 @@ export function AttendancesCard({ shifts = [] }) {
         approval: u?.approval ? String(u.approval).toUpperCase() : "PENDING",
         _shiftId: shift.id,
         _shiftType: shift.type,
-        _shiftLocation: shift.divisionName,
+        _shiftLocation: shift.locationName,
       }))
     )
   }, [shifts])

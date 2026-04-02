@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
 
   const currentUser = await prisma.user.findUnique({
     where: { id: currentUserId },
-    select: { divisionId: true, shiftId: true, },
+    select: { locationId: true, shiftId: true, },
   })
 
   if (!currentUser)
@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     where: {
       id: { not: currentUserId },
       role: "EMPLOYEE",
-      divisionId: currentUser.divisionId,
+      locationId: currentUser.locationId,
       shiftId: { not: currentUser.shiftId }
     },
     select: {

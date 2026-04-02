@@ -11,7 +11,7 @@ export function exportPDF(employees = []) {
     { header: "Shift Type", key: "shiftType", width: 14 },
     { header: "Shift Name", key: "shiftName", width: 18 },
     { header: "Shift Time", key: "shiftTime", width: 18 },
-    { header: "Location", key: "division", width: 18 },
+    { header: "Location", key: "location", width: 18 },
     { header: "Created At", key: "createdAt", width: 16 },
     { header: "Updated At", key: "updatedAt", width: 16 },
   ];
@@ -25,7 +25,7 @@ export function exportPDF(employees = []) {
     shiftName: u.shift?.name ?? "-",
     shiftTime: u.shift ? `${u.shift.startTime} - ${u.shift.endTime}` : "-",
 
-    division: u.division?.name ?? "-",
+    location: u.location?.name ?? "-",
 
     createdAt: new Date(u.createdAt).toLocaleDateString("id-ID"),
     updatedAt: new Date(u.updatedAt).toLocaleDateString("id-ID"),

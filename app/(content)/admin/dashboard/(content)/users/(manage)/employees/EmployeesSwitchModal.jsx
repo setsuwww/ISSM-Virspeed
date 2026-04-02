@@ -117,7 +117,7 @@ export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
           <section className="space-y-2 shrink-0">
             <Label>Search user</Label>
             <p className="text-xs text-slate-500 max-w-xl">
-              Search users in the same division to swap shift
+              Search users in the same location to swap shift
             </p>
 
             <div className="relative">

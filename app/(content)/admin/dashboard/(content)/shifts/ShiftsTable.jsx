@@ -81,7 +81,7 @@ export function ShiftsTable({ data }) {
               </TableCell>
 
               <TableCell>{shift.timeRange}</TableCell>
-              <TableCell>{shift.division}</TableCell>
+              <TableCell>{shift.location}</TableCell>
 
               <TableCell>
                 <Link href={`/admin/dashboard/shifts/${shift.id}/list-users`} className="flex items-center gap-1 text-sky-500">

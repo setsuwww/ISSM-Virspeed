@@ -102,7 +102,7 @@ export default function AttendancesUsers({ selectedStatus, shifts = [], allUsers
                 return (
                   <div key={shift.id} className="border rounded-lg bg-white">
                     <div className="px-4 py-2 bg-slate-50 border-b text-sm font-medium rounded-t-lg">
-                      {capitalize(shift.type)} — {shift.divisionName}
+                      {capitalize(shift.type)} — {shift.locationName}
                     </div>
 
                     {usersInShift.map((u) => (

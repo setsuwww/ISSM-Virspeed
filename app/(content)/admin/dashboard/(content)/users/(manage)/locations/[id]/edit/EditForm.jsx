@@ -17,7 +17,7 @@ import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 import { updateLocation } from "@/_servers/admin-action/locationAction";
 import { useToast } from "@/_contexts/Toast-Provider";
 
-export default function EditLocationForm({ division }) {
+export default function EditLocationForm({ location }) {
   const router = useRouter();
   const { addToast } = useToast()
   const [isPending, startTransition] = useTransition();
@@ -26,18 +26,18 @@ export default function EditLocationForm({ division }) {
     const data = Object.fromEntries(formData.entries());
 
     startTransition(async () => {
-      const res = await updateLocation(division.id, data);
+      const res = await updateLocation(location.id, data);
       if (res?.success) {
         addToast({
           title: "Status updated",
-          description: `Location "${division.name}" status successfully changed.`,
+          description: `Location "${location.name}" status successfully changed.`,
         })
-        router.push("/admin/dashboard/users/divisions");
+        router.push("/admin/dashboard/users/locations");
       }
       else {
         addToast({
           title: "Update failed",
-          description: `Location "${division.name}" fail to change`,
+          description: `Location "${location.name}" fail to change`,
         })
       }
     });
@@ -47,8 +47,8 @@ export default function EditLocationForm({ division }) {
     <ContentForm>
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
-          <ContentInformation title="Edit Location" subtitle={`Editing data for: ${division.name}`}
-            show variant="outline" buttonText="Cancel" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
+          <ContentInformation title="Edit Location" subtitle={`Editing data for: ${location.name}`}
+            show variant="outline" buttonText="Cancel" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/locations"
           />
         </ContentForm.Header>
 
@@ -56,30 +56,30 @@ export default function EditLocationForm({ division }) {
           <div className="space-y-6">
             <div className="space-y-2">
               <Label>Name <span className="text-rose-500">*</span></Label>
-              <Input name="name" defaultValue={division.name} required />
+              <Input name="name" defaultValue={location.name} required />
             </div>
 
             <div className="space-y-2">
               <Label>Location <span className="text-rose-500">*</span></Label>
-              <Input name="location" defaultValue={division.location} required />
+              <Input name="location" defaultValue={location.location} required />
             </div>
 
-            <ContentInformation title="Location Coordinates" subtitle="Insert latitude and longitude for active division location" />
+            <ContentInformation title="Location Coordinates" subtitle="Insert latitude and longitude for active location location" />
 
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="space-y-2">
                 <Label>Longitude<span className="text-rose-500">*</span></Label>
-                <Input name="longitude" defaultValue={division.longitude ?? ""} />
+                <Input name="longitude" defaultValue={location.longitude ?? ""} />
               </div>
               <div className="space-y-2">
                 <Label>Latitude<span className="text-rose-500">*</span></Label>
-                <Input name="latitude" defaultValue={division.latitude ?? ""} />
+                <Input name="latitude" defaultValue={location.latitude ?? ""} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label>Radius (meter)<span className="text-rose-500">*</span></Label>
-              <Input name="radius" defaultValue={division.radius ?? ""} />
+              <Input name="radius" defaultValue={location.radius ?? ""} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -88,7 +88,7 @@ export default function EditLocationForm({ division }) {
                 <Input
                   type="time"
                   name="startTime"
-                  defaultValue={division.startTime ? minutesToTime(division.startTime) : ""}
+                  defaultValue={location.startTime ? minutesToTime(location.startTime) : ""}
                   required
                 />
               </div>
@@ -97,7 +97,7 @@ export default function EditLocationForm({ division }) {
                 <Input
                   type="time"
                   name="endTime"
-                  defaultValue={division.endTime ? minutesToTime(division.endTime) : ""}
+                  defaultValue={location.endTime ? minutesToTime(location.endTime) : ""}
                   required
                 />
               </div>
@@ -106,7 +106,7 @@ export default function EditLocationForm({ division }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Type<span className="text-rose-500">*</span></Label>
-                <Select name="type" defaultValue={division.type}>
+                <Select name="type" defaultValue={location.type}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {typeOptions.map(opt => (
@@ -118,7 +118,7 @@ export default function EditLocationForm({ division }) {
 
               <div className="space-y-2">
                 <Label>Status<span className="text-rose-500">*</span></Label>
-                <Select name="status" defaultValue={division.status}>
+                <Select name="status" defaultValue={location.status}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {statusOptions.map(opt => (

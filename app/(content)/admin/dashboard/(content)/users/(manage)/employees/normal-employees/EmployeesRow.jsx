@@ -62,7 +62,7 @@ export const EmployeesRow = React.memo(
         <TableCell>
           <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100">
             <Globe />
-            {user.division?.name}
+            {user.location?.name}
           </Badge>
         </TableCell>
 

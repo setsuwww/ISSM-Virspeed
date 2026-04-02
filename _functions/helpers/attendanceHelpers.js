@@ -47,27 +47,27 @@ export async function determineAttendanceStatus(shiftId) {
   return "ABSENT"
 }
 
-export function isUserWithinLocation(division, currentCoords) {
-  if (!division?.latitude || !division?.longitude) return false
+export function isUserWithinLocation(location, currentCoords) {
+  if (!location?.latitude || !location?.longitude) return false
   if (!currentCoords?.lat && !currentCoords?.latitude) return false
 
   const userLat = currentCoords.lat ?? currentCoords.latitude
   const userLon = currentCoords.lon ?? currentCoords.longitude
 
   const distance = getDistanceMeters(
-    { lat: division.latitude, lon: division.longitude },
+    { lat: location.latitude, lon: location.longitude },
     { lat: userLat, lon: userLon }
   )
 
-  return distance <= division.radius
+  return distance <= location.radius
 }
 
-export function evaluateAttendancePolicy({ division, currentCoords }) {
-  if (!division) {
+export function evaluateAttendancePolicy({ location, currentCoords }) {
+  if (!location) {
     return { allowed: false, save: false, message: "Location not found" }
   }
 
-  if (division.status === "INACTIVE") {
+  if (location.status === "INACTIVE") {
     return {
       allowed: true,
       save: false,
@@ -75,12 +75,12 @@ export function evaluateAttendancePolicy({ division, currentCoords }) {
     }
   }
 
-  if (division.type === "WFA") {
+  if (location.type === "WFA") {
     return { allowed: true, save: true, ignoreLocation: true }
   }
 
-  if (division.type === "WFO") {
-    const isValidLocation = isUserWithinLocation(division, currentCoords)
+  if (location.type === "WFO") {
+    const isValidLocation = isUserWithinLocation(location, currentCoords)
 
     if (!isValidLocation) {
       return {

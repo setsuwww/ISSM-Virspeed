@@ -1,7 +1,7 @@
 import { exportExcelTemplate } from "../utils/ExportExcelTemplate";
 
-export function exportExcel(divisions = []) {
-  if (!divisions || divisions.length === 0) return;
+export function exportExcel(locations = []) {
+  if (!locations || locations.length === 0) return;
 
   const columns = [
     { header: "No", key: "no", width: 6 },
@@ -17,7 +17,7 @@ export function exportExcel(divisions = []) {
     { header: "Created At", key: "createdAt", width: 16 },
   ];
 
-  const data = divisions.map((d) => ({
+  const data = locations.map((d) => ({
     name: d.name,
     location: d.location,
     type: d.type,

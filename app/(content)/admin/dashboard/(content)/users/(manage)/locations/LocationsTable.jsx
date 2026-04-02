@@ -80,12 +80,12 @@ export default function LocationsTable({ data }) {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredData.map((division) => (
+              filteredData.map((location) => (
                 <LocationRow
-                  key={division.id}
-                  division={division}
-                  isSelected={selectedIds.includes(division.id)}
-                  onSelect={() => toggleSelect(division.id)}
+                  key={location.id}
+                  location={location}
+                  isSelected={selectedIds.includes(location.id)}
+                  onSelect={() => toggleSelect(location.id)}
                   onToggleStatus={onToggleStatus}
                   onToggleType={onToggleType}
                   onEdit={handleEditLocation}

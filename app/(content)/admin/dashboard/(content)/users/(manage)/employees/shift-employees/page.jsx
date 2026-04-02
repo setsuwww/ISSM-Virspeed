@@ -18,7 +18,7 @@ export default async function Page({ searchParams }) {
     ? Number(params?.limit)
     : 10;
 
-  const [[users, total], { divisions, shifts }] = await Promise.all([
+  const [[users, total], { locations, shifts }] = await Promise.all([
     Promise.all([getShiftEmployees({ page, limit }), getShiftEmployeeCount()]),
     getSEFilterData(),
   ]);
@@ -51,7 +51,7 @@ export default async function Page({ searchParams }) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <EmployeesTable users={serializedUsers} divisions={divisions} shifts={shifts} />
+          <EmployeesTable users={serializedUsers} locations={locations} shifts={shifts} />
           <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/employees/shift-employees" limit={limit} />
         </ContentForm.Body>
       </ContentForm>

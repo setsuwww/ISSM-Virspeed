@@ -11,13 +11,13 @@ import { EmployeesRow } from "./EmployeesRow";
 import { useHandleUsers } from "@/_clients/handlers/admin/useHandleUsers";
 import { useShiftEmployeesHooks } from "@/_clients/hooks/admin/useShiftEmployeesHooks";
 
-export default function EmployeesTable({ users, divisions, shifts }) {
+export default function EmployeesTable({ users, locations, shifts }) {
   const [selectedIds, setSelectedIds] = useState([]);
 
   const {
     search, setSearch,
     filteredData,
-    divisionFilter, setLocationFilter,
+    locationFilter, setLocationFilter,
     shiftFilter, setShiftFilter
   } = useShiftEmployeesHooks(users, shifts);
 
@@ -33,9 +33,9 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         search={search} setSearch={setSearch}
         selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
-        divisionFilter={divisionFilter} setLocationFilter={setLocationFilter}
+        locationFilter={locationFilter} setLocationFilter={setLocationFilter}
         shiftFilter={shiftFilter} setShiftFilter={setShiftFilter}
-        divisions={divisions} shifts={shifts}
+        locations={locations} shifts={shifts}
       />
 
       <Table>

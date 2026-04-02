@@ -47,6 +47,6 @@ export const getCurrentUser = cache(async () => {
 
   return prisma.user.findUnique({
     where: { id: decoded.id },
-    include: { shift: true, division: true },
+    include: { shift: true, location: true },
   })
 })

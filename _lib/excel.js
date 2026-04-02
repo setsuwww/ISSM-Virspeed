@@ -17,7 +17,7 @@ export function parseUserExcel(file) {
         email: String(r.email).trim().toLowerCase(),
         password: String(r.password),
         role: r.role || "USER",
-        division: r.division || null,
+        location: r.location || null,
         workMode: r.workMode || "WORK_HOURS",
         shift: r.shift || null,
       }))

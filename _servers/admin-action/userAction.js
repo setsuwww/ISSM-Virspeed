@@ -15,7 +15,7 @@ export async function getUsers(page, limit) {
       shift: {
         select: { name: true, type: true, startTime: true, endTime: true },
       },
-      division: {
+      location: {
         select: {
           name: true, startTime: true, endTime: true,
           shifts: {
@@ -35,10 +35,10 @@ export async function getUserCount() {
 export async function createUser(formData) {
   try {
     const formObject = Object.fromEntries(formData.entries())
-    let { name, email, password, role, divisionId, shiftId, workMode } = formObject
+    let { name, email, password, role, locationId, shiftId, workMode } = formObject
 
     role = role || "USER"
-    divisionId = divisionId !== "NONE" ? parseInt(divisionId) : null
+    locationId = locationId !== "NONE" ? parseInt(locationId) : null
     shiftId = workMode === "SHIFT" && shiftId !== "NONE" ? parseInt(shiftId) : null
 
     if (!name || !email) { throw new Error("Name, and email, are required.") }
@@ -54,7 +54,7 @@ export async function createUser(formData) {
         name, email,
         password: hashedPassword,
         role,
-        divisionId, shiftId,
+        locationId, shiftId,
       },
     })
 
@@ -75,29 +75,29 @@ export async function bulkCreateUser(rows) {
   let created = 0
 
   for (const row of rows) {
-    const { name, email, password, role = "EMPLOYEE", division, workMode = "WORK_HOURS", shift } = row
+    const { name, email, password, role = "EMPLOYEE", location, workMode = "WORK_HOURS", shift } = row
     const mode = workMode?.toUpperCase() === "SHIFT" ? "SHIFT" : "WORK_HOURS"
 
-    if (!name || !email || !division) {
+    if (!name || !email || !location) {
       console.log("Skipping row (missing data):", row)
       continue
     }
 
-    const divisionData = await prisma.division.findFirst({
-      where: { name: division?.trim() },
+    const locationData = await prisma.location.findFirst({
+      where: { name: location?.trim() },
       include: { shifts: true },
     })
 
-    if (!divisionData) {
-      console.log("Skipping row (division not found):", division)
+    if (!locationData) {
+      console.log("Skipping row (location not found):", location)
       continue
     }
 
     let shiftId = null
     if (mode === "SHIFT" && shift) {
-      const shiftData = divisionData.shifts.find(s => s.name.trim() === shift.trim())
+      const shiftData = locationData.shifts.find(s => s.name.trim() === shift.trim())
       if (shiftData) shiftId = shiftData.id
-      else console.log("Shift not found in division:", shift)
+      else console.log("Shift not found in location:", shift)
     }
 
     const exists = await prisma.user.findUnique({ where: { email } })
@@ -115,7 +115,7 @@ export async function bulkCreateUser(rows) {
         email,
         password: hashed,
         role,
-        divisionId: divisionData.id,
+        locationId: locationData.id,
         shiftId,
       },
     })
@@ -129,13 +129,13 @@ export async function bulkCreateUser(rows) {
 
 export async function updateUser(data) {
   try {
-    const { id, name, email, password, role, shiftId, divisionId } = data;
+    const { id, name, email, password, role, shiftId, locationId } = data;
 
     if (!id) { return { error: "User ID is required." } }
 
     const updateData = {
       name, email, role,
-      divisionId: divisionId ? parseInt(divisionId) : null, shiftId: shiftId ? parseInt(shiftId) : null,
+      locationId: locationId ? parseInt(locationId) : null, shiftId: shiftId ? parseInt(shiftId) : null,
     };
 
     if (password && password.trim() !== "") {
@@ -191,7 +191,7 @@ export async function getShiftEmployees({ page = 1, limit = 10 }) {
           startTime: true, endTime: true,
         },
       },
-      division: { select: { id: true, name: true, type: true } },
+      location: { select: { id: true, name: true, type: true } },
     },
   });
 }
@@ -203,8 +203,8 @@ export async function getShiftEmployeeCount() {
 }
 
 export async function getSEFilterData() {
-  const [divisions, shifts] = await Promise.all([
-    prisma.division.findMany({
+  const [locations, shifts] = await Promise.all([
+    prisma.location.findMany({
       select: { id: true, name: true, type: true },
       orderBy: { name: "asc" },
     }),
@@ -214,7 +214,7 @@ export async function getSEFilterData() {
       orderBy: { name: "asc" },
     }),
   ]);
-  return { divisions, shifts };
+  return { locations, shifts };
 }
 
 // ------------------------
@@ -224,14 +224,14 @@ export async function getSEFilterData() {
 export async function getNormalEmployees({ page = 1, limit = 10 }) {
   return prisma.user.findMany({
     where: {
-      role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
-      division: { startTime: { not: null }, endTime: { not: null } },
+      role: "EMPLOYEE", shiftId: null, locationId: { not: null },
+      location: { startTime: { not: null }, endTime: { not: null } },
     },
     skip: (page - 1) * limit, take: limit, orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, email: true, role: true,
       createdAt: true, updatedAt: true,
-      division: { select: { id: true, name: true, type: true, startTime: true, endTime: true } },
+      location: { select: { id: true, name: true, type: true, startTime: true, endTime: true } },
     },
   });
 }
@@ -239,8 +239,8 @@ export async function getNormalEmployees({ page = 1, limit = 10 }) {
 export async function getNormalEmployeeCount() {
   return prisma.user.count({
     where: {
-      role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
-      division: {
+      role: "EMPLOYEE", shiftId: null, locationId: { not: null },
+      location: {
         startTime: { not: null },
         endTime: { not: null },
       },
@@ -249,7 +249,7 @@ export async function getNormalEmployeeCount() {
 }
 
 export async function getSELocations() {
-  return prisma.division.findMany({
+  return prisma.location.findMany({
     where: { status: "ACTIVE" },
     select: { id: true, name: true, type: true },
     orderBy: {

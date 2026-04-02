@@ -36,23 +36,23 @@ export default async function Page({ searchParams }) {
       type: u.shift.type,
     }
 
-    const divisionShift = !userShift && u.division?.shifts?.length
+    const locationShift = !userShift && u.location?.shifts?.length
       ? {
-        label: `${u.division.shifts[0].name} - (Normal)`,
-        start: u.division.shifts[0].startTime,
-        end: u.division.shifts[0].endTime,
+        label: `${u.location.shifts[0].name} - (Normal)`,
+        start: u.location.shifts[0].startTime,
+        end: u.location.shifts[0].endTime,
         type: "DIVISION",
       } : null
 
-    const divisionTime = !userShift && !divisionShift && u.division?.startTime && u.division?.endTime
+    const locationTime = !userShift && !locationShift && u.location?.startTime && u.location?.endTime
       ? {
-        label: u.division.name,
-        start: u.division.startTime,
-        end: u.division.endTime,
+        label: u.location.name,
+        start: u.location.startTime,
+        end: u.location.endTime,
         type: "DIVISION_TIME",
       } : null
 
-    const finalShift = userShift || divisionShift || divisionTime
+    const finalShift = userShift || locationShift || locationTime
 
     return {
       id: u.id,

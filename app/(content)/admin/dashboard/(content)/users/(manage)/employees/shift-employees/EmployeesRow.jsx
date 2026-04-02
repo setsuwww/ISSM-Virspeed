@@ -49,7 +49,7 @@ export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, t
       <TableCell>
         <Badge className="bg-blue-50 text-blue-700 border-sky-100">
           <Building2 className="mr-1" size={16} />
-          {user.division?.name}
+          {user.location?.name}
         </Badge>
       </TableCell>
       <TableCell>

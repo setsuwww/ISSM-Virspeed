@@ -21,13 +21,13 @@ import { roleOptions } from "@/_constants/userConstants"
 
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
 
-export default function CreateForm({ divisions, shifts }) {
+export default function CreateForm({ locations, shifts }) {
   const router = useRouter()
   const { addToast } = useToast()
 
   const [form, setForm] = useState({
     name: "", email: "", password: "", role: "USER",
-    divisionId: "", workMode: "WORK_HOURS", shiftId: "",
+    locationId: "", workMode: "WORK_HOURS", shiftId: "",
   })
 
   const [excelRows, setExcelRows] = useState([])
@@ -96,10 +96,10 @@ export default function CreateForm({ divisions, shifts }) {
   }
 
   const selectedLocation = useMemo(
-    () => divisions.find(o => String(o.id) === form.divisionId),
-    [form.divisionId, divisions]
+    () => locations.find(o => String(o.id) === form.locationId),
+    [form.locationId, locations]
   )
-  const defaultdivisionHour = useMemo(
+  const defaultlocationHour = useMemo(
     () => selectedLocation ? { startTime: selectedLocation.startTime, endTime: selectedLocation.endTime } : null,
     [selectedLocation]
   )
@@ -107,7 +107,7 @@ export default function CreateForm({ divisions, shifts }) {
 
   return (
     <section>
-      <DashboardHeader title="Create User" subtitle="Insert name, email, password, role, and work mode (shift or division hours)" />
+      <DashboardHeader title="Create User" subtitle="Insert name, email, password, role, and work mode (shift or location hours)" />
 
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -174,14 +174,14 @@ export default function CreateForm({ divisions, shifts }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="divisionId">Location Assignment</Label>
-                <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)} disabled={inputMode === "EXCEL"}>
+                <Label htmlFor="locationId">Location Assignment</Label>
+                <Select value={form.locationId} onValueChange={(v) => handleCustomChange("locationId", v)} disabled={inputMode === "EXCEL"}>
                   <SelectTrigger className="w-1/2">
-                    <SelectValue placeholder="Select an division" />
+                    <SelectValue placeholder="Select an location" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="NONE">-</SelectItem>
-                    {divisions.map((d) => (
+                    {locations.map((d) => (
                       <SelectItem key={d.id} value={String(d.id)}>
                         {capitalize(d.name)}
                       </SelectItem>
@@ -201,16 +201,16 @@ export default function CreateForm({ divisions, shifts }) {
                 />
                 <ContentList type="i"
                   items={[
-                    "Work Hours : follow the default division work startTime & endTime",
-                    "Shift Hours : follow the shifts division work startTime & endTime",
+                    "Work Hours : follow the default location work startTime & endTime",
+                    "Shift Hours : follow the shifts location work startTime & endTime",
                   ]}
                 />
               </div>
 
-              {form.workMode === "WORK_HOURS" && defaultdivisionHour && (
+              {form.workMode === "WORK_HOURS" && defaultlocationHour && (
                 <div className="p-3 rounded-md bg-white/30 border text-sm">
                   <p>
-                    <strong className="text-slate-600">Location Hours : </strong> {minutesToTime(defaultdivisionHour.startTime)} - {minutesToTime(defaultdivisionHour.endTime)}
+                    <strong className="text-slate-600">Location Hours : </strong> {minutesToTime(defaultlocationHour.startTime)} - {minutesToTime(defaultlocationHour.endTime)}
                   </p>
                 </div>
               )}
@@ -237,7 +237,7 @@ export default function CreateForm({ divisions, shifts }) {
                       </SelectContent>
                     </Select>
                     {availableShifts.length === 0 && (
-                      <ContentList type="w" items={["There is no shift detected or created in this division to assign"]} />
+                      <ContentList type="w" items={["There is no shift detected or created in this location to assign"]} />
                     )}
                   </div>
 

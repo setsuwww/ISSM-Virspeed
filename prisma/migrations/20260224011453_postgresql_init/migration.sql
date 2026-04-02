@@ -91,7 +91,7 @@ CREATE TABLE "public"."User" (
     "isLocked" BOOLEAN NOT NULL DEFAULT false,
     "isFlagged" BOOLEAN NOT NULL DEFAULT false,
     "tokenVersion" INTEGER NOT NULL DEFAULT 0,
-    "divisionId" INTEGER,
+    "locationId" INTEGER,
     "shiftId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -132,7 +132,7 @@ CREATE TABLE "public"."Schedule" (
     "startTime" TEXT,
     "endDate" TIMESTAMP(3),
     "endTime" TEXT,
-    "divisionId" INTEGER,
+    "locationId" INTEGER,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -187,7 +187,7 @@ CREATE TABLE "public"."Shift" (
     "startTime" INTEGER NOT NULL,
     "endTime" INTEGER NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "divisionId" INTEGER,
+    "locationId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -209,8 +209,8 @@ CREATE TABLE "public"."Attendance" (
     "shiftId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "divisionType" "public"."LocationType",
-    "divisionStatus" "public"."LocationStatus",
+    "locationType" "public"."LocationType",
+    "locationStatus" "public"."LocationStatus",
 
     CONSTRAINT "Attendance_pkey" PRIMARY KEY ("id")
 );
@@ -338,7 +338,7 @@ ALTER TABLE "public"."SecurityLog" ADD CONSTRAINT "SecurityLog_userId_fkey" FORE
 ALTER TABLE "public"."SuspiciousActivity" ADD CONSTRAINT "SuspiciousActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."User" ADD CONSTRAINT "User_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."User" ADD CONSTRAINT "User_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."User" ADD CONSTRAINT "User_shiftId_fkey" FOREIGN KEY ("shiftId") REFERENCES "public"."Shift"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -356,7 +356,7 @@ ALTER TABLE "public"."UserShiftAssignment" ADD CONSTRAINT "UserShiftAssignment_u
 ALTER TABLE "public"."UserShiftAssignment" ADD CONSTRAINT "UserShiftAssignment_shiftId_fkey" FOREIGN KEY ("shiftId") REFERENCES "public"."Shift"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Schedule" ADD CONSTRAINT "Schedule_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Schedule" ADD CONSTRAINT "Schedule_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."SchedulesOnUsers" ADD CONSTRAINT "SchedulesOnUsers_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "public"."Schedule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -374,7 +374,7 @@ ALTER TABLE "public"."ScheduleReminder" ADD CONSTRAINT "ScheduleReminder_userId_
 ALTER TABLE "public"."Location" ADD CONSTRAINT "Location_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Shift" ADD CONSTRAINT "Shift_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Shift" ADD CONSTRAINT "Shift_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Attendance" ADD CONSTRAINT "Attendance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

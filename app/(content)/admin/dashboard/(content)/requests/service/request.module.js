@@ -38,7 +38,7 @@ export async function fetchPermissionRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: { select: { name: true, startTime: true, endTime: true } },
+          location: { select: { name: true, startTime: true, endTime: true } },
         },
       },
       shift: {
@@ -66,7 +66,7 @@ export async function fetchEarlyCheckoutRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: { select: { name: true, startTime: true, endTime: true } },
+          location: { select: { name: true, startTime: true, endTime: true } },
         },
       },
       attendance: {
@@ -114,7 +114,7 @@ export async function fetchLeaveRequests(isHistory) {
         select: {
           name: true,
           email: true,
-          division: {
+          location: {
             select: { name: true },
           },
           shift: {

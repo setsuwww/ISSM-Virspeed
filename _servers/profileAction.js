@@ -6,13 +6,13 @@ import crypto from "crypto";
 import { revalidatePath } from "next/cache"
 
 export async function updateProfile(data) {
-  const { id, name, email, divisionId, shiftId } = data
+  const { id, name, email, locationId, shiftId } = data
 
   try {
     const updated = await prisma.user.update({
       where: { id: id },
-      data: { name, email, divisionId, shiftId },
-      include: { shift: true, division: true },
+      data: { name, email, locationId, shiftId },
+      include: { shift: true, location: true },
     })
     revalidatePath("/admin/profiles")
     return { success: true, user: updated }

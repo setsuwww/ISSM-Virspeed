@@ -54,7 +54,7 @@ export default function CreateLocationForm() {
       const result = await createLocation(payload)
       setLoading(false)
 
-      if (result.success) { router.push("/admin/dashboard/users/divisions") }
+      if (result.success) { router.push("/admin/dashboard/users/locations") }
       else { alert(result.message) }
     })
   }
@@ -69,16 +69,16 @@ export default function CreateLocationForm() {
   return (
     <section>
       <DashboardHeader
-        title="Create division"
-        subtitle="Fill in division details to register a new division location"
+        title="Create location"
+        subtitle="Fill in location details to register a new location location"
       />
 
 
       <ContentForm>
         <form onSubmit={handleSubmit} className="space-y-2">
           <ContentForm.Header>
-            <ContentInformation title="Location form" subtitle="Insert divisions data & create new division"
-              show={true} variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
+            <ContentInformation title="Location form" subtitle="Insert locations data & create new location"
+              show={true} variant="outline" buttonText="Back" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/locations"
             />
           </ContentForm.Header>
 
@@ -90,7 +90,7 @@ export default function CreateLocationForm() {
                 <Label htmlFor="name">
                   Name <span className="text-rose-500">*</span>
                 </Label>
-                <Input name="name" placeholder="Head division"
+                <Input name="name" placeholder="Head location"
                   value={form.name} onChange={handleChange} required
                 />
               </div>
@@ -104,7 +104,7 @@ export default function CreateLocationForm() {
                 />
               </div>
 
-              <ContentInformation title="Location Coordinates" subtitle="Insert latitude and longitude for active division location" />
+              <ContentInformation title="Location Coordinates" subtitle="Insert latitude and longitude for active location location" />
 
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <div className="space-y-2">

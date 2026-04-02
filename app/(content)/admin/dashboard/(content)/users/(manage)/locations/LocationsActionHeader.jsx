@@ -4,9 +4,9 @@ import { Button } from "@/_components/ui/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { exportPDF } from "@/_functions/exports/division/exportPDF"
-import { exportWord } from "@/_functions/exports/division/exportWord"
-import { exportExcel } from "@/_functions/exports/division/exportExcel"
+import { exportPDF } from "@/_functions/exports/location/exportPDF"
+import { exportWord } from "@/_functions/exports/location/exportWord"
+import { exportExcel } from "@/_functions/exports/location/exportExcel"
 
 export default function LocationsActionHeader({
   search, onSearchChange,
@@ -45,7 +45,7 @@ export default function LocationsActionHeader({
         </Select>
 
         <Input ref={searchInputRef} value={search} onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search division..." className="w-full sm:w-64 py-2" typeSearch
+          placeholder="Search location..." className="w-full sm:w-64 py-2" typeSearch
         />
       </div>
 

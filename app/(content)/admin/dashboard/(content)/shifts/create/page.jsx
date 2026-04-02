@@ -4,10 +4,10 @@ import { prisma } from "@/_lib/prisma";
 export const revalidate = 60;
 
 export default async function CreateShiftPage() {
-  const divisions = await prisma.division.findMany({
+  const locations = await prisma.location.findMany({
     orderBy: { name: "asc" },
-    select: { id: true, name: true},
+    select: { id: true, name: true },
   });
 
-  return <CreateForm divisions={divisions} />;
+  return <CreateForm locations={locations} />;
 }

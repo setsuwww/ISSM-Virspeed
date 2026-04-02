@@ -22,11 +22,11 @@ export async function userPrecheckCheckIn() {
 
   const shift = await prisma.shift.findUnique({
     where: { id: user.shiftId },
-    include: { division: true },
+    include: { location: true },
   })
-  if (!shift?.division) return { error: "Shift atau divisi tidak ditemukan" }
+  if (!shift?.location) return { error: "Shift atau divisi tidak ditemukan" }
 
-  const policy = evaluateAttendancePolicy({ division: shift.division })
+  const policy = evaluateAttendancePolicy({ location: shift.location })
 
   await safeLog({
     userId: user.id,
@@ -58,15 +58,15 @@ export async function userSendCheckIn(coords = null) {
 
   const shift = await prisma.shift.findUnique({
     where: { id: user.shiftId },
-    include: { division: true },
+    include: { location: true },
   });
 
-  if (!shift?.division) {
+  if (!shift?.location) {
     return { error: "Shift atau divisi tidak ditemukan" };
   }
 
   const policy = evaluateAttendancePolicy({
-    division: shift.division,
+    location: shift.location,
     currentCoords: coords,
   });
 
@@ -106,8 +106,8 @@ export async function userSendCheckIn(coords = null) {
       date: today,
       status,
       checkInTime: now.toDate(),
-      divisionType: shift.division.type,
-      divisionStatus: shift.division.status,
+      locationType: shift.location.type,
+      locationStatus: shift.location.status,
     },
     update: {
       status,

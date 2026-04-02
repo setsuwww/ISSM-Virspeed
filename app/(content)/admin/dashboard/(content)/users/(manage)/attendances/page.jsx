@@ -33,7 +33,7 @@ async function getShiftsWithWorkMinutes(page) {
         type: true,
         startTime: true,
         endTime: true,
-        division: { select: { id: true, name: true } },
+        location: { select: { id: true, name: true } },
         users: { select: { id: true, name: true, email: true, shift: { select: { type: true } } } },
       },
     }),
@@ -45,7 +45,7 @@ async function getShiftsWithWorkMinutes(page) {
     id: shift.id,
     name: shift.name,
     type: shift.type,
-    divisionName: shift.division?.name ?? "-",
+    locationName: shift.location?.name ?? "-",
     startTime: shift.startTime,
     endTime: shift.endTime,
     users: shift.users.map(user => {

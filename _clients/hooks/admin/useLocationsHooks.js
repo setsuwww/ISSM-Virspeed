@@ -9,7 +9,7 @@ import { getLocations } from "@/_servers/admin-action/locationAction";
 export function useLocationsHooks(initialData) {
   const fetcher = async () => await getLocations();
 
-  const { data: swrResult, mutate } = useSWR("divisions", fetcher, {
+  const { data: swrResult, mutate } = useSWR("locations", fetcher, {
     fallbackData: initialData,
   });
 
@@ -23,11 +23,11 @@ export function useLocationsHooks(initialData) {
 
   const filteredData = useMemo(() => {
     const q = (debouncedSearch || "").toString().toLowerCase();
-    return listData.filter((division) => {
-      const name = (division.name || "").toString().toLowerCase();
+    return listData.filter((location) => {
+      const name = (location.name || "").toString().toLowerCase();
       const matchSearch = !q || name.includes(q);
-      const matchType = typeFilter === "all" || division.type === typeFilter;
-      const matchStatus = statusFilter === "all" || division.status === statusFilter;
+      const matchType = typeFilter === "all" || location.type === typeFilter;
+      const matchStatus = statusFilter === "all" || location.status === statusFilter;
       return matchSearch && matchType && matchStatus;
     });
   }, [listData, debouncedSearch, typeFilter, statusFilter]);

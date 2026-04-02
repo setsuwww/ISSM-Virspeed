@@ -50,7 +50,7 @@ export default async function ShiftsPage({ searchParams }) {
       timeRange: `${start} - ${end}`,
       usersCount: usersWithStatus.length,
       users: usersWithStatus,
-      division: s.division?.name ?? "-",
+      location: s.location?.name ?? "-",
     };
   });
 
