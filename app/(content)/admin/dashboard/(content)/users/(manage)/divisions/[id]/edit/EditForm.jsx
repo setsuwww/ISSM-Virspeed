@@ -14,10 +14,10 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { typeOptions, statusOptions } from "@/_constants/divisionConstants";
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateDivision } from "@/_servers/admin-action/divisionAction";
+import { updateLocation } from "@/_servers/admin-action/divisionAction";
 import { useToast } from "@/_contexts/Toast-Provider";
 
-export default function EditDivisionForm({ division }) {
+export default function EditLocationForm({ division }) {
   const router = useRouter();
   const { addToast } = useToast()
   const [isPending, startTransition] = useTransition();
@@ -26,18 +26,18 @@ export default function EditDivisionForm({ division }) {
     const data = Object.fromEntries(formData.entries());
 
     startTransition(async () => {
-      const res = await updateDivision(division.id, data);
+      const res = await updateLocation(division.id, data);
       if (res?.success) {
         addToast({
           title: "Status updated",
-          description: `Division "${division.name}" status successfully changed.`,
+          description: `Location "${division.name}" status successfully changed.`,
         })
         router.push("/admin/dashboard/users/divisions");
       }
       else {
         addToast({
           title: "Update failed",
-          description: `Division "${division.name}" fail to change`,
+          description: `Location "${division.name}" fail to change`,
         })
       }
     });
@@ -47,7 +47,7 @@ export default function EditDivisionForm({ division }) {
     <ContentForm>
       <form action={handleSubmit} className="space-y-2">
         <ContentForm.Header>
-          <ContentInformation title="Edit Division" subtitle={`Editing data for: ${division.name}`}
+          <ContentInformation title="Edit Location" subtitle={`Editing data for: ${division.name}`}
             show variant="outline" buttonText="Cancel" buttonIcon={<ChevronLeft />} href="/admin/dashboard/users/divisions"
           />
         </ContentForm.Header>
@@ -64,7 +64,7 @@ export default function EditDivisionForm({ division }) {
               <Input name="location" defaultValue={division.location} required />
             </div>
 
-            <ContentInformation title="Division Coordinates" subtitle="Insert latitude and longitude for active division location"/>
+            <ContentInformation title="Location Coordinates" subtitle="Insert latitude and longitude for active division location" />
 
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="space-y-2">
@@ -141,7 +141,7 @@ export default function EditDivisionForm({ division }) {
                 Updating...
               </>
             ) : (
-              "Update Division"
+              "Update Location"
             )}
           </Button>
         </ContentForm.Footer>

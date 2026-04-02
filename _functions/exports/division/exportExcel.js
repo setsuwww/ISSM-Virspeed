@@ -31,8 +31,8 @@ export function exportExcel(divisions = []) {
   }));
 
   exportExcelTemplate({
-    title: "Division Report",
-    sheetName: "Divisions",
+    title: "Location Report",
+    sheetName: "Locations",
     columns,
     data,
   });

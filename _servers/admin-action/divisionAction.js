@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
 import { timeToMinutes, minutesToTime } from "@/_functions/globalFunction"
 
-export async function getDivisions({ page = 1, limit = 10, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
+export async function getLocations({ page = 1, limit = 10, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
   const skip = (page - 1) * limit;
 
   const where = {
@@ -26,18 +26,18 @@ export async function getDivisions({ page = 1, limit = 10, search = "", typeFilt
     prisma.division.count({ where }),
   ]);
 
-  const formattedDivisions = divisions.map((division) => ({
+  const formattedLocations = divisions.map((division) => ({
     ...division,
     startTime: minutesToTime(division.startTime),
     endTime: minutesToTime(division.endTime),
   }));
 
-  return { data: formattedDivisions, total };
+  return { data: formattedLocations, total };
 }
 
-export async function createDivision(data) {
+export async function createLocation(data) {
   try {
-    const newDivision = await prisma.division.create({
+    const newLocation = await prisma.division.create({
       data: {
         name: data.name,
         location: data.location, longitude: data.longitude, latitude: data.latitude, radius: data.radius,
@@ -46,12 +46,12 @@ export async function createDivision(data) {
       },
     })
     revalidatePath("/admin/dashboard/users/divisions")
-    return { success: true, division: newDivision }
+    return { success: true, division: newLocation }
   }
-  catch (error) { return { success: false, message: "Failed to create division" }}
+  catch (error) { return { success: false, message: "Failed to create division" } }
 }
 
-export async function updateDivisionStatus(id, newStatus) {
+export async function updateLocationStatus(id, newStatus) {
   try {
     await prisma.division.update({
       where: { id }, data: { status: newStatus },
@@ -59,20 +59,20 @@ export async function updateDivisionStatus(id, newStatus) {
     revalidatePath("/admin/dashboard/users/divisions")
     return { success: true }
   }
-  catch (error) { return { success: false }}
+  catch (error) { return { success: false } }
 }
 
-export async function bulkToggleSelectedDivision({ ids, isActive }) {
+export async function bulkToggleSelectedLocation({ ids, isActive }) {
   try {
     await prisma.division.updateMany({
-      where: { id: { in: ids }},
+      where: { id: { in: ids } },
       data: { status: isActive ? "ACTIVE" : "INACTIVE" }
     });
 
     revalidatePath("/admin/dashboard/users/divisions");
     return { success: true };
   }
-  catch (error) { return { success: false }}
+  catch (error) { return { success: false } }
 }
 
 export async function bulkToggle({ activateType, deactivateType, isActive }) {
@@ -101,13 +101,13 @@ export async function bulkToggle({ activateType, deactivateType, isActive }) {
     }
 
     revalidatePath("/admin/dashboard/users/divisions");
-    return { success: true, message: "Global toggle updated."};
+    return { success: true, message: "Global toggle updated." };
 
   }
-  catch (error) { return { success: false, error: error.message || "Unknown error"}}
+  catch (error) { return { success: false, error: error.message || "Unknown error" } }
 }
 
-export async function toggleDivisionType(id) {
+export async function toggleLocationType(id) {
   try {
     const division = await prisma.division.findUnique({
       where: { id },
@@ -115,7 +115,7 @@ export async function toggleDivisionType(id) {
     });
 
     if (!division) {
-      return { success: false, message: "Division not found" };
+      return { success: false, message: "Location not found" };
     }
 
     const nextType = division.type === "WFA" ? "WFO" : "WFA";
@@ -129,7 +129,7 @@ export async function toggleDivisionType(id) {
 
     return {
       success: true,
-      message: `Division switched to ${nextType}`,
+      message: `Location switched to ${nextType}`,
       nextType,
     };
   } catch (error) {
@@ -140,9 +140,9 @@ export async function toggleDivisionType(id) {
   }
 }
 
-export async function toggleDivisionStatus(id) {
+export async function toggleLocationStatus(id) {
   const division = await prisma.division.findUnique({ where: { id } })
-  if (!division) throw new Error("Division not found")
+  if (!division) throw new Error("Location not found")
 
   const newStatus = division.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
   await prisma.division.update({
@@ -153,7 +153,7 @@ export async function toggleDivisionStatus(id) {
   revalidatePath("/admin/dashboard/users/divisions")
 }
 
-export async function updateDivision(id, data) {
+export async function updateLocation(id, data) {
   try {
     const {
       name, location, longitude, latitude, radius,
@@ -162,7 +162,7 @@ export async function updateDivision(id, data) {
 
     if (!name || !location) return { success: false, message: "Name and location are required" }
 
-    const updatedDivision = await prisma.division.update({
+    const updatedLocation = await prisma.division.update({
       where: { id: Number(id) },
       data: {
         name, location,
@@ -176,17 +176,17 @@ export async function updateDivision(id, data) {
 
     revalidatePath("/admin/dashboard/users/divisions")
 
-    return { success: true, data: updatedDivision }
+    return { success: true, data: updatedLocation }
   }
-  catch (error) { return { success: false, message: error.message || "Failed to update division" }}
+  catch (error) { return { success: false, message: error.message || "Failed to update division" } }
 }
 
-export async function deleteDivisionById(id) {
+export async function deleteLocationById(id) {
   await prisma.division.delete({ where: { id } })
   revalidatePath("/admin/dashboard/users/divisions")
 }
 
-export async function deleteDivisions() {
+export async function deleteLocations() {
   await prisma.division.deleteMany()
   revalidatePath("/admin/dashboard/users/divisions")
 }

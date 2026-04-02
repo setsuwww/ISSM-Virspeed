@@ -18,7 +18,7 @@ export function useShiftEmployeesHooks(users = []) {
   const debouncedSearch = useDebounce(search, 400);
 
   const [selected, setSelected] = useState([]);
-  const [divisionFilter, setDivisionFilter] = useState("all");
+  const [divisionFilter, setLocationFilter] = useState("all");
   const [shiftFilter, setShiftFilter] = useState("all");
 
   const [data, setData] = useState([]);
@@ -38,10 +38,10 @@ export function useShiftEmployeesHooks(users = []) {
       const email = (u.email || "").toLowerCase();
 
       const matchSearch = !q || name.includes(q) || email.includes(q);
-      const matchDivision = divisionFilter === "all" || u.division?.id === Number(divisionFilter);
+      const matchLocation = divisionFilter === "all" || u.division?.id === Number(divisionFilter);
       const matchShift = shiftFilter === "all" || u.shift?.type === shiftFilter;
 
-      return matchSearch && matchDivision && matchShift;
+      return matchSearch && matchLocation && matchShift;
     });
   }, [data, debouncedSearch, divisionFilter, shiftFilter]);
 
@@ -100,16 +100,16 @@ export function useShiftEmployeesHooks(users = []) {
           ? { ...u, active: newActiveState } : u
         )
       );
-    } catch { alert(MSG.UPDATE_FAIL)}
+    } catch { alert(MSG.UPDATE_FAIL) }
   }, []);
 
   const onEdit = useCallback(
-    (id) => { router.push(`/admin/dashboard/users/${id}/edit`)},
+    (id) => { router.push(`/admin/dashboard/users/${id}/edit`) },
     [router]
   );
 
   const onHistory = useCallback(
-    (id) => {router.push(`/admin/dashboard/users/${id}/history`)},
+    (id) => { router.push(`/admin/dashboard/users/${id}/history`) },
     [router]
   );
 
@@ -117,7 +117,7 @@ export function useShiftEmployeesHooks(users = []) {
     data,
     search, setSearch,
     selected, filteredData,
-    divisionFilter, setDivisionFilter,
+    divisionFilter, setLocationFilter,
     shiftFilter, setShiftFilter,
     toggleSelect, setSelected, deleteSelected, onDelete, onSwitch, onEdit, onHistory,
   };

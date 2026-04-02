@@ -50,12 +50,12 @@ export default async function Page() {
     <section>
       <DashboardHeader
         title="Work Hours"
-        subtitle="Division & shift-based working hours"
+        subtitle="Location & shift-based working hours"
       />
 
       <ContentForm>
         <ContentForm.Header>
-          <ContentInformation title="Work Hours Overview" subtitle="Division & shift-based working hours"/>
+          <ContentInformation title="Work Hours Overview" subtitle="Location & shift-based working hours" />
         </ContentForm.Header>
 
         <ContentForm.Body>

@@ -4,11 +4,11 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useActionHelper } from "@/_stores/common/useActionStore";
 
-import { toggleDivisionStatus, deleteDivisionById, deleteDivisions, bulkToggleSelectedDivision, bulkToggle, toggleDivisionType } from "@/_servers/admin-action/divisionAction";
+import { toggleLocationStatus, deleteLocationById, deleteLocations, bulkToggleSelectedLocation, bulkToggle, toggleLocationType } from "@/_servers/admin-action/divisionAction";
 
-import { confirmMessages } from "@/_constants/static/handleDivisionMessage";
+import { confirmMessages } from "@/_constants/static/handleLocationMessage";
 
-export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, mutate }) {
+export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, mutate }) {
   const router = useRouter();
   const { withConfirm, withTry } = useActionHelper();
 
@@ -24,8 +24,8 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
   const onToggleStatus = useCallback(async (division) => {
     await withTry(
-      () => toggleDivisionStatus(division.id),
-      `Division "${division.name}" status updated.`,
+      () => toggleLocationStatus(division.id),
+      `Location "${division.name}" status updated.`,
       "Failed to update division status."
     );
     mutate?.();
@@ -38,8 +38,8 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
       await withConfirm(`Switch division "${division.name}" from ${division.type} to ${nextType}?`,
         async () => {
           const result = await withTry(
-            () => toggleDivisionType(division.id),
-            `Division switched to ${nextType}.`,
+            () => toggleLocationType(division.id),
+            `Location switched to ${nextType}.`,
             "Failed to switch division type."
           );
 
@@ -66,22 +66,22 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
   const onBulkUpdate = async (ids, mode) => {
     const { message, variant } = confirmMessages.bulkUpdate(ids.length, mode);
 
-    await withConfirm(message, () => withTry(() => bulkToggleSelectedDivision({
-        ids, isActive: mode === "ACTIVE",
-      }),
-        `Divisions set to ${mode.toLowerCase()}.`, "Bulk update failed."
-      ), variant
+    await withConfirm(message, () => withTry(() => bulkToggleSelectedLocation({
+      ids, isActive: mode === "ACTIVE",
+    }),
+      `Locations set to ${mode.toLowerCase()}.`, "Bulk update failed."
+    ), variant
     ).then(() => mutate?.());
   };
 
-  const handleEditDivision = useCallback((id) => {
+  const handleEditLocation = useCallback((id) => {
     router.push(`/admin/dashboard/users/divisions/${id}/edit`);
   }, [router]);
 
-  const handleDeleteDivision = useCallback(async (id, name) =>
+  const handleDeleteLocation = useCallback(async (id, name) =>
     withConfirm(confirmMessages.deleteOne(name).message,
-      () => withTry(() => deleteDivisionById(id),
-        "Division successfully removed.", "Failed to delete division."
+      () => withTry(() => deleteLocationById(id),
+        "Location successfully removed.", "Failed to delete division."
       ),
       confirmMessages.deleteOne(name).variant
     ).then(() => mutate?.()),
@@ -95,7 +95,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
     await withConfirm(message,
       async () => {
-        await withTry(() => Promise.all(selectedIds.map(deleteDivisionById)),
+        await withTry(() => Promise.all(selectedIds.map(deleteLocationById)),
           `${selectedIds.length} divisions removed.`, "Failed to delete selected divisions."
         );
         setSelectedIds([]);
@@ -110,7 +110,7 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
     await withConfirm(message,
       async () => {
-        await withTry(deleteDivisions,
+        await withTry(deleteLocations,
           "All divisions removed.", "Failed to delete all divisions."
         );
         mutate?.();
@@ -124,8 +124,8 @@ export function useHandleDivisions({ filteredData, selectedIds, setSelectedIds, 
 
     onToggleStatus,
     onToggleType,
-    handleEditDivision,
-    handleDeleteDivision,
+    handleEditLocation,
+    handleDeleteLocation,
     handleDeleteSelected,
     handleDeleteAll,
 

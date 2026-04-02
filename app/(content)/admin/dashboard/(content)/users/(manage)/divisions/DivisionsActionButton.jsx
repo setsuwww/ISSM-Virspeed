@@ -1,6 +1,6 @@
 import { Button } from "@/_components/ui/Button"
 
-export default function DivisionActionButton({ onEdit, onDelete }) {
+export default function LocationActionButton({ onEdit, onDelete }) {
   return (
     <div className="flex gap-2">
       <Button size="sm" variant="outline" onClick={onEdit}>

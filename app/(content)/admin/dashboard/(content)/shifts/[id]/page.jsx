@@ -1,12 +1,12 @@
 import { prisma } from "@/_lib/prisma";
 import { AttendancesCard } from "../../users/(manage)/attendances/AttendancesCardStats";
 
-export default async function DivisionPage({ params }) {
+export default async function LocationPage({ params }) {
   const divisionId = parseInt(params.id);
 
   const division = await prisma.division.findUnique({
     where: { id: divisionId },
-    include: { shifts: { include: { users: { include: { attendances: true }}}}},
+    include: { shifts: { include: { users: { include: { attendances: true } } } } },
   });
 
   if (!division) return <p>division not found</p>;

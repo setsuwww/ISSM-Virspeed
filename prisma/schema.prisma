@@ -159,7 +159,7 @@ model User {
   divisionId Int?
   shiftId    Int?
 
-  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  division Location? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
   shift    Shift?    @relation("ShiftUsers", fields: [shiftId], references: [id])
 
   schedules           SchedulesOnUsers[]
@@ -231,7 +231,7 @@ model Schedule {
   divisionId  Int?
   isActive    Boolean       @default(true)
 
-  division  Division?          @relation(fields: [divisionId], references: [id])
+  division  Location?          @relation(fields: [divisionId], references: [id])
   users     SchedulesOnUsers[]
   reminders ScheduleReminder[]
 
@@ -263,7 +263,7 @@ model ScheduleReminder {
   @@unique([scheduleId, userId])
 }
 
-model Division {
+model Location {
   id        Int            @id @default(autoincrement())
   name      String
   location  String?
@@ -275,8 +275,8 @@ model Division {
   startTime Int?
   endTime   Int?
   parentId  Int?
-  parent    Division?      @relation("DivisionHierarchy", fields: [parentId], references: [id])
-  branches  Division[]     @relation("DivisionHierarchy")
+  parent    Location?      @relation("LocationHierarchy", fields: [parentId], references: [id])
+  branches  Location[]     @relation("LocationHierarchy")
 
   users     User[]
   shifts    Shift[]
@@ -295,7 +295,7 @@ model Shift {
   isActive  Boolean   @default(true)
 
   divisionId Int?
-  division   Division? @relation(fields: [divisionId], references: [id])
+  division   Location? @relation(fields: [divisionId], references: [id])
 
   users       User[]       @relation("ShiftUsers")
   attendances Attendance[]

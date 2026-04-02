@@ -38,7 +38,7 @@ export default function UsersModal({ open, onClose, title, users }) {
             </div>
 
             <div className="flex flex-col gap-0.5">
-              <h1 className="text-xl font-semibold">Division : {title}</h1>
+              <h1 className="text-xl font-semibold">Location : {title}</h1>
               <p className="text-sm text-slate-500">
                 Lists users on this shift if the user have shift assigned
               </p>

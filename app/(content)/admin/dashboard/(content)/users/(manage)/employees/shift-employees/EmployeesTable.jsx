@@ -17,7 +17,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
   const {
     search, setSearch,
     filteredData,
-    divisionFilter, setDivisionFilter,
+    divisionFilter, setLocationFilter,
     shiftFilter, setShiftFilter
   } = useShiftEmployeesHooks(users, shifts);
 
@@ -33,7 +33,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
         search={search} setSearch={setSearch}
         selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
-        divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
+        divisionFilter={divisionFilter} setLocationFilter={setLocationFilter}
         shiftFilter={shiftFilter} setShiftFilter={setShiftFilter}
         divisions={divisions} shifts={shifts}
       />
@@ -54,7 +54,7 @@ export default function EmployeesTable({ users, divisions, shifts }) {
             </TableHead>
             <TableHead>Employees</TableHead>
             <TableHead>Shifts</TableHead>
-            <TableHead>Division</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Created & Updated</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>

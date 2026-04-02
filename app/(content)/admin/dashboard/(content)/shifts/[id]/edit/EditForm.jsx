@@ -31,7 +31,7 @@ export default function EditShiftForm({ shift, divisions }) {
       ? minutesToTime(shift.endTime)
       : ""
   )
-  const [divisionId, setDivisionId] = useState(String(shift?.divisionId || "NONE"));
+  const [divisionId, setLocationId] = useState(String(shift?.divisionId || "NONE"));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function EditShiftForm({ shift, divisions }) {
           ? minutesToTime(shift.endTime)
           : ""
       )
-      setDivisionId(String(shift.divisionId || "NONE"));
+      setLocationId(String(shift.divisionId || "NONE"));
     }
   }, [shift]);
 
@@ -60,7 +60,8 @@ export default function EditShiftForm({ shift, divisions }) {
       return
     }
 
-    try { setLoading(true)
+    try {
+      setLoading(true)
       await updateShift(shift.id, {
         type, name,
         startTime: timeToMinutes(startTime),
@@ -70,7 +71,7 @@ export default function EditShiftForm({ shift, divisions }) {
 
       router.push("/admin/dashboard/shifts")
     }
-    finally { setLoading(false)}
+    finally { setLoading(false) }
   }
 
   return (
@@ -92,9 +93,9 @@ export default function EditShiftForm({ shift, divisions }) {
             <div className="flex flex-col space-y-0">
               <div className="space-y-2">
                 <Label htmlFor="division-select">
-                  Division <span className="text-rose-500">*</span>
+                  Location <span className="text-rose-500">*</span>
                 </Label>
-                <Select value={divisionId} onValueChange={setDivisionId}>
+                <Select value={divisionId} onValueChange={setLocationId}>
                   <SelectTrigger id="division-select" className="w-full mt-1">
                     <SelectValue placeholder="Select a division" />
                   </SelectTrigger>

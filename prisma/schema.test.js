@@ -37,7 +37,7 @@ describe("Prisma schema test", () => {
     // 1. Create 4 divisions
     for (let i = 1; i <= 4; i++) {
       const div = await prisma.division.create({
-        data: { name: `Division ${i}` },
+        data: { name: `Location ${i}` },
       });
       createdIds.divisions.push(div.id);
     }

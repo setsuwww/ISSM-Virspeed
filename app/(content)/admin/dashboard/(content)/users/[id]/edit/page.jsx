@@ -27,7 +27,7 @@ export default async function Page({ params }) {
 
   const safeUser = JSON.parse(JSON.stringify(user));
   const safeShifts = JSON.parse(JSON.stringify(shifts));
-  const safeDivisions = JSON.parse(JSON.stringify(divisions));
+  const safeLocations = JSON.parse(JSON.stringify(divisions));
 
-  return <EditForm user={safeUser} shifts={safeShifts} divisions={safeDivisions} />;
+  return <EditForm user={safeUser} shifts={safeShifts} divisions={safeLocations} />;
 }

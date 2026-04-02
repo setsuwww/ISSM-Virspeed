@@ -22,16 +22,16 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   mode = "default",
   search, setSearch,
   selected = [], onDeleteSelected, onDeleteAll,
-  divisionFilter, setDivisionFilter,
+  divisionFilter, setLocationFilter,
   filteredData = [],
   shiftFilter, onShiftFilterChange,
   divisions = [],
 }) {
-  const [divisionQuery, setDivisionQuery] = useState("")
-  const [openDivision, setOpenDivision] = useState(false)
+  const [divisionQuery, setLocationQuery] = useState("")
+  const [openLocation, setOpenLocation] = useState(false)
   const [statusFilter, setStatusFilter] = useState([])
 
-  const selectedDivision = divisionFilter === "all" ? "All" : divisions.find((d) => String(d.id) === divisionFilter)?.name ?? "Select Division"
+  const selectedLocation = divisionFilter === "all" ? "All" : divisions.find((d) => String(d.id) === divisionFilter)?.name ?? "Select Location"
 
   const toggleStatus = (status) => {
     setStatusFilter((prev) =>
@@ -42,7 +42,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
   const isWorkHours = mode === "work-hours"
   const showShift = !isWorkHours
 
-  const filteredDivisions = divisions.filter((d) => {
+  const filteredLocations = divisions.filter((d) => {
     const matchStatus =
       statusFilter.length === 0 || statusFilter.includes(d.type)
 
@@ -71,14 +71,14 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           </Select>
         )}
 
-        <Popover open={openDivision} onOpenChange={setOpenDivision}>
+        <Popover open={openLocation} onOpenChange={setOpenLocation}>
           <PopoverTrigger asChild>
-            <Button variant="outline" role="combobox" aria-expanded={openDivision}
+            <Button variant="outline" role="combobox" aria-expanded={openLocation}
               className="group w-fit flex items-center justify-between rounded-md hover:bg-transparent border-slate-300 shadow-[0_0.5px_1px_rgba(0,0,0,0.20)]"
             >
               <div className="flex items-center text-slate-500">
-                <span className="font-semibold text-slate-600 mr-2">Division:</span>
-                <span className="text-slate-400">{selectedDivision}</span>
+                <span className="font-semibold text-slate-600 mr-2">Location:</span>
+                <span className="text-slate-400">{selectedLocation}</span>
               </div>
               <ChevronsUpDown className="ml-2 h-4 w-4 text-slate-400 group-hover:text-slate-600 group-hover:scale-125 transition" />
             </Button>
@@ -86,7 +86,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
           <PopoverContent className="p-0 w-80" side="bottom" align="start" sideOffset={4}>
             <Command>
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200">
-                <CommandInput placeholder="Search division..." withBorder={false} value={divisionQuery} onValueChange={setDivisionQuery} />
+                <CommandInput placeholder="Search division..." withBorder={false} value={divisionQuery} onValueChange={setLocationQuery} />
                 <div className="flex gap-1">
                   {["WFO", "WFA"].map((type) => (
                     <Badge key={type} onClick={() => toggleStatus(type)} variant={statusFilter.includes(type) ? "secondary" : "outline"}
@@ -104,23 +104,23 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
                 <CommandEmpty>No division found.</CommandEmpty>
                 <CommandGroup>
                   <CommandItem value="all" onSelect={() => {
-                    setDivisionFilter("all")
-                    setDivisionQuery("")
-                    setOpenDivision(false)
+                    setLocationFilter("all")
+                    setLocationQuery("")
+                    setOpenLocation(false)
                   }}
                   >
                     All
                     <Check className={cn("mr-2 h-4 w-4", divisionFilter === "all" ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
 
-                  {filteredDivisions.map((d) => (
+                  {filteredLocations.map((d) => (
                     <CommandItem
                       key={d.id}
                       value={d.name}
                       onSelect={() => {
-                        setDivisionFilter(String(d.id))
-                        setOpenDivision(false)
-                        setDivisionQuery("")
+                        setLocationFilter(String(d.id))
+                        setOpenLocation(false)
+                        setLocationQuery("")
                       }}
                     >
                       {d.name}

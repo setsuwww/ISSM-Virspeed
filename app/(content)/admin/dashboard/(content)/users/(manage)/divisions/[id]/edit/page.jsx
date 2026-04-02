@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/_lib/prisma";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
-import EditDivisionForm from "./EditForm";
+import EditLocationForm from "./EditForm";
 
 export const revalidate = 60;
 
-async function getDivision(id) {
+async function getLocation(id) {
   const division = await prisma.division.findUnique({
     where: { id },
     select: {
@@ -23,17 +23,17 @@ async function getDivision(id) {
 
 export default async function Page({ params }) {
   const { id } = params;
-  const division = await getDivision(Number(id));
+  const division = await getLocation(Number(id));
 
   if (!division) return notFound();
 
   return (
     <section>
       <DashboardHeader
-        title={`Edit Division`}
+        title={`Edit Location`}
         subtitle="Update division details and configuration"
       />
-      <EditDivisionForm division={division} />
+      <EditLocationForm division={division} />
     </section>
   );
 }

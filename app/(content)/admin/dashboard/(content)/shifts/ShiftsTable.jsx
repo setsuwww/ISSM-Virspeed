@@ -45,12 +45,12 @@ export function ShiftsTable({ data }) {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Checkbox checked={isAllSelected} onCheckedChange={selectAll}/>
+              <Checkbox checked={isAllSelected} onCheckedChange={selectAll} />
             </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Time</TableHead>
-            <TableHead>Division</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Users</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>

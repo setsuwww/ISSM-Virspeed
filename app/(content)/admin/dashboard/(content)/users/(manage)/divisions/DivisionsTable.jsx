@@ -9,14 +9,14 @@ import { Button } from "@/_components/ui/Button"
 
 import EmptyStates from "@/_components/common/EmptyStates"
 
-import DivisionsActionHeader from "./DivisionsActionHeader"
-import DivisionRow from "./DivisionsRow"
-import DivisionStatusChanger from "./DivisionsStatusChanger"
+import LocationsActionHeader from "./LocationsActionHeader"
+import LocationRow from "./LocationsRow"
+import LocationStatusChanger from "./LocationsStatusChanger"
 
-import { useDivisionsHooks } from "@/_clients/hooks/admin/useDivisionsHooks"
-import { useDivisionStore } from "@/_stores/useDivisionStore"
+import { useLocationsHooks } from "@/_clients/hooks/admin/useLocationsHooks"
+import { useLocationStore } from "@/_stores/useLocationStore"
 
-export default function DivisionsTable({ data }) {
+export default function LocationsTable({ data }) {
   const {
     mutate, search, setSearch,
     typeFilter, setTypeFilter,
@@ -25,20 +25,20 @@ export default function DivisionsTable({ data }) {
     toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
     handleActivateSelected, handleInactivateSelected,
-    handleEditDivision, handleDeleteDivision, onToggleStatus, onToggleType,
+    handleEditLocation, handleDeleteLocation, onToggleStatus, onToggleType,
     onBulkGlobalUpdate,
-  } = useDivisionsHooks(data)
+  } = useLocationsHooks(data)
 
   const {
     allActive, confirmOpen, pendingStatus, fetchConfig,
     handleBulkToggle, confirmBulkToggle, closeDialog,
-  } = useDivisionStore()
+  } = useLocationStore()
 
   useEffect(() => { fetchConfig() }, [fetchConfig])
 
   return (
     <>
-      <DivisionStatusChanger
+      <LocationStatusChanger
         allActive={allActive}
         selectedCount={selectedIds.length}
         onToggleAll={handleBulkToggle}
@@ -46,7 +46,7 @@ export default function DivisionsTable({ data }) {
         onInactivateSelected={handleInactivateSelected}
       />
 
-      <DivisionsActionHeader
+      <LocationsActionHeader
         search={search} onSearchChange={setSearch}
         typeFilter={typeFilter} onTypeFilterChange={setTypeFilter}
         statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
@@ -81,15 +81,15 @@ export default function DivisionsTable({ data }) {
               </TableRow>
             ) : (
               filteredData.map((division) => (
-                <DivisionRow
+                <LocationRow
                   key={division.id}
                   division={division}
                   isSelected={selectedIds.includes(division.id)}
                   onSelect={() => toggleSelect(division.id)}
                   onToggleStatus={onToggleStatus}
                   onToggleType={onToggleType}
-                  onEdit={handleEditDivision}
-                  onDelete={handleDeleteDivision}
+                  onEdit={handleEditLocation}
+                  onDelete={handleDeleteLocation}
                 />
               ))
             )}

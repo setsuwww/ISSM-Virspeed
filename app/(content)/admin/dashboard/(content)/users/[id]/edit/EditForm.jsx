@@ -45,8 +45,8 @@ export default function EditForm({ user, divisions }) {
     });
   }
 
-  const selectedDivision = divisions.find((o) => String(o.id) === form.divisionId);
-  const availableShifts = selectedDivision?.shifts || [];
+  const selectedLocation = divisions.find((o) => String(o.id) === form.divisionId);
+  const availableShifts = selectedLocation?.shifts || [];
 
   return (
     <section>
@@ -91,7 +91,7 @@ export default function EditForm({ user, divisions }) {
               </div>
 
               <div className="space-y-2">
-                <Label>Division Assignment</Label>
+                <Label>Location Assignment</Label>
                 <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)}>
                   <SelectTrigger className="w-1/2">
                     <SelectValue placeholder="Select an division" />

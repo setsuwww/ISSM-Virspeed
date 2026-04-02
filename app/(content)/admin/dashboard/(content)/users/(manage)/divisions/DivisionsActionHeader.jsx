@@ -8,7 +8,7 @@ import { exportPDF } from "@/_functions/exports/division/exportPDF"
 import { exportWord } from "@/_functions/exports/division/exportWord"
 import { exportExcel } from "@/_functions/exports/division/exportExcel"
 
-export default function DivisionsActionHeader({
+export default function LocationsActionHeader({
   search, onSearchChange,
   typeFilter, onTypeFilterChange,
   statusFilter, onStatusFilterChange,

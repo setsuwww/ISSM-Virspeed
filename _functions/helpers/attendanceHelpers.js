@@ -64,7 +64,7 @@ export function isUserWithinLocation(division, currentCoords) {
 
 export function evaluateAttendancePolicy({ division, currentCoords }) {
   if (!division) {
-    return { allowed: false, save: false, message: "Division not found" }
+    return { allowed: false, save: false, message: "Location not found" }
   }
 
   if (division.status === "INACTIVE") {

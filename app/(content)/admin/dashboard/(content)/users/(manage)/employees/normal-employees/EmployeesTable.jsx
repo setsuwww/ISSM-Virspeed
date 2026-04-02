@@ -17,7 +17,7 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
   const {
     search, setSearch,
     filteredData,
-    divisionFilter, setDivisionFilter
+    divisionFilter, setLocationFilter
   } = useNormalEmployeesHooks(users);
 
   const {
@@ -25,7 +25,7 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
     deleteSelected, deleteAll,
     handleDeleteUser,
     handleEditUser
-  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds});
+  } = useHandleUsers({ filteredData, selectedIds, setSelectedIds });
 
   return (
     <div className="space-y-4">
@@ -33,7 +33,7 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
         search={search} setSearch={setSearch}
         selected={selectedIds} onDeleteSelected={deleteSelected} onDeleteAll={deleteAll}
         filteredData={filteredData}
-        divisionFilter={divisionFilter} setDivisionFilter={setDivisionFilter}
+        divisionFilter={divisionFilter} setLocationFilter={setLocationFilter}
         divisions={divisions}
       />
 
@@ -53,7 +53,7 @@ export default function EmployeesTable({ users = [], divisions = [] }) {
             </TableHead>
             <TableHead>Employees</TableHead>
             <TableHead>Work Hours</TableHead>
-            <TableHead>Division</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Created & Updated</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>

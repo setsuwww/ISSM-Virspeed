@@ -1,7 +1,7 @@
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
-export function exportDivision(divisions = []) {
+export function exportLocation(divisions = []) {
   if (!divisions.length) {
     alert("Tidak ada data divisi untuk diekspor!")
     return
@@ -9,7 +9,7 @@ export function exportDivision(divisions = []) {
 
   const doc = new jsPDF()
   doc.setFontSize(16)
-  doc.text("Division List Report", 14, 15)
+  doc.text("Location List Report", 14, 15)
 
   const today = new Date().toLocaleDateString("id-ID", {
     day: "2-digit", month: "long", year: "numeric",

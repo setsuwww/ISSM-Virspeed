@@ -95,15 +95,15 @@ export default function CreateForm({ divisions, shifts }) {
     })
   }
 
-  const selectedDivision = useMemo(
+  const selectedLocation = useMemo(
     () => divisions.find(o => String(o.id) === form.divisionId),
     [form.divisionId, divisions]
   )
   const defaultdivisionHour = useMemo(
-    () => selectedDivision ? { startTime: selectedDivision.startTime, endTime: selectedDivision.endTime } : null,
-    [selectedDivision]
+    () => selectedLocation ? { startTime: selectedLocation.startTime, endTime: selectedLocation.endTime } : null,
+    [selectedLocation]
   )
-  const availableShifts = useMemo(() => selectedDivision?.shifts || [], [selectedDivision])
+  const availableShifts = useMemo(() => selectedLocation?.shifts || [], [selectedLocation])
 
   return (
     <section>
@@ -174,7 +174,7 @@ export default function CreateForm({ divisions, shifts }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="divisionId">Division Assignment</Label>
+                <Label htmlFor="divisionId">Location Assignment</Label>
                 <Select value={form.divisionId} onValueChange={(v) => handleCustomChange("divisionId", v)} disabled={inputMode === "EXCEL"}>
                   <SelectTrigger className="w-1/2">
                     <SelectValue placeholder="Select an division" />
@@ -210,7 +210,7 @@ export default function CreateForm({ divisions, shifts }) {
               {form.workMode === "WORK_HOURS" && defaultdivisionHour && (
                 <div className="p-3 rounded-md bg-white/30 border text-sm">
                   <p>
-                    <strong className="text-slate-600">Division Hours : </strong> {minutesToTime(defaultdivisionHour.startTime)} - {minutesToTime(defaultdivisionHour.endTime)}
+                    <strong className="text-slate-600">Location Hours : </strong> {minutesToTime(defaultdivisionHour.startTime)} - {minutesToTime(defaultdivisionHour.endTime)}
                   </p>
                 </div>
               )}

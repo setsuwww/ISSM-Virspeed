@@ -1,20 +1,20 @@
 import { create } from "zustand"
 import { apiFetchData } from "@/_lib/fetch"
 
-export const useDivisionStore = create((set, get) => ({
+export const useLocationStore = create((set, get) => ({
   allActive: false, pendingStatus: null, confirmOpen: false, loading: true,
 
   openSwitchType(division) {
     set({
       switchTypeOpen: true,
-      pendingDivision: division,
+      pendingLocation: division,
     })
   },
 
   closeSwitchType() {
     set({
       switchTypeOpen: false,
-      pendingDivision: null,
+      pendingLocation: null,
     })
   },
 

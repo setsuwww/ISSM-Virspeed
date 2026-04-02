@@ -4,7 +4,7 @@ import { Switch } from "@/_components/ui/Switch"
 import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
 
-export default function DivisionStatusChanger({
+export default function LocationStatusChanger({
   allActive, selectedCount,
   onToggleAll, onActivateSelected, onInactivateSelected,
 }) {
@@ -13,9 +13,9 @@ export default function DivisionStatusChanger({
       <div className="flex items-center gap-2">
         <Switch checked={allActive} onCheckedChange={onToggleAll} />
         <div className="flex flex-col">
-          <Label className="text-sm text-slate-600">Toggle Division</Label>
+          <Label className="text-sm text-slate-600">Toggle Location</Label>
           <span className="text-xs text-slate-400">
-            Set all Division status Active or Inactive
+            Set all Location status Active or Inactive
           </span>
         </div>
       </div>

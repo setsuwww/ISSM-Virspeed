@@ -1,7 +1,7 @@
 import { Badge } from "@/_components/ui/Badge"
 import { ChevronUp, ChevronDown } from "lucide-react"
 
-export default function DivisionsStatusBadge({ status, onToggle }) {
+export default function LocationsStatusBadge({ status, onToggle }) {
   const isActive = status === "ACTIVE"
 
   return (

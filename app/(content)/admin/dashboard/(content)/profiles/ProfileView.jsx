@@ -259,7 +259,7 @@ export function ProfileView({ user }) {
           </Dialog>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <Info label="Division" icon={Building2}>
+            <Info label="Location" icon={Building2}>
               {user.division?.name ?? "-"}
             </Info>
 

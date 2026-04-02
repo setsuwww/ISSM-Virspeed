@@ -24,7 +24,7 @@ export default function CreateShiftForm({ divisions }) {
   const [name, setName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [divisionId, setDivisionId] = useState("NONE");
+  const [divisionId, setLocationId] = useState("NONE");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -66,9 +66,9 @@ export default function CreateShiftForm({ divisions }) {
             <div className="flex flex-col space-y-0">
               <div className="space-y-2">
                 <Label htmlFor="division-select">
-                  Division <span className="text-rose-500">*</span>
+                  Location <span className="text-rose-500">*</span>
                 </Label>
-                <Select value={divisionId} onValueChange={setDivisionId}>
+                <Select value={divisionId} onValueChange={setLocationId}>
                   <SelectTrigger id="division-select" className="w-full mt-1">
                     <SelectValue placeholder="Select an division" />
                   </SelectTrigger>

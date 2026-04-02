@@ -12,18 +12,19 @@ export function AttendancesCard({ shifts = [] }) {
 
   const allUsers = useMemo(() => {
     return shifts.flatMap((shift) =>
-      (shift.users || []).map((u) => ({...u,
+      (shift.users || []).map((u) => ({
+        ...u,
         attendanceStatus: String(u?.attendanceStatus || "PRESENT").toUpperCase(),
         approval: u?.approval ? String(u.approval).toUpperCase() : "PENDING",
         _shiftId: shift.id,
         _shiftType: shift.type,
-        _shiftDivision: shift.divisionName,
+        _shiftLocation: shift.divisionName,
       }))
     )
   }, [shifts])
 
-  const handleOpen = useCallback((status, hasUsers) => {if (hasUsers) setSelectedStatus(status)}, []);
-  const handleClose = useCallback(() => { setSelectedStatus(null)}, [])
+  const handleOpen = useCallback((status, hasUsers) => { if (hasUsers) setSelectedStatus(status) }, []);
+  const handleClose = useCallback(() => { setSelectedStatus(null) }, [])
 
   const statusSummary = useMemo(() => {
     return defaultStatuses.map((status) => {

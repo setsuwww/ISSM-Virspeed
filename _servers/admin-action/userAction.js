@@ -15,12 +15,15 @@ export async function getUsers(page, limit) {
       shift: {
         select: { name: true, type: true, startTime: true, endTime: true },
       },
-      division: { select: {
+      division: {
+        select: {
           name: true, startTime: true, endTime: true,
-          shifts: { select: { name: true, startTime: true, endTime: true },
+          shifts: {
+            select: { name: true, startTime: true, endTime: true },
             where: { isActive: true },
           },
-      }},
+        }
+      },
     },
   });
 }
@@ -220,21 +223,23 @@ export async function getSEFilterData() {
 
 export async function getNormalEmployees({ page = 1, limit = 10 }) {
   return prisma.user.findMany({
-    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
-      division: { startTime: { not: null }, endTime: { not: null }},
+    where: {
+      role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
+      division: { startTime: { not: null }, endTime: { not: null } },
     },
     skip: (page - 1) * limit, take: limit, orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, email: true, role: true,
       createdAt: true, updatedAt: true,
-      division: { select: { id: true, name: true, type: true, startTime: true, endTime: true }},
+      division: { select: { id: true, name: true, type: true, startTime: true, endTime: true } },
     },
   });
 }
 
 export async function getNormalEmployeeCount() {
   return prisma.user.count({
-    where: { role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
+    where: {
+      role: "EMPLOYEE", shiftId: null, divisionId: { not: null },
       division: {
         startTime: { not: null },
         endTime: { not: null },
@@ -243,7 +248,7 @@ export async function getNormalEmployeeCount() {
   });
 }
 
-export async function getSEDivisions() {
+export async function getSELocations() {
   return prisma.division.findMany({
     where: { status: "ACTIVE" },
     select: { id: true, name: true, type: true },

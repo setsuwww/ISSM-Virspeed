@@ -74,7 +74,7 @@ export default function ListUsersTable({ data }) {
               </TableHead>
               <TableHead>User</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Division</TableHead>
+              <TableHead>Location</TableHead>
               <TableHead>Created / Updated</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>

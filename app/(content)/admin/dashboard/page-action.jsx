@@ -27,7 +27,7 @@ export default function FastActions() {
       hrefCreate: "/admin/dashboard/schedules/create",
     },
     {
-      label: "Divisions",
+      label: "Locations",
       hrefView: "/admin/dashboard/users/divisions",
       hrefCreate: "/admin/dashboard/users/divisions/create",
     },

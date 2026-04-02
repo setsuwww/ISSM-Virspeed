@@ -10,10 +10,10 @@ import { Checkbox } from "@/_components/ui/Checkbox"
 import { Badge } from "@/_components/ui/Badge"
 
 import { divisionStyles } from "@/_constants/theme/divisionTheme"
-import DivisionsStatusBadge from "./DivisionsStatusBadge"
-import DivisionActionButton from "./DivisionsActionButton"
+import LocationsStatusBadge from "./LocationsStatusBadge"
+import LocationActionButton from "./LocationsActionButton"
 
-function DivisionRow({
+function LocationRow({
   division, isSelected,
   onSelect, onToggleStatus, onToggleType,
 
@@ -49,7 +49,7 @@ function DivisionRow({
       </TableCell>
 
       <TableCell>
-        <DivisionsStatusBadge
+        <LocationsStatusBadge
           status={division.status}
           onToggle={() => onToggleStatus(division)}
         />
@@ -73,7 +73,7 @@ function DivisionRow({
       </TableCell>
 
       <TableCell>
-        <DivisionActionButton
+        <LocationActionButton
           onEdit={() => onEdit(division.id)}
           onDelete={() => onDelete(division.id)}
         />
@@ -82,4 +82,4 @@ function DivisionRow({
   )
 }
 
-export default memo(DivisionRow)
+export default memo(LocationRow)

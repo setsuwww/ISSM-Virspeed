@@ -2,8 +2,8 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination";
-import DivisionsTable from "./DivisionsTable";
-import { getDivisions } from "@/_servers/admin-action/divisionAction";
+import LocationsTable from "./LocationsTable";
+import { getLocations } from "@/_servers/admin-action/divisionAction";
 
 export default async function Page({ searchParams }) {
   const page = Number(searchParams?.page) || 1;
@@ -13,7 +13,7 @@ export default async function Page({ searchParams }) {
     ? Number(searchParams?.limit)
     : 10;
 
-  const { data: divisions, total } = await getDivisions({
+  const { data: divisions, total } = await getLocations({
     page,
     limit,
   });
@@ -23,8 +23,8 @@ export default async function Page({ searchParams }) {
   return (
     <section>
       <DashboardHeader
-        title="Divisions"
-        subtitle="List of Division divisions"
+        title="Locations"
+        subtitle="List of Location divisions"
       />
 
       <ContentForm>
@@ -33,13 +33,13 @@ export default async function Page({ searchParams }) {
             title="List divisions"
             subtitle="Manage all division data in this table"
             show
-            buttonText="Create Division"
+            buttonText="Create Location"
             href="/admin/dashboard/users/divisions/create"
           />
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <DivisionsTable data={divisions} />
+          <LocationsTable data={divisions} />
 
           <Pagination
             page={page}

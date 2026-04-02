@@ -2,12 +2,12 @@
 
 import useSWR from "swr";
 import { useState, useMemo, useCallback } from "react";
-import { useHandleDivisions } from "../../handlers/admin/useHandleDivisions";
+import { useHandleLocations } from "../../handlers/admin/useHandleLocations";
 import { useDebounce } from "@/_stores/common/useDebounce";
-import { getDivisions } from "@/_servers/admin-action/divisionAction";
+import { getLocations } from "@/_servers/admin-action/divisionAction";
 
-export function useDivisionsHooks(initialData) {
-  const fetcher = async () => await getDivisions();
+export function useLocationsHooks(initialData) {
+  const fetcher = async () => await getLocations();
 
   const { data: swrResult, mutate } = useSWR("divisions", fetcher, {
     fallbackData: initialData,
@@ -32,7 +32,7 @@ export function useDivisionsHooks(initialData) {
     });
   }, [listData, debouncedSearch, typeFilter, statusFilter]);
 
-  const handlers = useHandleDivisions({
+  const handlers = useHandleLocations({
     filteredData,
     selectedIds,
     setSelectedIds,
@@ -42,7 +42,7 @@ export function useDivisionsHooks(initialData) {
   const {
     toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
-    handleEditDivision, handleDeleteDivision,
+    handleEditLocation, handleDeleteLocation,
     onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   } = handlers;
 
@@ -65,7 +65,7 @@ export function useDivisionsHooks(initialData) {
 
     toggleSelect, selectAll,
     handleDeleteSelected, handleDeleteAll,
-    handleEditDivision, handleDeleteDivision, handleActivateSelected, handleInactivateSelected,
+    handleEditLocation, handleDeleteLocation, handleActivateSelected, handleInactivateSelected,
     onToggleStatus, onToggleType, onBulkGlobalUpdate, onBulkUpdate,
   };
 }

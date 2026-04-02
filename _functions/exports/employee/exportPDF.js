@@ -11,7 +11,7 @@ export function exportPDF(employees = []) {
     { header: "Shift Type", key: "shiftType", width: 14 },
     { header: "Shift Name", key: "shiftName", width: 18 },
     { header: "Shift Time", key: "shiftTime", width: 18 },
-    { header: "Division", key: "division", width: 18 },
+    { header: "Location", key: "division", width: 18 },
     { header: "Created At", key: "createdAt", width: 16 },
     { header: "Updated At", key: "updatedAt", width: 16 },
   ];

@@ -20,10 +20,10 @@ export const adminMenu = [
   },
   {
     type: "group",
-    label: "Division",
+    label: "Location",
     icon: "Building2",
     items: [
-      { label: "Divisions", href: "/admin/dashboard/users/divisions" },
+      { label: "Locations", href: "/admin/dashboard/users/divisions" },
       { label: "Shift Employees", href: "/admin/dashboard/users/employees/shift-employees" },
       { label: "Normal Employees", href: "/admin/dashboard/users/employees/normal-employees" },
       { label: "Attendances", href: "/admin/dashboard/users/attendances" },

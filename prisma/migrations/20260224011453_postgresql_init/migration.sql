@@ -161,7 +161,7 @@ CREATE TABLE "public"."ScheduleReminder" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Division" (
+CREATE TABLE "public"."Location" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "location" TEXT,
@@ -176,7 +176,7 @@ CREATE TABLE "public"."Division" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Division_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Location_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -338,7 +338,7 @@ ALTER TABLE "public"."SecurityLog" ADD CONSTRAINT "SecurityLog_userId_fkey" FORE
 ALTER TABLE "public"."SuspiciousActivity" ADD CONSTRAINT "SuspiciousActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."User" ADD CONSTRAINT "User_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Division"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."User" ADD CONSTRAINT "User_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."User" ADD CONSTRAINT "User_shiftId_fkey" FOREIGN KEY ("shiftId") REFERENCES "public"."Shift"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -356,7 +356,7 @@ ALTER TABLE "public"."UserShiftAssignment" ADD CONSTRAINT "UserShiftAssignment_u
 ALTER TABLE "public"."UserShiftAssignment" ADD CONSTRAINT "UserShiftAssignment_shiftId_fkey" FOREIGN KEY ("shiftId") REFERENCES "public"."Shift"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Schedule" ADD CONSTRAINT "Schedule_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Division"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Schedule" ADD CONSTRAINT "Schedule_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."SchedulesOnUsers" ADD CONSTRAINT "SchedulesOnUsers_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "public"."Schedule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -371,10 +371,10 @@ ALTER TABLE "public"."ScheduleReminder" ADD CONSTRAINT "ScheduleReminder_schedul
 ALTER TABLE "public"."ScheduleReminder" ADD CONSTRAINT "ScheduleReminder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Division" ADD CONSTRAINT "Division_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "public"."Division"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Location" ADD CONSTRAINT "Location_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Shift" ADD CONSTRAINT "Shift_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Division"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Shift" ADD CONSTRAINT "Shift_divisionId_fkey" FOREIGN KEY ("divisionId") REFERENCES "public"."Location"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Attendance" ADD CONSTRAINT "Attendance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
