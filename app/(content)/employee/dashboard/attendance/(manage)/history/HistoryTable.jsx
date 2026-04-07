@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useRef } from "react"
-import { CalendarDays } from "lucide-react"
+import { CalendarDays, Clock } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -18,7 +18,6 @@ import { shiftDots, shiftStyles } from "@/_constants/shiftConstants"
 import { capitalize } from "@/_functions/globalFunction"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {
-  // Belum diurut from terbaru
   const [order, setOrder] = useState(initialOrder)
   const [statusFilter, setStatusFilter] = useState("all")
   const [search, setSearch] = useState("")
@@ -84,12 +83,12 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
               </TableCell>
 
               <TableCell>
-                <Badge
+                <span
                   className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}
                 >
                   {shiftDots[att.shiftType]}
                   <span>{capitalize(att.shiftType)}</span>
-                </Badge>
+                </span>
               </TableCell>
 
               <TableCell>
@@ -119,13 +118,18 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
               </TableCell>
 
               <TableCell>
-                <div className="flex flex-col text-sm font-medium">
-                  <span className="text-teal-600">
-                    Checkin: {att.checkInTime ?? "—"}
-                  </span>
-                  <span className="text-rose-600">
-                    Checkout: {att.checkOutTime ?? "—"}
-                  </span>
+                <div className="flex items-center gap-x-2 p-2">
+                  <div className="bg-gray-100 text-yellow-500 p-2 rounded-full">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col text-sm font-medium">
+                    <span className="text-gray-600">
+                      Checkin: <span className="text-teal-600">{att.checkInTime ?? "00:00"}</span>
+                    </span>
+                    <span className="text-gray-600">
+                      Checkout: <span className="text-rose-600">{att.checkOutTime ?? "00:00"}</span>
+                    </span>
+                  </div>
                 </div>
               </TableCell>
             </TableRow>

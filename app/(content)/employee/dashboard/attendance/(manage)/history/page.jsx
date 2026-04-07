@@ -40,8 +40,8 @@ export default async function Page({ searchParams }) {
     status: a.status,
     approval: a.approval ?? null,
 
-    reason: a.reason ?? "—",
-    adminNote: a.adminReason ?? null,
+    reason: a.reason ?? "None",
+    adminNote: a.adminReason ?? "None",
 
     checkInTime: a.checkInTime ? format(a.checkInTime, "HH:mm") : null,
     checkOutTime: a.checkOutTime ? format(a.checkOutTime, "HH:mm") : null,
@@ -49,7 +49,7 @@ export default async function Page({ searchParams }) {
 
   return (
     <HistoryLayout>
-      <HistoryTable data={tableData} initialOrder={order}/>
+      <HistoryTable data={tableData} initialOrder={order} />
     </HistoryLayout>
   )
 }
