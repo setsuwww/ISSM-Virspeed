@@ -4,7 +4,7 @@ export async function fetchShiftRequests(isHistory) {
   return prisma.shiftChangeRequest.findMany({
     where: isHistory
       ? { status: { notIn: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } }
-      : { status: { in: ["PENDING", "PENDING_TARGET", "PENDING_ADMIN"] } },
+      : { status: { in: ["PENDING", "PENDING_ADMIN"] } },
     orderBy: { createdAt: "desc" },
     take: 20,
     select: {
