@@ -64,7 +64,7 @@ export default function ChangeShiftForm({ employees = [] }) {
     setLoading(true)
     try {
       const payload = {
-        targetUserId: Number(target.id),
+        targetUserId: String(target.id),
         newShiftId: target.shiftId,
         startDate: toLocalISOString(startDate),
         endDate: endDate ? toLocalISOString(endDate) : null,
