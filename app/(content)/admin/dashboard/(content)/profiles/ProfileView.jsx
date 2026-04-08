@@ -127,7 +127,7 @@ export function ProfileView({ user }) {
                 {user.name}
               </h2>
               <div className="text-sm text-slate-500">{user.email}</div>
-              <div className={`mt-1 w-fit ${roleStyles[capitalize(user.role)] ?? ""}`}>
+              <div className={`mt-1 w-fit ${roleStyles[user.role] ?? ""}`}>
                 {user.role}
               </div>
             </div>
