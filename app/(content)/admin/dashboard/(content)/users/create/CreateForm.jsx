@@ -16,7 +16,7 @@ import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
 import { bulkCreateUser, createUser } from "@/_servers/admin-action/userAction"
-import { capitalize, minutesToTime } from "@/_functions/globalFunction"
+import { minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
 
 import { CreateUserFromExcel } from "./CreateUserFromExcel"

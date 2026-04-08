@@ -10,7 +10,6 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
-import { capitalize } from "@/_functions/globalFunction";
 import { roleOptions } from "@/_constants/userConstants";
 import { updateUser } from "@/_servers/admin-action/userAction.js";
 import { ChevronLeft, Loader } from 'lucide-react';

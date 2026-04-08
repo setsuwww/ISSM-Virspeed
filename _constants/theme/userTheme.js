@@ -1,8 +1,8 @@
 export const roleStyles = {
-  Admin: "text-purple-600 bg-purple-100/50 border-purple-500/20",
-  Supervisor: "text-orange-600 bg-orange-100/50 border-orange-500/20",
-  Employee: "text-teal-600 bg-teal-100/50 border-teal-500/20",
-  User: "text-slate-600 bg-slate-100/50 border-slate-500/20",
+  ADMIN: "text-purple-600 bg-purple-100/50 border-purple-500/20",
+  SUPERVISOR: "text-blue-600 bg-blue-100/50 border-blue-500/20",
+  EMPLOYEE: "text-teal-600 bg-teal-100/50 border-teal-500/20",
+  USER: "text-slate-600 bg-slate-100/50 border-slate-500/20",
 };
 
 export const profilesRoleStyles = {
