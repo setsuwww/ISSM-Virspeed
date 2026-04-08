@@ -340,6 +340,7 @@ model Attendance {
   workStart    DateTime?
   workEnd      DateTime?
   status       AttendanceStatus @default(ABSENT)
+  reason       String?
   approval     ApprovalStatus?
   checkInTime  DateTime?
   checkOutTime DateTime?
