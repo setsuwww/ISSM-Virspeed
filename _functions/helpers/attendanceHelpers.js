@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma"
-import { getNowJakarta, minutesToTodayTime, MINUTE_MS } from "@/_lib/time"
+import { getNowJakarta, minutesToTodayTime, minutesToDateTime, MINUTE_MS } from "@/_lib/time"
 import { addDays, isWeekend } from "date-fns"
 
 const LATE_THRESHOLD_MINUTES = 10
@@ -8,7 +8,51 @@ const CHECKIN_EARLY_WINDOW_MINUTES = 20
 const CHECKOUT_EARLY_MARGIN_MINUTES = 5
 const FORGOT_CHECKOUT_REMINDER_MINUTES = 20
 
-export async function determineAttendanceStatus(shiftId) {
+export async function getActiveAssignment(userId) {
+  const now = getNowJakarta()
+  const today = now.startOf("day").toDate()
+  const yesterday = now.subtract(1, "day").startOf("day").toDate()
+
+  const assignments = await prisma.shiftAssignment.findMany({
+    where: {
+      userId,
+      date: { in: [yesterday, today] },
+    },
+    include: {
+      shift: {
+        include: { location: true },
+      },
+    },
+    orderBy: { date: "desc" },
+  })
+
+  let activeAssignment = null
+  let fallbackAssignment = assignments.find(
+    (a) => a.date.getTime() === today.getTime()
+  )
+
+  for (const asg of assignments) {
+    if (!asg.shift) continue
+
+    const shiftStart = minutesToDateTime(asg.date, asg.shift.startTime)
+    const isCrossDay = asg.shift.endTime < asg.shift.startTime
+    const shiftEnd = isCrossDay
+      ? minutesToDateTime(asg.date, asg.shift.endTime).add(1, "day")
+      : minutesToDateTime(asg.date, asg.shift.endTime)
+
+    if (
+      now.isAfter(shiftStart.subtract(120, "minute")) &&
+      now.isBefore(shiftEnd.add(120, "minute"))
+    ) {
+      activeAssignment = asg
+      break
+    }
+  }
+
+  return activeAssignment || fallbackAssignment
+}
+
+export async function determineAttendanceStatus(shiftId, assignmentDate = new Date()) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
     select: { startTime: true, endTime: true },
@@ -20,12 +64,12 @@ export async function determineAttendanceStatus(shiftId) {
 
   const now = getNowJakarta()
 
-  const shiftStart = minutesToTodayTime(shift.startTime)
+  const shiftStart = minutesToDateTime(assignmentDate, shift.startTime)
 
   const isCrossDay = shift.endTime < shift.startTime
   const shiftEnd = isCrossDay
-    ? minutesToTodayTime(shift.endTime).add(1, "day")
-    : minutesToTodayTime(shift.endTime)
+    ? minutesToDateTime(assignmentDate, shift.endTime).add(1, "day")
+    : minutesToDateTime(assignmentDate, shift.endTime)
 
   const diffMs = now.diff(shiftStart)
 
@@ -114,7 +158,7 @@ export function getDistanceMeters(pointA, pointB) {
   return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-export async function isEarlyCheckout(shiftId, checkoutTime) {
+export async function isEarlyCheckout(shiftId, checkoutTime, assignmentDate = new Date()) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
     select: { startTime: true, endTime: true },
@@ -122,13 +166,17 @@ export async function isEarlyCheckout(shiftId, checkoutTime) {
 
   if (!shift?.endTime) return false;
 
-  const shiftEnd = minutesToTodayTime(shift.endTime);
+  const isCrossDay = shift.endTime < shift.startTime;
+  const shiftEnd = isCrossDay
+    ? minutesToDateTime(assignmentDate, shift.endTime).add(1, "day")
+    : minutesToDateTime(assignmentDate, shift.endTime);
+
   const checkout = getNowJakarta(checkoutTime);
 
   return checkout.isBefore(shiftEnd);
 }
 
-export async function canUserCheckout(shiftId) {
+export async function canUserCheckout(shiftId, assignmentDate = new Date()) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
     select: { startTime: true, endTime: true },
@@ -140,8 +188,8 @@ export async function canUserCheckout(shiftId) {
 
   const isCrossDay = shift.endTime < shift.startTime
   const shiftEnd = isCrossDay
-    ? minutesToTodayTime(shift.endTime).add(1, "day")
-    : minutesToTodayTime(shift.endTime)
+    ? minutesToDateTime(assignmentDate, shift.endTime).add(1, "day")
+    : minutesToDateTime(assignmentDate, shift.endTime)
 
   const diffMs = shiftEnd.diff(now)
   return diffMs <= CHECKOUT_EARLY_MARGIN_MINUTES * MINUTE_MS

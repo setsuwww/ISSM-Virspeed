@@ -1,4 +1,12 @@
-import { PrismaClient, Role, ShiftType, LocationType, LocationStatus, AttendanceStatus } from "@prisma/client"
+import {
+  PrismaClient,
+  Role,
+  ShiftType,
+  LocationType,
+  LocationStatus,
+  AttendanceStatus
+} from "@prisma/client"
+
 import bcrypt from "bcryptjs"
 import ora from "ora"
 
@@ -19,6 +27,7 @@ function buildShiftDateTime(baseDate, start, end) {
   const workEnd = new Date(baseDate)
   workEnd.setMinutes(end)
 
+  // handle overnight shift
   if (end <= start) {
     workEnd.setDate(workEnd.getDate() + 1)
   }
@@ -31,7 +40,7 @@ async function main() {
 
   try {
     // -----------------------------
-    // CLEAN
+    // CLEAN (child → parent)
     // -----------------------------
     await prisma.attendance.deleteMany()
     await prisma.shiftAssignment.deleteMany()
@@ -40,7 +49,7 @@ async function main() {
     await prisma.location.deleteMany()
 
     // -----------------------------
-    // LOCATIONS (HARUS DULU)
+    // LOCATIONS
     // -----------------------------
     await prisma.location.createMany({
       data: [
@@ -51,32 +60,6 @@ async function main() {
     })
 
     const locationList = await prisma.location.findMany()
-
-    // -----------------------------
-    // ADMIN & SUPERVISOR (SETELAH LOCATION ADA)
-    // -----------------------------
-    const adminPassword = await bcrypt.hash("admin123", 10)
-    const supervisorPassword = await bcrypt.hash("supervisor123", 10)
-
-    await prisma.user.create({
-      data: {
-        name: "Admin",
-        email: "admin@system.com",
-        password: adminPassword,
-        role: Role.ADMIN,
-        locationId: locationList[0].id,
-      },
-    })
-
-    await prisma.user.create({
-      data: {
-        name: "Supervisor",
-        email: "supervisor@system.com",
-        password: supervisorPassword,
-        role: Role.SUPERVISOR,
-        locationId: locationList[1].id,
-      },
-    })
 
     // -----------------------------
     // SHIFTS
@@ -93,23 +76,55 @@ async function main() {
     const shiftMap = new Map(shiftList.map(s => [s.type, s]))
 
     // -----------------------------
+    // ADMIN & SUPERVISOR
+    // -----------------------------
+    const adminPassword = await bcrypt.hash("admin123", 10)
+    const supervisorPassword = await bcrypt.hash("supervisor123", 10)
+
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: "admin@system.com",
+        password: adminPassword,
+        role: Role.ADMIN,
+        locationId: locationList[0].id,
+        shiftId: shiftList[0].id,
+      },
+    })
+
+    await prisma.user.create({
+      data: {
+        name: "Supervisor",
+        email: "supervisor@system.com",
+        password: supervisorPassword,
+        role: Role.SUPERVISOR,
+        locationId: locationList[1].id,
+        shiftId: shiftList[1].id,
+      },
+    })
+
+    // -----------------------------
     // USERS
     // -----------------------------
-    const usersRaw = Array.from({ length: 30 }).map((_, i) => ({
+    const usersRaw = Array.from({ length: 20 }).map((_, i) => ({
       name: `User-${i + 1}`,
       email: `user${i + 1}@test.com`,
       role: Role.EMPLOYEE,
     }))
 
     const users = []
+
     for (let i = 0; i < usersRaw.length; i++) {
       const hash = await bcrypt.hash("password123", 10)
+
+      const assignedShift = shiftList[i % shiftList.length]
 
       const user = await prisma.user.create({
         data: {
           ...usersRaw[i],
           password: hash,
           locationId: locationList[i % locationList.length].id,
+          shiftId: assignedShift.id, // we keep a default shift, but daily uses assignments
         },
       })
 
@@ -131,8 +146,8 @@ async function main() {
         const date = new Date(baseDate)
         date.setDate(baseDate.getDate() + i)
 
-        const shiftType = SHIFT_PATTERN[(startIndex + i) % SHIFT_PATTERN.length]
-        const shift = shiftMap.get(shiftType)
+        const shiftTypePattern = SHIFT_PATTERN[(startIndex + i) % SHIFT_PATTERN.length]
+        const shift = shiftTypePattern !== "OFF" ? shiftMap.get(shiftTypePattern) : null
 
         const isLeave = Math.random() < 0.1
 
@@ -153,6 +168,9 @@ async function main() {
         })
 
         if (shift && !isLeave) {
+          const checkIn = new Date(workStart.getTime() - 5 * 60000) // check in 5 minutes early
+          const checkOut = new Date(workEnd.getTime() + 5 * 60000)  // check out 5 minutes late
+
           attendances.push({
             userId: user.id,
             shiftId: shift.id,
@@ -160,9 +178,9 @@ async function main() {
             workStart,
             workEnd,
             status: AttendanceStatus.PRESENT,
-            checkInTime: new Date(workStart.getTime() + 5 * 60000),
-            checkOutTime: new Date(workEnd.getTime() - 5 * 60000),
-            workMinutes: Math.floor((workEnd.getTime() - workStart.getTime()) / 60000),
+            checkInTime: checkIn,
+            checkOutTime: checkOut,
+            workMinutes: Math.floor((checkOut - checkIn) / 60000),
           })
         }
       }
@@ -178,7 +196,7 @@ async function main() {
       skipDuplicates: true,
     })
 
-    spinner.succeed("Seeding complete")
+    spinner.succeed("Seeding complete (rolling M-A-E-OFF pattern)")
   } catch (err) {
     spinner.fail("Seeding failed")
     console.error(err)

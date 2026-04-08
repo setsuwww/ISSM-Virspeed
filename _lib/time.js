@@ -19,3 +19,7 @@ export function getTodayStartJakarta() {
 export function minutesToTodayTime(minutes) {
   return getTodayStartJakarta().add(minutes, "minute")
 }
+
+export function minutesToDateTime(date, minutes) {
+  return dayjs(date).tz(TZ).startOf("day").add(minutes, "minute")
+}

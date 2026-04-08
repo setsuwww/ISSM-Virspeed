@@ -1,5 +1,6 @@
 export const roleStyles = {
   Admin: "text-purple-600 bg-purple-100/50 border-purple-500/20",
+  Supervisor: "text-orange-600 bg-orange-100/50 border-orange-500/20",
   Employee: "text-teal-600 bg-teal-100/50 border-teal-500/20",
   User: "text-slate-600 bg-slate-100/50 border-slate-500/20",
 };

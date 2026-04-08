@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/_lib/auth"
 import { LogAction, LogMethod } from "@prisma/client"
 
 import {
+  getActiveAssignment,
   determineAttendanceStatus,
   evaluateAttendancePolicy,
   canUserCheckout,
@@ -51,19 +52,8 @@ export async function userSendCheckIn(coords = null) {
   if (!user?.id) return { error: "Unauthorized" };
 
   const now = getNowJakarta();
-  const today = getTodayStartJakarta().toDate();
 
-  const assignment = await prisma.shiftAssignment.findFirst({
-    where: {
-      userId: user.id,
-      date: today,
-    },
-    include: {
-      shift: {
-        include: { location: true },
-      },
-    },
-  });
+  const assignment = await getActiveAssignment(user.id);
 
   // OFF / CUTI Handlers
   if (!assignment || !assignment.shiftId) {
@@ -92,7 +82,7 @@ export async function userSendCheckIn(coords = null) {
       userId_shiftId_date: {
         userId: user.id,
         shiftId: assignment.shiftId,
-        date: today,
+        date: assignment.date,
       },
     },
   });
@@ -103,7 +93,7 @@ export async function userSendCheckIn(coords = null) {
 
   let status;
   try {
-    status = await determineAttendanceStatus(assignment.shiftId);
+    status = await determineAttendanceStatus(assignment.shiftId, assignment.date);
   } catch (err) {
     return { error: err.message };
   }
@@ -113,13 +103,13 @@ export async function userSendCheckIn(coords = null) {
       userId_shiftId_date: {
         userId: user.id,
         shiftId: assignment.shiftId,
-        date: today,
+        date: assignment.date,
       },
     },
     create: {
       userId: user.id,
       shiftId: assignment.shiftId,
-      date: today,
+      date: assignment.date,
       status,
       checkInTime: now.toDate(),
       locationType: shift.location.type,
@@ -147,36 +137,21 @@ export async function userSendCheckOut() {
   if (!user?.id) return { error: "Unauthorized" };
 
   const now = getNowJakarta();
-  const today = getTodayStartJakarta().toDate();
 
-  const assignment = await prisma.shiftAssignment.findFirst({
+  const attendance = await prisma.attendance.findFirst({
     where: {
       userId: user.id,
-      date: today,
+      checkInTime: { not: null },
+      checkOutTime: null,
     },
+    orderBy: { date: "desc" },
   });
 
-  if (!assignment || !assignment.shiftId) {
-    return { error: "Hari ini OFF" };
+  if (!attendance) {
+    return { error: "Belum check-in atau sudah checkout" };
   }
 
-  const attendance = await prisma.attendance.findUnique({
-    where: {
-      userId_shiftId_date: {
-        userId: user.id,
-        shiftId: assignment.shiftId,
-        date: today,
-      },
-    },
-  });
 
-  if (!attendance?.checkInTime) {
-    return { error: "Belum check-in" };
-  }
-
-  if (attendance.checkOutTime) {
-    return { error: "Sudah checkout" };
-  }
 
   const checkoutTime = now.toDate();
 
@@ -205,21 +180,16 @@ export async function userSendEarlyCheckout(reason) {
   if (!user?.shiftId) return { error: "Unauthorized" };
   if (!reason?.trim()) return { error: "Reason is required" };
 
-  const today = getTodayStartJakarta().toDate();
-  const attendance = await prisma.attendance.findUnique({
+  const attendance = await prisma.attendance.findFirst({
     where: {
-      userId_shiftId_date: {
-        userId: user.id,
-        shiftId: user.shiftId,
-        date: today,
-      },
+      userId: user.id,
+      checkInTime: { not: null },
+      checkOutTime: null,
     },
+    orderBy: { date: "desc" },
   });
 
-  if (!attendance?.checkInTime)
-    return { error: "You not checkin yet!" };
-  if (attendance.checkOutTime)
-    return { error: "You checkout done already!" };
+  if (!attendance) return { error: "You not checkin yet or checkout done already!" };
 
   const now = getNowJakarta();
   const workMinutes = calculateWorkMinutes(attendance.checkInTime, now.toDate());
@@ -269,13 +239,18 @@ export async function userSendPermissionRequest(reason) {
   if (!reason?.trim()) return { error: "Reason is required" }
 
   const today = getTodayStartJakarta().toDate()
+  const assignment = await getActiveAssignment(user.id)
+
+  if (!assignment || !assignment.shiftId) {
+    return { error: "Hari ini OFF, tidak perlu izin" }
+  }
 
   await prisma.attendance.upsert({
     where: {
       userId_shiftId_date: {
         userId: user.id,
-        shiftId: user.shiftId,
-        date: today,
+        shiftId: assignment.shiftId,
+        date: assignment.date,
       },
     },
     update: {
@@ -285,8 +260,8 @@ export async function userSendPermissionRequest(reason) {
     },
     create: {
       userId: user.id,
-      shiftId: user.shiftId,
-      date: today,
+      shiftId: assignment.shiftId,
+      date: assignment.date,
       status: "PERMISSION",
       approval: "PENDING",
       reason,
