@@ -95,7 +95,7 @@ export default async function AttendancesPage({ searchParams }) {
           <Pagination
             page={currentPage}
             totalPages={totalPages}
-            basePath="/admin/dashboard/attendances"
+            basePath="/admin/dashboard/users/attendances"
           />
         </ContentForm.Body>
       </ContentForm>

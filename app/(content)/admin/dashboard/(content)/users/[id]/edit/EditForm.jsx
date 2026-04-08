@@ -99,7 +99,7 @@ export default function EditForm({ user, locations }) {
                   <SelectContent>
                     {locations.map((o) => (
                       <SelectItem key={o.id} value={String(o.id)}>
-                        {capitalize(o.name)}
+                        {o.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -115,7 +115,7 @@ export default function EditForm({ user, locations }) {
                   <SelectContent>
                     {availableShifts.map((s) => (
                       <SelectItem key={s.id} value={String(s.id)}>
-                        {capitalize(s.name)}
+                        {s.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

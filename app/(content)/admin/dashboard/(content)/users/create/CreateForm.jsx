@@ -183,7 +183,7 @@ export default function CreateForm({ locations, shifts }) {
                     <SelectItem value="NONE">-</SelectItem>
                     {locations.map((d) => (
                       <SelectItem key={d.id} value={String(d.id)}>
-                        {capitalize(d.name)}
+                        {d.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -231,7 +231,7 @@ export default function CreateForm({ locations, shifts }) {
                         <SelectItem value="NONE">-</SelectItem>
                         {availableShifts.map((s) => (
                           <SelectItem key={s.id} value={String(s.id)}>
-                            {capitalize(s.name)}
+                            {s.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

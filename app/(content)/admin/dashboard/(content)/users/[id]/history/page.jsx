@@ -73,10 +73,13 @@ export default async function UserHistoryPage({ params, searchParams }) {
       ...h,
       day: safeFormat(h.date, "EEEE"),
       dmy: safeFormat(h.date, "dd MMMM yyyy"),
+
       checkInTime: h.checkInTime ? h.checkInTime.toISOString() : null,
       checkOutTime: h.checkOutTime ? h.checkOutTime.toISOString() : null,
-      createdAt: h.createdAt.toISOString(),
-      updatedAt: h.updatedAt.toISOString(),
+
+      createdAt: h.createdAt ? h.createdAt.toISOString() : null,
+      updatedAt: h.updatedAt ? h.updatedAt.toISOString() : null,
+
       shift: h.shift
         ? {
           ...h.shift,
@@ -84,6 +87,7 @@ export default async function UserHistoryPage({ params, searchParams }) {
           endTime: minutesToTime(h.shift.endTime),
         }
         : null,
+
       isEarlyCheckout,
     };
   });
