@@ -115,6 +115,8 @@ export async function AuthAction(prevState, formData) {
 
   switch (user.role) {
     case "ADMIN": redirect("/admin/dashboard")
+    case "SUPERVISOR": redirect("/supervisor/dashboard")
+    case "EMPLOYEE": redirect("/employee/dashboard")
     case "USER": redirect("/user/dashboard")
     default: redirect("/employee/dashboard")
   }

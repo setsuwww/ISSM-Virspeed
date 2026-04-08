@@ -1,73 +1,122 @@
 import { prisma } from "@/_lib/prisma"
 
-/**
- * Automates shift rotation for all users based on their location.
- * The rotation follows the order of the shifts' start times within each location.
- * For example: Morning -> Afternoon -> Evening -> Morning.
- *
- * This function can be called by a cron job every 2 weeks or via a manual trigger.
- */
-export async function autoRotateShifts() {
-  try {
-    // Fetch all locations that have at least one shift and one user
-    const locations = await prisma.location.findMany({
-      where: {
-        status: "ACTIVE",
-      },
-      include: {
-        shifts: {
-          where: { isActive: true, type: { not: "OFF" } },
-          orderBy: { startTime: "asc" },
-        },
-        users: {
-          where: { isLocked: false, shiftId: { not: null } },
-          select: { id: true, shiftId: true },
-        },
-      },
-    })
+const SHIFT_PATTERN = [
+  "MORNING",
+  "AFTERNOON",
+  "EVENING",
+  "OFF",
+]
 
-    const updatePromises = []
+function normalizeDate(date) {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
 
-    for (const location of locations) {
-      if (location.shifts.length <= 1 || location.users.length === 0) {
-        // If a location has 1 or fewer shifts, rotation isn't possible/needed
-        continue
-      }
+function buildShiftDateTime(baseDate, start, end) {
+  const workStart = new Date(baseDate)
+  workStart.setHours(start, 0, 0, 0)
 
-      const shifts = location.shifts
-      const shiftCount = shifts.length
+  const workEnd = new Date(baseDate)
+  workEnd.setHours(end, 0, 0, 0)
 
-      for (const user of location.users) {
-        // Find the index of the user's current shift
-        const currentShiftIndex = shifts.findIndex((s) => s.id === user.shiftId)
-
-        if (currentShiftIndex !== -1) {
-          // Calculate the next shift index
-          const nextShiftIndex = (currentShiftIndex + 1) % shiftCount
-          const nextShift = shifts[nextShiftIndex]
-
-          // Prepare the update operation
-          updatePromises.push(
-            prisma.user.update({
-              where: { id: user.id },
-              data: { shiftId: nextShift.id },
-            })
-          )
-        }
-      }
-    }
-
-    if (updatePromises.length > 0) {
-      // Execute all updates inside a transaction
-      await prisma.$transaction(updatePromises)
-      console.log(`Successfully rotated shifts for ${updatePromises.length} users.`)
-    } else {
-      console.log("No users needed a shift rotation at this time.")
-    }
-
-    return { success: true, count: updatePromises.length }
-  } catch (error) {
-    console.error("Error auto-rotating shifts:", error)
-    return { success: false, error: error.message }
+  // cross-day handling
+  if (end <= start) {
+    workEnd.setDate(workEnd.getDate() + 1)
   }
+
+  return { workStart, workEnd }
+}
+
+export async function generateShiftSchedule({
+  userId,
+  startDate,
+  totalDays = 30,
+  startFrom = "MORNING",
+}) {
+  const baseDate = normalizeDate(startDate)
+
+  const shifts = await prisma.shift.findMany({
+    where: { isActive: true },
+  })
+
+  // indexing O(1)
+  const shiftMap = new Map(shifts.map((s) => [s.type, s]))
+
+  const startIndex = SHIFT_PATTERN.indexOf(startFrom)
+
+  if (startIndex === -1) {
+    throw new Error("Invalid startFrom shift")
+  }
+
+  const assignments = []
+
+  for (let i = 0; i < totalDays; i++) {
+    const currentDate = new Date(baseDate)
+    currentDate.setDate(baseDate.getDate() + i)
+
+    const patternIndex = (startIndex + i) % SHIFT_PATTERN.length
+    const shiftType = SHIFT_PATTERN[patternIndex]
+
+    const shift = shiftMap.get(shiftType)
+
+    let workStart = null
+    let workEnd = null
+
+    if (shift) {
+      const built = buildShiftDateTime(
+        currentDate,
+        shift.startTime,
+        shift.endTime
+      )
+
+      workStart = built.workStart
+      workEnd = built.workEnd
+    }
+
+    assignments.push({
+      userId,
+      date: currentDate,
+      shiftId: shift ? shift.id : null,
+      workStart,
+      workEnd,
+    })
+  }
+
+  return prisma.shiftAssignment.createMany({
+    data: assignments,
+    skipDuplicates: true,
+  })
+}
+
+export async function getCurrentShift(userId) {
+  const now = new Date()
+
+  return prisma.shiftAssignment.findFirst({
+    where: {
+      userId,
+      workStart: { lte: now },
+      workEnd: { gte: now },
+    },
+    include: { shift: true },
+  })
+}
+
+export async function generateBulkSchedule({
+  userIds,
+  startDate,
+  totalDays = 30,
+}) {
+  return Promise.all(
+    userIds.map((userId, idx) => {
+      const startFrom = SHIFT_PATTERN[idx % SHIFT_PATTERN.length]
+
+      return generateShiftSchedule({
+        userId,
+        startDate,
+        totalDays,
+        startFrom,
+      })
+    })
+  )
 }

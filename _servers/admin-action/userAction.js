@@ -367,7 +367,7 @@ export async function getNormalEmployeeCount() {
   });
 }
 
-export async function getSElocations() {
+export async function getShiftEmployeeLocations() {
   return prisma.location.findMany({
     where: { status: "ACTIVE" },
     select: { id: true, name: true, type: true },

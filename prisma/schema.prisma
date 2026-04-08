@@ -37,6 +37,7 @@ enum SecurityAction {
 
 enum Role {
   ADMIN
+  SUPERVISOR
   EMPLOYEE
   USER
 }
@@ -162,6 +163,7 @@ model User {
   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
   shift    Shift?    @relation("ShiftUsers", fields: [shiftId], references: [id])
 
+  shiftAssignments    ShiftAssignment[]
   schedules           SchedulesOnUsers[]
   reminders           ScheduleReminder[]
   passwordResetTokens PasswordResetToken[]
@@ -304,36 +306,52 @@ model Shift {
   newShiftRequests    ShiftChangeRequest[] @relation("NewShift")
   targetShiftRequests ShiftChangeRequest[] @relation("TargetShift")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  shiftAssignments ShiftAssignment[]
+}
+
+model ShiftAssignment {
+  id      Int      @id @default(autoincrement())
+  userId  String
+  shiftId Int?
+  date    DateTime
+
+  isLeave          Boolean @default(false)
+  isManualOverride Boolean @default(false)
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shift Shift? @relation(fields: [shiftId], references: [id])
+
+  createdAt  DateTime    @default(now())
+  attendance Attendance?
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
 
 model Attendance {
-  id                  Int              @id @default(autoincrement())
-  date                DateTime
-  status              AttendanceStatus @default(ABSENT)
-  approval            ApprovalStatus?
-  reason              String?
-  adminReason         String?
-  checkInTime         DateTime?
-  checkOutTime        DateTime?
-  workMinutes         Int?
-  earlyCheckoutReason String?
-  userId              String
-  shiftId             Int
+  id           Int              @id @default(autoincrement())
+  userId       String
+  shiftId      Int
+  assignmentId Int?
+  assignment   ShiftAssignment? @relation(fields: [assignmentId], references: [id])
+  date         DateTime
+  workStart    DateTime?
+  workEnd      DateTime?
+  status       AttendanceStatus @default(ABSENT)
+  approval     ApprovalStatus?
+  checkInTime  DateTime?
+  checkOutTime DateTime?
+  workMinutes  Int?
 
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shift                 Shift                  @relation(fields: [shiftId], references: [id], onDelete: Cascade)
   earlyCheckoutRequests EarlyCheckoutRequest[]
-  locationType          LocationType?
-  locationStatus        LocationStatus?
 
-  @@unique([userId, shiftId, date])
+  @@unique([assignmentId])
   @@index([userId, date])
+  @@index([workStart, workEnd])
 }
 
 model EarlyCheckoutRequest {

@@ -48,23 +48,35 @@ export async function userPrecheckCheckIn() {
 
 export async function userSendCheckIn(coords = null) {
   const user = await getCurrentUser();
-
-  if (!user?.id || !user.shiftId) {
-    return { error: "Unauthorized" };
-  }
+  if (!user?.id) return { error: "Unauthorized" };
 
   const now = getNowJakarta();
   const today = getTodayStartJakarta().toDate();
 
-  const shift = await prisma.shift.findUnique({
-    where: { id: user.shiftId },
-    include: { location: true },
+  const assignment = await prisma.shiftAssignment.findFirst({
+    where: {
+      userId: user.id,
+      date: today,
+    },
+    include: {
+      shift: {
+        include: { location: true },
+      },
+    },
   });
 
-  if (!shift?.location) {
-    return { error: "Shift atau divisi tidak ditemukan" };
+  // OFF / CUTI Handlers
+  if (!assignment || !assignment.shiftId) {
+    return { error: "Hari ini OFF / CUTI" };
   }
 
+  const shift = assignment.shift;
+
+  if (!shift?.location) {
+    return { error: "Shift atau location tidak ditemukan" };
+  }
+
+  // Policy Location & coordinates
   const policy = evaluateAttendancePolicy({
     location: shift.location,
     currentCoords: coords,
@@ -74,35 +86,39 @@ export async function userSendCheckIn(coords = null) {
     return { error: policy.message ?? "Check-in tidak diizinkan" };
   }
 
+  // Attendance check
   const existing = await prisma.attendance.findUnique({
     where: {
       userId_shiftId_date: {
         userId: user.id,
-        shiftId: user.shiftId,
+        shiftId: assignment.shiftId,
         date: today,
       },
     },
   });
 
   if (existing?.checkInTime) {
-    return { error: "Anda sudah check-in hari ini" };
+    return { error: "Sudah check-in" };
   }
 
   let status;
-  try { status = await determineAttendanceStatus(user.shiftId) }
-  catch (err) { return { error: err.message } }
+  try {
+    status = await determineAttendanceStatus(assignment.shiftId);
+  } catch (err) {
+    return { error: err.message };
+  }
 
   const attendance = await prisma.attendance.upsert({
     where: {
       userId_shiftId_date: {
         userId: user.id,
-        shiftId: user.shiftId,
+        shiftId: assignment.shiftId,
         date: today,
       },
     },
     create: {
       userId: user.id,
-      shiftId: user.shiftId,
+      shiftId: assignment.shiftId,
       date: today,
       status,
       checkInTime: now.toDate(),
@@ -115,13 +131,12 @@ export async function userSendCheckIn(coords = null) {
     },
   });
 
-  // Log action
   await safeLog({
     userId: user.id,
-    url: "/employee/attendance/main/check-in",
+    url: "/employee/attendance/check-in",
     action: LogAction.SUBMIT,
     method: LogMethod.POST,
-    data: { attendanceId: attendance.id, status, coords },
+    data: { attendanceId: attendance.id, status },
   });
 
   return { success: true, attendance };
@@ -129,29 +144,39 @@ export async function userSendCheckIn(coords = null) {
 
 export async function userSendCheckOut() {
   const user = await getCurrentUser();
-  if (!user?.shiftId) return { error: "User tidak memiliki shift aktif" };
-
-  const allowed = await canUserCheckout(user.shiftId);
-  if (!allowed) return { error: "Belum waktunya checkout" };
+  if (!user?.id) return { error: "Unauthorized" };
 
   const now = getNowJakarta();
   const today = getTodayStartJakarta().toDate();
+
+  const assignment = await prisma.shiftAssignment.findFirst({
+    where: {
+      userId: user.id,
+      date: today,
+    },
+  });
+
+  if (!assignment || !assignment.shiftId) {
+    return { error: "Hari ini OFF" };
+  }
 
   const attendance = await prisma.attendance.findUnique({
     where: {
       userId_shiftId_date: {
         userId: user.id,
-        shiftId: user.shiftId,
+        shiftId: assignment.shiftId,
         date: today,
       },
     },
   });
 
-  if (!attendance?.checkInTime)
-    return { error: "You not checkin yet!" };
+  if (!attendance?.checkInTime) {
+    return { error: "Belum check-in" };
+  }
 
-  if (attendance.checkOutTime)
-    return { error: "You checkout done already!" };
+  if (attendance.checkOutTime) {
+    return { error: "Sudah checkout" };
+  }
 
   const checkoutTime = now.toDate();
 
@@ -160,24 +185,14 @@ export async function userSendCheckOut() {
     checkoutTime
   );
 
-  if (workMinutes == null)
-    return { error: "Checkout unvalid" };
+  if (workMinutes == null) {
+    return { error: "Invalid checkout" };
+  }
 
   await prisma.attendance.update({
     where: { id: attendance.id },
     data: {
       checkOutTime: checkoutTime,
-      workMinutes,
-    },
-  });
-
-  await safeLog({
-    userId: user.id,
-    url: "/employee/attendance/main/check-out",
-    action: LogAction.SUBMIT,
-    method: LogMethod.POST,
-    data: {
-      checkoutTime,
       workMinutes,
     },
   });
