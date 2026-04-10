@@ -91,6 +91,7 @@ enum AttendanceStatus {
   LATE
   PERMISSION
   ALPHA
+  INACTIVE
 }
 
 model ActivityLog {

@@ -58,7 +58,7 @@ export default async function Page({ searchParams }) {
       id: u.id,
       name: u.name,
       email: u.email,
-      role: capitalize(u.role),
+      role: u.role,
       shift: finalShift?.label ?? "—",
       shiftTime: finalShift ? `${minutesToTime(finalShift.start)} - ${minutesToTime(finalShift.end)}` : "—",
       shiftType: finalShift?.type ?? null,

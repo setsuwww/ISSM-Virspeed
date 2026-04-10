@@ -44,10 +44,53 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
     throw new Error("Invalid leave request ID");
   }
 
-  await prisma.leaveRequest.update({
+  const req = await prisma.leaveRequest.update({
     where: { id: leaveId },
     data: { status: newStatus, ...(adminReason ? { adminReason } : {}), updatedAt: new Date() },
   });
+
+  if (newStatus === "APPROVED") {
+    const current = new Date(req.startDate);
+    while (current <= req.endDate) {
+      // 1. Set ShiftAssignment isLeave = true
+      await prisma.shiftAssignment.updateMany({
+        where: { userId: req.userId, date: current },
+        data: { isLeave: true }
+      });
+
+      // 2. Set Attendance to INACTIVE
+      const assignments = await prisma.shiftAssignment.findMany({
+        where: { userId: req.userId, date: current }
+      });
+
+      for (const asg of assignments) {
+        if (asg.shiftId) {
+          await prisma.attendance.upsert({
+            where: {
+              userId_shiftId_date: {
+                userId: req.userId,
+                shiftId: asg.shiftId,
+                date: current
+              }
+            },
+            update: {
+              status: "INACTIVE",
+              reason: "Approved Leave"
+            },
+            create: {
+              userId: req.userId,
+              shiftId: asg.shiftId,
+              date: current,
+              status: "INACTIVE",
+              reason: "Approved Leave"
+            }
+          });
+        }
+      }
+
+      current.setDate(current.getDate() + 1);
+    }
+  }
 
   revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");

@@ -103,7 +103,7 @@ export default function EditShiftForm({ shift, locations }) {
                     <SelectItem value="NONE">-</SelectItem>
                     {locations.map((location) => (
                       <SelectItem key={location.id} value={String(location.id)}>
-                        {capitalize(location.name)}
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

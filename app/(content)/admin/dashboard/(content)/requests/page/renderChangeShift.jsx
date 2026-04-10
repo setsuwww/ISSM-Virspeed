@@ -38,10 +38,10 @@ export default function RenderChangeShift({ r }) {
       <TableCell>
         <div className="flex flex-col space-y-1">
           <div className="flex items-center space-x-2">
-            <span className="font-base text-slate-400">From</span><span className={`${shiftStyles[r.oldShift?.type]} px-2 border rounded-md`}>{capitalize(r.oldShift?.type)}</span>
+            <span className="font-base text-slate-400">From</span><span className={`${shiftStyles[r.oldShift?.type]} px-2 border rounded-md`}>{r.oldShift?.type}</span>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="font-base text-slate-400">To</span><span className={`${shiftStyles[r.targetShift?.type]} px-2 border rounded-md`}>{capitalize(r.targetShift?.type)}</span>
+            <span className="font-base text-slate-400">To</span><span className={`${shiftStyles[r.targetShift?.type]} px-2 border rounded-md`}>{r.targetShift?.type}</span>
           </div>
         </div>
       </TableCell>

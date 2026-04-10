@@ -56,7 +56,7 @@ export default function SchedulesCard({ data }) {
               >
                 <div className="flex flex-row items-center justify-between px-4 py-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-md ${frequencyStyles[capitalize(schedule.frequency)]}`}>
+                    <div className={`p-2 rounded-md ${frequencyStyles[schedule.frequency]}`}>
                       <CalendarClock strokeWidth={1.5} size={20} />
                     </div>
 

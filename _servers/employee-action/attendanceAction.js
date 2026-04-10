@@ -295,7 +295,7 @@ export async function userSendPermissionRequest(reason) {
   return { success: true }
 }
 
-export async function userSendLeaveRequest({ type, startDate, reason }) {
+export async function userSendLeaveRequest({ type, startDate, endDate, reason }) {
   const user = await getCurrentUser()
   if (!user?.id) return { error: "Unauthorized" }
 
@@ -305,13 +305,12 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
   if (!leaveType) return { error: "Leave type not found" }
 
   const start = new Date(`${startDate}T12:00:00`)
+  const end = endDate ? new Date(`${endDate}T12:00:00`) : new Date(start)
   const year = start.getFullYear()
 
-  const totalDays = leaveType.category === "ANNUAL" ? leaveType.maxDays : 1
-  const end =
-    leaveType.category === "ANNUAL"
-      ? addWorkDays(start, totalDays - 1)
-      : new Date(start)
+  // Simplifikasi totalDays untuk purposed hitungan harian.
+  const timeDiff = end.getTime() - start.getTime()
+  const totalDays = Math.max(1, Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1)
 
   const conflict = await prisma.leaveRequest.findFirst({
     where: {

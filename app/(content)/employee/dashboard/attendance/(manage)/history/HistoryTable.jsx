@@ -86,8 +86,7 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
                 <span
                   className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}
                 >
-                  {shiftDots[att.shiftType]}
-                  <span>{capitalize(att.shiftType)}</span>
+                  <span>{att.shiftType}</span>
                 </span>
               </TableCell>
 
@@ -118,7 +117,7 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
               </TableCell>
 
               <TableCell>
-                <div className="flex items-center gap-x-2 p-2">
+                <div className="flex items-center gap-x-3 p-2">
                   <div className="bg-gray-100 text-yellow-500 p-2 rounded-full">
                     <Clock className="w-5 h-5" />
                   </div>

@@ -9,7 +9,6 @@ import { Button } from "@/_components/ui/Button";
 import EmptyStates from "@/_components/common/EmptyStates";
 
 import { roleStyles } from "@/_constants/theme/userTheme";
-import { capitalize } from "@/_functions/globalFunction";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 import ListUsersActionHeader from "./ListUsersActionHeader";
 
@@ -103,8 +102,8 @@ export default function ListUsersTable({ data }) {
                 </TableCell>
 
                 <TableCell>
-                  <span className={`text-sm font-medium px-2 border rounded-md ${roleStyles[capitalize(user.role)] ?? ""}`}>
-                    {capitalize(user.role)}
+                  <span className={`text-sm font-medium px-2 border rounded-md ${roleStyles[user.role] ?? ""}`}>
+                    {user.role}
                   </span>
                 </TableCell>
 

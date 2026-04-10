@@ -8,20 +8,17 @@ export function Logo({ minimized, onToggle }) {
       minimized && "justify-center w-full"
     )}
     >
-      <Image src="/icons/virspeed.png" className="rounded-lg"
-        width={34} height={34}
+      <Image
+        src="/icons/lintasarta.png"
+        className="rounded-lg transition-all duration-300"
+        width={minimized ? 16 : 120}
+        height={minimized ? 16 : 40}
         alt="Liveon icon"
         priority
       />
 
       {!minimized && (
-        <>
-          <div className="text-xl font-bold text-violet-500 whitespace-nowrap">
-            Vir<span className="text-slate-700">speed.</span>
-          </div>
-
-          <ChevronLeft size={18} className="ml-1 text-slate-400 group-hover:text-slate-700 transition" />
-        </>
+        <ChevronLeft size={18} className="ml-1 text-slate-400 group-hover:text-slate-700 transition" />
       )}
     </button>
   )
