@@ -50,45 +50,36 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
   });
 
   if (newStatus === "APPROVED") {
-    const current = new Date(req.startDate);
-    while (current <= req.endDate) {
-      // 1. Set ShiftAssignment isLeave = true
-      await prisma.shiftAssignment.updateMany({
-        where: { userId: req.userId, date: current },
-        data: { isLeave: true }
-      });
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { shiftId: true }
+    });
 
-      // 2. Set Attendance to INACTIVE
-      const assignments = await prisma.shiftAssignment.findMany({
-        where: { userId: req.userId, date: current }
-      });
-
-      for (const asg of assignments) {
-        if (asg.shiftId) {
-          await prisma.attendance.upsert({
-            where: {
-              userId_shiftId_date: {
-                userId: req.userId,
-                shiftId: asg.shiftId,
-                date: current
-              }
-            },
-            update: {
-              status: "INACTIVE",
-              reason: "Approved Leave"
-            },
-            create: {
+    if (user?.shiftId) {
+      const current = new Date(req.startDate);
+      while (current <= req.endDate) {
+        await prisma.attendance.upsert({
+          where: {
+            userId_shiftId_date: {
               userId: req.userId,
-              shiftId: asg.shiftId,
-              date: current,
-              status: "INACTIVE",
-              reason: "Approved Leave"
+              shiftId: user.shiftId,
+              date: current
             }
-          });
-        }
+          },
+          update: {
+            status: "INACTIVE",
+            reason: req.reason || "Approved Leave"
+          },
+          create: {
+            userId: req.userId,
+            shiftId: user.shiftId,
+            date: current,
+            status: "INACTIVE",
+            reason: req.reason || "Approved Leave"
+          }
+        });
+        current.setDate(current.getDate() + 1);
       }
-
-      current.setDate(current.getDate() + 1);
     }
   }
 
