@@ -9,7 +9,6 @@ import { Badge } from "@/_components/ui/Badge"
 import EmptyStates from "@/_components/common/EmptyStates"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
-import { Pagination } from "../../../../Pagination"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
@@ -149,7 +148,6 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
                   </TableCell>
                 </TableRow>
 
-
               ))
             ) : (
               <TableRow>
@@ -160,14 +158,6 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
             )}
           </TableBody>
         </Table>
-      )}
-      {totalPages > 1 && (
-        <Pagination
-          key={page}
-          page={page}
-          totalPages={totalPages}
-          basePath="/admin/dashboard/users/attendances"
-        />
       )}
     </>
   )

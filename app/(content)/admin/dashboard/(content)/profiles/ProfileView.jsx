@@ -118,7 +118,7 @@ export function ProfileView({ user }) {
       <Card className="rounded-lg border border-slate-200 shadow-xs">
         <CardHeader className="flex flex-row items-center justify-between px-6 py-5">
           <div className="flex items-center gap-4">
-            <div className={`${profilesRoleStyles[user.role]} p-2 rounded-full bg-slate-100 ring-1 ring-slate-200`}>
+            <div className={`${profilesRoleStyles[capitalize(user.role)]} p-2 rounded-full bg-slate-100 ring-1 ring-slate-200`}>
               <CircleUserRound className="w-6 h-6 text-white" strokeWidth={1} />
             </div>
 
