@@ -3,12 +3,6 @@ import { jwtVerify } from "jose";
 
 const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanKurangGizi2025";
 
-const roleRoutes = {
-  ADMIN: "/admin/dashboard",
-  EMPLOYEE: "/employee/dashboard",
-  USER: "/user/dashboard",
-};
-
 export async function middleware(req) {
   const token = req.cookies.get("token")?.value;
   const path = req.nextUrl.pathname;
