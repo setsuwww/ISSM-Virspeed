@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanMalingKancut2025";
+const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanKurangGizi2025";
 
 const roleRoutes = {
   ADMIN: "/admin/dashboard",
@@ -14,14 +14,15 @@ export async function middleware(req) {
   const path = req.nextUrl.pathname;
   const publicPaths = ["/auth/login", "/auth/register"];
 
-  if (!token) { if (!publicPaths.includes(path)) {
+  if (!token) {
+    if (!publicPaths.includes(path)) {
       return NextResponse.redirect(new URL("/auth/login", req.url));
     }
     return NextResponse.next();
   }
 
   try {
-    const { payload } = await jwtVerify( token,
+    const { payload } = await jwtVerify(token,
       new TextEncoder().encode(JWT_SECRET_STRING)
     );
 
