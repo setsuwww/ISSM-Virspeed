@@ -8,6 +8,7 @@ const CHECKIN_EARLY_WINDOW_MINUTES = 20
 const CHECKOUT_EARLY_MARGIN_MINUTES = 5
 const FORGOT_CHECKOUT_REMINDER_MINUTES = 20
 
+// Handle absensi beda hari (shift malam)
 export async function determineAttendanceStatus(shiftId) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
@@ -23,9 +24,8 @@ export async function determineAttendanceStatus(shiftId) {
   const shiftStart = minutesToTodayTime(shift.startTime)
 
   const isCrossDay = shift.endTime < shift.startTime
-  const shiftEnd = isCrossDay
-    ? minutesToTodayTime(shift.endTime).add(1, "day")
-    : minutesToTodayTime(shift.endTime)
+
+  const shiftEnd = isCrossDay ? minutesToTodayTime(shift.endTime).add(1, "day") : minutesToTodayTime(shift.endTime)
 
   const diffMs = now.diff(shiftStart)
 
