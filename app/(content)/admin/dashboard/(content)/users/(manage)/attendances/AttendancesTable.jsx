@@ -147,8 +147,6 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
                     </div>
                   </TableCell>
                 </TableRow>
-
-
               ))
             ) : (
               <TableRow>

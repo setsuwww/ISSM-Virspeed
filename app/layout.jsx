@@ -1,12 +1,12 @@
 import { ToastProvider } from "@/_contexts/Toast-Provider"
 import "../_styles/admin.css"
 
-export const metadata ={
+export const metadata = {
   title: "ISSM-Virspeed",
   description: "ISSM Virspeed Application",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icons/virspeed.png"
+    icon: "/icons/lintasarta.png"
   }
 }
 

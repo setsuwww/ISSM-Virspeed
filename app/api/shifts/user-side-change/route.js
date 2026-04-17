@@ -32,6 +32,35 @@ export async function POST(req) {
       return NextResponse.json({ message: "Target user has no shift assigned" }, { status: 400 })
     }
 
+    const startD = new Date(startDate);
+    const endD = endDate ? new Date(endDate) : startD;
+
+    const myLeave = await prisma.leaveRequest.findFirst({
+      where: {
+        userId: user.id,
+        status: "APPROVED",
+        startDate: { lte: endD },
+        endDate: { gte: startD }
+      }
+    });
+
+    if (myLeave) {
+      return NextResponse.json({ message: "You cannot request a shift change while on approved leave." }, { status: 400 })
+    }
+
+    const targetLeave = await prisma.leaveRequest.findFirst({
+      where: {
+        userId: targetUser.id,
+        status: "APPROVED",
+        startDate: { lte: endD },
+        endDate: { gte: startD }
+      }
+    });
+
+    if (targetLeave) {
+      return NextResponse.json({ message: "Target employee is currently on approved leave." }, { status: 400 })
+    }
+
     const changeRequest = await prisma.shiftChangeRequest.create({
       data: {
         userId: user.id,

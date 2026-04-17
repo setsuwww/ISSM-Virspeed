@@ -8,51 +8,8 @@ const CHECKIN_EARLY_WINDOW_MINUTES = 20
 const CHECKOUT_EARLY_MARGIN_MINUTES = 5
 const FORGOT_CHECKOUT_REMINDER_MINUTES = 20
 
-export async function getActiveAssignment(userId) {
-  const now = getNowJakarta()
-  const today = now.startOf("day").toDate()
-  const yesterday = now.subtract(1, "day").startOf("day").toDate()
-
-  const assignments = await prisma.shiftAssignment.findMany({
-    where: {
-      userId,
-      date: { in: [yesterday, today] },
-    },
-    include: {
-      shift: {
-        include: { location: true },
-      },
-    },
-    orderBy: { date: "desc" },
-  })
-
-  let activeAssignment = null
-  let fallbackAssignment = assignments.find(
-    (a) => a.date.getTime() === today.getTime()
-  )
-
-  for (const asg of assignments) {
-    if (!asg.shift) continue
-
-    const shiftStart = minutesToDateTime(asg.date, asg.shift.startTime)
-    const isCrossDay = asg.shift.endTime < asg.shift.startTime
-    const shiftEnd = isCrossDay
-      ? minutesToDateTime(asg.date, asg.shift.endTime).add(1, "day")
-      : minutesToDateTime(asg.date, asg.shift.endTime)
-
-    if (
-      now.isAfter(shiftStart.subtract(120, "minute")) &&
-      now.isBefore(shiftEnd.add(120, "minute"))
-    ) {
-      activeAssignment = asg
-      break
-    }
-  }
-
-  return activeAssignment || fallbackAssignment
-}
-
-export async function determineAttendanceStatus(shiftId, assignmentDate = new Date()) {
+// Handle absensi beda hari (shift malam)
+export async function determineAttendanceStatus(shiftId) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
     select: { startTime: true, endTime: true },
@@ -67,9 +24,8 @@ export async function determineAttendanceStatus(shiftId, assignmentDate = new Da
   const shiftStart = minutesToDateTime(assignmentDate, shift.startTime)
 
   const isCrossDay = shift.endTime < shift.startTime
-  const shiftEnd = isCrossDay
-    ? minutesToDateTime(assignmentDate, shift.endTime).add(1, "day")
-    : minutesToDateTime(assignmentDate, shift.endTime)
+
+  const shiftEnd = isCrossDay ? minutesToTodayTime(shift.endTime).add(1, "day") : minutesToTodayTime(shift.endTime)
 
   const diffMs = now.diff(shiftStart)
 

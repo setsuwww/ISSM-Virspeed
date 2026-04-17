@@ -1,94 +1,240 @@
-import { PrismaClient, Role, ShiftType, LocationType, LocationStatus } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import ora from "ora";
+import {
+  PrismaClient,
+  Role,
+  ShiftType,
+  LocationType,
+  LocationStatus,
+  AttendanceStatus,
+} from "@prisma/client"
 
-const prisma = new PrismaClient();
+import bcrypt from "bcryptjs"
+import { addDays, startOfDay } from "date-fns"
+
+const prisma = new PrismaClient()
 
 async function main() {
-  const spinner = ora("Seeding locations, shifts, and users...").start();
+  console.log("Seeding real data...")
 
-  try {
-    // --- Hapus data lama ---
-    await prisma.user.deleteMany();
-    await prisma.shift.deleteMany();
-    await prisma.location.deleteMany();
+  // =============================
+  // LOCATIONS
+  // =============================
+  const locJS = await prisma.location.create({
+    data: {
+      name: "JS - Lintasarta",
+      location: "Jakarta Selatan",
+      latitude: -6.2615,
+      longitude: 106.8106,
+      radius: 100,
+      type: LocationType.WFO,
+      status: LocationStatus.ACTIVE,
+      startTime: 480,
+      endTime: 1020,
+    },
+  })
 
-    // --- Buat locations ---
-    const locationsData = [
-      { name: "JS - Lintasarta", location: "Jakarta Selatan", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
-      { name: "JU - Lintasarta", location: "Jakarta Utara", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
-      { name: "JB - Lintasarta", location: "Jawa Barat", type: LocationType.WFO, status: LocationStatus.ACTIVE, startTime: 540, endTime: 720 },
-    ];
-    await prisma.location.createMany({ data: locationsData });
+  const locJU = await prisma.location.create({
+    data: {
+      name: "JU - Lintasarta",
+      location: "Jakarta Utara",
+      latitude: -6.1381,
+      longitude: 106.8636,
+      radius: 100,
+      type: LocationType.WFO,
+      status: LocationStatus.ACTIVE,
+      startTime: 480,
+      endTime: 1020,
+    },
+  })
 
-    // --- Ambil locations yang baru dibuat ---
-    const locationList = await prisma.location.findMany();
+  const locBDG = await prisma.location.create({
+    data: {
+      name: "BDG - Lintasarta",
+      location: "Bandung",
+      latitude: -6.9175,
+      longitude: 107.6191,
+      radius: 100,
+      type: LocationType.WFO,
+      status: LocationStatus.ACTIVE,
+      startTime: 480,
+      endTime: 1020,
+    },
+  })
 
-    // --- Buat shifts ---
-    const shiftsData = [
-      { name: "Shift Pagi", type: ShiftType.MORNING, startTime: 540, endTime: 720 },
-      { name: "Shift Siang", type: ShiftType.AFTERNOON, startTime: 720, endTime: 900 },
-      { name: "Shift Malam", type: ShiftType.EVENING, startTime: 900, endTime: 1080 },
-    ];
-    await prisma.shift.createMany({ data: shiftsData });
+  const locJOG = await prisma.location.create({
+    data: {
+      name: "JOG - Lintasarta",
+      location: "Yogyakarta",
+      latitude: -7.7956,
+      longitude: 110.3695,
+      radius: 100,
+      type: LocationType.WFO,
+      status: LocationStatus.ACTIVE,
+      startTime: 480,
+      endTime: 1020,
+    },
+  })
 
-    // --- Ambil shifts yang baru dibuat ---
-    const shiftList = await prisma.shift.findMany();
+  const locJBR = await prisma.location.create({
+    data: {
+      name: "JBR - Lintasarta",
+      location: "Jawa Barat",
+      latitude: -6.9034,
+      longitude: 107.5731,
+      radius: 100,
+      type: LocationType.WFO,
+      status: LocationStatus.ACTIVE,
+      startTime: 480,
+      endTime: 1020,
+    },
+  })
 
-    // --- Buat users 1 per shift + 1 per location ---
-    const usersData = [
-      { name: "Admin", email: "admin@next.com", role: Role.ADMIN },
-      { name: "Supervisor", email: "supervisor@next.com", role: Role.SUPERVISOR },
-      { name: "Albert", email: "albert@next.com", role: Role.EMPLOYEE },
-      { name: "Brian", email: "brian@next.com", role: Role.EMPLOYEE },
-      { name: "Charlie", email: "charlie@next.com", role: Role.EMPLOYEE },
-      { name: "Drake", email: "drake@next.com", role: Role.EMPLOYEE },
-      { name: "Emily", email: "emily@next.com", role: Role.EMPLOYEE },
-      { name: "Fernandez", email: "fernandez@next.com", role: Role.EMPLOYEE },
-      { name: "Galiard", email: "galiard@next.com", role: Role.EMPLOYEE },
-      { name: "Harry", email: "harry@next.com", role: Role.EMPLOYEE },
-      { name: "Iris", email: "iris@next.com", role: Role.EMPLOYEE },
-      { name: "John", email: "john@next.com", role: Role.EMPLOYEE },
-      { name: "Katherine", email: "katherine@next.com", role: Role.EMPLOYEE },
-      { name: "Levi", email: "levi@next.com", role: Role.EMPLOYEE },
-      { name: "Monica", email: "monica@next.com", role: Role.EMPLOYEE },
-      { name: "Noah", email: "noah@next.com", role: Role.EMPLOYEE },
-      { name: "Odelio", email: "odelio@next.com", role: Role.EMPLOYEE },
-      { name: "Prilly", email: "prilly@next.com", role: Role.EMPLOYEE },
-      { name: "Qian", email: "qian@next.com", role: Role.EMPLOYEE },
-      { name: "Raymond", email: "raymond@next.com", role: Role.EMPLOYEE },
-      { name: "Stevan", email: "stevan@next.com", role: Role.EMPLOYEE },
-      { name: "Thomas", email: "thomas@next.com", role: Role.EMPLOYEE },
-      { name: "Ulrich", email: "ulrich@next.com", role: Role.EMPLOYEE },
-      { name: "Veline", email: "veline@next.com", role: Role.EMPLOYEE },
-      { name: "Wilson", email: "wilson@next.com", role: Role.EMPLOYEE },
-      { name: "Xin", email: "xin@next.com", role: Role.EMPLOYEE },
-      { name: "Yohannes", email: "yohannes@next.com", role: Role.EMPLOYEE },
-      { name: "Zaky", email: "zaky@next.com", role: Role.EMPLOYEE },
-    ];
+  // =============================
+  // SHIFTS
+  // =============================
+  async function createShifts(locationId) {
+    const morning = await prisma.shift.create({
+      data: {
+        name: "Morning Shift",
+        type: ShiftType.MORNING,
+        startTime: 480,
+        endTime: 960,
+        locationId,
+      },
+    })
 
-    for (let i = 0; i < usersData.length; i++) {
-      const hash = await bcrypt.hash("password123", 10);
+    const afternoon = await prisma.shift.create({
+      data: {
+        name: "Afternoon Shift",
+        type: ShiftType.AFTERNOON,
+        startTime: 960,
+        endTime: 1320,
+        locationId,
+      },
+    })
 
-      await prisma.user.create({
-        data: {
-          name: usersData[i].name,
-          email: usersData[i].email,
-          password: hash,
-          role: usersData[i].role,
-          locationId: locationList[i % locationList.length].id, // rotasi location
-          shiftId: shiftList[i % shiftList.length].id,         // rotasi shift
-        },
-      });
-    }
+    const evening = await prisma.shift.create({
+      data: {
+        name: "Evening Shift",
+        type: ShiftType.EVENING,
+        startTime: 1320,
+        endTime: 1800,
+        locationId,
+      },
+    })
 
-    spinner.succeed(`Seeded ${usersData.length} users, ${shiftsData.length} shifts, ${locationsData.length} locations`);
-  } catch (err) {
-    spinner.fail("Seeding failed");
-    console.error(err);
-  } finally {
-    await prisma.$disconnect();
+    return { morning, afternoon, evening }
   }
+
+  const jsShift = await createShifts(locJS.id)
+  const juShift = await createShifts(locJU.id)
+  const bdgShift = await createShifts(locBDG.id)
+  const jogShift = await createShifts(locJOG.id)
+  const jbrShift = await createShifts(locJBR.id)
+
+  // =============================
+  // USER CREATOR
+  // =============================
+  async function createUser(
+    name,
+    email,
+    shiftId,
+    locationId,
+    role
+  ) {
+    const hashedPassword = await bcrypt.hash("123456", 10)
+
+    return prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: role === Role.ADMIN ? Role.ADMIN : Role.EMPLOYEE,
+        shiftId,
+        locationId,
+      },
+    })
+  }
+
+  // =============================
+  // USERS
+  // =============================
+  const users = [
+    // ADMIN (NO SHIFT)
+    await createUser("Super Admin", "admin@lintasarta.com", null, locJS.id, Role.ADMIN),
+
+    // JS
+    await createUser("Andi", "andi@mail.com", jsShift.morning.id, locJS.id),
+    await createUser("Budi", "budi@mail.com", jsShift.afternoon.id, locJS.id),
+    await createUser("Citra", "citra@mail.com", jsShift.evening.id, locJS.id),
+    await createUser("Dewi", "dewi@mail.com", jsShift.morning.id, locJS.id),
+    await createUser("Eko", "eko@mail.com", jsShift.afternoon.id, locJS.id),
+
+    // JU
+    await createUser("Fajar", "fajar@mail.com", juShift.morning.id, locJU.id),
+    await createUser("Gilang", "gilang@mail.com", juShift.afternoon.id, locJU.id),
+    await createUser("Hendra", "hendra@mail.com", juShift.evening.id, locJU.id),
+    await createUser("Indra", "indra@mail.com", juShift.morning.id, locJU.id),
+    await createUser("Joko", "joko@mail.com", juShift.afternoon.id, locJU.id),
+
+    // BDG
+    await createUser("Kevin", "kevin@mail.com", bdgShift.morning.id, locBDG.id),
+    await createUser("Lina", "lina@mail.com", bdgShift.afternoon.id, locBDG.id),
+    await createUser("Maya", "maya@mail.com", bdgShift.evening.id, locBDG.id),
+    await createUser("Nina", "nina@mail.com", bdgShift.morning.id, locBDG.id),
+    await createUser("Oki", "oki@mail.com", bdgShift.afternoon.id, locBDG.id),
+
+    // JOG
+    await createUser("Putra", "putra@mail.com", jogShift.morning.id, locJOG.id),
+    await createUser("Qori", "qori@mail.com", jogShift.afternoon.id, locJOG.id),
+    await createUser("Rian", "rian@mail.com", jogShift.evening.id, locJOG.id),
+    await createUser("Sari", "sari@mail.com", jogShift.morning.id, locJOG.id),
+    await createUser("Tono", "tono@mail.com", jogShift.afternoon.id, locJOG.id),
+
+    // JBR
+    await createUser("Umar", "umar@mail.com", jbrShift.morning.id, locJBR.id),
+    await createUser("Vina", "vina@mail.com", jbrShift.afternoon.id, locJBR.id),
+    await createUser("Wawan", "wawan@mail.com", jbrShift.evening.id, locJBR.id),
+    await createUser("Xena", "xena@mail.com", jbrShift.morning.id, locJBR.id),
+    await createUser("Yoga", "yoga@mail.com", jbrShift.afternoon.id, locJBR.id),
+  ]
+
+  // =============================
+  // SHIFT MAP (ANTI N+1)
+  // =============================
+  const shiftMap = Object.fromEntries(
+    (await prisma.shift.findMany()).map(s => [s.id, s])
+  )
+
+  // =============================
+  // ATTENDANCE
+  // =============================
+  const baseDate = startOfDay(new Date())
+
+  for (const user of users.filter(u => u.role !== Role.ADMIN)) {
+    const shift = shiftMap[user.shiftId]
+
+    for (let i = 0; i < 5; i++) {
+      const date = addDays(baseDate, -i)
+
+      await prisma.attendance.create({
+        data: {
+          userId: user.id,
+          shiftId: shift.id,
+          date,
+          status: AttendanceStatus.PRESENT,
+          checkInTime: new Date(date.getTime() + shift.startTime * 60000),
+          checkOutTime: new Date(date.getTime() + shift.endTime * 60000),
+          workMinutes: shift.endTime - shift.startTime,
+          locationType: LocationType.WFO,
+          locationStatus: LocationStatus.ACTIVE,
+        },
+      })
+    }
+  }
+
+  console.log("SEED SUCCESS")
 }
 
-main();
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect())

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanMalingKancut2025";
+const JWT_SECRET_STRING = process.env.JWT_SECRET || "dirmanKurangGizi2025";
 
 export async function middleware(req) {
   const token = req.cookies.get("token")?.value;
@@ -9,7 +9,9 @@ export async function middleware(req) {
   const publicPaths = ["/auth/login", "/auth/register"];
 
   if (!token) {
-    if (!publicPaths.includes(path)) { return NextResponse.redirect(new URL("/auth/login", req.url)) }
+    if (!publicPaths.includes(path)) {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
     return NextResponse.next();
   }
 

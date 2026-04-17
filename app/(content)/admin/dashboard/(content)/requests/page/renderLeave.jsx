@@ -33,7 +33,7 @@ export default function RenderLeave({ r }) {
 
             <div className="flex flex-col text-sm text-slate-600">
               <p className="font-semibold">
-                {capitalize(r.shift.name)}
+                {r.shift.name}
               </p>
 
               <p className="text-xs text-slate-400">

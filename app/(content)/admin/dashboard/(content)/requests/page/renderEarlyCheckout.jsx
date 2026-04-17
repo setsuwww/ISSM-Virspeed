@@ -28,7 +28,7 @@ export default function RenderEarlyCheckout({ r }) {
           {shiftDots[r.shift?.type]}
 
           <div className="flex flex-col text-sm text-slate-600">
-            <p className="font-semibold">{capitalize(r.shift?.type)}</p>
+            <p className="font-semibold">{r.shift?.type}</p>
 
             <p className="text-xs text-slate-400">
               <span>{r.workHours.label}</span>

@@ -91,6 +91,7 @@ export default function CheckinForm() {
         {
           type: data.type,
           startDate: data.startDate,
+          endDate: data.endDate,
           reason: data.reason,
         },
         closeModal)

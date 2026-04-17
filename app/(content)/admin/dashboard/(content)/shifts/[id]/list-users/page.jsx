@@ -119,7 +119,9 @@ export default async function ShiftUsersPage({ params, searchParams }) {
           <ListUsersTable data={usersDataMapped} />
         </ContentForm.Body>
 
-        <Pagination page={page} totalPages={totalPages} basePath={`/admin/dashboard/shifts/${shiftId}`} />
+        <div className="p-6">
+          <Pagination page={page} totalPages={totalPages} basePath={`/admin/dashboard/shifts/${shiftId}`} />
+        </div>
       </ContentForm>
     </section>
   );
