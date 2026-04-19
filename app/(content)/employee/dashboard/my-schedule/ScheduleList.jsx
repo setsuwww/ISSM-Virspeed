@@ -9,7 +9,7 @@ import { Badge } from "@/_components/ui/Badge"
 
 import { frequencyStyles } from "@/_constants/theme/scheduleTheme"
 import { capitalize, getInitial } from "@/_functions/globalFunction"
-import { createReminder, deleteSchedule } from "@/_servers/employee-action/schedule_action"
+import { createReminder, deleteSchedule } from "@/_servers/employee-services/schedule_action"
 
 export default function ScheduleList({ schedules }) {
   const router = useRouter()

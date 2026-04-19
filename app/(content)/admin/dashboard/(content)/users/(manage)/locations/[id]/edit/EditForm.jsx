@@ -14,7 +14,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { typeOptions, statusOptions } from "@/_constants/locationConstants";
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateLocation } from "@/_servers/admin-action/location_action";
+import { updateLocation } from "@/_servers/admin-services/location_action";
 import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditLocationForm({ location }) {
@@ -27,19 +27,20 @@ export default function EditLocationForm({ location }) {
 
     startTransition(async () => {
       const res = await updateLocation(location.id, data);
-      if (res?.success) {
-        addToast({
-          title: "Status updated",
-          description: `Location "${location.name}" status successfully changed.`,
-        })
-        router.push("/admin/dashboard/users/locations");
-      }
-      else {
+      
+      if (res && res.success === false) {
         addToast({
           title: "Update failed",
-          description: `Location "${location.name}" fail to change`,
+          description: res.message || `Location "${location.name}" fail to change`,
         })
+        return;
       }
+
+      addToast({
+        title: "Status updated",
+        description: `Location "${location.name}" status successfully changed.`,
+      })
+      router.push("/admin/dashboard/users/locations");
     });
   }
 

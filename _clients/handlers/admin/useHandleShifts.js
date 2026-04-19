@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useCallback, useTransition } from "react";
 
-import { deleteShiftById, deleteShifts } from "@/_servers/admin-action/shift_action";
+import { deleteShiftById, deleteShifts } from "@/_servers/admin-services/shift_action";
 
 import { useActionHelper } from "@/_stores/common/useActionStore";
 import { useToast } from "@/_contexts/Toast-Provider";

@@ -6,7 +6,7 @@ import AttendancesTableClient from "./AttendancesTable"
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination"
 
 import { prisma } from "@/_lib/prisma"
-import { getAttendancesByDate } from "@/_servers/admin-action/attendance_action"
+import { getAttendancesByDate } from "@/_servers/admin-services/attendance_action"
 
 const PAGE_SIZE = 10
 

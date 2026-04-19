@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUserStore } from "@/_stores/useUserStore"
 import { updateChangePassword, updateProfile } from "@/_servers/profile_action"
-import { deleteUserById } from "@/_servers/admin-action/user_action"
+import { deleteUserById } from "@/_servers/admin-services/user_action"
 import { toast } from "sonner"
 
 import { CircleUserRound, LogOut, Trash2, Save, Building2, CalendarDays, SquarePen, Clock } from "lucide-react"

@@ -8,7 +8,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { LogClearButton } from "../ClearButton"
 import { LogConfirmDialog } from "../ConfirmDialog"
 import { SecurityTable } from "./SecurityTable"
-import { clearAllSecurityLogs } from "@/_servers/admin-action/security_action"
+import { clearAllSecurityLogs } from "@/_servers/admin-services/security_action"
 
 export default function SecurityView({ logs }) {
   const [open, setOpen] = useState(false)

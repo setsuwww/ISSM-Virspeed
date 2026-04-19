@@ -3,12 +3,19 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
+import { validateCreateSchedule, validateUpdateSchedule } from "@/_jobs/validator/schedule_validate"
 
 export async function createSchedule(formData) {
   try {
-    const { title, description, frequency, startDate, startTime, endDate, endTime, userIds } = formData
+    const result = await validateCreateSchedule(formData);
+    
+    if (!result.success) {
+      return { success: false, message: Object.values(result.errors).flat().join(", ") };
+    }
+    
+    const { title, description, frequency, startDate, startTime, endDate, endTime, userIds } = result.data;
 
-    if (!title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
+    if (!userIds?.length) throw new Error("Missing users assigned to this schedule");
 
     const validUsers = await prisma.user.findMany({ where: { id: { in: userIds } }})
 
@@ -41,8 +48,15 @@ export async function updateSchedule(data) {
 
   if (!data || typeof data !== "object") { throw new Error("Invalid or missing data object")}
 
-  const { id, title, description, frequency, startDate, startTime, endDate, endTime, userIds } = data
-  if (!id || !title || !userIds?.length || !startDate || !endDate) throw new Error("Missing required fields")
+  const result = await validateUpdateSchedule({ id: Number(data.id), ...data });
+  
+  if (!result.success) {
+    return { success: false, message: Object.values(result.errors).flat().join(", ") };
+  }
+
+  const { id, title, description, frequency, startDate, startTime, endDate, endTime, userIds } = result.data;
+
+  if (!userIds?.length) throw new Error("Missing users assigned to this schedule");
 
   const validUsers = await prisma.user.findMany({ where: { id: { in: userIds } }})
 

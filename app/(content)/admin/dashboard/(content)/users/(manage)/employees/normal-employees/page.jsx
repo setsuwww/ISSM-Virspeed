@@ -5,7 +5,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
-import { getNormalEmployees, getNormalEmployeeCount, getSElocations } from "@/_servers/admin-action/user_action";
+import { getNormalEmployees, getNormalEmployeeCount, getShiftEmployeeLocations } from "@/_servers/admin-services/user_action";
 
 export const revalidate = 60;
 
@@ -21,7 +21,7 @@ export default async function Page({ searchParams }) {
   const [users, total, locations] = await Promise.all([
     getNormalEmployees({ page, limit }),
     getNormalEmployeeCount(),
-    getSElocations(),
+    getShiftEmployeeLocations(),
   ]);
 
   const serializedUsers = users.map((u) => ({

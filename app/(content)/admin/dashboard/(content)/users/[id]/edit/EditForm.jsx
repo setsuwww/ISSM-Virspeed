@@ -11,11 +11,13 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
 import { roleOptions } from "@/_constants/userConstants";
-import { updateUser } from "@/_servers/admin-action/user_action.js";
+import { updateUser } from "@/_servers/admin-services/user_action.js";
 import { ChevronLeft, Loader } from 'lucide-react';
+import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditForm({ user, locations }) {
   const router = useRouter();
+  const { addToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const [form, setForm] = useState({
@@ -39,8 +41,13 @@ export default function EditForm({ user, locations }) {
 
     startTransition(async () => {
       const result = await updateUser(form);
-      if (result?.success) { router.push("/admin/dashboard/users") }
-      else { alert(result?.error) }
+      if (result?.success) { 
+        addToast("User updated successfully", { type: "success" });
+        router.push("/admin/dashboard/users"); 
+      }
+      else { 
+        addToast(result?.message || result?.error || "Failed to update user", { type: "error" }); 
+      }
     });
   }
 

@@ -10,8 +10,11 @@ function getJakartaRange(date) {
   return { start, end }
 }
 
-export async function getAttendancesByDate(date, page = 1) {
+export async function getAttendancesByDate(date, page = 1, limit = 10) {
   if (!date) return { data: [], totalPages: 1 }
+
+  const takeLimit = parseInt(limit, 10) || 10;
+  const skipRecords = (parseInt(page, 10) - 1) * takeLimit;
 
   const { start, end } = getJakartaRange(date)
 
@@ -40,8 +43,8 @@ export async function getAttendancesByDate(date, page = 1) {
         },
       },
       orderBy: { date: "desc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
+      skip: skipRecords,
+      take: takeLimit,
     }),
     prisma.attendance.count({ where: whereClause }),
   ])
@@ -55,6 +58,6 @@ export async function getAttendancesByDate(date, page = 1) {
 
   return {
     data,
-    totalPages: Math.max(Math.ceil(total / PAGE_SIZE), 1),
+    totalPages: Math.max(Math.ceil(total / takeLimit), 1),
   }
 }

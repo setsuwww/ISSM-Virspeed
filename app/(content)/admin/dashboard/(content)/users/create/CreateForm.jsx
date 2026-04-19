@@ -15,7 +15,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ContentList } from "@/_components/common/ContentList"
 import { Label } from "@/_components/ui/Label"
 
-import { bulkCreateUser, createUser } from "@/_servers/admin-action/user_action"
+import { bulkCreateUser, createUser } from "@/_servers/admin-services/user_action"
 import { minutesToTime } from "@/_functions/globalFunction"
 import { roleOptions } from "@/_constants/userConstants"
 

@@ -1,9 +1,6 @@
 export const roleStyles = {
   ADMIN: "text-purple-600 bg-purple-100/50 border-purple-500/20",
-<<<<<<< HEAD
   SUPERVISOR: "text-blue-600 bg-blue-100/50 border-blue-500/20",
-=======
->>>>>>> ukom-final
   EMPLOYEE: "text-teal-600 bg-teal-100/50 border-teal-500/20",
   USER: "text-slate-600 bg-slate-100/50 border-slate-500/20",
 };

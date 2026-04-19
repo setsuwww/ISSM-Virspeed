@@ -6,7 +6,7 @@ import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 import { useToast } from "@/_contexts/Toast-Provider"
-import { createSchedule } from "@/_servers/admin-action/schedule_action"
+import { createSchedule } from "@/_servers/admin-services/schedule_action"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
@@ -45,13 +45,14 @@ export default function CreateForm({ users, shifts }) {
           userIds,
         }
 
-        const result = await createSchedule(payload)
-
-        if (result.success) {
-          addToast("Schedule created successfully", { type: "success" })
-          resetForm()
-          router.push("/admin/dashboard/schedules")
-        } else { addToast("Schedule failed created", { type: "error" }) }
+        const res = await createSchedule(payload)
+        if (res && res.success === false) {
+          addToast(res.message || "Failed to create schedule", { type: "error" })
+          return
+        }
+        addToast("Schedule created successfully", { type: "success" })
+        resetForm()
+        router.push("/admin/dashboard/schedules")
       } catch (error) { addToast("Schedule failed created", { type: "error" }) }
       finally { setLoading(false) }
     },

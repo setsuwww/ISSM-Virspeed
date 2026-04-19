@@ -15,11 +15,13 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { typeOptions, statusOptions } from "@/_constants/locationConstants"
 import { capitalize, timeToMinutes } from "@/_functions/globalFunction"
 import { ChevronLeft, Loader } from "lucide-react"
-import { createLocation } from "@/_servers/admin-action/location_action"
+import { createLocation } from "@/_servers/admin-services/location_action"
 import { CreateLocationByScan } from "./CreateLocationByScan"
+import { useToast } from "@/_contexts/Toast-Provider"
 
 export default function CreateLocationForm() {
   const router = useRouter()
+  const { addToast } = useToast()
   const [form, setForm] = useState({
     name: "", location: "", longitude: "", latitude: "",
     radius: "", type: "WFO", status: "INACTIVE",
@@ -53,9 +55,13 @@ export default function CreateLocationForm() {
     startTransition(async () => {
       const result = await createLocation(payload)
       setLoading(false)
-
-      if (result.success) { router.push("/admin/dashboard/users/locations") }
-      else { alert(result.message) }
+      if (result.success) { 
+        addToast("Location created successfully", { type: "success" });
+        router.push("/admin/dashboard/users/locations"); 
+      }
+      else { 
+        addToast(result.message, { type: "error" }); 
+      }
     })
   }
 

@@ -13,12 +13,13 @@ import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
 
 import { timeToMinutes } from "@/_functions/globalFunction";
-import { capitalize } from "@/_functions/globalFunction";
 
-import { createShift } from "@/_servers/admin-action/shift_action"
+import { createShift } from "@/_servers/admin-services/shift_action"
+import { useToast } from "@/_contexts/Toast-Provider"
 
 export default function CreateShiftForm({ locations }) {
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [type, setType] = useState("MORNING");
   const [name, setName] = useState("");
@@ -31,7 +32,7 @@ export default function CreateShiftForm({ locations }) {
     e.preventDefault();
 
     if (locationId === "NONE") {
-      alert("Please select an location for this shift!");
+      addToast("Please select an location for this shift!", { type: "warning" });
       return;
     }
 
@@ -44,7 +45,13 @@ export default function CreateShiftForm({ locations }) {
 
     try {
       setLoading(true);
-      await createShift(payload);
+      const res = await createShift(payload);
+      if (res?.error) {
+        addToast(res.error, { type: "error" });
+        return;
+      }
+      
+      addToast("Shift created successfully", { type: "success" });
       router.push("/admin/dashboard/shifts");
     }
     finally { setLoading(false) }

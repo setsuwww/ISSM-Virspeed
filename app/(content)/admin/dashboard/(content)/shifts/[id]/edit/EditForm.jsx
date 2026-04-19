@@ -12,12 +12,14 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
 
-import { timeToMinutes, minutesToTime, capitalize } from "@/_functions/globalFunction";
+import { timeToMinutes, minutesToTime } from "@/_functions/globalFunction";
 
-import { updateShift } from "@/_servers/admin-action/shift_action";
+import { updateShift } from "@/_servers/admin-services/shift_action";
+import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditShiftForm({ shift, locations }) {
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [type, setType] = useState(shift?.type || "MORNING");
   const [name, setName] = useState(shift?.name || "");
@@ -56,18 +58,25 @@ export default function EditShiftForm({ shift, locations }) {
     e.preventDefault()
 
     if (locationId === "NONE") {
-      alert("Please select a location for this shift!")
+      addToast("Please select a location for this shift!", { type: "warning" })
       return
     }
 
     try {
       setLoading(true)
-      await updateShift(shift.id, {
+      const res = await updateShift(shift.id, {
         type, name,
         startTime: timeToMinutes(startTime),
         endTime: timeToMinutes(endTime),
         locationId: parseInt(locationId),
       })
+
+      if (res?.error) {
+        addToast(res.error, { type: "error" });
+        return;
+      }
+
+      addToast("Shift updated successfully", { type: "success" });
 
       router.push("/admin/dashboard/shifts")
     }

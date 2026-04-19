@@ -7,7 +7,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { capitalize, safeFormat, minutesToTime } from "@/_functions/globalFunction";
-import { getUserCount, getUsers } from "@/_servers/admin-action/user_action";
+import { getUserCount, getUsers } from "@/_servers/admin-services/user_action";
 
 export const revalidate = 60;
 

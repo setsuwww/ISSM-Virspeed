@@ -7,9 +7,9 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/_lib/prisma"
 import { signToken, removeAuthCookie, getUserFromCookie } from "@/_lib/auth"
 import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
-import { logActivity } from "@/_servers/admin-action/log_action"
+import { logActivity } from "@/_servers/admin-services/log_action"
 
-import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-action/security_action"
+import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-services/security_action"
 import { validateLogin } from "@/_jobs/validator/auth_validate"
 import { loginRateLimit } from "@/_lib/rate-limit"
 
@@ -29,7 +29,7 @@ export async function AuthAction(prevState, formData) {
   const { success, error, errors, user } = await validateLogin({ email, password })
 
   if (!success) {
-    return { error: errors || error }
+    return { errors, error }
   }
 
   const fakeHash = "$2a$12$KbQiN4N3z5uJgL3z3lW9weu7s7cFjFjFjFjFjFjFjFjFjFjFjFjF"

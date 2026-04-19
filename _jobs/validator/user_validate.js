@@ -6,8 +6,9 @@ export const createUserSchema = z.object({
     email: z.string().email(),
     password: z.string().optional(),
     role: z.string().optional(),
-    locationId: z.number().nullable().optional(),
-    shiftId: z.number().nullable().optional(),
+    workMode: z.string().optional(),
+    locationId: z.union([z.string(), z.number()]).optional().nullable(),
+    shiftId: z.union([z.string(), z.number()]).optional().nullable(),
 })
 
 export const updateUserSchema = z.object({
@@ -16,8 +17,9 @@ export const updateUserSchema = z.object({
     email: z.string().email().optional(),
     password: z.string().min(6).optional(),
     role: z.string().optional(),
-    locationId: z.number().nullable().optional(),
-    shiftId: z.number().nullable().optional(),
+    workMode: z.string().optional(),
+    locationId: z.union([z.string(), z.number()]).optional().nullable(),
+    shiftId: z.union([z.string(), z.number()]).optional().nullable(),
 })
 
 export async function validateCreateUser(data) {

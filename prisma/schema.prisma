@@ -156,6 +156,7 @@ model User {
   role         Role    @default(USER)
   isLocked     Boolean @default(false)
   isFlagged    Boolean @default(false)
+  isActive     Boolean @default(true)
   tokenVersion Int     @default(0)
 
   locationId Int?

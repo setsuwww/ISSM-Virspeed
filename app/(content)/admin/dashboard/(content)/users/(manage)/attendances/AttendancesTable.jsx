@@ -9,34 +9,38 @@ import { Badge } from "@/_components/ui/Badge"
 import EmptyStates from "@/_components/common/EmptyStates"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
+import { Pagination } from "@/app/(content)/admin/dashboard/Pagination"
+import { SelectEntriesPagination } from "@/_components/common/SelectEntriesPagination"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 
 import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
-import { getAttendancesByDate } from "@/_servers/admin-action/attendance_action"
+import { getAttendancesByDate } from "@/_servers/admin-services/attendance_action"
 import Link from "next/link"
 import { formatWorkHours } from "@/_functions/helpers/attendanceHelpers"
 
 export default function AttendancesTableClient({ initialPage = 1 }) {
   const searchParams = useSearchParams()
   const page = Number(searchParams.get("page")) || 1
+  const limit = Number(searchParams.get("limit")) || 10
   const [totalPages, setTotalPages] = useState(1)
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0])
 
   const [sortOrder, setSortOrder] = useState("desc")
   const [filterShift, setFilterShift] = useState("ALL")
 
+
   const [data, setData] = useState([])
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     startTransition(async () => {
-      const result = await getAttendancesByDate(date, page)
+      const result = await getAttendancesByDate(date, page, limit)
       setData(result.data)
       setTotalPages(result.totalPages)
     })
-  }, [date, page])
+  }, [date, page, limit])
 
   const filteredData = useMemo(() => {
     return data.filter(att => {
@@ -64,6 +68,10 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
           dateSortOrder={sortOrder} onDateSortChange={setSortOrder}
           filteredData={sortedData}
         />
+      </div>
+      
+      <div className="flex items-center justify-between mb-4">
+        <SelectEntriesPagination limit={limit} basePath="/admin/dashboard/users/attendances" />
       </div>
 
       {isPending ? (
@@ -158,6 +166,9 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
           </TableBody>
         </Table>
       )}
+      <div className="mt-6">
+        <Pagination page={page} totalPages={totalPages} basePath="/admin/dashboard/users/attendances" limit={limit} />
+      </div>
     </>
   )
 }

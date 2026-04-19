@@ -14,7 +14,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { updateSchedule } from "@/_servers/admin-action/schedule_action"
+import { updateSchedule } from "@/_servers/admin-services/schedule_action"
 import { useToast } from "@/_contexts/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
@@ -57,7 +57,13 @@ export default function EditForm({ schedule, users }) {
         userIds,
       }
 
-      await updateSchedule(payload)
+      const res = await updateSchedule(payload)
+      
+      if (res && res.success === false) {
+        addToast(res.message || "Schedule failed to update", { type: "error" })
+        return
+      }
+
       addToast("Schedule updated successfully", { type: "success" })
       router.push("/admin/dashboard/schedules")
     }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { clearAllActivityLogs } from "@/_servers/admin-action/log_action"
+import { clearAllActivityLogs } from "@/_servers/admin-services/log_action"
 
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"

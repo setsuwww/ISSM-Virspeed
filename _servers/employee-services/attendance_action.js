@@ -14,7 +14,7 @@ import {
 } from "@/_functions/helpers/attendanceHelpers"
 
 import { getNowJakarta, getTodayStartJakarta } from "@/_lib/time"
-import { safeLog } from "@/_servers/admin-action/log_action"
+import { safeLog } from "@/_servers/admin-services/log_action"
 import { pusherServer } from "@/_lib/pusher"
 
 export async function userPrecheckCheckIn() {

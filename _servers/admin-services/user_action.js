@@ -163,9 +163,12 @@ export async function createUser(formData) {
   try {
     const formObject = Object.fromEntries(formData.entries())
 
-    const validated = await validateCreateUser(formObject)
+    const result = await validateCreateUser(formObject)
+    if (!result.success) {
+      return { success: false, message: Object.values(result.errors).flat().join(", ") }
+    }
 
-    let { name, email, password, role, locationId, shiftId, workMode } = validated
+    let { name, email, password, role, locationId, shiftId, workMode } = result.data
 
     email = normalizeEmail(email)
 
@@ -203,7 +206,7 @@ export async function updateUser(data) {
     const result = await validateUpdateUser(data)
 
     if (!result.success) {
-      return result
+      return { success: false, message: Object.values(result.errors).flat().join(", ") }
     }
 
     const { id, name, email, password, role, shiftId, locationId } = result.data

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/_lib/prisma"
 import { timeToMinutes, minutesToTime } from "@/_functions/globalFunction"
+import { validateCreateLocation, validateUpdateLocation } from "@/_jobs/validator/location_validate"
 
 export async function getLocations({ page = 1, limit = 10, search = "", typeFilter = "all", statusFilter = "all" } = {}) {
   const skip = (page - 1) * limit;
@@ -37,18 +38,27 @@ export async function getLocations({ page = 1, limit = 10, search = "", typeFilt
 
 export async function createLocation(data) {
   try {
+    const parsedData = { 
+        ...data,
+        longitude: data.longitude ? parseFloat(data.longitude) : null,
+        latitude: data.latitude ? parseFloat(data.latitude) : null,
+        radius: data.radius ? parseFloat(data.radius) : null,
+        startTime: typeof data.startTime === 'string' ? timeToMinutes(data.startTime) : data.startTime,
+        endTime: typeof data.endTime === 'string' ? timeToMinutes(data.endTime) : data.endTime,
+    };
+    
+    const result = await validateCreateLocation(parsedData);
+    if (!result.success) {
+      return { success: false, message: Object.values(result.errors).flat().join(", ") };
+    }
+
     const newLocation = await prisma.location.create({
-      data: {
-        name: data.name,
-        location: data.location, longitude: data.longitude, latitude: data.latitude, radius: data.radius,
-        type: data.type, status: data.status,
-        startTime: data.startTime, endTime: data.endTime,
-      },
+      data: result.data,
     })
     revalidatePath("/admin/dashboard/users/locations")
     return { success: true, location: newLocation }
   }
-  catch (error) { return { success: false, message: "Failed to create location" } }
+  catch (error) { return { success: false, message: error.message || "Failed to create location" } }
 }
 
 export async function updateLocationStatus(id, newStatus) {
@@ -155,27 +165,30 @@ export async function toggleLocationStatus(id) {
 
 export async function updateLocation(id, data) {
   try {
-    const {
-      name, location, longitude, latitude, radius,
-      type, status, startTime, endTime,
-    } = data
+    const parsedData = { 
+      ...data, 
+      id: Number(id),
+      longitude: data.longitude ? parseFloat(data.longitude) : null,
+      latitude: data.latitude ? parseFloat(data.latitude) : null,
+      radius: data.radius ? parseFloat(data.radius) : null,
+      startTime: typeof data.startTime === 'string' ? timeToMinutes(data.startTime) : data.startTime,
+      endTime: typeof data.endTime === 'string' ? timeToMinutes(data.endTime) : data.endTime,
+    };
 
-    if (!name || !location) return { success: false, message: "Name and location are required" }
+    const result = await validateUpdateLocation(parsedData);
+    if (!result.success) {
+      return { success: false, message: Object.values(result.errors).flat().join(", ") }
+    }
+
+    const updatePayload = { ...result.data };
+    delete updatePayload.id;
 
     const updatedLocation = await prisma.location.update({
       where: { id: Number(id) },
-      data: {
-        name, location,
-        longitude: longitude ? parseFloat(longitude) : null, latitude: latitude ? parseFloat(latitude) : null,
-        radius: radius ? parseFloat(radius) : null,
-        type, status,
-        startTime: timeToMinutes(startTime) ?? null, endTime: timeToMinutes(endTime) ?? null,
-        updatedAt: new Date(),
-      },
+      data: { ...updatePayload, updatedAt: new Date() },
     })
 
     revalidatePath("/admin/dashboard/users/locations")
-
     return { success: true, data: updatedLocation }
   }
   catch (error) { return { success: false, message: error.message || "Failed to update location" } }

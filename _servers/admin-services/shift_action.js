@@ -2,6 +2,7 @@
 
 import { prisma } from "@/_lib/prisma";
 import { revalidatePath } from "next/cache";
+import { validateCreateShift, validateUpdateShift } from "@/_jobs/validator/shift_validate";
 
 export async function getShifts(page, limit) {
   return prisma.shift.findMany({
@@ -37,11 +38,13 @@ export async function getShiftCount() {
 }
 
 export async function createShift(payload) {
-  const { type, name, startTime, endTime, locationId } = payload;
+  const result = await validateCreateShift(payload);
 
-  if (!type || !name || !locationId) {
-    return { error: "Invalid payload" };
+  if (!result.success) {
+    return { error: Object.values(result.errors).flat().join(", ") };
   }
+
+  const { type, name, startTime, endTime, locationId } = result.data;
 
   await prisma.shift.create({
     data: { type, name, startTime, endTime, locationId },
@@ -54,9 +57,18 @@ export async function createShift(payload) {
 export async function updateShift(id, payload) {
   if (!id) return { error: "Shift ID required" };
 
+  const result = await validateUpdateShift({ id, ...payload });
+
+  if (!result.success) {
+    return { error: Object.values(result.errors).flat().join(", ") };
+  }
+
+  const updateData = { ...result.data };
+  delete updateData.id;
+
   await prisma.shift.update({
     where: { id },
-    data: payload,
+    data: updateData,
   });
 
   revalidatePath("/admin/dashboard/shifts");

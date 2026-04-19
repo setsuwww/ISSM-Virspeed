@@ -1,6 +1,6 @@
 "use client"
 
-import { blockUser, unblockUser, markSuspicious, unmarkSuspicious, clearUserSession } from "@/_servers/admin-action/security_action"
+import { blockUser, unblockUser, markSuspicious, unmarkSuspicious, clearUserSession } from "@/_servers/admin-services/security_action"
 import { Flag, Prohibit, LockOpen } from "phosphor-react"
 import { useTransition } from "react"
 

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 import { useActionHelper } from "@/_stores/common/useActionStore";
 import { useToast } from "@/_contexts/Toast-Provider";
-import { deleteScheduleById, deleteSchedules } from "@/_servers/admin-action/schedule_action";
+import { deleteScheduleById, deleteSchedules } from "@/_servers/admin-services/schedule_action";
 
 import { confirmMessages } from "@/_constants/static/handleScheduleMessage";
 
