@@ -24,14 +24,17 @@ function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyl
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <p className="text-sm font-semibold text-slate-600">{user.name}</p>
-              <Badge variant="outline" className="px-1.5 py-0 text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-medium border-slate-200">
-                <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-rose-500"}`}></span>
-                {user.isActive ? "Active" : "Inactive"}
-              </Badge>
             </div>
             <p className="text-xs text-slate-400">{user.email}</p>
           </div>
         </div>
+      </TableCell>
+
+      <TableCell>
+        <Badge variant="outline" className="px-1.5 py-0 text-[12px] text-slate-500 uppercase flex items-center gap-1.5 font-medium border-slate-200">
+          <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-rose-500"}`}></span>
+          {user.isActive ? "Active" : "Inactive"}
+        </Badge>
       </TableCell>
 
       <TableCell>

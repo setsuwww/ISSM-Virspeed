@@ -36,6 +36,7 @@ export default function UsersTable({ data }) {
               <Checkbox checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onCheckedChange={selectAll} />
             </TableHead>
             <TableHead>Username</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Work Hours</TableHead>
             <TableHead>Created & Updated</TableHead>

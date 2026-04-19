@@ -194,7 +194,23 @@ export function formatWorkHours(minutes) {
   if (minutes == null) return "-";
 
   const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-
   return `${hours}h ${mins}m`;
+}
+
+export async function getActiveAssignment(userId) {
+  const today = getNowJakarta().startOf("day").toDate();
+
+  return prisma.shiftAssignment.findFirst({
+    where: {
+      userId,
+      date: today,
+    },
+    include: {
+      shift: {
+        include: {
+          location: true
+        }
+      }
+    }
+  });
 }
