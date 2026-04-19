@@ -1,4 +1,4 @@
-import { generateBulkSchedule } from "@/_servers/shiftSystemAction"
+import { generateBulkSchedule } from "@/_servers/shift_system_action"
 
 export async function generateDailySchedule() {
     const users = await prisma.user.findMany({

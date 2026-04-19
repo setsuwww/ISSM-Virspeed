@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { autoRotateShifts } from "@/_servers/shiftSystemAction";
+import { autoRotateShifts } from "@/_servers/shift_system_action";
 
 export async function GET(req) {
   // Security Note: In a production app, verify a secret cron key here
