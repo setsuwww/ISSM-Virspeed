@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma"
-import { getNowJakarta, minutesToTodayTime, minutesToDateTime, MINUTE_MS } from "@/_lib/time"
+import { getNowJakarta, minutesToTodayTime, minutesToDateTime, MINUTE_MS, getTodayStartJakarta } from "@/_lib/time"
 import { addDays, isWeekend } from "date-fns"
 
 const LATE_THRESHOLD_MINUTES = 10
@@ -9,7 +9,7 @@ const CHECKOUT_EARLY_MARGIN_MINUTES = 5
 const FORGOT_CHECKOUT_REMINDER_MINUTES = 20
 
 // Handle absensi beda hari (shift malam)
-export async function determineAttendanceStatus(shiftId) {
+export async function determineAttendanceStatus(shiftId, assignmentDate) {
   const shift = await prisma.shift.findUnique({
     where: { id: shiftId },
     select: { startTime: true, endTime: true },
@@ -25,7 +25,9 @@ export async function determineAttendanceStatus(shiftId) {
 
   const isCrossDay = shift.endTime < shift.startTime
 
-  const shiftEnd = isCrossDay ? minutesToTodayTime(shift.endTime).add(1, "day") : minutesToTodayTime(shift.endTime)
+  const shiftEnd = isCrossDay
+    ? minutesToDateTime(assignmentDate, shift.endTime).add(1, "day")
+    : minutesToDateTime(assignmentDate, shift.endTime)
 
   const diffMs = now.diff(shiftStart)
 
@@ -194,11 +196,13 @@ export function formatWorkHours(minutes) {
   if (minutes == null) return "-";
 
   const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
   return `${hours}h ${mins}m`;
 }
 
 export async function getActiveAssignment(userId) {
-  const today = getNowJakarta().startOf("day").toDate();
+  const today = getTodayStartJakarta().toDate();
 
   return prisma.shiftAssignment.findFirst({
     where: {
@@ -207,9 +211,7 @@ export async function getActiveAssignment(userId) {
     },
     include: {
       shift: {
-        include: {
-          location: true
-        }
+        include: { location: true }
       }
     }
   });

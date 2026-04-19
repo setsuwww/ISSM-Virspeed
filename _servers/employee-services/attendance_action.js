@@ -53,12 +53,33 @@ export async function userSendCheckIn(coords = null) {
 
   const now = getNowJakarta();
 
-  const assignment = await getActiveAssignment(user.id);
+  let assignment = await getActiveAssignment(user.id);
 
-  // OFF / CUTI Handlers
-  if (!assignment || !assignment.shiftId) {
-    return { error: "Hari ini OFF / CUTI" };
+  if (!assignment) {
+    const userWithShift = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: {
+        shift: {
+          include: { location: true }
+        }
+      }
+    });
+
+    if (!userWithShift?.shift) {
+      return { error: "Hari ini OFF / CUTI" };
+    }
+
+    assignment = {
+      shiftId: userWithShift.shift.id,
+      shift: userWithShift.shift,
+      date: getTodayStartJakarta().toDate(),
+    };
   }
+
+  console.log("USER:", user.id);
+  console.log("ASSIGNMENT:", assignment);
+  console.log("TODAY:", getTodayStartJakarta().toDate());
+  console.log("USER SHIFT:", user.shiftId);
 
   const shift = assignment.shift;
 
@@ -156,8 +177,6 @@ export async function userSendCheckOut() {
     return { error: "Belum check-in atau sudah checkout" };
   }
 
-
-
   const checkoutTime = now.toDate();
 
   const workMinutes = calculateWorkMinutes(
@@ -197,6 +216,9 @@ export async function userSendEarlyCheckout(reason) {
       checkOutTime: null,
     },
     orderBy: { date: "desc" },
+    include: {
+      earlyCheckoutRequests: true,
+    }
   });
 
   if (!attendance) return { error: "You not checkin yet or checkout done already!" };
@@ -223,7 +245,6 @@ export async function userSendEarlyCheckout(reason) {
     where: { id: attendance.id },
     data: {
       workMinutes,
-      earlyCheckoutReason: reason,
     },
   });
 

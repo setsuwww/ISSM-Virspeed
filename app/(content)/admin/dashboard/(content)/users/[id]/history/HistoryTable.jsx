@@ -2,7 +2,9 @@
 
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from "@/_components/ui/Table";
 
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme";
 import { shiftDots } from "@/_constants/shiftConstants";
@@ -15,6 +17,7 @@ import { Clock } from "phosphor-react";
 
 import HistoryActionHeader from "./HistoryActionHeader";
 import { useUserAttendanceHistoryHooks } from "@/_clients/hooks/admin/useUserAttendanceHistoryHooks";
+import { cn } from "@/_lib/utils";
 
 export default function UserHistoryTable({ history }) {
   const {
@@ -37,12 +40,16 @@ export default function UserHistoryTable({ history }) {
   return (
     <div className="space-y-4">
       <HistoryActionHeader
-        search={search} onSearchChange={setSearch}
-        status={status} onStatusChange={setStatus}
-        sort={sort} onSortChange={setSort}
+        search={search}
+        onSearchChange={setSearch}
+        status={status}
+        onStatusChange={setStatus}
+        sort={sort}
+        onSortChange={setSort}
         filteredData={filteredData}
         selectedCount={selectedIds.length}
-        onRemoveSelected={removeSelected} onRemoveAll={removeAll}
+        onRemoveSelected={removeSelected}
+        onRemoveAll={removeAll}
       />
 
       <Table>
@@ -62,78 +69,101 @@ export default function UserHistoryTable({ history }) {
         </TableHeader>
 
         <TableBody>
-          {filteredData.map((h) => (
-            <TableRow key={h.id}>
-              <TableCell>
-                <Checkbox
-                  checked={selectedIds.includes(h.id)}
-                  onCheckedChange={() => toggleSelect(h.id)}
-                />
-              </TableCell>
+          {filteredData.map((h) => {
 
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <div className="icon-parent">
-                    <ClipboardClock className="icon" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-slate-600">{h.day}</div>
-                    <div className="text-sm text-slate-400">{h.dmy}</div>
-                  </div>
-                </div>
-              </TableCell>
-
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  {shiftDots[h.shift?.type]}
-                  <div>
-                    <div className="text-sm font-semibold text-slate-600">
-                      {capitalize(h.shift?.type) ?? "-"}
+            // 🔥 HANDLE LEAVE DULU
+            if (h.type === "LEAVE") {
+              return (
+                <TableRow key={h.id} className="bg-yellow-50">
+                  <TableCell colSpan={5}>
+                    <div className="text-center text-yellow-700 font-semibold">
+                      🏖 {h.label} — User is on {h.leaveType}
                     </div>
-                    <div className="text-xs text-slate-400">
-                      {h.shift?.startTime} - {h.shift?.endTime}
+                  </TableCell>
+                </TableRow>
+              );
+            }
+
+            // 🔥 NORMAL ATTENDANCE
+            return (
+              <TableRow
+                key={h.id}
+                className={cn(
+                  "border-b border-slate-200 transition-colors",
+                  h.isToday && "ring-1 ring-blue-500 ring-inset"
+                )}
+              >
+                <TableCell>
+                  <Checkbox
+                    checked={selectedIds.includes(h.id)}
+                    onCheckedChange={() => toggleSelect(h.id)}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div className="icon-parent">
+                      <ClipboardClock className="icon" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-600">{h.day}</div>
+                      <div className="text-sm text-slate-400">{h.dmy}</div>
                     </div>
                   </div>
-                </div>
-              </TableCell>
+                </TableCell>
 
-              <TableCell>
-                <Badge className={` ${attendancesStyles[h.status]} bg-white border border-slate-300 shadow-xs text-sm px-2 py-0.5 rounded-sm`}>
-                  {capitalize(h.status)}
-                </Badge>
-              </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    {shiftDots[h.shift?.type]}
+                    <div>
+                      <div className="text-sm font-semibold text-slate-600">
+                        {capitalize(h.shift?.type) ?? "-"}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        {h.shift?.startTime} - {h.shift?.endTime}
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
 
-              <TableCell>
-                <div className="flex items-center gap-3 font-number">
-                  {h.checkInTime && (
-                    <span className="flex items-center gap-1 text-teal-600">
-                      <Clock size={16} />
-                      {format(new Date(h.checkInTime), "hh:mm a", { locale: enUS })}
-                    </span>
-                  )}
+                <TableCell>
+                  <Badge className={`${attendancesStyles[h.status]} bg-white border border-slate-300`}>
+                    {h.status}
+                  </Badge>
+                </TableCell>
 
-                  <span>-</span>
-
-                  {h.checkOutTime && (
-                    <>
-                      <span className="flex items-center gap-1 text-rose-600">
+                <TableCell>
+                  <div className="flex items-center gap-3 font-number">
+                    {h.checkInTime && (
+                      <span className="flex items-center gap-1 text-teal-600">
                         <Clock size={16} />
-                        {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
+                        {format(new Date(h.checkInTime), "hh:mm a", { locale: enUS })}
                       </span>
-                      {h.isEarlyCheckout && (
-                        <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full">
-                          Early Checkout
-                        </span>
-                      )}
-                    </>
-                  )}
-                </div>
-              </TableCell>
+                    )}
 
-            </TableRow>
-          ))}
+                    <span>-</span>
+
+                    {h.checkOutTime && (
+                      <>
+                        <span className="flex items-center gap-1 text-rose-600">
+                          <Clock size={16} />
+                          {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
+                        </span>
+
+                        {h.isEarlyCheckout && (
+                          <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full">
+                            Early Checkout
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
-    </div >
+    </div>
   );
 }

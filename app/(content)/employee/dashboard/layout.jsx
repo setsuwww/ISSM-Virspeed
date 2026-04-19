@@ -1,8 +1,8 @@
 import '@/_styles/employees.css'
 
-export const metadata ={
+export const metadata = {
   title: "Employee | Dashboard",
-  description : "Employee content"
+  description: "Employee content"
 };
 
 import { Toaster } from "sonner"
@@ -11,8 +11,8 @@ import SidebarBase from "@/_components/common/sidebar/SidebarBase";
 import { employeeMenu } from "@/_components/common/sidebar/content/employee.menu";
 
 import { getCurrentUser } from "@/_lib/auth";
-import { getScheduleCount } from "@/_lib/partials/getScheduleCount";
-import { getChangeShiftCount } from '@/_lib/partials/getChangeShiftCount';
+import { getScheduleCount } from "@/_jobs/partials/getScheduleCount";
+import { getChangeShiftCount } from '@/_jobs/partials/getChangeShiftCount';
 import DashboardHeader from './DashboardHeader';
 
 export default async function DashboardLayout({ children }) {

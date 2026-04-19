@@ -41,6 +41,21 @@ async function getHistory(userId, page, searchParams) {
   });
 }
 
+async function getLeaves(userId) {
+  return prisma.leaveRequest.findMany({
+    where: {
+      userId,
+      status: "APPROVED",
+    },
+    select: {
+      id: true,
+      startDate: true,
+      endDate: true,
+      leaveType: { select: { name: true } },
+    },
+  });
+}
+
 async function getUserProfile(userId) {
   return await prisma.user.findUnique({
     where: { id: userId },
@@ -58,39 +73,85 @@ export default async function UserHistoryPage({ params, searchParams }) {
   const { id } = params;
   const page = Number(searchParams?.page) || 1;
 
-  const [history, total, profile] = await Promise.all([
+  const [history, total, leaves, profile] = await Promise.all([
     getHistory(id, page, searchParams),
     getHistoryCount(id),
+    getLeaves(id),
     getUserProfile(id),
   ]);
 
-  const serializedHistory = history.map((h) => {
-    const isEarlyCheckout = !!h.earlyCheckoutRequests?.some(
-      (r) => r.status === "APPROVED"
-    );
+  function mergeAttendanceAndLeave(history, leaves) {
+    const result = [];
 
-    return {
-      ...h,
-      day: safeFormat(h.date, "EEEE"),
-      dmy: safeFormat(h.date, "dd MMMM yyyy"),
+    const leaveMap = leaves.map((l) => ({
+      type: "LEAVE",
+      id: `leave-${l.id}`,
+      start: new Date(l.startDate),
+      end: new Date(l.endDate),
+      label: `${safeFormat(l.startDate, "dd MMM")} - ${safeFormat(l.endDate, "dd MMM")}`,
+      leaveType: l.leaveType?.name,
+    }));
 
-      checkInTime: h.checkInTime ? h.checkInTime.toISOString() : null,
-      checkOutTime: h.checkOutTime ? h.checkOutTime.toISOString() : null,
+    const todayStr = new Date().toDateString();
 
-      createdAt: h.createdAt ? h.createdAt.toISOString() : null,
-      updatedAt: h.updatedAt ? h.updatedAt.toISOString() : null,
+    for (const h of history) {
+      const isToday = new Date(h.date).toDateString() === todayStr;
 
-      shift: h.shift
-        ? {
-          ...h.shift,
-          startTime: minutesToTime(h.shift.startTime),
-          endTime: minutesToTime(h.shift.endTime),
-        }
-        : null,
+      result.push({
+        ...h,
+        type: "ATTENDANCE",
+        isToday,
+      });
+    }
 
-      isEarlyCheckout,
-    };
-  });
+    // masukin leave sebagai 1 row
+    for (const l of leaveMap) {
+      result.push({
+        id: l.id,
+        type: "LEAVE",
+        label: l.label,
+        leaveType: l.leaveType,
+        isLeave: true,
+      });
+    }
+
+    // sorting biar rapi
+    result.sort((a, b) => {
+      const dateA = a.date || a.start;
+      const dateB = b.date || b.start;
+      return new Date(dateB) - new Date(dateA);
+    });
+
+    return result;
+  }
+
+  const serializedHistory = mergeAttendanceAndLeave(
+    history.map((h) => {
+      const isEarlyCheckout = !!h.earlyCheckoutRequests?.some(
+        (r) => r.status === "APPROVED"
+      );
+
+      return {
+        ...h,
+        day: safeFormat(h.date, "EEEE"),
+        dmy: safeFormat(h.date, "dd MMMM yyyy"),
+
+        checkInTime: h.checkInTime?.toISOString() || null,
+        checkOutTime: h.checkOutTime?.toISOString() || null,
+
+        shift: h.shift
+          ? {
+            ...h.shift,
+            startTime: minutesToTime(h.shift.startTime),
+            endTime: minutesToTime(h.shift.endTime),
+          }
+          : null,
+
+        isEarlyCheckout,
+      };
+    }),
+    leaves
+  );
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 

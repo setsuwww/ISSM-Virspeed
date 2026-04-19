@@ -53,8 +53,8 @@ export default function ScheduleList({ schedules }) {
                   {item.title}
                 </span>
 
-                <Badge className={frequencyStyles[capitalize(item.frequency)]}>
-                  {capitalize(item.frequency)}
+                <Badge className={frequencyStyles[item.frequency]}>
+                  {item.frequency}
                 </Badge>
               </div>
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma"
-import { getCurrentUser } from "../auth"
+import { getCurrentUser } from "../../_lib/auth"
 
 export async function getScheduleCount() {
   const user = await getCurrentUser()

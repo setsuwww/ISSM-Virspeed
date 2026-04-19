@@ -26,26 +26,37 @@ export default async function Page({ searchParams }) {
     },
   })
 
-  const tableData = attendance.map(a => ({
-    id: a.id,
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
-    dateValue: a.date.getTime(),
+  const tableData = attendance.map(a => {
+    const attDate = new Date(a.date)
+    attDate.setHours(0, 0, 0, 0)
 
-    dateLabel: format(a.date, "dd MMMM"),
-    dateFull: format(a.date, "EEEE, dd MMMM yyyy"),
+    const isToday = attDate.getTime() === today.getTime()
 
-    shiftType: a.shift?.type ?? "OFF",
-    shiftName: a.shift?.name ?? "—",
+    return {
+      id: a.id,
+      isToday,
 
-    status: a.status,
-    approval: a.approval ?? null,
+      dateValue: a.date.getTime(),
 
-    reason: a.reason ?? "None",
-    adminNote: a.adminReason ?? "None",
+      dateLabel: format(a.date, "dd MMMM"),
+      dateFull: format(a.date, "EEEE, dd MMMM yyyy"),
 
-    checkInTime: a.checkInTime ? format(a.checkInTime, "HH:mm") : null,
-    checkOutTime: a.checkOutTime ? format(a.checkOutTime, "HH:mm") : null,
-  }))
+      shiftType: a.shift?.type ?? "OFF",
+      shiftName: a.shift?.name ?? "—",
+
+      status: a.status,
+      approval: a.approval ?? null,
+
+      reason: a.reason ?? "None",
+      adminNote: a.adminReason ?? "None",
+
+      checkInTime: a.checkInTime ? format(a.checkInTime, "HH:mm") : null,
+      checkOutTime: a.checkOutTime ? format(a.checkOutTime, "HH:mm") : null,
+    }
+  })
 
   return (
     <HistoryLayout>

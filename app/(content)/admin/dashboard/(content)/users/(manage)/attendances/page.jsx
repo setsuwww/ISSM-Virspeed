@@ -91,12 +91,6 @@ export default async function AttendancesPage({ searchParams }) {
           <AttendancesCard shifts={shifts} />
 
           <AttendancesTableClient initialPage={page} shifts={shifts} />
-
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            basePath="/admin/dashboard/users/attendances"
-          />
         </ContentForm.Body>
       </ContentForm>
     </section>

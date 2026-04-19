@@ -149,15 +149,17 @@ model SystemConfig {
 }
 
 model User {
-  id           String  @id @default(cuid())
-  name         String
-  email        String  @unique
-  password     String
-  role         Role    @default(USER)
-  isLocked     Boolean @default(false)
-  isFlagged    Boolean @default(false)
-  isActive     Boolean @default(true)
-  tokenVersion Int     @default(0)
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  password         String
+  role             Role      @default(USER)
+  isLocked         Boolean   @default(false)
+  isFlagged        Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  tokenVersion     Int       @default(0)
+  rotationIndex    Int       @default(0)
+  lastRotationDate DateTime?
 
   locationId Int?
   shiftId    Int?
@@ -333,27 +335,29 @@ model ShiftAssignment {
 }
 
 model Attendance {
-  id           Int              @id @default(autoincrement())
-  userId       String
-  shiftId      Int
-  assignmentId Int?
-  assignment   ShiftAssignment? @relation(fields: [assignmentId], references: [id])
-  date         DateTime
-  workStart    DateTime?
-  workEnd      DateTime?
-  status       AttendanceStatus @default(ABSENT)
-  reason       String?
-  approval     ApprovalStatus?
-  checkInTime  DateTime?
-  checkOutTime DateTime?
-  workMinutes  Int?
+  id             Int              @id @default(autoincrement())
+  userId         String
+  shiftId        Int
+  assignmentId   Int?
+  assignment     ShiftAssignment? @relation(fields: [assignmentId], references: [id])
+  date           DateTime
+  workStart      DateTime?
+  workEnd        DateTime?
+  status         AttendanceStatus @default(ABSENT)
+  reason         String?
+  approval       ApprovalStatus?
+  checkInTime    DateTime?
+  checkOutTime   DateTime?
+  workMinutes    Int?
+  locationType   LocationType?
+  locationStatus LocationStatus?
 
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   shift                 Shift                  @relation(fields: [shiftId], references: [id], onDelete: Cascade)
   earlyCheckoutRequests EarlyCheckoutRequest[]
 
   @@unique([assignmentId])
-  @@index([userId, date])
+  @@unique([userId, shiftId, date])
   @@index([workStart, workEnd])
 }
 
@@ -421,18 +425,15 @@ model ShiftChangeRequest {
   user   User   @relation("RequestedUser", fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  requestedBy   User   @relation("RequestedByAdmin", fields: [requestedById], references: [id])
+  requestedBy   User    @relation("RequestedByAdmin", fields: [requestedById], references: [id])
   requestedById String
+  targetUser    User?   @relation("TargetUser", fields: [targetUserId], references: [id])
+  targetUserId  String?
 
-  targetUser   User?   @relation("TargetUser", fields: [targetUserId], references: [id])
-  targetUserId String?
-
-  oldShift   Shift? @relation("OldShift", fields: [oldShiftId], references: [id])
-  oldShiftId Int?
-
-  newShift   Shift? @relation("NewShift", fields: [newShiftId], references: [id])
-  newShiftId Int?
-
+  oldShift      Shift? @relation("OldShift", fields: [oldShiftId], references: [id])
+  oldShiftId    Int?
+  newShift      Shift? @relation("NewShift", fields: [newShiftId], references: [id])
+  newShiftId    Int?
   targetShift   Shift? @relation("TargetShift", fields: [targetShiftId], references: [id])
   targetShiftId Int?
 

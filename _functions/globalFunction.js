@@ -18,6 +18,7 @@ export const safeToISOString = (v) => {
   return d && !isNaN(d) ? d.toISOString() : null;
 };
 
+// Untuk normalisasi createdAt dan updatedAt
 export const safeFormat = (v, fmt) => {
   const d = v ? new Date(v) : null;
   return d && !isNaN(d) ? format(d, fmt, { locale: enUS }) : "-";
@@ -44,6 +45,7 @@ export function timeToMinutes(t) {
   return h * 60 + m;
 }
 
+// Untuk normalisasi jam Kerja
 export function minutesToTime(min) {
   if (min === null || min === undefined) return ""
   const h = Math.floor(min / 60).toString().padStart(2, "0")

@@ -10,7 +10,6 @@ import EmptyStates from "@/_components/common/EmptyStates"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination"
-import { SelectEntriesPagination } from "@/_components/common/SelectEntriesPagination"
 
 import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
@@ -68,10 +67,6 @@ export default function AttendancesTableClient({ initialPage = 1 }) {
           dateSortOrder={sortOrder} onDateSortChange={setSortOrder}
           filteredData={sortedData}
         />
-      </div>
-      
-      <div className="flex items-center justify-between mb-4">
-        <SelectEntriesPagination limit={limit} basePath="/admin/dashboard/users/attendances" />
       </div>
 
       {isPending ? (

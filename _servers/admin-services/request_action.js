@@ -135,7 +135,6 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
         data: {
           checkOutTime: now,
           workMinutes,
-          earlyCheckoutReason: request.reason,
         },
       });
     }

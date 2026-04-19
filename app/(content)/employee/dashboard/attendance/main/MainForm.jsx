@@ -15,6 +15,7 @@ import { MainStats } from "./MainStats"
 import { EarlyCheckoutModal } from "./modal/EarlyCheckoutModal"
 import { PermissionModal } from "./modal/PermissionModal"
 import { LeaveModal } from "./modal/LeaveModal"
+import { CheckoutTimer } from "@/_components/common/CheckoutTimer"
 
 const MODAL = {
   EARLY: "EARLY",
@@ -26,6 +27,7 @@ export default function CheckinForm() {
   const [user, setUser] = useState(null)
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [currentAttendance, setCurrentAttendance] = useState(null)
 
   const [modal, setModal] = useState({
     type: null,
@@ -42,7 +44,9 @@ export default function CheckinForm() {
     const fetchData = async () => {
       try {
         const userData = await apiFetchData({
-          url: "/me", successMessage: null, errorMessage: "Failed to load user data",
+          url: "/me",
+          successMessage: null,
+          errorMessage: "Failed to load user data",
         })
 
         if (!mounted) return
@@ -50,16 +54,30 @@ export default function CheckinForm() {
 
         const statsData = await apiFetchData({
           url: `/attendance/employee-stats?userId=${userData.id}`,
-          successMessage: null, errorMessage: "Failed to load stats",
+          successMessage: null,
+          errorMessage: "Failed to load stats",
         })
 
         if (!mounted) return
         setStats(statsData)
+
+        // 🔥 INI YANG KAMU LUPA TARUH DI SINI
+        const currentData = await apiFetchData({
+          url: `/attendance/employee-stats/can-checkout?userId=${userData.id}`,
+          successMessage: null,
+          errorMessage: "Failed to load current attendance",
+        })
+
+        if (!mounted) return
+        setCurrentAttendance(currentData)
+
+      } finally {
+        if (mounted) setLoading(false)
       }
-      finally { if (mounted) setLoading(false) }
     }
 
     fetchData()
+
     return () => {
       mounted = false
     }
@@ -104,6 +122,10 @@ export default function CheckinForm() {
     <div className="p-8 space-y-8">
       <ContentInformation title="Your Statistic" subtitle="Views your attendance" />
 
+      {currentAttendance && (
+        <CheckoutTimer attendance={currentAttendance} />
+      )}
+
       <MainStats
         items={[
           { icon: <CheckCircle2 />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
@@ -145,13 +167,13 @@ export default function CheckinForm() {
                 {
                   label: "Permission",
                   bgColor: "bg-sky-100 text-sky-700",
-                  icon: <AlertTriangle size={16} strokeWidth={2}/>,
+                  icon: <AlertTriangle size={16} strokeWidth={2} />,
                   onClick: () => openModal(MODAL.PERMISSION),
                 },
                 {
                   label: "Leave Request",
                   bgColor: "bg-violet-100 text-violet-700",
-                  icon: <Plane size={16} strokeWidth={2}/>,
+                  icon: <Plane size={16} strokeWidth={2} />,
                   onClick: () => openModal(MODAL.LEAVE),
                 },
               ]}

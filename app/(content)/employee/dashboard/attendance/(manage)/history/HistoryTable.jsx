@@ -2,19 +2,13 @@
 
 import { useState, useMemo, useRef } from "react"
 import { CalendarDays, Clock } from "lucide-react"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/_components/ui/Table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { shiftStyles } from "@/_constants/shiftConstants"
+import { cn } from "@/_lib/utils"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {
   const [order, setOrder] = useState(initialOrder)
@@ -66,7 +60,12 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
 
         <TableBody>
           {filteredSortedData.map(att => (
-            <TableRow key={att.id}>
+            <TableRow
+              key={att.id}
+              className={cn(
+                att.isToday && "ring-2 ring-blue-500 ring-inset"
+              )}
+            >
               <TableCell>
                 <div className="flex items-center gap-3">
                   <div className="bg-slate-200 p-2 rounded-full">

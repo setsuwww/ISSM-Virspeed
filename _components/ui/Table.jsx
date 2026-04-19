@@ -24,9 +24,9 @@ function TableHeader({
 }) {
   return (
     <thead data-slot="table-header" className={cn(
-        "[&_tr]:border-b border-slate-100/50 bg-slate-50",
-        className
-      )}
+      "[&_tr]:border-b border-slate-100/50 bg-slate-50",
+      className
+    )}
       {...props}
     />
   )
