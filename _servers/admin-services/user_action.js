@@ -36,6 +36,7 @@ export async function getUsers(page, limit) {
       name: true,
       email: true,
       role: true,
+      isActive: true,
       createdAt: true,
       updatedAt: true,
       shift: {
@@ -269,7 +270,7 @@ export async function getShiftEmployees({ page = 1, limit = 10 }) {
     skip: (page - 1) * limit, take: limit,
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, name: true, email: true, role: true,
+      id: true, name: true, email: true, role: true, isActive: true,
       createdAt: true, updatedAt: true,
       shift: {
         select: {
@@ -315,7 +316,7 @@ export async function getNormalEmployees({ page = 1, limit = 10 }) {
     },
     skip: (page - 1) * limit, take: limit, orderBy: { createdAt: "desc" },
     select: {
-      id: true, name: true, email: true, role: true,
+      id: true, name: true, email: true, role: true, isActive: true,
       createdAt: true, updatedAt: true,
       location: { select: { id: true, name: true, type: true, startTime: true, endTime: true } },
     },

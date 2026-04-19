@@ -121,6 +121,11 @@ export async function userSendCheckIn(coords = null) {
     },
   });
 
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isActive: true }
+  });
+
   await safeLog({
     userId: user.id,
     url: "/employee/attendance/check-in",
@@ -172,6 +177,11 @@ export async function userSendCheckOut() {
     },
   });
 
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isActive: false }
+  });
+
   return { success: true };
 }
 
@@ -215,6 +225,11 @@ export async function userSendEarlyCheckout(reason) {
       workMinutes,
       earlyCheckoutReason: reason,
     },
+  });
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isActive: false }
   });
 
   await safeLog({
@@ -266,6 +281,11 @@ export async function userSendPermissionRequest(reason) {
       approval: "PENDING",
       reason,
     },
+  })
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isActive: false }
   })
 
   await pusherServer.trigger(
@@ -345,6 +365,11 @@ export async function userSendLeaveRequest({ type, startDate, endDate, reason })
       totalDays,
       reason: reason?.trim() || null,
     },
+  })
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { isActive: false }
   })
 
   await pusherServer.trigger(

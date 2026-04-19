@@ -1,0 +1,1 @@
+bisakah kamu membuat fitur dimana user / karyawan yang kirim permission / leave / early / checkout itu status isActive nya jadi false buat penanda aja kalau karyawan itu lagi ga ada di kantor atau ga beroperasi buat tampilan badgenya kaya ada dot hijau active, dan inactive merah, badge outline text gray
