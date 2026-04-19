@@ -15,7 +15,7 @@ import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 import { getAttendanceStatus, normalizePendingStatus } from "@/_constants/attendanceConstants"
 
-import { updateShiftChangeStatus } from "@/_servers/admin-action/shiftAction"
+import { updateShiftChangeStatus } from "@/_servers/admin-action/shift_action"
 import { wordsLimit } from "@/_functions/globalFunction"
 
 export default function ChangeShiftTable({ requests = [], currentUserId }) {

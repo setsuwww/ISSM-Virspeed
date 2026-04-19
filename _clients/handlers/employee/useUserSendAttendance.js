@@ -11,7 +11,7 @@ import {
   userSendEarlyCheckout,
   userSendPermissionRequest,
   userSendLeaveRequest,
-} from "@/_servers/employee-action/attendanceAction";
+} from "@/_servers/employee-action/attendance_action";
 
 export function useUserSendAttendance() {
   const [isPending, startTransition] = useTransition();
@@ -75,10 +75,10 @@ export function useUserSendAttendance() {
       try {
         const result = await userSendCheckOut();
 
-        if (result?.error) { toast.error(result.error)}
-        else { toast.success("Checked out successfully")}
+        if (result?.error) { toast.error(result.error) }
+        else { toast.success("Checked out successfully") }
       }
-      catch (err) { toast.error(err?.message ?? "Checkout failes. Check your internet, location or your time-shift")}
+      catch (err) { toast.error(err?.message ?? "Checkout failes. Check your internet, location or your time-shift") }
     });
 
   const earlyCheckout = (reason, onSuccess) =>

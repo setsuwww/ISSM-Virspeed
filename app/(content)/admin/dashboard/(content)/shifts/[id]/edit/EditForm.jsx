@@ -14,7 +14,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 
 import { timeToMinutes, minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateShift } from "@/_servers/admin-action/shiftAction";
+import { updateShift } from "@/_servers/admin-action/shift_action";
 
 export default function EditShiftForm({ shift, locations }) {
   const router = useRouter();

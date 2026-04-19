@@ -7,9 +7,10 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/_lib/prisma"
 import { signToken, removeAuthCookie, getUserFromCookie } from "@/_lib/auth"
 import { LogAction, LogMethod, SecurityAction } from "@prisma/client"
-import { logActivity } from "@/_servers/admin-action/logAction"
+import { logActivity } from "@/_servers/admin-action/log_action"
 
-import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-action/securityAction"
+import { logSecurity, reportSuspicious, checkAndLockUser } from "@/_servers/admin-action/security_action"
+import { validateLogin } from "@/_jobs/validator/auth_validate"
 import { loginRateLimit } from "@/_lib/rate-limit"
 
 export async function AuthAction(prevState, formData) {
@@ -25,11 +26,11 @@ export async function AuthAction(prevState, formData) {
   const email = formData.get("email")?.toString() ?? ""
   const password = formData.get("password")?.toString() ?? ""
 
-  if (!email || !password) {
-    return { error: "Email & password required" }
-  }
+  const { success, error, errors, user } = await validateLogin({ email, password })
 
-  const user = await prisma.user.findUnique({ where: { email } })
+  if (!success) {
+    return { error: errors || error }
+  }
 
   const fakeHash = "$2a$12$KbQiN4N3z5uJgL3z3lW9weu7s7cFjFjFjFjFjFjFjFjFjFjFjFjF"
   const hashToCompare = user ? user.password : fakeHash

@@ -3,10 +3,7 @@
 import { prisma } from "@/_lib/prisma"
 import bcrypt from "bcryptjs"
 import { revalidatePath } from "next/cache"
-
-// ------------------------
-// UTILS
-// ------------------------
+import { validateCreateUser, validateUpdateUser } from "@/_jobs/validator/user_validate"
 
 function normalizeEmail(email) {
   return email.toLowerCase().trim()
@@ -26,7 +23,7 @@ function generateDefaultPassword(name) {
 }
 
 // ------------------------
-// GET USERS
+// MANAGE
 // ------------------------
 
 export async function getUsers(page, limit) {
@@ -72,71 +69,12 @@ export async function getUserCount() {
   return prisma.user.count()
 }
 
-// ------------------------
-// CREATE USER
-// ------------------------
-
-export async function createUser(formData) {
-  try {
-    const formObject = Object.fromEntries(formData.entries())
-
-    let { name, email, password, role, locationId, shiftId, workMode } = formObject
-
-    if (!name || !email) {
-      throw new Error("Name and email are required.")
-    }
-
-    email = normalizeEmail(email)
-
-    role = role || "USER"
-    locationId = locationId !== "NONE" ? parseInt(locationId) : null
-    shiftId = workMode === "SHIFT" && shiftId !== "NONE" ? parseInt(shiftId) : null
-
-    if (!password || password.trim() === "") {
-      password = generateDefaultPassword(name)
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
-
-    if (existingUser) {
-      throw new Error("User with this email already exists.")
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        locationId,
-        shiftId,
-      },
-    })
-
-    revalidatePath("/admin/dashboard/users")
-
-    return { success: true }
-  } catch (error) {
-    console.error("createUser error:", error)
-    return { success: false, message: error.message }
-  }
-}
-
-// ------------------------
-// BULK CREATE USER (NO N+1)
-// ------------------------
-
 export async function bulkCreateUser(rows) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return { success: false, message: "Empty data" }
   }
 
   try {
-    // 🔥 preload semua location + shifts
     const locations = await prisma.location.findMany({
       include: { shifts: true },
     })
@@ -145,7 +83,6 @@ export async function bulkCreateUser(rows) {
       locations.map((l) => [l.name.trim().toLowerCase(), l])
     )
 
-    // 🔥 preload semua email existing
     const existingUsers = await prisma.user.findMany({
       select: { email: true },
     })
@@ -158,12 +95,8 @@ export async function bulkCreateUser(rows) {
 
     for (const row of rows) {
       let {
-        name,
-        email,
-        password,
-        role = "EMPLOYEE",
-        location,
-        workMode = "WORK_HOURS",
+        name, email, password,
+        role = "EMPLOYEE", location, workMode = "WORK_HOURS",
         shift,
       } = row
 
@@ -203,14 +136,13 @@ export async function bulkCreateUser(rows) {
         shiftId,
       })
 
-      existingEmailSet.add(email) // hindari duplikat dalam batch
+      existingEmailSet.add(email)
     }
 
     if (dataToInsert.length === 0) {
       return { success: false, message: "No valid data to insert" }
     }
 
-    // 🔥 single transaction
     await prisma.$transaction([
       prisma.user.createMany({
         data: dataToInsert,
@@ -227,22 +159,59 @@ export async function bulkCreateUser(rows) {
   }
 }
 
-// ------------------------
-// UPDATE USER (SAFE)
-// ------------------------
+export async function createUser(formData) {
+  try {
+    const formObject = Object.fromEntries(formData.entries())
+
+    const validated = await validateCreateUser(formObject)
+
+    let { name, email, password, role, locationId, shiftId, workMode } = validated
+
+    email = normalizeEmail(email)
+
+    role = role || "USER"
+    locationId = locationId !== "NONE" ? parseInt(locationId) : null
+    shiftId = workMode === "SHIFT" && shiftId !== "NONE" ? parseInt(shiftId) : null
+
+    if (!password || password.trim() === "") {
+      password = generateDefaultPassword(name)
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        locationId,
+        shiftId,
+      },
+    })
+
+    revalidatePath("/admin/dashboard/users")
+
+    return { success: true }
+  } catch (error) {
+    return { success: false, message: error.message }
+  }
+}
 
 export async function updateUser(data) {
   try {
-    const { id, name, email, password, role, shiftId, locationId } = data
+    const result = await validateUpdateUser(data)
 
-    if (!id) {
-      return { error: "User ID is required." }
+    if (!result.success) {
+      return result
     }
+
+    const { id, name, email, password, role, shiftId, locationId } = result.data
 
     const updateData = {}
 
     if (name !== undefined) updateData.name = name
-    if (email !== undefined) updateData.email = normalizeEmail(email)
+    if (email !== undefined) updateData.email = email.toLowerCase()
     if (role !== undefined) updateData.role = role
 
     if (locationId !== undefined) {
@@ -253,7 +222,7 @@ export async function updateUser(data) {
       updateData.shiftId = shiftId ? parseInt(shiftId) : null
     }
 
-    if (password && password.trim() !== "") {
+    if (password) {
       updateData.password = await bcrypt.hash(password, 12)
     }
 
@@ -263,15 +232,10 @@ export async function updateUser(data) {
     })
 
     return { success: true }
-  } catch (error) {
-    console.error("updateUser error:", error)
-    return { error: "Failed to update user." }
+  } catch (err) {
+    return { success: false, message: "Update failed" }
   }
 }
-
-// ------------------------
-// DELETE
-// ------------------------
 
 export async function deleteUserById(id) {
   await prisma.user.delete({ where: { id } })

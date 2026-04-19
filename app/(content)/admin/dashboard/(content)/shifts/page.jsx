@@ -5,7 +5,7 @@ import { DashboardHeader } from "../../DashboardHeader";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { ShiftsTable } from "./ShiftsTable";
-import { getShiftCount, getShifts } from "@/_servers/admin-action/shiftAction";
+import { getShiftCount, getShifts } from "@/_servers/admin-action/shift_action";
 
 export const revalidate = 60;
 

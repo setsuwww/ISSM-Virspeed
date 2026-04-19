@@ -6,7 +6,7 @@ import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 import { useToast } from "@/_contexts/Toast-Provider"
-import { createSchedule } from "@/_servers/admin-action/scheduleAction"
+import { createSchedule } from "@/_servers/admin-action/schedule_action"
 
 import { Label } from "@/_components/ui/Label"
 import { Input } from "@/_components/ui/Input"
@@ -35,7 +35,8 @@ export default function CreateForm({ users, shifts }) {
       }
 
       setLoading(true)
-      try { const userIds = Array.from( new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
+      try {
+        const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
 
         const payload = {
           title: form.title, description: form.description, frequency: form.frequency,
@@ -46,12 +47,13 @@ export default function CreateForm({ users, shifts }) {
 
         const result = await createSchedule(payload)
 
-        if (result.success) { addToast("Schedule created successfully", { type: "success" })
+        if (result.success) {
+          addToast("Schedule created successfully", { type: "success" })
           resetForm()
           router.push("/admin/dashboard/schedules")
-        } else { addToast("Schedule failed created", { type: "error" })}
-      } catch (error) { addToast("Schedule failed created", { type: "error" })}
-      finally { setLoading(false)}
+        } else { addToast("Schedule failed created", { type: "error" }) }
+      } catch (error) { addToast("Schedule failed created", { type: "error" }) }
+      finally { setLoading(false) }
     },
     [form, events, setLoading, addToast, resetForm, router]
   )

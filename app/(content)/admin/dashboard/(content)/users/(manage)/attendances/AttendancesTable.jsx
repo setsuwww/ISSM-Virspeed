@@ -14,7 +14,7 @@ import { shiftStyles } from "@/_constants/shiftConstants"
 import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
 
 import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
-import { getAttendancesByDate } from "@/_servers/admin-action/attendanceAction"
+import { getAttendancesByDate } from "@/_servers/admin-action/attendance_action"
 import Link from "next/link"
 import { formatWorkHours } from "@/_functions/helpers/attendanceHelpers"
 

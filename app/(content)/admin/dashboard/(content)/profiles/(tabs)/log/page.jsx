@@ -1,6 +1,6 @@
 // app/admin/dashboard/profiles/log/page.tsx
 import LogView from "./LogView"
-import { logQuery } from "@/_servers/admin-action/logAction"
+import { logQuery } from "@/_servers/admin-action/log_action"
 
 export default async function AdminActivityLogPage() {
   const logs = await logQuery({ page: 1 })

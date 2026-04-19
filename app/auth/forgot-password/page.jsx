@@ -6,7 +6,7 @@ import { Label } from "@/_components/ui/Label";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { forgotPasswordAction } from "@/_servers/profileAction";
+import { forgotPasswordAction } from "@/_servers/profile_action";
 
 export default function ForgotPassword() {
     const [isPending, startTransition] = useTransition();

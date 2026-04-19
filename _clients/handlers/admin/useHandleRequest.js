@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useCallback } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { clearHistory } from "@/_servers/admin-action/requestAction"
+import { clearHistory } from "@/_servers/admin-action/request_action"
 import { useActionHelper } from "@/_stores/common/useActionStore"
 import { useToast } from "@/_contexts/Toast-Provider"
 

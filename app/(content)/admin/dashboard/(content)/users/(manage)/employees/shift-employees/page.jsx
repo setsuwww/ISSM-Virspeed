@@ -5,7 +5,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
-import { getShiftEmployees, getShiftEmployeeCount, getSEFilterData } from "@/_servers/admin-action/userAction";
+import { getShiftEmployees, getShiftEmployeeCount, getSEFilterData } from "@/_servers/admin-action/user_action";
 
 export const revalidate = 60;
 

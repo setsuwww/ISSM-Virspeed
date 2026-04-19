@@ -6,7 +6,7 @@ import Link from "next/link"
 import useSWR from "swr"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/_components/ui/Tooltip"
-import { LogoutAuthAction } from "../../../../_servers/authAction"
+import { LogoutAuthAction } from "../../../../_servers/auth_action"
 import { TimeClock } from "../../employee/dashboard/TimeClock"
 import Pusher from "pusher-js"
 

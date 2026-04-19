@@ -14,7 +14,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation";
 import { typeOptions, statusOptions } from "@/_constants/locationConstants";
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
-import { updateLocation } from "@/_servers/admin-action/locationAction";
+import { updateLocation } from "@/_servers/admin-action/location_action";
 import { useToast } from "@/_contexts/Toast-Provider";
 
 export default function EditLocationForm({ location }) {

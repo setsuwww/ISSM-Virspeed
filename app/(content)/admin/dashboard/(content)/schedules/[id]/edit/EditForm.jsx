@@ -14,7 +14,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { updateSchedule } from "@/_servers/admin-action/scheduleAction"
+import { updateSchedule } from "@/_servers/admin-action/schedule_action"
 import { useToast } from "@/_contexts/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
@@ -25,7 +25,8 @@ export default function EditForm({ schedule, users }) {
   const { addToast } = useToast()
   const router = useRouter()
 
-  useEffect(() => { if (schedule) {
+  useEffect(() => {
+    if (schedule) {
       setFormField("title", schedule.title ?? "")
       setFormField("description", schedule.description ?? "")
       setFormField("frequency", schedule.frequency ?? "ONCE");
@@ -38,14 +39,16 @@ export default function EditForm({ schedule, users }) {
     }
   }, [schedule, setFormField, setEvents])
 
-  const handleSubmit = async (e) => {e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     if (!form.title.trim() || !form.description.trim() || events.length === 0) {
       addToast("Missing field required", { type: "warning" })
       return
     }
 
     setLoading(true)
-    try { const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
+    try {
+      const userIds = Array.from(new Set(events.flatMap((e) => e.users.map((u) => u.id).filter(Boolean))))
 
       const payload = {
         id: schedule.id, title: form.title, description: form.description, frequency: form.frequency,
@@ -58,8 +61,8 @@ export default function EditForm({ schedule, users }) {
       addToast("Schedule updated successfully", { type: "success" })
       router.push("/admin/dashboard/schedules")
     }
-    catch (error) {addToast("Schedule failed to update", { type: "error" })}
-    finally {setLoading(false)}
+    catch (error) { addToast("Schedule failed to update", { type: "error" }) }
+    finally { setLoading(false) }
   }
 
   return (

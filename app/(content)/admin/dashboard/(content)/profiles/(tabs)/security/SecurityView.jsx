@@ -8,7 +8,7 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { LogClearButton } from "../ClearButton"
 import { LogConfirmDialog } from "../ConfirmDialog"
 import { SecurityTable } from "./SecurityTable"
-import { clearAllSecurityLogs } from "@/_servers/admin-action/securityAction"
+import { clearAllSecurityLogs } from "@/_servers/admin-action/security_action"
 
 export default function SecurityView({ logs }) {
   const [open, setOpen] = useState(false)
@@ -26,7 +26,7 @@ export default function SecurityView({ logs }) {
       <ContentForm>
         <ContentForm.Header>
           <div className="flex items-center justify-between">
-            <ContentInformation title="Security Logs" autoMargin subtitle="Audit trail for all user suspicious actions"/>
+            <ContentInformation title="Security Logs" autoMargin subtitle="Audit trail for all user suspicious actions" />
 
             <LogClearButton
               onClick={() => setOpen(true)}
