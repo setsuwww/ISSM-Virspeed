@@ -16,6 +16,7 @@ export default async function Page() {
   const leaves = await prisma.leaveRequest.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
+    include: { leaveType: true },
   })
 
   const tableData = leaves.map(l => ({
@@ -25,8 +26,8 @@ export default async function Page() {
     dateLabel: format(l.createdAt, "dd MMMM"),
     dateFull: format(l.createdAt, "EEEE, dd MMMM yyyy"),
 
-    type: l.type,
-    typeLabel: LEAVE_RULES[l.type]?.label ?? l.type,
+    type: l.leaveType?.code,
+    typeLabel: l.leaveType?.name ?? l.leaveType?.code ?? l.leaveTypeId,
 
     startDate: format(l.startDate, "dd MMM yyyy"),
     endDate: format(l.endDate, "dd MMM yyyy"),

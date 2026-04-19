@@ -19,9 +19,11 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
   const [reason, setReason] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [maxEndDate, setMaxEndDate] = useState("")
 
   useEffect(() => {
     if (!type || !startDate) {
+      setMaxEndDate("")
       setEndDate("")
       return
     }
@@ -39,9 +41,9 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
     }
 
     if (calculatedEnd instanceof Date && !isNaN(calculatedEnd)) {
-      setEndDate(format(calculatedEnd, "yyyy-MM-dd"))
+      setMaxEndDate(format(calculatedEnd, "yyyy-MM-dd"))
     } else {
-      setEndDate("")
+      setMaxEndDate("")
     }
   }, [type, startDate])
 
@@ -113,23 +115,24 @@ export function LeaveModal({ open, onOpenChange, onSubmit }) {
           {/* End Date */}
           <div className="space-y-2">
             <Label>
-              End Date{" "}
-              <span className="text-xs font-light text-slate-400">
-                (Auto fill)
-              </span>
+              End Date <span className="text-red-500">*</span>
             </Label>
 
             <Input
               type="date"
               value={endDate}
-              disabled
-              className="bg-slate-100 cursor-not-allowed"
+              min={startDate}
+              max={maxEndDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              disabled={!startDate}
             />
 
-            <p className="flex items-center gap-1 text-xs text-blue-500">
-              <WarningCircle size={14} />
-              Auto calculated based on leave type
-            </p>
+            {maxEndDate && (
+              <p className="flex items-center gap-1 text-[11px] text-blue-500">
+                <WarningCircle size={14} />
+                Maximum end date depends on valid balance
+              </p>
+            )}
           </div>
 
           {/* Reason */}

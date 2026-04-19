@@ -318,9 +318,22 @@ export async function userSendLeaveRequest({ type, startDate, endDate, reason })
   const end = endDate ? new Date(`${endDate}T12:00:00`) : new Date(start)
   const year = start.getFullYear()
 
-  // Simplifikasi totalDays untuk purposed hitungan harian.
-  const timeDiff = end.getTime() - start.getTime()
-  const totalDays = Math.max(1, Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1)
+  let totalDays = 0;
+  let currentDay = new Date(start);
+  while (currentDay <= end) {
+    if (leaveType.code === "ANNUAL") {
+      const day = currentDay.getDay();
+      if (day !== 0 && day !== 6) totalDays++;
+    } else {
+      totalDays++;
+    }
+    currentDay.setDate(currentDay.getDate() + 1);
+  }
+
+  // Cap the days if it's just a raw calendar variation
+  if ((leaveType.code === "MATERNITY" || leaveType.code === "SICK") && totalDays > leaveType.maxDays) {
+    totalDays = leaveType.maxDays;
+  }
 
   const conflict = await prisma.leaveRequest.findFirst({
     where: {

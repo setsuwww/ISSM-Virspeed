@@ -17,14 +17,14 @@ export function useActionHelper() {
     try {
       const result = await action();
 
-      if (result && result.success === false) {
+      if (result && (result.success === false || result.error)) {
         throw new Error(result.error || errorMsg);
       }
 
       toast.success(successMsg);
       return result;
     } catch (e) {
-      toast.error(errorMsg);
+      toast.error(e.message || errorMsg);
       return null;
     }
   };

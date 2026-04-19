@@ -27,21 +27,21 @@ export default function RenderLeave({ r }) {
       </TableCell>
 
       <TableCell>
-        {r.shift ? (
-          <div className="flex items-center space-x-3">
-            {shiftDots[r.shift.type]}
-
-            <div className="flex flex-col text-sm text-slate-600">
-              <p className="font-semibold">
-                {r.shift.name}
-              </p>
-
-              <p className="text-xs text-slate-400">
-                {r.workHours.label}
-              </p>
+        <div className="flex flex-col mb-1">
+          <span className="font-semibold text-violet-600 bg-violet-50 w-max px-2 py-0.5 rounded-md text-xs mb-1">
+            {r.leave?.name ?? "Unknown Leave"}
+          </span>
+          {r.shift ? (
+            <div className="flex items-center space-x-1.5 mt-1">
+              {shiftDots[r.shift.type]}
+              <span className="text-[11px] text-slate-400 font-medium">
+                {r.shift.name} ({r.workHours.label})
+              </span>
             </div>
-          </div>
-        ) : (<span className="text-xs text-slate-400">No shift</span>)}
+          ) : (
+            <span className="text-[11px] text-slate-400 mt-1">No shift</span>
+          )}
+        </div>
       </TableCell>
 
       <TableCell>

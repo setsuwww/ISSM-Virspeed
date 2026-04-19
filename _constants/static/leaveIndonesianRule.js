@@ -7,7 +7,7 @@ export const LEAVE_RULES = {
   SICK: {
     label: "Sick Leave",
     months: 12,
-    description: "Sesuai surat dokter",
+    description: "Maksimal pemakaian 12 bulan (1 tahun) sesuai surat dokter",
   },
   MATERNITY: {
     label: "Maternity Leave",

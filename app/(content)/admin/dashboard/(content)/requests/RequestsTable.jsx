@@ -17,7 +17,7 @@ export default function RequestsDataTable({ type, items, isHistory }) {
     },
     leave: {
       empty: isHistory ? "No leave history" : "No pending leave requests",
-      columns: ["Requested By", "Shift", "Period", "Reason", "Send At", "Status"],
+      columns: ["Requested By", "Leave Type", "Period", "Reason", "Send At", "Status"],
     },
   }
   const cfg = config[type];
