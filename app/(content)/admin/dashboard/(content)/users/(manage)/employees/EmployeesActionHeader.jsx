@@ -144,10 +144,10 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
       </div>
 
       <div className="flex items-center gap-x-2">
-        <Button variant="ghost" size="sm" className="text-rose-500" onClick={onDeleteSelected} disabled={!selected.length}>
+        <Button variant="ghost" size="sm" className="text-red-500" onClick={onDeleteSelected} disabled={!selected.length}>
           Delete Selected
         </Button>
-        <Button variant="ghost" size="sm" className="bg-rose-50/70 text-rose-500 hover:bg-rose-100" onClick={onDeleteAll}>
+        <Button variant="ghost" size="sm" className="bg-red-50/70 text-red-500 hover:bg-red-100" onClick={onDeleteAll}>
           <Trash2 className="w-4 h-4" /> Delete All
         </Button>
         <DropdownMenu>
@@ -168,7 +168,7 @@ export const EmployeesActionHeader = React.memo(function EmployeesActionHeader({
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="focus:text-green-500" onClick={() => exportExcel(filteredData)}>
+            <DropdownMenuItem className="focus:text-emerald-500" onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

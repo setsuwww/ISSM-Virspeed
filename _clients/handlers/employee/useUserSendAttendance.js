@@ -18,96 +18,103 @@ export function useUserSendAttendance() {
   const toast = useToast();
   const { withTry } = useActionHelper();
 
-  const checkIn = () =>
-    startTransition(async () => {
-      try {
-        const precheck = await userPrecheckCheckIn();
-
-        if (precheck?.error) return toast.error(precheck.error);
-
-        if (precheck?.requireLocation === false) {
-          const result = await userSendCheckIn({ skipLocation: true });
-          if (result?.error) return toast.error(result.error);
-          toast.success("Checked in successfully");
-          return;
+  // ✅ helper biar bisa await
+  const run = (fn) =>
+    new Promise((resolve, reject) => {
+      startTransition(async () => {
+        try {
+          const res = await fn();
+          resolve(res);
+        } catch (err) {
+          reject(err);
         }
+      });
+    });
 
-        if (!navigator.geolocation)
-          return toast.error("Browser is not support geolocation");
+  const checkIn = () =>
+    run(async () => {
+      const precheck = await userPrecheckCheckIn();
 
-        const position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(
-            resolve,
-            (err) => {
-              switch (err.code) {
-                case err.PERMISSION_DENIED:
-                  reject(new Error("Location permission denied!"));
-                  break;
-                case err.POSITION_UNAVAILABLE:
-                  reject(new Error("Location is unavailable!"));
-                  break;
-                case err.TIMEOUT:
-                  reject(new Error("Location is long to catch, request timeout!"));
-                  break;
-                default:
-                  reject(new Error("Failed to get location!"));
-              }
-            },
-            { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
-          );
-        });
+      if (precheck?.error) {
+        toast.error(precheck.error);
+        throw new Error(precheck.error);
+      }
 
-        const coords = { lat: position.coords.latitude, lon: position.coords.longitude };
-        const result = await userSendCheckIn(coords);
-
+      if (precheck?.requireLocation === false) {
+        const result = await userSendCheckIn({ skipLocation: true });
         if (result?.error) {
           toast.error(result.error);
-        } else {
-          toast.success("Checked in successfully");
+          throw new Error(result.error);
         }
-      } catch (err) {
-        toast.error(err?.message ?? "Checkin failes. Check your internet, location or your time-shift");
+        toast.success("Checked in successfully");
+        return result;
       }
+
+      if (!navigator.geolocation) {
+        throw new Error("Browser not support geolocation");
+      }
+
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          (err) => reject(err),
+          { timeout: 20000 }
+        );
+      });
+
+      const coords = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+      };
+
+      const result = await userSendCheckIn(coords);
+
+      if (result?.error) {
+        toast.error(result.error);
+        throw new Error(result.error);
+      }
+
+      toast.success("Checked in successfully");
+      return result;
     });
 
   const checkOut = () =>
-    startTransition(async () => {
-      try {
-        const result = await userSendCheckOut();
+    run(async () => {
+      const result = await userSendCheckOut();
 
-        if (result?.error) { toast.error(result.error) }
-        else { toast.success("Checked out successfully") }
+      if (result?.error) {
+        toast.error(result.error);
+        throw new Error(result.error);
       }
-      catch (err) { toast.error(err?.message ?? "Checkout failes. Check your internet, location or your time-shift") }
+
+      toast.success("Checked out successfully");
+      return result;
     });
 
-  const earlyCheckout = (reason, onSuccess) =>
-    startTransition(() =>
+  const earlyCheckout = (reason) =>
+    run(() =>
       withTry(
         () => userSendEarlyCheckout(reason),
         "Early checkout request sent",
-        "Early checkout request failed to sent",
-        { onSuccess }
+        "Early checkout request failed to send"
       )
     );
 
-  const permission = (reason, onSuccess) =>
-    startTransition(() =>
+  const permission = (reason) =>
+    run(() =>
       withTry(
         () => userSendPermissionRequest(reason),
         "Permission request sent",
-        "Permission request failed to sent",
-        { onSuccess }
+        "Permission request failed to send"
       )
     );
 
-  const leave = (payload, onSuccess) =>
-    startTransition(() =>
+  const leave = (payload) =>
+    run(() =>
       withTry(
         () => userSendLeaveRequest(payload),
         "Leave request sent",
-        "Leave request failed to sent",
-        { onSuccess }
+        "Leave request failed to send"
       )
     );
 

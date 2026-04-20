@@ -85,7 +85,7 @@ export default function InputAssignUserShift({ users }) {
           </div>
 
           {(startDate || startTime) && (
-            <div className="flex items-center gap-3 text-teal-600 mt-1">
+            <div className="flex items-center gap-3 text-emerald-600 mt-1">
               {startDate && (
                 <div className="flex items-center gap-1 text-xs font-semibold">
                   <CalendarArrowUp size={14} />
@@ -114,7 +114,7 @@ export default function InputAssignUserShift({ users }) {
           </div>
 
           {(endDate || endTime) && (
-            <div className="flex items-center gap-3 text-rose-600 mt-1">
+            <div className="flex items-center gap-3 text-red-600 mt-1">
               {endDate && (
                 <div className="flex items-center gap-1 text-xs font-semibold">
                   <CalendarArrowDown size={14} />
@@ -160,9 +160,9 @@ export default function InputAssignUserShift({ users }) {
                         <span role="button" tabIndex={0} onClick={(e) => {
                           e.stopPropagation()
                           toggleUser(id)
-                        }} className="cursor-pointer hover:bg-rose-100 rounded-md ml-1"
+                        }} className="cursor-pointer hover:bg-red-100 rounded-md ml-1"
                         >
-                          <X className="h-3 w-3 text-rose-500 hover:text-rose-700" />
+                          <X className="h-3 w-3 text-red-500 hover:text-red-700" />
                         </span>
                       </Badge>
                     )
@@ -196,8 +196,8 @@ export default function InputAssignUserShift({ users }) {
                           <span className="text-xs text-slate-400">{user.email}</span>
                         </div>
                         {isSelected && (
-                          <div className="ml-auto bg-teal-100/60 p-1.5 rounded-md">
-                            <Check className="h-4 w-4 text-teal-600" />
+                          <div className="ml-auto bg-emerald-100/60 p-1.5 rounded-md">
+                            <Check className="h-4 w-4 text-emerald-600" />
                           </div>
                         )}
                       </div>

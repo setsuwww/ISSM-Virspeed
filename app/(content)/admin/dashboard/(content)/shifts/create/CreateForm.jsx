@@ -50,7 +50,7 @@ export default function CreateShiftForm({ locations }) {
         addToast(res.error, { type: "error" });
         return;
       }
-      
+
       addToast("Shift created successfully", { type: "success" });
       router.push("/admin/dashboard/shifts");
     }
@@ -73,7 +73,7 @@ export default function CreateShiftForm({ locations }) {
             <div className="flex flex-col space-y-0">
               <div className="space-y-2">
                 <Label htmlFor="location-select">
-                  Location <span className="text-rose-500">*</span>
+                  Location <span className="text-red-500">*</span>
                 </Label>
                 <Select value={locationId} onValueChange={setLocationId}>
                   <SelectTrigger id="location-select" className="w-full mt-1">
@@ -107,7 +107,7 @@ export default function CreateShiftForm({ locations }) {
 
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="shift-name">
-                    Shift Name <span className="text-rose-500">*</span>
+                    Shift Name <span className="text-red-500">*</span>
                   </Label>
                   <Input id="shift-name" value={name} onChange={(e) => setName(e.target.value)} type="text"
                     placeholder="Example: Morning Shift"
@@ -120,7 +120,7 @@ export default function CreateShiftForm({ locations }) {
               <div className="flex space-x-4 mt-4">
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="start-time">
-                    Start Time <span className="text-rose-500">*</span>
+                    Start Time <span className="text-red-500">*</span>
                   </Label>
                   <Input id="start-time" value={startTime} onChange={(e) => setStartTime(e.target.value)} type="time"
                     className="mt-1"
@@ -130,7 +130,7 @@ export default function CreateShiftForm({ locations }) {
 
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="end-time">
-                    End Time <span className="text-rose-500">*</span>
+                    End Time <span className="text-red-500">*</span>
                   </Label>
                   <Input id="end-time" value={endTime} onChange={(e) => setEndTime(e.target.value)} type="time"
                     className="mt-1"

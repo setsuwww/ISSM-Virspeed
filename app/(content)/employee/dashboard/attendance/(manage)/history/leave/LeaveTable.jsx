@@ -43,7 +43,7 @@ export default function LeaveTable({ data }) {
 
             <TableCell>
               <div className="flex flex-col text-sm font-medium">
-                <span className="text-green-600">
+                <span className="text-emerald-600">
                   {item.startDate}
                 </span>
                 <span className="text-red-600">
@@ -65,7 +65,7 @@ export default function LeaveTable({ data }) {
               <Badge
                 className={
                   attendancesStyles[
-                    normalizePendingStatus(item.status)
+                  normalizePendingStatus(item.status)
                   ]
                 }
               >

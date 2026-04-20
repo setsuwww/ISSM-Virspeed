@@ -15,8 +15,8 @@ import {
 
 const statusUI = {
   PENDING: { label: "Pending", dot: "bg-yellow-400", ping: true },
-  APPROVED: { label: "Approved", dot: "bg-teal-500" },
-  REJECTED: { label: "Rejected", dot: "bg-rose-500" },
+  APPROVED: { label: "Approved", dot: "bg-emerald-500" },
+  REJECTED: { label: "Rejected", dot: "bg-red-500" },
 };
 
 function StatusDot({ color, ping }) {
@@ -72,16 +72,16 @@ export default function RequestStatusChangerToggle({ id, status, type, disabled 
       <DropdownMenuContent align="end" className="w-36 p-1.5 font-medium text-xs">
         <DropdownMenuItem onClick={() => handleChange("APPROVED")}>
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-2.5 w-2.5 scale-155 rounded-full bg-teal-400 opacity-25"></span>
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-teal-500"></span>
+            <span className="absolute inline-flex h-2.5 w-2.5 scale-155 rounded-full bg-emerald-400 opacity-25"></span>
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
           </span>
           Approve
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => handleChange("REJECTED")}>
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-2.5 w-2.5 scale-155 rounded-full bg-rose-400 opacity-25"></span>
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+            <span className="absolute inline-flex h-2.5 w-2.5 scale-155 rounded-full bg-red-400 opacity-25"></span>
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
           </span>
           Reject
         </DropdownMenuItem>

@@ -15,7 +15,7 @@ export function PermissionModal({
         </DialogHeader>
 
         <div className="space-y-3">
-          <Label>Reason <span className="text-rose-500">*</span></Label>
+          <Label>Reason <span className="text-red-500">*</span></Label>
           <textarea
             value={reason}
             onChange={(e) => onChangeReason(e.target.value)}

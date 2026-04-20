@@ -1,28 +1,28 @@
 export const attendancesStyles = {
-  PRESENT: "text-teal-600 bg-teal-100/50 border-teal-300/50",
+  PRESENT: "text-emerald-600 bg-emerald-100/50 border-emerald-300/50",
   LATE: "text-yellow-600 bg-yellow-100/50 border-yellow-300/50",
   PERMISSION: "text-blue-600 bg-blue-100/50 border-blue-300/50",
-  ABSENT: "text-rose-600 bg-rose-100/50 border-rose-300/50",
+  ABSENT: "text-red-600 bg-red-100/50 border-red-300/50",
   ALPHA: "text-slate-600 bg-slate-100/50 border-slate-300/50",
 
-  APPROVED: "text-white bg-teal-500 border-teal-500",
-  REJECTED: "text-white bg-rose-500 border-rose-500",
+  APPROVED: "text-white bg-emerald-500 border-emerald-500",
+  REJECTED: "text-white bg-red-500 border-red-500",
   PENDING: "text-white bg-yellow-500 border-yellow-500",
   "PENDING": "text-white bg-yellow-500 border-yellow-500",
 }
 
 export const attendanceAction = {
   teal: {
-    border: "border-teal-200 hover:border-teal-300",
-    iconBg: "bg-teal-100/50 text-teal-600",
-    title: "text-teal-700",
-    desc: "text-teal-500",
+    border: "border-emerald-200 hover:border-emerald-300",
+    iconBg: "bg-emerald-100/50 text-emerald-600",
+    title: "text-emerald-700",
+    desc: "text-emerald-500",
   },
   rose: {
-    border: "border-rose-200 hover:border-rose-300",
-    iconBg: "bg-rose-100/50 text-rose-600",
-    title: "text-rose-700",
-    desc: "text-rose-500",
+    border: "border-red-200 hover:border-red-300",
+    iconBg: "bg-red-100/50 text-red-600",
+    title: "text-red-700",
+    desc: "text-red-500",
   },
   "gowsh-amber": {
     border: "ring ring-orange-700 border-0 border-t border-orange-400 hover:border-orange-300",
@@ -54,18 +54,18 @@ export const dotStatusColor = {
   PENDING: "bg-yellow-400",
   PENDING_TARGET: "bg-yellow-400",
   PENDING_ADMIN: "bg-yellow-400",
-  APPROVED: "bg-teal-400",
-  REJECTED: "bg-rose-400",
+  APPROVED: "bg-emerald-400",
+  REJECTED: "bg-red-400",
 };
 
 export const attendanceStatusClass = {
   ABSENT: {
-    bgDot: "bg-rose-400",
+    bgDot: "bg-red-400",
 
-    head: "text-rose-800",
-    text: "text-rose-600",
-    subtext: "text-rose-400",
-    border: "bg-rose-50 border-rose-100/50 text-rose-600"
+    head: "text-red-800",
+    text: "text-red-600",
+    subtext: "text-red-400",
+    border: "bg-red-50 border-red-100/50 text-red-600"
   },
   LATE: {
     bgDot: "bg-yellow-400",

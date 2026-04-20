@@ -18,19 +18,9 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
 
   const filteredSortedData = useMemo(() => {
     return data
-      .filter(att =>
-        statusFilter === "all" ? true : att.status === statusFilter
-      )
-      .filter(att =>
-        search
-          ? att.dateLabel.toLowerCase().includes(search.toLowerCase())
-          : true
-      )
-      .sort((a, b) =>
-        order === "asc"
-          ? a.dateValue - b.dateValue
-          : b.dateValue - a.dateValue
-      )
+      .filter(att => statusFilter === "all" ? true : att.status === statusFilter)
+      .filter(att => search ? att.dateLabel.toLowerCase().includes(search.toLowerCase()) : true)
+      .sort((a, b) => order === "asc" ? a.dateValue - b.dateValue : b.dateValue - a.dateValue)
   }, [data, order, statusFilter, search])
 
   return (
@@ -40,10 +30,8 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
         onToggleOrder={() =>
           setOrder(o => (o === "asc" ? "desc" : "asc"))
         }
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        search={search}
-        onSearchChange={setSearch}
+        statusFilter={statusFilter} onStatusFilterChange={setStatusFilter}
+        search={search} onSearchChange={setSearch}
         searchInputRef={searchInputRef}
       />
 
@@ -121,10 +109,10 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
                   </div>
                   <div className="flex flex-col text-sm font-medium">
                     <span className="text-gray-600">
-                      Checkin: <span className="text-teal-600">{att.checkInTime ?? "00:00"}</span>
+                      Checkin: <span className="text-emerald-600">{att.checkInTime ?? "00:00"}</span>
                     </span>
                     <span className="text-gray-600">
-                      Checkout: <span className="text-rose-600">{att.checkOutTime ?? "00:00"}</span>
+                      Checkout: <span className="text-red-600">{att.checkOutTime ?? "00:00"}</span>
                     </span>
                   </div>
                 </div>

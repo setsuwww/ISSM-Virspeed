@@ -32,7 +32,7 @@ function UsersRow({ user, isSelected, onToggleSelect, onEdit, onDelete, roleStyl
 
       <TableCell>
         <Badge variant="outline" className="px-1.5 py-0 text-[12px] text-slate-500 uppercase flex items-center gap-1.5 font-medium border-slate-200">
-          <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-rose-500"}`}></span>
+          <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-red-500"}`}></span>
           {user.isActive ? "Active" : "Inactive"}
         </Badge>
       </TableCell>

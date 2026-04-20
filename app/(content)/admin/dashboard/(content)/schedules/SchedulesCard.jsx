@@ -83,7 +83,7 @@ export default function SchedulesCard({ data }) {
 
                 <div className="flex space-x-2 items-center text-xs text-slate-500 px-4 py-3 border-t">
                   <button className="hover:text-slate-600" onClick={() => handleEditSchedule(schedule.id)}>Edit</button>
-                  <button className="text-rose-400 hover:text-rose-600" onClick={() => handleDeleteSchedule(schedule.id)}>Delete</button>
+                  <button className="text-red-400 hover:text-red-600" onClick={() => handleDeleteSchedule(schedule.id)}>Delete</button>
                 </div>
               </div>
             );

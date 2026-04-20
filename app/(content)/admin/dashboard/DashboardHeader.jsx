@@ -82,7 +82,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({ title, subt
           </Tooltip>
 
           <button onClick={handleLogout} disabled={isPending}
-            className={`hover:text-rose-500 px-4 gap-x-1 ${rightActionClass} hover:bg-white hover:border-slate-300/90 disabled:opacity-50`}
+            className={`hover:text-red-500 px-4 gap-x-1 ${rightActionClass} hover:bg-white hover:border-slate-300/90 disabled:opacity-50`}
           >
             <LogOut strokeWidth={2.5} size={15} />
             {isPending ? "Logging out..." : "Logout"}

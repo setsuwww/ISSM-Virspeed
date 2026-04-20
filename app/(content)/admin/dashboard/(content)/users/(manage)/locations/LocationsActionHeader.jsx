@@ -50,13 +50,13 @@ export default function LocationsActionHeader({
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
-        <Button variant="ghost" size="sm" className="text-rose-500" onClick={onDeleteSelected}
+        <Button variant="ghost" size="sm" className="text-red-500" onClick={onDeleteSelected}
           disabled={selectedCount === 0}
         >
           Delete Selected
         </Button>
 
-        <Button variant="ghost" size="sm" className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
+        <Button variant="ghost" size="sm" className="bg-red-50/70 hover:bg-red-100 text-red-500"
           onClick={onDeleteAll}
         >
           <Trash2 size={18} strokeWidth={2} />
@@ -81,7 +81,7 @@ export default function LocationsActionHeader({
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="focus:text-green-500" onClick={() => exportExcel(filteredData)}>
+            <DropdownMenuItem className="focus:text-emerald-500" onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

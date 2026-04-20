@@ -49,7 +49,7 @@ export default function RenderChangeShift({ r }) {
       <TableCell>
         <div className="flex flex-col space-y-1">
           <div className="flex items-center space-x-2">
-            <span className="font-base text-slate-400">From</span><span className="bg-green-50/50 text-green-600 px-2 border border-green-200/50 rounded-md">{r.startDate}</span>
+            <span className="font-base text-slate-400">From</span><span className="bg-emerald-50/50 text-emerald-600 px-2 border border-emerald-200/50 rounded-md">{r.startDate}</span>
           </div>
           <div className="flex items-center space-x-2">
             <span className="font-base text-slate-400">To</span><span className="bg-red-50/50 text-red-600 px-2 border border-red-100/50 rounded-md">{r.endDate}</span>

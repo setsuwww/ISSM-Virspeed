@@ -50,13 +50,13 @@ export function AttendancesCard({ shifts = [] }) {
   return (
     <div>
       <div className="text-xs text-slate-500 flex items-center gap-2 mb-4">
-        <span className="px-2 py-1 rounded-md bg-teal-50 text-teal-600">
+        <span className="px-2 py-1 rounded-md bg-emerald-50 text-emerald-600">
           A = Accepted
         </span>
         <span className="px-2 py-1 rounded-md bg-amber-50 text-amber-600">
           P = Pending
         </span>
-        <span className="px-2 py-1 rounded-md bg-rose-50 text-rose-600">
+        <span className="px-2 py-1 rounded-md bg-red-50 text-red-600">
           R = Rejected
         </span>
       </div>

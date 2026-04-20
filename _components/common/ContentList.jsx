@@ -2,15 +2,15 @@ import { CircleCheckBig, CircleX, Info } from "lucide-react";
 
 const typeStyles = {
   p: {
-    text: "text-teal-500",
-    bg: "bg-teal-100/30",
-    border: "border-teal-200",
+    text: "text-emerald-500",
+    bg: "bg-emerald-100/30",
+    border: "border-emerald-200",
     icon: CircleCheckBig
   },
   n: {
-    text: "text-rose-500",
-    bg: "bg-rose-100/30",
-    border: "border-rose-200",
+    text: "text-red-500",
+    bg: "bg-red-100/30",
+    border: "border-red-200",
     icon: CircleX
   },
   i: {

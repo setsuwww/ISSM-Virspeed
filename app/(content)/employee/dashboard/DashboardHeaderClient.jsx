@@ -41,7 +41,7 @@ export default function DashboardHeaderClient({ user }) {
       </div>
 
       <div className="flex items-center gap-3 text-slate-600">
-        <button onClick={handleLogout} disabled={isPending} className="text-sm flex items-center font-medium space-x-1 p-2 rounded-lg text-rose-500 border border-slate-200 hover:bg-rose-500/5 hover:border-rose-600/5 transition-colors disabled:opacity-60">
+        <button onClick={handleLogout} disabled={isPending} className="text-sm flex items-center font-medium space-x-1 p-2 rounded-lg text-red-500 border border-slate-200 hover:bg-red-500/5 hover:border-red-600/5 transition-colors disabled:opacity-60">
           {isPending ? <Loader size={14} className="animate-spin" /> : <LogOut size={14} />}
         </button>
         <div className="flex items-center space-x-2 text-sm font-base text-slate-400">

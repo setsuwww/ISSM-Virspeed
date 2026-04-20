@@ -98,7 +98,7 @@ export default function UpdateAssignUserShift({ users }) {
                     <Badge key={u.id} variant="secondary" className="flex items-center gap-1 bg-slate-50 border text-slate-700 text-xs px-2">
                       {u.name}
                       <X
-                        className="h-3 w-3 text-rose-500 cursor-pointer"
+                        className="h-3 w-3 text-red-500 cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation()
                           toggleUser(u.id)
@@ -129,7 +129,7 @@ export default function UpdateAssignUserShift({ users }) {
                           <p className="text-sm font-medium text-slate-600">{u.name}</p>
                           <p className="text-xs text-slate-400">{u.email}</p>
                         </div>
-                        {isSelected && <Check className="ml-auto h-4 w-4 text-teal-600" />}
+                        {isSelected && <Check className="ml-auto h-4 w-4 text-emerald-600" />}
                       </div>
                     </CommandItem>
                   )

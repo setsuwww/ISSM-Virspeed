@@ -7,10 +7,10 @@ import { AlertTriangle, Trash2, CheckCircle, Info } from "lucide-react";
 
 const variantStyles = {
   danger: {
-    icon: <Trash2 className="text-rose-500" size={20} />,
+    icon: <Trash2 className="text-red-500" size={20} />,
     title: "Danger",
-    iconBgColor: "bg-rose-100 text-rose-600 hover:bg-rose-200 hover:text-rose-700",
-    titleColor: "text-rose-600",
+    iconBgColor: "bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700",
+    titleColor: "text-red-600",
   },
   warning: {
     icon: <AlertTriangle className="text-yellow-500" size={20} />,
@@ -19,10 +19,10 @@ const variantStyles = {
     titleColor: "text-yellow-600",
   },
   success: {
-    icon: <CheckCircle className="text-teal-500" size={20} />,
+    icon: <CheckCircle className="text-emerald-500" size={20} />,
     title: "Success",
-    iconBgColor: "bg-teal-100 text-teal-600 hover:bg-teal-200 hover:text-teal-700",
-    titleColor: "text-teal-600",
+    iconBgColor: "bg-emerald-100 text-emerald-600 hover:bg-emerald-200 hover:text-emerald-700",
+    titleColor: "text-emerald-600",
   },
   info: {
     icon: <Info className="text-indigo-500" size={20} />,

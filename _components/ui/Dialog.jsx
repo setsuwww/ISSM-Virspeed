@@ -18,12 +18,12 @@ const variantStyles = {
     title: "text-yellow-700",
   },
   success: {
-    border: "border-teal-500",
-    title: "text-teal-600",
+    border: "border-emerald-500",
+    title: "text-emerald-600",
   },
   danger: {
-    border: "border-rose-500",
-    title: "text-rose-700",
+    border: "border-red-500",
+    title: "text-red-700",
   },
   blue: {
     border: "border-blue-500",

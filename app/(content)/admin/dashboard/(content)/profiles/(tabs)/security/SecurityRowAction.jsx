@@ -48,7 +48,7 @@ export function SecurityRowAction({ log, onUserUpdate }) {
           onClick={() =>
             startTransition(handleUnblock)
           }
-          className="flex items-center text-sm px-2 py-1 rounded bg-green-50 text-green-700"
+          className="flex items-center text-sm px-2 py-1 rounded bg-emerald-50 text-emerald-700"
         >
           <LockOpen size={16} color="#008236" weight="duotone" className="mr-1" /> Unblock
         </button>

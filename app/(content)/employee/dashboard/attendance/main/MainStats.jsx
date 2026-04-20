@@ -15,16 +15,16 @@ export function MainStats({ items }) {
 
 function StatItem({ icon, label, value, tone = "slate" }) {
   const tones = {
-    teal: { icon: "bg-teal-50 text-teal-600 border-teal-100" },
-    rose: { icon: "bg-rose-50 text-rose-600 border-rose-100" },
-    blue: { icon: "bg-blue-50 text-blue-600 border-blue-100" },
-    yellow: { icon: "bg-yellow-50 text-yellow-600 border-yellow-200/50" },
+    teal: { icon: "bg-emerald-400 text-emerald-50 border-emerald-600", text: "text-emerald-900" },
+    rose: { icon: "bg-red-400 text-red-50 border-red-600", text: "text-red-900" },
+    blue: { icon: "bg-blue-400 text-blue-50 border-blue-600", text: "text-blue-900" },
+    yellow: { icon: "bg-yellow-400 text-yellow-50 border-yellow-600", text: "text-yellow-900" },
   }
 
   const t = tones[tone] ?? tones.slate
 
   return (
-    <Card className="border-b-4 border-slate-200 shadow-xs">
+    <Card className="border-b-2 border-slate-300 shadow-xs">
       <CardContent className="flex items-center gap-4 p-5">
         <div className={clsx("p-3 rounded-2xl border", t.icon)}>
           {icon}
@@ -32,7 +32,7 @@ function StatItem({ icon, label, value, tone = "slate" }) {
 
         <div className="flex flex-col">
           <span className="text-sm text-slate-500">{label}</span>
-          <span className="text-3xl font-semibold text-slate-800">
+          <span className={clsx("text-2xl font-semibold", t.text)}>
             {value}
           </span>
         </div>

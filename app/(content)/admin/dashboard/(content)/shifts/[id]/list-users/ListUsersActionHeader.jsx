@@ -38,13 +38,13 @@ export default function ListUsersActionHeader({
       </div>
 
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" className="text-rose-500"
+        <Button size="sm" variant="ghost" className="text-red-500"
           disabled={!selectedCount} onClick={onDeleteSelected}
         >
           Delete Selected
         </Button>
 
-        <Button size="sm" variant="ghost" className="bg-rose-50 text-rose-500 hover:bg-rose-100"
+        <Button size="sm" variant="ghost" className="bg-red-50 text-red-500 hover:bg-red-100"
           onClick={onDeleteAll}
         >
           <Trash2 size={18} />
@@ -69,7 +69,7 @@ export default function ListUsersActionHeader({
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="focus:text-green-500" onClick={() => exportExcel(filteredData)}>
+            <DropdownMenuItem className="focus:text-emerald-500" onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

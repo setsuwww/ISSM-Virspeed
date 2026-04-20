@@ -58,7 +58,7 @@ export default function EditForm({ schedule, users }) {
       }
 
       const res = await updateSchedule(payload)
-      
+
       if (res && res.success === false) {
         addToast(res.message || "Schedule failed to update", { type: "error" })
         return
@@ -121,7 +121,7 @@ export default function EditForm({ schedule, users }) {
             <div className="flex items-center justify-between pt-6 border-t border-slate-200">
               <div className="text-sm text-slate-600">
                 <span className="bg-sky-100 text-sky-800 px-3 py-1 rounded-lg">{events.reduce((acc, e) => acc + e.users.length, 0)} Users assigned</span> •{" "}
-                <span className="ml-1 bg-green-100 text-green-800 px-3 py-1 rounded-lg">{events.length} Dates scheduled</span>
+                <span className="ml-1 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg">{events.length} Dates scheduled</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button type="submit" disabled={loading}>

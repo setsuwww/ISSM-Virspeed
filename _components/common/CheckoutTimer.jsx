@@ -22,7 +22,7 @@ function getProgressLabel(progress) {
 function getProgressColor(progress) {
     if (progress <= 35) return "bg-red-500"
     if (progress <= 55) return "bg-yellow-400"
-    return "bg-green-500"
+    return "bg-emerald-500"
 }
 
 export function CheckoutTimer({ attendance }) {
@@ -54,11 +54,11 @@ export function CheckoutTimer({ attendance }) {
     })
 
     return (
-        <div className="p-4 rounded-xl border bg-white space-y-3">
+        <div className="p-6 rounded-xl border-b-4 border-slate-300 shadow-xs ring-1 ring-slate-200 bg-white space-y-3">
 
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-                <div className="">
-                    <Clock />
+            <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
+                <div className="bg-slate-200 text-slate-600 p-2 rounded-lg">
+                    <Clock strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col">
                     <div>Shift: <b>{attendance.shift.name}</b></div>
@@ -66,19 +66,19 @@ export function CheckoutTimer({ attendance }) {
                 </div>
             </div>
 
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-semibold text-slate-600">
                 {format(elapsed)}
             </div>
 
-            <div className={isOvertime ? "text-red-500" : "text-slate-500"}>
+            <div className={`text-sm font-medium ${isOvertime ? "text-red-500" : "text-slate-500"}`}>
                 {isOvertime
-                    ? "Lembur mode aktif 😈"
-                    : `Sisa waktu: ${format(remaining)}`
+                    ? "You're Overtime good Luck"
+                    : `Time Remaining: ${format(remaining)}`
                 }
             </div>
 
-            <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div className="w-1/2 h-3 bg-slate-200 rounded-[3px] overflow-hidden">
+                <div className="w-1/2 h-3 bg-slate-200 rounded-[3px] overflow-hidden">
                     <div
                         className={`h-full transition-all ${getProgressColor(progress)}`}
                         style={{ width: `${progress}%` }}

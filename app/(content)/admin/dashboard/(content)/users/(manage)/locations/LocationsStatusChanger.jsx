@@ -28,10 +28,10 @@ export default function LocationStatusChanger({
           disabled={selectedCount === 0}
           onClick={onActivateSelected}
         >
-          <div className="p-0.5 rounded-full bg-teal-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-teal-400/20">
-            <Check className="text-teal-600" />
+          <div className="p-0.5 rounded-full bg-emerald-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-emerald-400/20">
+            <Check className="text-emerald-600" />
           </div>
-          <span className="group-hover:text-teal-600">Activate Selected</span>
+          <span className="group-hover:text-emerald-600">Activate Selected</span>
         </Button>
 
         <Button
@@ -41,10 +41,10 @@ export default function LocationStatusChanger({
           disabled={selectedCount === 0}
           onClick={onInactivateSelected}
         >
-          <div className="p-0.5 rounded-full bg-rose-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-rose-400/20">
-            <X className="text-rose-600" />
+          <div className="p-0.5 rounded-full bg-red-600/10 mr-0.5 border border-transparent group-hover:border group-hover:border-red-400/20">
+            <X className="text-red-600" />
           </div>
-          <span className="group-hover:text-rose-600">Inactivate Selected</span>
+          <span className="group-hover:text-red-600">Inactivate Selected</span>
         </Button>
       </div>
     </div>

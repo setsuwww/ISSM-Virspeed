@@ -62,7 +62,7 @@ export default function HistoryActionHeader({
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
-          className="text-rose-500"
+          className="text-red-500"
           disabled={selectedCount === 0}
           onClick={onRemoveSelected}
         >
@@ -71,7 +71,7 @@ export default function HistoryActionHeader({
 
         <Button
           variant="ghost"
-          className="bg-rose-50/70 hover:bg-rose-100 text-rose-500"
+          className="bg-red-50/70 hover:bg-red-100 text-red-500"
           onClick={onRemoveAll}
         >
           <Trash2 size={16} />
@@ -89,7 +89,7 @@ export default function HistoryActionHeader({
             <DropdownMenuLabel>Export As</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => exportPDF(filteredData)} className="focus:text-red-500">PDF</DropdownMenuItem>
             <DropdownMenuItem onClick={() => exportWord(filteredData)} className="focus:text-blue-500">Word</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => exportExcel(filteredData)} className="focus:text-green-500">Excel</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportExcel(filteredData)} className="focus:text-emerald-500">Excel</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

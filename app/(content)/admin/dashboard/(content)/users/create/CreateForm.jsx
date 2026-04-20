@@ -130,7 +130,7 @@ export default function CreateForm({ locations, shifts }) {
 
               <div className="space-y-2">
                 <Label htmlFor="username">
-                  Username <span className="text-rose-500">*</span>
+                  Username <span className="text-red-500">*</span>
                 </Label>
                 <Input placeholder="Username" name="name" disabled={inputMode === "EXCEL"}
                   value={form.name}
@@ -141,7 +141,7 @@ export default function CreateForm({ locations, shifts }) {
 
               <div className="space-y-2">
                 <Label htmlFor="email">
-                  Email <span className="text-rose-500">*</span>
+                  Email <span className="text-red-500">*</span>
                 </Label>
                 <Input placeholder="Users email" type="email" name="email" disabled={inputMode === "EXCEL"}
                   value={form.email}
@@ -154,7 +154,7 @@ export default function CreateForm({ locations, shifts }) {
 
               <div className="space-y-2 mt-8">
                 <Label htmlFor="password">
-                  Password <span className="text-rose-500">*</span>
+                  Password <span className="text-red-500">*</span>
                 </Label>
                 <Input placeholder="Users password" type="password" name="password" disabled={inputMode === "EXCEL"}
                   value={form.password}
@@ -166,7 +166,7 @@ export default function CreateForm({ locations, shifts }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">Role <span className="text-rose-500">*</span></Label>
+                <Label htmlFor="role">Role <span className="text-red-500">*</span></Label>
                 <RadioButton name="role" disabled={inputMode === "EXCEL"}
                   options={roleOptions} value={form.role}
                   onChange={(v) => handleCustomChange("role", v)}

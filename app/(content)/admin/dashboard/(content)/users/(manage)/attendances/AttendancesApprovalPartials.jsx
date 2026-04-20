@@ -25,13 +25,13 @@ function AttendancesApprovalPartials({
               </div>
               {status === "PERMISSION" && users.length > 0 && (
                 <div className="text-xs text-slate-500 flex items-center gap-2">
-                  <span className="px-2 py-1 rounded-md bg-teal-50 text-teal-600">
+                  <span className="px-2 py-1 rounded-md bg-emerald-50 text-emerald-600">
                     A : {approvalCounts.accepted}
                   </span>
                   <span className="px-2 py-1 rounded-md bg-amber-50 text-amber-600">
                     P : {approvalCounts.pending}
                   </span>
-                  <span className="px-2 py-1 rounded-md bg-rose-50 text-rose-600">
+                  <span className="px-2 py-1 rounded-md bg-red-50 text-red-600">
                     R : {approvalCounts.rejected}
                   </span>
                 </div>

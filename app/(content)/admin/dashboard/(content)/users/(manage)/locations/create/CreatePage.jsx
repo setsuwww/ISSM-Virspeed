@@ -55,12 +55,12 @@ export default function CreateLocationForm() {
     startTransition(async () => {
       const result = await createLocation(payload)
       setLoading(false)
-      if (result.success) { 
+      if (result.success) {
         addToast("Location created successfully", { type: "success" });
-        router.push("/admin/dashboard/users/locations"); 
+        router.push("/admin/dashboard/users/locations");
       }
-      else { 
-        addToast(result.message, { type: "error" }); 
+      else {
+        addToast(result.message, { type: "error" });
       }
     })
   }
@@ -94,7 +94,7 @@ export default function CreateLocationForm() {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name">
-                  Name <span className="text-rose-500">*</span>
+                  Name <span className="text-red-500">*</span>
                 </Label>
                 <Input name="name" placeholder="Head location"
                   value={form.name} onChange={handleChange} required
@@ -103,7 +103,7 @@ export default function CreateLocationForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="location">
-                  Location <span className="text-rose-500">*</span>
+                  Location <span className="text-red-500">*</span>
                 </Label>
                 <Input name="location" placeholder="Jakarta"
                   value={form.location} onChange={handleChange} required
@@ -115,7 +115,7 @@ export default function CreateLocationForm() {
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <div className="space-y-2">
                   <Label htmlFor="longitude">
-                    Longitude<span className="text-rose-500">*</span>
+                    Longitude<span className="text-red-500">*</span>
                   </Label>
                   <Input name="longitude" placeholder="106.8456"
                     value={form.longitude} onChange={handleChange}
@@ -123,7 +123,7 @@ export default function CreateLocationForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="latitude">
-                    Latitude<span className="text-rose-500">*</span>
+                    Latitude<span className="text-red-500">*</span>
                   </Label>
                   <Input name="latitude" placeholder="-6.2088"
                     value={form.latitude} onChange={handleChange}
@@ -133,7 +133,7 @@ export default function CreateLocationForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="radius">
-                  Radius (meter)<span className="text-rose-500">*</span>
+                  Radius (meter)<span className="text-red-500">*</span>
                 </Label>
                 <Input name="radius" placeholder="100"
                   value={form.radius} onChange={handleChange}
@@ -143,7 +143,7 @@ export default function CreateLocationForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startTime">
-                    Start Time <span className="text-rose-500">*</span>
+                    Start Time <span className="text-red-500">*</span>
                   </Label>
                   <Input type="time" name="startTime"
                     value={form.startTime} onChange={handleChange} required
@@ -151,7 +151,7 @@ export default function CreateLocationForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endTime">
-                    End Time <span className="text-rose-500">*</span>
+                    End Time <span className="text-red-500">*</span>
                   </Label>
                   <Input type="time" name="endTime"
                     value={form.endTime} onChange={handleChange} required
@@ -162,7 +162,7 @@ export default function CreateLocationForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>
-                    Type<span className="text-rose-500">*</span>
+                    Type<span className="text-red-500">*</span>
                   </Label>
                   <Select value={form.type} onValueChange={(value) => handleCustomChange("type", value)}>
                     <SelectTrigger>
@@ -180,7 +180,7 @@ export default function CreateLocationForm() {
 
                 <div className="space-y-2">
                   <Label>
-                    Status<span className="text-rose-500">*</span>
+                    Status<span className="text-red-500">*</span>
                   </Label>
                   <Select value={form.status} onValueChange={(value) => handleCustomChange("status", value)}>
                     <SelectTrigger>

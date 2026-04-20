@@ -30,8 +30,8 @@ export default async function Page() {
   const tableData = requests.map(r => ({
     id: r.id,
 
-    dateLabel: format(r.createdAt, "dd MMMM"),
-    dateFull: format(r.createdAt, "EEEE, dd MMMM yyyy"),
+    dateLabel: format(r.createdAt, "dd MMMM yyyy"),
+    dateFull: format(r.createdAt, "EEEE"),
 
     oldShift: r.oldShift
       ? { name: r.oldShift.name, type: r.oldShift.type }

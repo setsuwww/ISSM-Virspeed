@@ -90,7 +90,7 @@ export default function ChangeShiftForm({ employees = [] }) {
     <ContentForm>
       <ContentForm.Header>
         <ContentInformation title="Change shift form" subtitle="Send a change shift request to another employee"
-          show buttonText="History" href="/employee/dashboard/attendance/change-shift/history" variant="outline"
+          show buttonText="History" href="/employee/dashboard/attendance/history/change-shift" variant="outline"
         />
       </ContentForm.Header>
 

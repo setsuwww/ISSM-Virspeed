@@ -27,7 +27,7 @@ export default function EditLocationForm({ location }) {
 
     startTransition(async () => {
       const res = await updateLocation(location.id, data);
-      
+
       if (res && res.success === false) {
         addToast({
           title: "Update failed",
@@ -56,12 +56,12 @@ export default function EditLocationForm({ location }) {
         <ContentForm.Body>
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label>Name <span className="text-rose-500">*</span></Label>
+              <Label>Name <span className="text-red-500">*</span></Label>
               <Input name="name" defaultValue={location.name} required />
             </div>
 
             <div className="space-y-2">
-              <Label>Location <span className="text-rose-500">*</span></Label>
+              <Label>Location <span className="text-red-500">*</span></Label>
               <Input name="location" defaultValue={location.location} required />
             </div>
 
@@ -69,23 +69,23 @@ export default function EditLocationForm({ location }) {
 
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="space-y-2">
-                <Label>Longitude<span className="text-rose-500">*</span></Label>
+                <Label>Longitude<span className="text-red-500">*</span></Label>
                 <Input name="longitude" defaultValue={location.longitude ?? ""} />
               </div>
               <div className="space-y-2">
-                <Label>Latitude<span className="text-rose-500">*</span></Label>
+                <Label>Latitude<span className="text-red-500">*</span></Label>
                 <Input name="latitude" defaultValue={location.latitude ?? ""} />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Radius (meter)<span className="text-rose-500">*</span></Label>
+              <Label>Radius (meter)<span className="text-red-500">*</span></Label>
               <Input name="radius" defaultValue={location.radius ?? ""} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Start Time <span className="text-rose-500">*</span></Label>
+                <Label>Start Time <span className="text-red-500">*</span></Label>
                 <Input
                   type="time"
                   name="startTime"
@@ -94,7 +94,7 @@ export default function EditLocationForm({ location }) {
                 />
               </div>
               <div className="space-y-2">
-                <Label>End Time <span className="text-rose-500">*</span></Label>
+                <Label>End Time <span className="text-red-500">*</span></Label>
                 <Input
                   type="time"
                   name="endTime"
@@ -106,7 +106,7 @@ export default function EditLocationForm({ location }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Type<span className="text-rose-500">*</span></Label>
+                <Label>Type<span className="text-red-500">*</span></Label>
                 <Select name="type" defaultValue={location.type}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -118,7 +118,7 @@ export default function EditLocationForm({ location }) {
               </div>
 
               <div className="space-y-2">
-                <Label>Status<span className="text-rose-500">*</span></Label>
+                <Label>Status<span className="text-red-500">*</span></Label>
                 <Select name="status" defaultValue={location.status}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>

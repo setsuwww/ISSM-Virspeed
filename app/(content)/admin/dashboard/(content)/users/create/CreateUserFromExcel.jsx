@@ -94,7 +94,7 @@ export function CreateUserFromExcel({ onImported }) {
     <>
       <Label className="mb-3">
         Excel File <span className="font-light text-slate-400">(Bulk create users)</span>
-        <span className="text-xs bg-teal-100 px-2 text-teal-600 rounded-full">IMPORT</span>
+        <span className="text-xs bg-emerald-100 px-2 text-emerald-600 rounded-full">IMPORT</span>
       </Label>
 
       <div

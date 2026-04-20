@@ -72,14 +72,11 @@ export default function ChangeShiftTable({ data = [] }) {
             </TableCell>
 
             <TableCell>
-              <div className="flex flex-col gap-1 text-sm font-medium">
+              <div className="flex flex-col gap-1 text-md font-medium">
                 <span>
                   From{" "}
                   {item.oldShift ? (
-                    <Badge
-                      variant="outline"
-                      className={shiftStyles[item.oldShift.type]}
-                    >
+                    <Badge variant="outline" className={`${shiftStyles[item.oldShift.type]} text-md !bg-white !p-0 !border-none`}>
                       {item.oldShift.name}
                     </Badge>
                   ) : (
@@ -90,10 +87,7 @@ export default function ChangeShiftTable({ data = [] }) {
                 <span>
                   To{" "}
                   {item.newShift ? (
-                    <Badge
-                      variant="outline"
-                      className={shiftStyles[item.newShift.type]}
-                    >
+                    <Badge variant="outline" className={`${shiftStyles[item.newShift.type]} text-md !bg-white !p-0 !border-none`}>
                       {item.newShift.name}
                     </Badge>
                   ) : (
@@ -104,24 +98,14 @@ export default function ChangeShiftTable({ data = [] }) {
             </TableCell>
 
             <TableCell>
-              <div className="flex flex-col text-sm">
-                <span className="text-green-600">
-                  {item.startDate}
-                </span>
-                <span className="text-red-600">
-                  {item.endDate}
-                </span>
+              <div className="flex items-center space-x-2 text-sm">
+                <span className="text-emerald-600"><span className="font-semibold text-slate-600">From : </span>{item.startDate}</span>
+                <span className="text-red-600"><span className="font-semibold text-slate-600">To : </span>{item.endDate}</span>
               </div>
             </TableCell>
 
             <TableCell>
-              <Badge
-                className={
-                  attendancesStyles[
-                  normalizePendingStatus(item.status)
-                  ]
-                }
-              >
+              <Badge className={`${attendancesStyles[normalizePendingStatus(item.status)]} text-md`}>
                 {getAttendanceStatus(item.status)}
               </Badge>
             </TableCell>

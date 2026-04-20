@@ -120,14 +120,14 @@ export default function ChangeShiftTable({ requests = [], currentUserId }) {
                     <TableCell>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" disabled={isPending} onClick={() => handleAction(req.id, "ACCEPT")}
-                          className="text-sm text-teal-600 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-100"
+                          className="text-sm text-emerald-600 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100"
                         >
                           <CheckCircle size={32} color="#009689" weight="duotone" />
                           Accept
                         </Button>
 
                         <Button size="sm" variant="outline" disabled={isPending} onClick={() => handleAction(req.id, "REJECT")}
-                          className="text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-100"
+                          className="text-sm text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-100"
                         >
                           <XCircle size={32} color="#ec003f" weight="duotone" />
                           Reject

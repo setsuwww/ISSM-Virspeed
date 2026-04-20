@@ -61,7 +61,6 @@ export default function CheckinForm() {
         if (!mounted) return
         setStats(statsData)
 
-        // 🔥 INI YANG KAMU LUPA TARUH DI SINI
         const currentData = await apiFetchData({
           url: `/attendance/employee-stats/can-checkout?userId=${userData.id}`,
           successMessage: null,
@@ -88,33 +87,44 @@ export default function CheckinForm() {
   }, [])
 
   const closeModal = useCallback(() => {
-    setModal({ type: null, reason: "" })
+    setModal({
+      type: null,
+      reason: "",
+    })
   }, [])
 
   const onChangeReason = useCallback((value) => {
     setModal((prev) => ({ ...prev, reason: value }))
   }, [])
 
-  const handleEarlyCheckout = useCallback(() => {
-    earlyCheckout(modal.reason, closeModal)
+  const handleEarlyCheckout = useCallback(async () => {
+    try {
+      await earlyCheckout(modal.reason)
+      closeModal()
+    }
+    catch (err) { alert(err) }
   }, [earlyCheckout, modal.reason, closeModal])
 
-  const handlePermission = useCallback(() => {
-    permission(modal.reason, closeModal)
+  const handlePermission = useCallback(async () => {
+    try {
+      await permission(modal.reason)
+      closeModal()
+    }
+    catch (err) { alert(err) }
   }, [permission, modal.reason, closeModal])
 
-  const handleLeave = useCallback(
-    (data) => {
-      leave(
-        {
-          type: data.type,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          reason: data.reason,
-        },
-        closeModal)
-    }, [leave, closeModal]
-  )
+  const handleLeave = useCallback(async (data) => {
+    try {
+      await leave({
+        type: data.type,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        reason: data.reason,
+      })
+      closeModal()
+    }
+    catch (err) { alert(err) }
+  }, [leave, closeModal])
 
   if (loading) return <LoadingStates />
 
@@ -122,16 +132,18 @@ export default function CheckinForm() {
     <div className="p-8 space-y-8">
       <ContentInformation title="Your Statistic" subtitle="Views your attendance" />
 
-      {currentAttendance && (
-        <CheckoutTimer attendance={currentAttendance} />
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {currentAttendance && (
+          <CheckoutTimer attendance={currentAttendance} />
+        )}
+      </div>
 
       <MainStats
         items={[
-          { icon: <CheckCircle2 />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
-          { icon: <XCircle />, label: "Absent", value: stats?.ABSENT ?? 0, tone: "rose" },
-          { icon: <AlertTriangle />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "blue" },
-          { icon: <Circle />, label: "Late", value: stats?.LATE ?? 0, tone: "yellow" },
+          { icon: <XCircle strokeWidth={1.5} className="w-6 h-6" />, label: "Absent", value: stats?.ABSENT ?? 0, tone: "rose" },
+          { icon: <Circle strokeWidth={1.5} className="w-6 h-6" />, label: "Late", value: stats?.LATE ?? 0, tone: "yellow" },
+          { icon: <CheckCircle2 strokeWidth={1.5} className="w-6 h-6" />, label: "Present", value: stats?.PRESENT ?? 0, tone: "teal" },
+          { icon: <AlertTriangle strokeWidth={1.5} className="w-6 h-6" />, label: "Permission", value: stats?.PERMISSION ?? 0, tone: "blue" },
         ]}
       />
 
@@ -150,6 +162,7 @@ export default function CheckinForm() {
               color="rose"
               onClick={checkOut}
               loading={isPending}
+              forgotCheckout={true}
             />
           </div>
 
@@ -166,13 +179,13 @@ export default function CheckinForm() {
               dropdownItems={[
                 {
                   label: "Permission",
-                  bgColor: "bg-sky-100 text-sky-700",
+                  bgColor: "border-0 border-t border-sky-300 bg-sky-100 text-sky-700",
                   icon: <AlertTriangle size={16} strokeWidth={2} />,
                   onClick: () => openModal(MODAL.PERMISSION),
                 },
                 {
-                  label: "Leave Request",
-                  bgColor: "bg-violet-100 text-violet-700",
+                  label: "Leave",
+                  bgColor: "border-0 border-t border-violet-300 bg-violet-100 text-violet-700",
                   icon: <Plane size={16} strokeWidth={2} />,
                   onClick: () => openModal(MODAL.LEAVE),
                 },

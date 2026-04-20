@@ -8,16 +8,16 @@ const ToastContext = createContext()
 
 const toastVariants = {
   success: {
-    icon: <CheckCircle className="text-teal-500" size={20} />,
+    icon: <CheckCircle className="text-emerald-500" size={20} />,
     title: "Success",
-    border: "border-l-4 border-teal-500",
-    bg: "bg-gradient-to-r from-teal-100 to-transparent border-teal-100",
+    border: "border-l-4 border-emerald-500",
+    bg: "bg-gradient-to-r from-emerald-100 to-transparent border-emerald-100",
   },
   error: {
-    icon: <XCircle className="text-rose-500" size={20} />,
+    icon: <XCircle className="text-red-500" size={20} />,
     title: "Error",
-    border: "border-l-4 border-rose-500",
-    bg: "bg-gradient-to-r from-rose-100 to-transparent border-rose-100",
+    border: "border-l-4 border-red-500",
+    bg: "bg-gradient-to-r from-red-100 to-transparent border-red-100",
   },
   warning: {
     icon: <AlertTriangle className="text-yellow-500" size={20} />,
@@ -94,8 +94,8 @@ export function ToastProvider({ children }) {
               <div
                 className={cn("absolute bottom-0 left-0 h-[1px] rounded-bl-xl rounded-br-xl",
                   toast.type === "success"
-                    ? "bg-teal-500" : toast.type === "error"
-                      ? "bg-rose-500" : toast.type === "warning"
+                    ? "bg-emerald-500" : toast.type === "error"
+                      ? "bg-red-500" : toast.type === "warning"
                         ? "bg-yellow-500" : "bg-sky-500"
                 )}
                 style={{ width: "100%", animation: `progress ${toast.duration}ms linear forwards` }}

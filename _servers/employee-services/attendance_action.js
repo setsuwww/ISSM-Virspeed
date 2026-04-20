@@ -204,6 +204,44 @@ export async function userSendCheckOut() {
   return { success: true };
 }
 
+export async function userForgotCheckout() {
+  const user = await getCurrentUser();
+  if (!user?.id) return null;
+
+  const now = getNowJakarta();
+
+  const attendance = await prisma.attendance.findFirst({
+    where: {
+      userId: user.id,
+      checkInTime: { not: null },
+      checkOutTime: null,
+    },
+    include: {
+      shift: true,
+    },
+    orderBy: { date: "desc" },
+  });
+
+  if (!attendance || !attendance.shift) return null;
+
+  // shift end dalam jam (int)
+  const shiftEndHour = attendance.shift.endTime;
+
+  const shiftEnd = new Date(attendance.date);
+  shiftEnd.setHours(shiftEndHour, 0, 0, 0);
+
+  // +2 jam tolerance
+  const limit = new Date(shiftEnd);
+  limit.setHours(limit.getHours() + 2);
+
+  const isForgot = now.toDate() > limit;
+
+  return {
+    isForgotCheckout: isForgot,
+    attendanceId: attendance.id,
+  };
+}
+
 export async function userSendEarlyCheckout(reason) {
   const user = await getCurrentUser();
   if (!user?.shiftId) return { error: "Unauthorized" };

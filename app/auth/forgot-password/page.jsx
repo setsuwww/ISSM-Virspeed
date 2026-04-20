@@ -36,7 +36,7 @@ export default function ForgotPassword() {
             </p>
 
             {submitted ? (
-                <div className="text-green-600 text-sm bg-green-50 border border-green-200 p-3 rounded-md">
+                <div className="text-emerald-600 text-sm bg-emerald-50 border border-emerald-200 p-3 rounded-md">
                     If the email is registered, a reset link has been sent.
                 </div>
             ) : (

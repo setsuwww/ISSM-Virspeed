@@ -34,7 +34,7 @@ export const EmployeesRow = React.memo(
                   {user.name}
                 </span>
                 <Badge variant="outline" className="px-1.5 py-0 text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-medium border-slate-200">
-                  <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-rose-500"}`}></span>
+                  <span className={`h-1.5 w-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-red-500"}`}></span>
                   {user.isActive ? "Active" : "Inactive"}
                 </Badge>
               </div>
@@ -49,10 +49,10 @@ export const EmployeesRow = React.memo(
           <div className="flex items-center space-x-3">
             <span className="relative flex h-2 w-2">
               <span
-                className="absolute inline-flex h-full w-full rounded-full opacity-20 scale-175 bg-green-500"
+                className="absolute inline-flex h-full w-full rounded-full opacity-20 scale-175 bg-emerald-500"
               ></span>
               <span
-                className="relative inline-flex rounded-full h-2 w-2 bg-green-500"
+                className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
               ></span>
             </span>
 

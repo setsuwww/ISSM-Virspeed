@@ -42,14 +42,14 @@ const variantStyles = {
     parentIcon: "bg-yellow-100",
   },
   success: {
-    border: "border-teal-500",
-    icon: <CheckCircle2 className="w-7 h-7 text-teal-500" />,
-    parentIcon: "bg-teal-100",
+    border: "border-emerald-500",
+    icon: <CheckCircle2 className="w-7 h-7 text-emerald-500" />,
+    parentIcon: "bg-emerald-100",
   },
   danger: {
-    border: "border-rose-500",
-    icon: <XCircle className="w-7 h-7 text-rose-500" />,
-    parentIcon: "bg-rose-100",
+    border: "border-red-500",
+    icon: <XCircle className="w-7 h-7 text-red-500" />,
+    parentIcon: "bg-red-100",
   },
 }
 

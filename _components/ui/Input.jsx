@@ -88,7 +88,7 @@ function Input({
         baseClasses,
         sizeClasses[size],
         typeSearch ? searchFocus : defaultFocus,
-        "aria-invalid:border-rose-300 aria-invalid:ring-rose-100",
+        "aria-invalid:border-red-300 aria-invalid:ring-red-100",
         className
       )}
       {...props}

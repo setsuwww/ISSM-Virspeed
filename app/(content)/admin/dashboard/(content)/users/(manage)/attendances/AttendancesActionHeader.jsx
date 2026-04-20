@@ -79,7 +79,7 @@ export const AttendancesActionHeader = React.memo(({
               Word (.docx)
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="focus:text-green-500" onClick={() => exportExcel(filteredData)}>
+            <DropdownMenuItem className="focus:text-emerald-500" onClick={() => exportExcel(filteredData)}>
               Excel (.xlsx)
             </DropdownMenuItem>
           </DropdownMenuContent>

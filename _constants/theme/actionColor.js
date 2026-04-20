@@ -5,7 +5,7 @@ export function actionColor(action) {
     case "ACCOUNT_LOCKED":
       return "text-red-700 font-bold"
     case "LOGIN_SUCCESS":
-      return "text-green-600"
+      return "text-emerald-600"
     case "LOGOUT":
       return "text-gray-600"
     default:

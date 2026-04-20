@@ -135,7 +135,7 @@ export default function UserHistoryTable({ history }) {
                 <TableCell>
                   <div className="flex items-center gap-3 font-number">
                     {h.checkInTime && (
-                      <span className="flex items-center gap-1 text-teal-600">
+                      <span className="flex items-center gap-1 text-emerald-600">
                         <Clock size={16} />
                         {format(new Date(h.checkInTime), "hh:mm a", { locale: enUS })}
                       </span>
@@ -145,7 +145,7 @@ export default function UserHistoryTable({ history }) {
 
                     {h.checkOutTime && (
                       <>
-                        <span className="flex items-center gap-1 text-rose-600">
+                        <span className="flex items-center gap-1 text-red-600">
                           <Clock size={16} />
                           {format(new Date(h.checkOutTime), "hh:mm a", { locale: enUS })}
                         </span>
