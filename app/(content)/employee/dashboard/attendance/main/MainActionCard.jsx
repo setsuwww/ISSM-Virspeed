@@ -10,16 +10,21 @@ import { cn } from "@/_lib/utils"
 export function MainActionCard({
   icon, title, description, color = "slate", onClick, asLink, href,
   variant, dropdownItems = [], forgotCheckout,
+  disabled, isShiny,
 }) {
   const t = attendanceAction[color] ?? attendanceAction.slate
   const [open, setOpen] = useState(false)
 
   const isDual = variant === "dual"
 
-  const baseClass =
-    "group relative flex items-center gap-4 p-4 rounded-lg border border-slate-200 hover:border-slate-300 bg-white transition-all cursor-pointer"
+  const baseClass = cn(
+    "group relative flex items-center gap-4 p-4 rounded-lg border border-slate-200 transition-all",
+    disabled ? "opacity-50 cursor-not-allowed bg-slate-50 border-slate-100" : "hover:border-slate-300 bg-white cursor-pointer active:scale-[0.98]",
+    isShiny && "animate-shiny overflow-hidden shadow-[0_0_15px_rgba(20,184,166,0.3)] ring-1 ring-teal-400/50"
+  )
 
   const handleClick = () => {
+    if (disabled) return
     if (isDual) {
       setOpen((prev) => !prev)
     } else {
@@ -109,7 +114,7 @@ export function MainActionCard({
     </div>
   )
 
-  if (!isDual && asLink && href) {
+  if (!isDual && asLink && href && !disabled) {
     return <Link href={href}>{content}</Link>
   }
 

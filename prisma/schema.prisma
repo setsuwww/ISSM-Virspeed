@@ -88,8 +88,10 @@ enum LeaveCategory {
 
 enum AttendanceStatus {
   PRESENT
+  EARLY_CHECKIN
   ABSENT
   LATE
+  FORGOT_CHECKOUT
   PERMISSION
   ALPHA
   INACTIVE
@@ -337,7 +339,7 @@ model ShiftAssignment {
 model Attendance {
   id             Int              @id @default(autoincrement())
   userId         String
-  shiftId        Int
+  shiftId        Int?
   assignmentId   Int?
   assignment     ShiftAssignment? @relation(fields: [assignmentId], references: [id])
   date           DateTime
@@ -353,7 +355,7 @@ model Attendance {
   locationStatus LocationStatus?
 
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shift                 Shift                  @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  shift                 Shift?                 @relation(fields: [shiftId], references: [id], onDelete: Cascade)
   earlyCheckoutRequests EarlyCheckoutRequest[]
 
   @@unique([assignmentId])

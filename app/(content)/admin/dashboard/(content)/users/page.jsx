@@ -38,7 +38,7 @@ export default async function Page({ searchParams }) {
 
     const locationShift = !userShift && u.location?.shifts?.length
       ? {
-        label: `${u.location.shifts[0].name} - (Normal)`,
+        label: `${u.location.shifts[0].type}`,
         start: u.location.shifts[0].startTime,
         end: u.location.shifts[0].endTime,
         type: "DIVISION",

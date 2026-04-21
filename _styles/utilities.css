@@ -171,3 +171,30 @@
 .animate-bouncy-out {
   animation: bouncy-out 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+@keyframes shiny {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  50% { transform: translateX(100%) skewX(-15deg); }
+  100% { transform: translateX(100%) skewX(-15deg); }
+}
+
+.animate-shiny {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shiny::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shiny 2s infinite;
+}

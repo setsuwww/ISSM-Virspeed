@@ -13,14 +13,27 @@ export async function GET(req) {
             )
         }
 
-        // ambil attendance hari ini (yang masih aktif / belum checkout)
         const attendance = await prisma.attendance.findFirst({
             where: {
                 userId,
-                checkOutTime: null, // masih aktif
+                checkOutTime: null,
             },
             include: {
-                shift: true,
+                shift: {
+                    include: {
+                        location: true
+                    }
+                },
+                user: {
+                    include: {
+                        location: true,
+                        shift: {
+                            include: {
+                                location: true
+                            }
+                        }
+                    }
+                }
             },
             orderBy: {
                 date: "desc",
@@ -34,26 +47,54 @@ export async function GET(req) {
             })
         }
 
-        return NextResponse.json({
-            shift: {
+        let shiftData = null
+
+        // 🔥 PRIORITY 1: shift dari attendance
+        if (attendance.shift) {
+            shiftData = {
                 id: attendance.shift.id,
                 name: attendance.shift.name,
                 startTime: attendance.shift.startTime,
                 endTime: attendance.shift.endTime,
-            },
+                type: "SHIFT",
+            }
+        }
+
+        // 🔥 PRIORITY 2: shift dari user (default shift)
+        else if (attendance.user?.shift) {
+            shiftData = {
+                id: attendance.user.shift.id,
+                name: attendance.user.shift.name,
+                startTime: attendance.user.shift.startTime,
+                endTime: attendance.user.shift.endTime,
+                location: attendance.user.shift.location.name,
+                type: "SHIFT",
+            }
+        }
+
+        // 🔥 PRIORITY 3: fallback ke location (normal hours)
+        else if (attendance.user?.location) {
+            shiftData = {
+                id: null,
+                name: attendance.user.location.name || "Normal Hours",
+                startTime: attendance.user.location.startTime,
+                endTime: attendance.user.location.endTime,
+                type: "NORMAL",
+            }
+        }
+
+        return NextResponse.json({
+            shift: shiftData,
             attendance: {
                 id: attendance.id,
                 checkInTime: attendance.checkInTime,
             },
         })
-        console.log("ATTENDANCE:", attendance)
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error)
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }
         )
-        console.log("ATTENDANCE:", attendance)
     }
 }

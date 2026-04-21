@@ -2,7 +2,7 @@
 
 import { prisma } from "@/_lib/prisma";
 import { revalidatePath } from "next/cache";
-import { calculateWorkMinutes } from "@/_functions/helpers/attendanceHelpers"
+import { calculateWorkMinutes } from "@/_functions/helpers/attendanceServerHelpers"
 
 export async function updatePermissionRequestStatus(id, newStatus, adminReason = null) {
   const permId = Number(id);
@@ -10,10 +10,17 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
     throw new Error("Invalid permission ID");
   }
 
-  await prisma.attendance.update({
+  const attendance = await prisma.attendance.update({
     where: { id: permId },
     data: { approval: newStatus, ...(adminReason ? { adminReason: adminReason } : {}) },
   });
+
+  if (newStatus === "APPROVED") {
+    await prisma.user.update({
+      where: { id: attendance.userId },
+      data: { isActive: false },
+    });
+  }
 
   revalidatePath("/admin/dashboard/requests");
   revalidatePath("/api/system-config/admin-notification");
@@ -80,13 +87,17 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
         });
         current.setDate(current.getDate() + 1);
       }
+      await prisma.user.update({
+        where: { id: req.userId },
+        data: { isActive: false },
+      });
     }
+
+    revalidatePath("/admin/dashboard/requests");
+    revalidatePath("/api/system-config/admin-notification");
+
+    return { success: true };
   }
-
-  revalidatePath("/admin/dashboard/requests");
-  revalidatePath("/api/system-config/admin-notification");
-
-  return { success: true };
 }
 
 export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReason = null) {

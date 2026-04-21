@@ -9,16 +9,19 @@ import LoadingStates from "@/_components/common/LoadingStates"
 
 import { apiFetchData } from "@/_lib/fetch"
 import { useUserSendAttendance } from "@/_clients/handlers/employee/useUserSendAttendance"
+import { userPrecheckCheckIn } from "@/_servers/employee-services/attendance_action"
 
 import { MainActionCard } from "./MainActionCard"
 import { MainStats } from "./MainStats"
 import { EarlyCheckoutModal } from "./modal/EarlyCheckoutModal"
+import { ConfirmEarlyModal } from "./modal/ConfirmEarlyModal"
 import { PermissionModal } from "./modal/PermissionModal"
 import { LeaveModal } from "./modal/LeaveModal"
 import { CheckoutTimer } from "@/_components/common/CheckoutTimer"
 
 const MODAL = {
   EARLY: "EARLY",
+  CONFIRM_EARLY: "CONFIRM_EARLY",
   PERMISSION: "PERMISSION",
   LEAVE: "LEAVE",
 }
@@ -32,6 +35,11 @@ export default function CheckinForm() {
   const [modal, setModal] = useState({
     type: null,
     reason: "",
+  })
+
+  const [precheck, setPrecheck] = useState({
+    checkIn: { disabled: true },
+    checkOut: { disabled: true },
   })
 
   const { isPending,
@@ -52,23 +60,24 @@ export default function CheckinForm() {
         if (!mounted) return
         setUser(userData)
 
-        const statsData = await apiFetchData({
-          url: `/attendance/employee-stats?userId=${userData.id}`,
-          successMessage: null,
-          errorMessage: "Failed to load stats",
-        })
+        const [statsData, currentData, precheckData] = await Promise.all([
+          apiFetchData({
+            url: `/attendance/employee-stats?userId=${userData.id}`,
+            successMessage: null,
+            errorMessage: "Failed to load stats",
+          }),
+          apiFetchData({
+            url: `/attendance/employee-stats/can-checkout?userId=${userData.id}`,
+            successMessage: null,
+            errorMessage: "Failed to load current attendance",
+          }),
+          userPrecheckCheckIn()
+        ])
 
         if (!mounted) return
         setStats(statsData)
-
-        const currentData = await apiFetchData({
-          url: `/attendance/employee-stats/can-checkout?userId=${userData.id}`,
-          successMessage: null,
-          errorMessage: "Failed to load current attendance",
-        })
-
-        if (!mounted) return
         setCurrentAttendance(currentData)
+        setPrecheck(precheckData)
 
       } finally {
         if (mounted) setLoading(false)
@@ -76,6 +85,8 @@ export default function CheckinForm() {
     }
 
     fetchData()
+
+    const interval = setInterval(fetchData, 30000) // Poll every 30s
 
     return () => {
       mounted = false
@@ -96,6 +107,21 @@ export default function CheckinForm() {
   const onChangeReason = useCallback((value) => {
     setModal((prev) => ({ ...prev, reason: value }))
   }, [])
+
+  const handleCheckIn = useCallback(async () => {
+    try {
+      await checkIn()
+      window.location.reload()
+    } catch (err) {}
+  }, [checkIn])
+
+  const handleCheckOutClick = useCallback(() => {
+    if (precheck.checkOut?.isEarly) {
+      openModal(MODAL.CONFIRM_EARLY)
+    } else {
+      checkOut()
+    }
+  }, [precheck.checkOut, openModal, checkOut])
 
   const handleEarlyCheckout = useCallback(async () => {
     try {
@@ -133,7 +159,7 @@ export default function CheckinForm() {
       <ContentInformation title="Your Statistic" subtitle="Views your attendance" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {currentAttendance && (
+        {currentAttendance?.attendance && (
           <CheckoutTimer attendance={currentAttendance} />
         )}
       </div>
@@ -152,17 +178,20 @@ export default function CheckinForm() {
           <ContentInformation title="Your Presence" subtitle="Click once at cards below to send your status" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <MainActionCard icon={<LogIn />} title="Check In" description="Start your working time"
+            <MainActionCard icon={<LogIn />} title="Check In" description={precheck.checkIn?.reason || "Start your working time"}
               color="teal"
-              onClick={checkIn}
+              onClick={handleCheckIn}
               loading={isPending}
+              disabled={precheck.checkIn?.disabled}
+              isShiny={precheck.checkIn?.isShiny}
             />
 
-            <MainActionCard icon={<LogOut />} title="Check Out" description="End your working time"
+            <MainActionCard icon={<LogOut />} title="Check Out" description={precheck.checkOut?.reason || "End your working time"}
               color="rose"
-              onClick={checkOut}
+              onClick={handleCheckOutClick}
               loading={isPending}
-              forgotCheckout={true}
+              disabled={precheck.checkOut?.disabled}
+              forgotCheckout={precheck.checkOut?.isForgot}
             />
           </div>
 
@@ -212,6 +241,16 @@ export default function CheckinForm() {
         onChangeReason={onChangeReason}
         onClose={closeModal}
         onSubmit={handleEarlyCheckout}
+      />
+
+      <ConfirmEarlyModal
+        open={modal.type === MODAL.CONFIRM_EARLY}
+        loading={isPending}
+        onClose={closeModal}
+        onSubmit={() => {
+          closeModal()
+          openModal(MODAL.EARLY)
+        }}
       />
 
       <PermissionModal
