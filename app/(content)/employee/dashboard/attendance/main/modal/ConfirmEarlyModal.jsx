@@ -1,54 +1,50 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/_components/ui/Dialog"
+import { Button } from "@/_components/ui/Button"
 import { AlertTriangle } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogHeader,
-} from "@/_components/ui/Alert-dialog"
 
-export function ConfirmEarlyModal({ open, loading, onClose, onSubmit }) {
+export function ConfirmEarlyModal({
+  open,
+  loading,
+  onClose,
+  onSubmit,
+}) {
   return (
-    <AlertDialog open={open} onOpenChange={(val) => !val && onClose()}>
-      <AlertDialogContent variant="warning" className="sm:max-w-[420px]">
-        <AlertDialogHeader>
-          <AlertDialogTitle variant="warning">
-            Shift Anda Belum Berakhir
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Ingin pulang awal dan urgent? ajukan Pulang awal agar tetap tercatat dengan baik oleh sistem.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-md" variant="warning">
 
-        <div className="flex flex-col items-center justify-center py-4 space-y-3">
-          <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-            <AlertTriangle className="w-8 h-8 text-amber-600" strokeWidth={2.5} />
+        <DialogHeader>
+          <div className="flex items-center gap-2 text-amber-600">
+            <AlertTriangle size={20} />
+            <DialogTitle>Already Checkout?</DialogTitle>
           </div>
+        </DialogHeader>
+
+        <div className="text-sm text-slate-600">
+          Shift hasn’t ended yet.
+          Are you sure you want to submit a
+          <br />
+          <b>forgot checkout request</b>?
         </div>
 
-        <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-          <AlertDialogAction
-            onClick={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
+        <DialogFooter className="gap-2">
+          <Button
+            variant="outline"
+            onClick={onClose}
             disabled={loading}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold h-12 rounded-xl"
           >
-            {loading ? "Memproses..." : "Ya, Ajukan Pulang Awal"}
-          </AlertDialogAction>
-          
-          <AlertDialogCancel
+            Cancel
+          </Button>
+
+          <Button
+            className="bg-amber-600 hover:bg-amber-700 text-white"
+            onClick={onSubmit}
             disabled={loading}
-            className="w-full h-12 rounded-xl border-slate-200 text-slate-600 font-semibold"
           >
-            Batalkan
-          </AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            {loading ? "Memproses..." : "Yes, Send Request"}
+          </Button>
+        </DialogFooter>
+
+      </DialogContent>
+    </Dialog>
   )
 }
