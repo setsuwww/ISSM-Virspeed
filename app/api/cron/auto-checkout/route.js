@@ -1,98 +1,101 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/_lib/prisma";
+import { batchAutoCheckout } from "@/_functions/helpers/attendanceServerHelpers";
+
 export async function GET(req) {
     try {
-        const { searchParams } = new URL(req.url)
-        const userId = searchParams.get("userId")
+        const { searchParams } = new URL(req.url);
+        const userId = searchParams.get("userId");
 
-        if (!userId) {
-            return NextResponse.json(
-                { error: "userId wajib diisi" },
-                { status: 400 }
-            )
-        }
+        // Jika ada userId, maka return status khusus user tersebut (untuk modal/warning)
+        if (userId) {
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                include: {
+                    location: true,
+                    shift: true,
+                }
+            });
 
-        // Ambil user + relasi penting
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            include: {
-                location: true,
-                shift: true,
+            if (!user) {
+                return NextResponse.json({ error: "User not found" }, { status: 404 });
             }
-        })
 
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 })
-        }
+            const today = new Date();
+            const assignment = await prisma.shiftAssignment.findUnique({
+                where: {
+                    userId_date: {
+                        userId,
+                        date: new Date(today.setHours(0, 0, 0, 0))
+                    }
+                },
+                include: {
+                    shift: true
+                }
+            });
 
-        // Ambil assignment hari ini
-        const today = new Date()
-        const assignment = await prisma.shiftAssignment.findUnique({
-            where: {
-                userId_date: {
+            const attendance = await prisma.attendance.findFirst({
+                where: {
                     userId,
-                    date: new Date(today.setHours(0, 0, 0, 0))
-                }
-            },
-            include: {
-                shift: true
-            }
-        })
+                    checkOutTime: null,
+                },
+                orderBy: { date: "desc" }
+            });
 
-        // Ambil attendance aktif
-        const attendance = await prisma.attendance.findFirst({
-            where: {
-                userId,
-                checkOutTime: null,
-            },
-            orderBy: { date: "desc" }
-        })
+            let shiftData = null;
+            if (assignment?.shift) {
+                shiftData = {
+                    id: assignment.shift.id,
+                    name: assignment.shift.name,
+                    startTime: assignment.shift.startTime,
+                    endTime: assignment.shift.endTime,
+                    type: "SHIFT_ASSIGNMENT"
+                };
+            } else if (user.shift) {
+                shiftData = {
+                    id: user.shift.id,
+                    name: user.shift.name,
+                    startTime: user.shift.startTime,
+                    endTime: user.shift.endTime,
+                    type: "SHIFT_USER"
+                };
+            } else if (user.location?.startTime != null) {
+                shiftData = {
+                    id: null,
+                    name: user.location.name || "Normal Hours",
+                    startTime: user.location.startTime,
+                    endTime: user.location.endTime,
+                    type: "NORMAL"
+                };
+            }
 
-        // 🔥 CORE LOGIC (ini yang lu cari)
-        let shiftData = null
-
-        if (assignment?.shift) {
-            // PRIORITY 1: shift assignment
-            shiftData = {
-                id: assignment.shift.id,
-                name: assignment.shift.name,
-                startTime: assignment.shift.startTime,
-                endTime: assignment.shift.endTime,
-                type: "SHIFT_ASSIGNMENT"
-            }
-        } else if (user.shift) {
-            // PRIORITY 2: default shift user
-            shiftData = {
-                id: user.shift.id,
-                name: user.shift.name,
-                startTime: user.shift.startTime,
-                endTime: user.shift.endTime,
-                type: "SHIFT_USER"
-            }
-        } else if (user.location?.startTime != null) {
-            // PRIORITY 3: jam kerja normal
-            shiftData = {
-                id: null,
-                name: user.location.name || "Normal Hours",
-                startTime: user.location.startTime,
-                endTime: user.location.endTime,
-                type: "NORMAL"
-            }
+            return NextResponse.json({
+                shift: shiftData,
+                attendance: attendance
+                    ? {
+                        id: attendance.id,
+                        checkInTime: attendance.checkInTime,
+                    }
+                    : null,
+            });
         }
 
+        // Jika tidak ada userId, maka jalankan batch auto-checkout
+        console.log("[CRON] Running batch auto-checkout...");
+        const result = await batchAutoCheckout();
+        
         return NextResponse.json({
-            shift: shiftData,
-            attendance: attendance
-                ? {
-                    id: attendance.id,
-                    checkInTime: attendance.checkInTime,
-                }
-                : null,
-        })
+            success: true,
+            message: "Batch auto-checkout completed",
+            processed: result.processed,
+            results: result.results
+        });
 
     } catch (error) {
-        console.error(error)
+        console.error("[CRON ERROR]", error);
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }
-        )
+        );
     }
 }

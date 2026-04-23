@@ -91,6 +91,10 @@ export async function autoCheckoutUser(attendanceId) {
 }
 
 export async function batchAutoCheckout() {
+    const { safeLog } = await import("@/_servers/admin-services/log_action");
+    const { pusherServer } = await import("@/_lib/pusher");
+    const { LogAction, LogMethod } = await import("@prisma/client");
+
     const now = getNowJakarta();
 
     const list = await prisma.attendance.findMany({
@@ -98,34 +102,71 @@ export async function batchAutoCheckout() {
             checkInTime: { not: null },
             checkOutTime: null,
         },
-        include: { shift: true },
+        include: { 
+            shift: true,
+            user: true
+        },
     });
 
     let processed = 0;
+    const results = [];
 
     for (const a of list) {
+        if (!a.shift) continue;
+
         const shiftEnd = calculateShiftEndTime(a.date, a.shift);
 
         const limit = new Date(shiftEnd);
         limit.setHours(limit.getHours() + 2);
 
         if (now.toDate() > limit) {
-            const workMinutes = calculateWorkMinutes(a.checkInTime, limit);
+            const autoCheckoutTime = limit;
+            const workMinutes = calculateWorkMinutes(a.checkInTime, autoCheckoutTime);
 
             await prisma.attendance.update({
                 where: { id: a.id },
                 data: {
-                    checkOutTime: limit,
+                    checkOutTime: autoCheckoutTime,
                     workMinutes: workMinutes || 0,
                     status: "FORGOT_CHECKOUT",
                 },
             });
 
             processed++;
+            results.push({
+                userId: a.userId,
+                attendanceId: a.id,
+                autoCheckoutTime: autoCheckoutTime.toISOString(),
+            });
+
+            // Log for admin
+            try {
+                await safeLog({
+                    userId: a.userId,
+                    url: "/system/batch-auto-checkout",
+                    action: LogAction.UPDATE,
+                    method: LogMethod.PUT,
+                    data: {
+                        attendanceId: a.id,
+                        autoCheckoutTime: autoCheckoutTime.toISOString(),
+                        reason: "batch_auto_checkout",
+                    },
+                });
+
+                // Notifikasi via Pusher
+                await pusherServer.trigger("admin-channel", "auto-checkout", {
+                    userId: a.userId,
+                    userName: a.user.name,
+                    attendanceId: a.id,
+                    autoCheckoutTime: autoCheckoutTime.toISOString(),
+                });
+            } catch (logError) {
+                console.error("[CRON] Logging error for user", a.userId, logError);
+            }
         }
     }
 
-    return { processed };
+    return { processed, results };
 }
 
 export function isForgotCheckoutEligible(attendance, shift) {
