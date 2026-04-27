@@ -15,7 +15,7 @@ import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
 
-import { profilesRoleStyles, roleStyles } from "@/_constants/theme/userTheme"
+import { profilesRoleStyles, roleStyles } from "@/_components/_constants/theme/userTheme"
 import { capitalize, minutesToTime, safeFormat } from "@/_functions/globalFunction"
 import { format } from "date-fns"
 import { ContentInformation } from "@/_components/common/ContentInformation"

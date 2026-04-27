@@ -7,7 +7,7 @@ import { useActionHelper } from "@/_stores/common/useActionStore";
 import { useToast } from "@/_contexts/Toast-Provider";
 import { deleteScheduleById, deleteSchedules } from "@/_servers/admin-services/schedule_action";
 
-import { confirmMessages } from "@/_constants/static/handleScheduleMessage";
+import { confirmMessages } from "@/_components/_constants/static/handleScheduleMessage";
 
 export function useHandleSchedules({ selectedIds, setSelectedIds, filteredData, reloadData }) {
   const router = useRouter();

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/_components/ui/Command"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/_components/ui/Dropdown-menu"
 
-import { locationStyles } from "@/_constants/theme/locationTheme";
+import { locationStyles } from "@/_components/_constants/theme/locationTheme";
 
 import { exportPDF } from "@/_functions/exports/employee/exportPDF";
 import { exportWord } from "@/_functions/exports/employee/exportWord";

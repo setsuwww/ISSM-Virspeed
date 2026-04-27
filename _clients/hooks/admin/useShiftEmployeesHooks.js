@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { api } from "@/_lib/api";
 import { useConfirmStore } from "@/_stores/common/useConfirmStore";
-import { confirmMessages, MSG } from "@/_constants/static/handleEmployeeMessage";
+import { confirmMessages, MSG } from "@/_components/_constants/static/handleEmployeeMessage";
 import { deleteUserById } from "@/_servers/admin-services/user_action";
 import { useDebounce } from "@/_stores/common/useDebounce";
 

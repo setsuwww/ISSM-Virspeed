@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { BEEFAST_BASE64 } from '@/_constants/base64/base64';
+import { BEEFAST_BASE64 } from '@/_components/_constants/base64/base64';
 
 export function exportPDFTemplate({
   title = "USERS REPORT",

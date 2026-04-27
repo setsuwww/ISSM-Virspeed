@@ -9,7 +9,7 @@ import { TableRow, TableCell } from "@/_components/ui/Table"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import { Badge } from "@/_components/ui/Badge"
 
-import { locationStyles } from "@/_constants/theme/locationTheme"
+import { locationStyles } from "@/_components/_constants/theme/locationTheme"
 import LocationsStatusBadge from "./LocationsStatusBadge"
 import LocationActionButton from "./LocationsActionButton"
 

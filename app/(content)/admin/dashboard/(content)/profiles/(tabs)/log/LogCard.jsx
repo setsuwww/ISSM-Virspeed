@@ -1,6 +1,6 @@
 "use client"
 
-import { METHOD_COLORS } from "@/_constants/static/methodColors"
+import { METHOD_COLORS } from "@/_components/_constants/static/methodColors"
 import LogJSON from "./LogJson"
 
 export default function LogCard({ logs }) {

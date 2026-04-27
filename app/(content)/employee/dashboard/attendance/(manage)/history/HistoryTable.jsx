@@ -6,8 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
-import { shiftStyles } from "@/_constants/shiftConstants"
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
 import { cn } from "@/_lib/utils"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {

@@ -8,7 +8,7 @@ import { deleteUsers, deleteUserById } from "@/_servers/admin-services/user_acti
 import { useToast } from "@/_contexts/Toast-Provider";
 import { useActionHelper } from "@/_stores/common/useActionStore";
 
-import { confirmMessages } from "@/_constants/static/handleUserMessage";
+import { confirmMessages } from "@/_components/_constants/static/handleUserMessage";
 
 export function useHandleUsers({ filteredData, selectedIds, setSelectedIds }) {
     const toast = useToast();

@@ -12,7 +12,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { typeOptions, statusOptions } from "@/_constants/locationConstants"
+import { typeOptions, statusOptions } from "@/_components/_constants/locationConstants"
 import { capitalize, timeToMinutes } from "@/_functions/globalFunction"
 import { ChevronLeft, Loader } from "lucide-react"
 import { createLocation } from "@/_servers/admin-services/location_action"

@@ -6,7 +6,7 @@ import { useActionHelper } from "@/_stores/common/useActionStore";
 
 import { toggleLocationStatus, deleteLocationById, deleteLocations, bulkToggleSelectedLocation, bulkToggle, toggleLocationType } from "@/_servers/admin-services/location_action";
 
-import { confirmMessages } from "@/_constants/static/handleLocationMessage";
+import { confirmMessages } from "@/_components/_constants/static/handleLocationMessage";
 
 export function useHandleLocations({ filteredData, selectedIds, setSelectedIds, mutate }) {
   const router = useRouter();

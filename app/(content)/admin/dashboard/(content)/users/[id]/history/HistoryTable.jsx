@@ -6,8 +6,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/_components/ui/Table";
 
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme";
-import { shiftDots } from "@/_constants/shiftConstants";
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme";
+import { shiftDots } from "@/_components/_constants/shiftConstants";
 import { capitalize } from "@/_functions/globalFunction";
 
 import { format } from "date-fns";

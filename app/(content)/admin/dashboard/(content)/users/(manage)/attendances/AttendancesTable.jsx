@@ -11,8 +11,8 @@ import { ContentInformation } from "@/_components/common/ContentInformation"
 import { AttendancesActionHeader } from "./AttendancesActionHeader"
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination"
 
-import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
 
 import { safeFormat, capitalize, wordsLimit } from "@/_functions/globalFunction"
 import { getAttendancesByDate } from "@/_servers/admin-services/attendance_action"

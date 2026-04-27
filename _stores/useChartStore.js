@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DATE_RANGES } from "@/_constants/static/filterAttendanceGraphic";
+import { DATE_RANGES } from "@/_components/_constants/static/filterAttendanceGraphic";
 
 export const useChartStore = create((set) => ({
   selectedRange: "thisWeek",

@@ -7,7 +7,7 @@ import "dayjs/locale/en"
 import { useTransition } from "react"
 import { LogoutAuthAction } from "@/_servers/auth_action"
 import { Badge } from '@/_components/ui/Badge';
-import { shiftStyles } from '@/_constants/shiftConstants';
+import { shiftStyles } from '@/_components/_constants/shiftConstants';
 import { TimeClock } from "./TimeClock"
 
 dayjs.locale("en")

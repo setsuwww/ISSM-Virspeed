@@ -4,9 +4,9 @@ import { CalendarDays, CircleUserRound } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/_components/ui/Table"
 import { Badge } from "@/_components/ui/Badge"
 
-import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
-import { normalizePendingStatus, getAttendanceStatus } from "@/_constants/attendanceConstants"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
+import { normalizePendingStatus, getAttendanceStatus } from "@/_components/_constants/attendanceConstants"
 
 export default function ChangeShiftTable({ data = [] }) {
   if (!data.length) {

@@ -10,7 +10,7 @@ import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 import { Label } from "@/_components/ui/Label";
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader";
-import { roleOptions } from "@/_constants/userConstants";
+import { roleOptions } from "@/_components/_constants/userConstants";
 import { updateUser } from "@/_servers/admin-services/user_action.js";
 import { ChevronLeft, Loader } from 'lucide-react';
 import { useToast } from "@/_contexts/Toast-Provider";
@@ -41,12 +41,12 @@ export default function EditForm({ user, locations }) {
 
     startTransition(async () => {
       const result = await updateUser(form);
-      if (result?.success) { 
+      if (result?.success) {
         addToast("User updated successfully", { type: "success" });
-        router.push("/admin/dashboard/users"); 
+        router.push("/admin/dashboard/users");
       }
-      else { 
-        addToast(result?.message || result?.error || "Failed to update user", { type: "error" }); 
+      else {
+        addToast(result?.message || result?.error || "Failed to update user", { type: "error" });
       }
     });
   }

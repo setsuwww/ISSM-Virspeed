@@ -11,8 +11,8 @@ import { Input } from "@/_components/ui/Input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/_components/ui/Select"
 
 import { capitalize } from "@/_functions/globalFunction"
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
-import { shiftStyles } from '@/_constants/shiftConstants';
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
+import { shiftStyles } from '@/_components/_constants/shiftConstants';
 import { useDebounce } from "@/_stores/common/useDebounce"
 
 export default function AttendancesUsers({ selectedStatus, shifts = [], allUsers = [], onClose }) {

@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { BEEFAST_BASE64 } from "@/_constants/base64/base64";
+import { BEEFAST_BASE64 } from "@/_components/_constants/base64/base64";
 
 function colNumToName(num) {
   let s = "";

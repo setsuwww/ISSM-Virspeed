@@ -9,7 +9,7 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 import SchedulesActionHeader from "./SchedulesActionHeader";
 import ScheduleUsersDialog from "./SchedulesUsersDialog";
 import { useHandleSchedules } from "@/_clients/handlers/admin/useHandleSchedules";
-import { frequencyStyles } from "@/_constants/theme/scheduleTheme";
+import { frequencyStyles } from "@/_components/_constants/theme/scheduleTheme";
 import EmptyStates from "@/_components/common/EmptyStates";
 import { useSchedulesHooks } from "@/_clients/hooks/admin/useSchedulesHooks";
 

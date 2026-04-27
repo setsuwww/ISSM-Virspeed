@@ -14,7 +14,7 @@ import { ScrollArea } from "@/_components/ui/Scroll-area"
 
 import { apiFetchData } from "@/_lib/fetch"
 import { capitalize } from "@/_functions/globalFunction"
-import { shiftStyles } from "@/_constants/shiftConstants"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
 
 export function EmployeesSwitchModal({ open, onOpenChange, currentUserId }) {
   const { selectedId, search, setSelectedId, setSearch, reset } = useEmployeeSwitchStore()

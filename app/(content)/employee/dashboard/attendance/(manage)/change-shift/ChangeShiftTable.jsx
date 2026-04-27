@@ -11,9 +11,9 @@ import { Badge } from "@/_components/ui/Badge"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
-import { shiftStyles } from "@/_constants/shiftConstants"
-import { attendancesStyles } from "@/_constants/theme/attendanceTheme"
-import { getAttendanceStatus, normalizePendingStatus } from "@/_constants/attendanceConstants"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
+import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
+import { getAttendanceStatus, normalizePendingStatus } from "@/_components/_constants/attendanceConstants"
 
 import { updateShiftChangeStatus } from "@/_servers/admin-services/shift_action"
 import { wordsLimit } from "@/_functions/globalFunction"

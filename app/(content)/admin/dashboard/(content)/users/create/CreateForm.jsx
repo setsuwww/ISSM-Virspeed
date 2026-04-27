@@ -17,7 +17,7 @@ import { Label } from "@/_components/ui/Label"
 
 import { bulkCreateUser, createUser } from "@/_servers/admin-services/user_action"
 import { minutesToTime } from "@/_functions/globalFunction"
-import { roleOptions } from "@/_constants/userConstants"
+import { roleOptions } from "@/_components/_constants/userConstants"
 
 import { CreateUserFromExcel } from "./CreateUserFromExcel"
 

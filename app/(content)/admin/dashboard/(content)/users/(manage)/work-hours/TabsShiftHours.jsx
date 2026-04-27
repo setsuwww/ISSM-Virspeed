@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Clock, User } from "lucide-react";
 import UsersModal from "./UsersModal";
 import { minutesToTime } from "@/_functions/globalFunction";
-import { shiftStyles } from "@/_constants/shiftConstants";
+import { shiftStyles } from "@/_components/_constants/shiftConstants";
 
 export default function TabsShiftHours({ shifts = [] }) {
   const [selected, setSelected] = useState(null);

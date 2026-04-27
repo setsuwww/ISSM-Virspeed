@@ -7,7 +7,7 @@ import { format } from "date-fns"
 
 import { Badge } from "@/_components/ui/Badge"
 
-import { frequencyStyles } from "@/_constants/theme/scheduleTheme"
+import { frequencyStyles } from "@/_components/_constants/theme/scheduleTheme"
 import { capitalize, getInitial } from "@/_functions/globalFunction"
 import { createReminder, deleteSchedule } from "@/_servers/employee-services/schedule_action"
 

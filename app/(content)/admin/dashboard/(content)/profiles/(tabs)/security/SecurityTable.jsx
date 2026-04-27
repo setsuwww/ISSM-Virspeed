@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/_components/ui/Table"
-import { actionColor } from "@/_constants/theme/actionColor"
+import { actionColor } from "@/_components/_constants/theme/actionColor"
 import { SecurityRowAction } from "./SecurityRowAction"
 import { LogUserAgent } from "../log/LogUserAgent"
 

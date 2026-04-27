@@ -1,7 +1,7 @@
 import { prisma } from "@/_lib/prisma";
 import { getTodayStartJakarta } from "@/_lib/time";
 import { getActiveAssignment } from "./assignment_helper";
-import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule";
+import { LEAVE_RULES } from "@/_components/_constants/static/leaveIndonesianRule";
 import { addMonths } from "date-fns";
 
 export function calculatePermissionEnd(start, isLong) {
@@ -24,11 +24,11 @@ export function calculateLeaveEnd(start, type) {
     if (rule.months) {
         return addMonths(result, rule.months);
     }
-    
+
     if (rule.maxWorkDays) {
-        // For annual leave, user might choose days, but if we auto-generate, 
-        // we might use the max allowed if not specified. 
-        // However, the user says "End Date digenerate". 
+        // For annual leave, user might choose days, but if we auto-generate,
+        // we might use the max allowed if not specified.
+        // However, the user says "End Date digenerate".
         // I'll assume they want the max duration applied by default.
         let added = 0;
         while (added < rule.maxWorkDays - 1) {
@@ -37,7 +37,7 @@ export function calculateLeaveEnd(start, type) {
             if (day !== 0 && day !== 6) added++;
         }
     }
-    
+
     return result;
 }
 

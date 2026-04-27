@@ -12,7 +12,7 @@ import { toast } from "sonner"
 import { apiFetchData } from "@/_lib/fetch"
 import ContentForm from '@/_components/common/ContentForm';
 import { ContentInformation } from '@/_components/common/ContentInformation';
-import { shiftStyles } from "@/_constants/shiftConstants"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
 import { capitalize } from "@/_functions/globalFunction"
 
 function toLocalISOString(dateStr) {

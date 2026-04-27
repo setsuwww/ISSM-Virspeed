@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 
 import { ContentInformation } from '@/_components/common/ContentInformation'
-import { frequenciesLabel } from '@/_constants/scheduleConstants'
+import { frequenciesLabel } from '@/_components/_constants/scheduleConstants'
 import { SquarePlus, Tag } from 'lucide-react'
 import { Button } from '@/_components/ui/Button'
 

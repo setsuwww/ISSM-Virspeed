@@ -11,7 +11,7 @@ import { Input } from "@/_components/ui/Input"
 import { Label } from "@/_components/ui/Label"
 import { Button } from "@/_components/ui/Button"
 
-import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule"
+import { LEAVE_RULES } from "@/_components/_constants/static/leaveIndonesianRule"
 import { addWorkDays } from "@/_functions/helpers/attendanceHelpers"
 
 export function LeaveModal({ open, onOpenChange, onSubmit }) {

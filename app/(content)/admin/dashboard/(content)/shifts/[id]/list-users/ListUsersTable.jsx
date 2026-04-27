@@ -8,7 +8,7 @@ import { Checkbox } from "@/_components/ui/Checkbox";
 import { Button } from "@/_components/ui/Button";
 import EmptyStates from "@/_components/common/EmptyStates";
 
-import { roleStyles } from "@/_constants/theme/userTheme";
+import { roleStyles } from "@/_components/_constants/theme/userTheme";
 import { EmployeesSwitchModal } from "../../../users/(manage)/employees/EmployeesSwitchModal";
 import ListUsersActionHeader from "./ListUsersActionHeader";
 

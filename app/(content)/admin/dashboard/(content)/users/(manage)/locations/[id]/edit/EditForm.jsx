@@ -11,7 +11,7 @@ import { ChevronLeft, Loader } from "lucide-react";
 import ContentForm from "@/_components/common/ContentForm";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
-import { typeOptions, statusOptions } from "@/_constants/locationConstants";
+import { typeOptions, statusOptions } from "@/_components/_constants/locationConstants";
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
 import { updateLocation } from "@/_servers/admin-services/location_action";

@@ -5,7 +5,7 @@ import { format } from "date-fns"
 
 import HistoryLayout from "../HistoryLayout"
 import LeaveTable from "./LeaveTable"
-import { LEAVE_RULES } from "@/_constants/static/leaveIndonesianRule"
+import { LEAVE_RULES } from "@/_components/_constants/static/leaveIndonesianRule"
 
 export const revalidate = 60
 

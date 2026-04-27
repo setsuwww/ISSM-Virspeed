@@ -9,7 +9,7 @@ import { Button } from "@/_components/ui/Button";
 import { Badge } from "@/_components/ui/Badge";
 import { Checkbox } from "@/_components/ui/Checkbox";
 
-import { shiftStyles, shiftIcons } from "@/_constants/shiftConstants";
+import { shiftStyles, shiftIcons } from "@/_components/_constants/shiftConstants";
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
 import { useHandleShifts } from "@/_clients/handlers/admin/useHandleShifts";

@@ -11,7 +11,7 @@ import { EmployeesSwitchModal } from "../EmployeesSwitchModal";
 
 import { format } from "date-fns";
 import { capitalize } from "@/_functions/globalFunction";
-import { shiftDots } from "@/_constants/shiftConstants";
+import { shiftDots } from "@/_components/_constants/shiftConstants";
 
 export const EmployeesRow = React.memo(function EmployeesRow({ user, selected, toggleSelect, onHistory, onEdit, onDelete }) {
   const [switchOpen, setSwitchOpen] = useState(false);
