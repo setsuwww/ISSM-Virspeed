@@ -1,14 +1,25 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { attendanceStatusClass } from "@/_constants/theme/attendanceTheme"
 import { defaultStatuses } from "@/_constants/attendanceConstants"
 
 import AttendancesApprovalPartials from "./AttendancesApprovalPartials"
 import AttendancesUsers from "./AttendancesUsers"
+import { RequestToast } from "./RequestToast"
+import { getPendingRequestsSummary } from "@/_servers/admin-services/request_action"
 
 export function AttendancesCard({ shifts = [] }) {
   const [selectedStatus, setSelectedStatus] = useState(null)
+  const [requestSummary, setRequestSummary] = useState(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await getPendingRequestsSummary()
+      setRequestSummary(res)
+    }
+    fetchData()
+  }, [])
 
   const allUsers = useMemo(() => {
     return shifts.flatMap((shift) =>
@@ -61,6 +72,10 @@ export function AttendancesCard({ shifts = [] }) {
         </span>
       </div>
 
+      {requestSummary?.total > 0 && (
+        <RequestToast summary={requestSummary} />
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {statusSummary.map(({ status, users, approvalCounts }) => (
           <AttendancesApprovalPartials key={status} status={status} users={users}
@@ -71,6 +86,7 @@ export function AttendancesCard({ shifts = [] }) {
         ))}
       </div>
 
+      {/* Modal Attendance Detail */}
       <AttendancesUsers
         selectedStatus={selectedStatus}
         shifts={shifts}

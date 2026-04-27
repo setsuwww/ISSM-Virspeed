@@ -27,6 +27,7 @@ export const adminMenu = [
       { label: "Shift Employees", href: "/admin/dashboard/users/employees/shift-employees" },
       { label: "Normal Employees", href: "/admin/dashboard/users/employees/normal-employees" },
       { label: "Attendances", href: "/admin/dashboard/users/attendances" },
+      { label: "Requests", href: "/admin/dashboard/requests" },
       { label: "Work Hours", href: "/admin/dashboard/users/work-hours" }
     ]
   },

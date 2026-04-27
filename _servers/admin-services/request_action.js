@@ -188,3 +188,39 @@ export async function clearHistory(type) {
 
   return { success: true, message: "History cleared successfully" }
 }
+
+export async function getPendingRequestsSummary() {
+  const [leave, earlyCheckout, shiftChange, permissionAttendance] = await Promise.all([
+    prisma.leaveRequest.count({
+      where: { status: "PENDING" },
+    }),
+
+    prisma.earlyCheckoutRequest.count({
+      where: { status: "PENDING" },
+    }),
+
+    prisma.shiftChangeRequest.count({
+      where: {
+        OR: [
+          { status: "PENDING_TARGET" },
+          { status: "PENDING_ADMIN" },
+        ],
+      },
+    }),
+
+    prisma.attendance.count({
+      where: {
+        status: "PERMISSION",
+        OR: [
+          { approval: "PENDING" },
+          { approval: null },
+        ],
+      },
+    })
+  ])
+
+  return {
+    total: leave + earlyCheckout + shiftChange + permissionAttendance,
+    breakdown: { leave, earlyCheckout, shiftChange, permission: permissionAttendance },
+  }
+}
