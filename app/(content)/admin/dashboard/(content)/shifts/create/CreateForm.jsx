@@ -15,7 +15,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import { timeToMinutes } from "@/_functions/globalFunction";
 
 import { createShift } from "@/_servers/admin-services/shift_action"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 
 export default function CreateShiftForm({ locations }) {
   const router = useRouter();

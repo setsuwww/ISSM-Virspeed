@@ -6,7 +6,7 @@ import { useMemo, useState, useCallback, useTransition } from "react";
 import { deleteShiftById, deleteShifts } from "@/_servers/admin-services/shift_action";
 
 import { useActionHelper } from "@/_stores/common/useActionStore";
-import { useToast } from "@/_contexts/Toast-Provider";
+import { useToast } from "@/_clients/_contexts/Toast-Provider";
 
 export function useHandleShifts(data) {
   const router = useRouter();

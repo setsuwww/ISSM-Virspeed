@@ -13,7 +13,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import { roleOptions } from "@/_components/_constants/userConstants";
 import { updateUser } from "@/_servers/admin-services/user_action.js";
 import { ChevronLeft, Loader } from 'lucide-react';
-import { useToast } from "@/_contexts/Toast-Provider";
+import { useToast } from "@/_clients/_contexts/Toast-Provider";
 
 export default function EditForm({ user, locations }) {
   const router = useRouter();

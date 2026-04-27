@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 import { Button } from "@/_components/ui/Button"
 import { Radar, MapPin, X } from "lucide-react"
 import { Label } from "@/_components/ui/Label"

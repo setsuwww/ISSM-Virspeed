@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { deleteUsers, deleteUserById } from "@/_servers/admin-services/user_action";
 
-import { useToast } from "@/_contexts/Toast-Provider";
+import { useToast } from "@/_clients/_contexts/Toast-Provider";
 import { useActionHelper } from "@/_stores/common/useActionStore";
 
 import { confirmMessages } from "@/_components/_constants/static/handleUserMessage";

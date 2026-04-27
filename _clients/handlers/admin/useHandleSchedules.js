@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { useActionHelper } from "@/_stores/common/useActionStore";
-import { useToast } from "@/_contexts/Toast-Provider";
+import { useToast } from "@/_clients/_contexts/Toast-Provider";
 import { deleteScheduleById, deleteSchedules } from "@/_servers/admin-services/schedule_action";
 
 import { confirmMessages } from "@/_components/_constants/static/handleScheduleMessage";

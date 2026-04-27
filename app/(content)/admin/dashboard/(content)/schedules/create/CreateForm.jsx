@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useCallback } from "react"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 import { createSchedule } from "@/_servers/admin-services/schedule_action"
 
 import { Label } from "@/_components/ui/Label"

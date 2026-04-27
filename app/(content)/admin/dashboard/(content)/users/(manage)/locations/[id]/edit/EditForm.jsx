@@ -15,7 +15,7 @@ import { typeOptions, statusOptions } from "@/_components/_constants/locationCon
 import { minutesToTime, capitalize } from "@/_functions/globalFunction";
 
 import { updateLocation } from "@/_servers/admin-services/location_action";
-import { useToast } from "@/_contexts/Toast-Provider";
+import { useToast } from "@/_clients/_contexts/Toast-Provider";
 
 export default function EditLocationForm({ location }) {
   const router = useRouter();

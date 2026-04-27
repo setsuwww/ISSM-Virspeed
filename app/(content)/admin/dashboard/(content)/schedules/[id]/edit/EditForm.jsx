@@ -15,7 +15,7 @@ import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
 import { updateSchedule } from "@/_servers/admin-services/schedule_action"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 
 import { useScheduleStore } from "@/_stores/useScheduleStore"
 import { Textarea } from "@/_components/ui/Textarea"

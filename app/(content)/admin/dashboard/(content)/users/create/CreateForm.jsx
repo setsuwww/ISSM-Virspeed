@@ -3,7 +3,7 @@
 import { useState, useMemo, useTransition } from "react"
 import { ChevronLeft, Info, Loader } from 'lucide-react';
 import { useRouter } from "next/navigation"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader"
 
 import { Button } from "@/_components/ui/Button"

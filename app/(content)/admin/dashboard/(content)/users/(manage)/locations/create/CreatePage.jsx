@@ -17,7 +17,7 @@ import { capitalize, timeToMinutes } from "@/_functions/globalFunction"
 import { ChevronLeft, Loader } from "lucide-react"
 import { createLocation } from "@/_servers/admin-services/location_action"
 import { CreateLocationByScan } from "./CreateLocationByScan"
-import { useToast } from "@/_contexts/Toast-Provider"
+import { useToast } from "@/_clients/_contexts/Toast-Provider"
 
 export default function CreateLocationForm() {
   const router = useRouter()
