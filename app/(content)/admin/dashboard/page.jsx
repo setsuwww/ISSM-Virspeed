@@ -1,118 +1,67 @@
-import { prisma } from "@/_lib/prisma";
-import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined, Users } from "lucide-react";
+import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined, Users, User } from "lucide-react";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardStats } from "./DashboardStats";
 
-import AnalyticsDiagram from "./AnalyticsDiagram";
 import FastActions from "./page-action";
 import { getDashboardStats } from "@/_servers/admin-services/dashboard_action";
-
+import { Suspense } from "react";
+import AnalyticsSection from "./AnalyticsSection";
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats()
-  const totalUsers = await prisma.user.count();
-  const morningEmployees = await prisma.user.count({ where: { shift: { type: "MORNING" } } });
-  const afternoonEmployees = await prisma.user.count({ where: { shift: { type: "AFTERNOON" } } });
-  const eveningEmployees = await prisma.user.count({ where: { shift: { type: "EVENING" } } });
-
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setDate(endDate.getDate() - 29);
-  startDate.setHours(0, 0, 0, 0);
-
-  const rawAttendances = await prisma.attendance.findMany({
-    where: {
-      date: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-    select: {
-      date: true,
-      status: true,
-    },
-    orderBy: { date: "asc" },
-  });
-
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
-
-  async function getShiftStats(shiftType) {
-    const rows = await prisma.attendance.groupBy({
-      by: ["status"],
-      where: {
-        date: {
-          gte: todayStart,
-          lte: todayEnd,
-        },
-        shift: {
-          type: shiftType,
-        },
-      },
-      _count: {
-        status: true,
-      },
-    });
-
-    return rows.reduce((acc, r) => {
-      acc[r.status] = r._count.status;
-      return acc;
-    }, {});
-  }
-
-  const morningStats = await getShiftStats("MORNING");
-  const afternoonStats = await getShiftStats("AFTERNOON");
-  const eveningStats = await getShiftStats("EVENING");
-
-  const attendanceRaw = rawAttendances.map((a) => ({
-    date: a.date.toISOString(),
-    status: a.status,
-  }));
 
   return (
     <div className="space-y-6">
       <DashboardHeader title="Dashboard" />
 
-      <DashboardStats
-        title="Attendance Status"
-        icon={<ChartNoAxesCombined strokeWidth={2} />}
-        color="bg-gradient-to-br from-gray-100 to-gray-50 text-gray-600"
-        value="Overview"
-        badges={{
-          PRESENT: stats.attendance.status.present,
-          ABSENT: stats.attendance.status.absent,
-          LATE: stats.attendance.status.late,
-          PERMISSION: stats.attendance.status.permission,
-        }}
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 pr-4">
+        <DashboardStats
+          dark
+          title="Attendance Status"
+          icon={<ChartNoAxesCombined strokeWidth={2} />}
+          color="bg-gray-400/30 from-gray-500 to-gray-400 text-white"
+          value="Overview"
+          valueColor="text-yellow-400"
+          badges={{
+            PRESENT: stats.attendance.status.present,
+            ABSENT: stats.attendance.status.absent,
+            LATE: stats.attendance.status.late,
+            PERMISSION: stats.attendance.status.permission,
+          }}
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardStats dark={true} link="/admin/dashboard/shifts" title="Total Users"
-          value={`${totalUsers} Users`} valueColor="text-yellow-400"
-          icon={<Clock strokeWidth={2} />}
-          color="bg-slate-500 text-white"
+        <DashboardStats
+          title="Total Users"
+          value={`${stats.users.total} Users`}
+          icon={<User strokeWidth={2} />}
+          color="bg-gradient-to-br from-gray-100 to-gray-50 text-gray-600"
         />
 
-        <DashboardStats link="/admin/dashboard/users/attendances"
-          title="Morning Shifts" value={`${String(morningEmployees)} users`}
-          icon={<Sun strokeWidth={2} />} badges={morningStats}
+        <DashboardStats
+          title="Morning Shifts"
+          value={`${stats.shiftDistribution.morning} users`}
+          icon={<Sun strokeWidth={2} />}
+          badges={stats.shiftStats.morning}
           color="bg-gradient-to-br from-yellow-100 to-yellow-50 text-yellow-600"
         />
 
-        <DashboardStats link="/admin/dashboard/users/attendances"
-          title="Afternoon Shifts" value={`${String(afternoonEmployees)} users`}
-          icon={<SunMoon strokeWidth={2} />} badges={afternoonStats}
+        <DashboardStats
+          title="Afternoon Shifts"
+          value={`${stats.shiftDistribution.afternoon} users`}
+          icon={<SunMoon strokeWidth={2} />}
+          badges={stats.shiftStats.afternoon}
           color="bg-gradient-to-br from-orange-100 to-orange-50 text-orange-600"
         />
 
-        <DashboardStats link="/admin/dashboard/users/attendances"
-          title="Evening Shifts" value={`${String(eveningEmployees)} users`}
-          icon={<Moon strokeWidth={2} />} badges={eveningStats}
+        <DashboardStats
+          title="Evening Shifts"
+          value={`${stats.shiftDistribution.evening} users`}
+          icon={<Moon strokeWidth={2} />}
+          badges={stats.shiftStats.evening}
           color="bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600"
         />
       </div>
@@ -158,8 +107,10 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-4 grid-cols-1">
-        <AnalyticsDiagram attendanceRaw={attendanceRaw} />
+        <Suspense fallback={<div className="p-6 text-sm text-gray-400">Loading analytics...</div>}>
+          <AnalyticsSection />
+        </Suspense>
       </div>
     </div>
-  );
+  )
 }

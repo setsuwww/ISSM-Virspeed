@@ -3,6 +3,12 @@
 import { prisma } from "@/_lib/prisma"
 
 export async function getDashboardStats() {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+
+    const todayEnd = new Date()
+    todayEnd.setHours(23, 59, 59, 999)
+
     const [
         totalUsers,
         activeUsers,
@@ -22,31 +28,54 @@ export async function getDashboardStats() {
         morningEmployees,
         afternoonEmployees,
         eveningEmployees,
+
+        morningStatsRaw,
+        afternoonStatsRaw,
+        eveningStatsRaw,
     ] = await Promise.all([
-        // USER
         prisma.user.count(),
         prisma.user.count({ where: { isActive: true } }),
         prisma.user.count({ where: { isActive: false } }),
 
-        // MASTER DATA
         prisma.location.count(),
         prisma.shift.count(),
         prisma.schedule.count(),
 
-        // ATTENDANCE TOTAL
         prisma.attendance.count(),
 
-        // ATTENDANCE STATUS
         prisma.attendance.count({ where: { status: "PRESENT" } }),
         prisma.attendance.count({ where: { status: "ABSENT" } }),
         prisma.attendance.count({ where: { status: "LATE" } }),
         prisma.attendance.count({ where: { status: "PERMISSION" } }),
 
-        // SHIFT DISTRIBUTION
         prisma.user.count({ where: { shift: { type: "MORNING" } } }),
         prisma.user.count({ where: { shift: { type: "AFTERNOON" } } }),
         prisma.user.count({ where: { shift: { type: "EVENING" } } }),
+
+        prisma.attendance.groupBy({
+            by: ["status"],
+            where: { date: { gte: todayStart, lte: todayEnd }, shift: { type: "MORNING" } },
+            _count: { status: true },
+        }),
+
+        prisma.attendance.groupBy({
+            by: ["status"],
+            where: { date: { gte: todayStart, lte: todayEnd }, shift: { type: "AFTERNOON" } },
+            _count: { status: true },
+        }),
+
+        prisma.attendance.groupBy({
+            by: ["status"],
+            where: { date: { gte: todayStart, lte: todayEnd }, shift: { type: "EVENING" } },
+            _count: { status: true },
+        }),
     ])
+
+    const formatStats = (rows) =>
+        rows.reduce((acc, r) => {
+            acc[r.status] = r._count.status
+            return acc
+        }, {})
 
     return {
         users: {
@@ -75,6 +104,12 @@ export async function getDashboardStats() {
             morning: morningEmployees,
             afternoon: afternoonEmployees,
             evening: eveningEmployees,
+        },
+
+        shiftStats: {
+            morning: formatStats(morningStatsRaw),
+            afternoon: formatStats(afternoonStatsRaw),
+            evening: formatStats(eveningStatsRaw),
         },
     }
 }

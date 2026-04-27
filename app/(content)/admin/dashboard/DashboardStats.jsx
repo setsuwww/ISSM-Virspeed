@@ -11,20 +11,37 @@ function DashboardStatsComponent({
   const theme = dark ? "ring ring-slate-500 bg-slate-600 text-slate-100 hover:border-slate-200" : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300"
   const defaultIcon = dark ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"
 
-  const renderBadge = (label, value, className) => {
-    if (value === undefined || value === null || value === 0) return null;
+  const renderBadge = (label, value, type) => {
+    if (!value) return null
+
+    const styles = {
+      ABSENT: dark
+        ? "bg-red-600 text-red-50"
+        : "bg-red-100/60 text-red-700",
+
+      LATE: dark
+        ? "bg-yellow-600 text-yellow-50"
+        : "bg-yellow-100/60 text-yellow-700",
+
+      PERMISSION: dark
+        ? "bg-blue-600 text-blue-50"
+        : "bg-blue-100/60 text-blue-700",
+
+      PRESENT: dark
+        ? "bg-green-600 text-green-50"
+        : "bg-green-100/60 text-green-700",
+    }
 
     return (
-      <div className="flex items-center space-x-0.5 ml-2">
+      <div className="flex items-center ml-2">
         <span
-          key={label}
-          className={`h-6 px-1.5 rounded-sm text-[10px] font-medium flex items-center justify-center mt-0 md:mt-0.5 ${className}`}
+          className={`h-6 px-1.5 rounded-sm text-[10px] font-medium flex items-center justify-center ${styles[type]}`}
         >
           {label} : {value}
         </span>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div className={`${base} ${theme}`}>
@@ -49,9 +66,10 @@ function DashboardStatsComponent({
           <span className={valueColor}>{value}</span>
 
           <span className="flex">
-            {renderBadge("A", badges?.ABSENT, "bg-red-100/60 text-red-700")}
-            {renderBadge("L", badges?.LATE, "bg-yellow-100/60 text-yellow-700")}
-            {renderBadge("P", badges?.PERMISSION, "bg-blue-100/60 text-blue-700")}
+            {renderBadge("A", badges?.ABSENT, "ABSENT")}
+            {renderBadge("L", badges?.LATE, "LATE")}
+            {renderBadge("Pe", badges?.PERMISSION, "PERMISSION")}
+            {renderBadge("Pr", badges?.PRESENT, "PRESENT")}
           </span>
         </div>
       </div>
