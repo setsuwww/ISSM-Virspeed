@@ -1,5 +1,5 @@
 import { prisma } from "@/_lib/prisma";
-import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined } from "lucide-react";
+import { Clock, Sun, SunMoon, Moon, Zap, ChartNoAxesCombined, Users } from "lucide-react";
 import { ContentInformation } from "@/_components/common/ContentInformation";
 
 import { DashboardHeader } from "./DashboardHeader";
@@ -7,9 +7,11 @@ import { DashboardStats } from "./DashboardStats";
 
 import AnalyticsDiagram from "./AnalyticsDiagram";
 import FastActions from "./page-action";
+import { getDashboardStats } from "@/_servers/admin-services/dashboard_action";
 
 
 export default async function AdminDashboardPage() {
+  const stats = await getDashboardStats()
   const totalUsers = await prisma.user.count();
   const morningEmployees = await prisma.user.count({ where: { shift: { type: "MORNING" } } });
   const afternoonEmployees = await prisma.user.count({ where: { shift: { type: "AFTERNOON" } } });
@@ -76,6 +78,19 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <DashboardHeader title="Dashboard" />
 
+      <DashboardStats
+        title="Attendance Status"
+        icon={<ChartNoAxesCombined strokeWidth={2} />}
+        color="bg-gradient-to-br from-gray-100 to-gray-50 text-gray-600"
+        value="Overview"
+        badges={{
+          PRESENT: stats.attendance.status.present,
+          ABSENT: stats.attendance.status.absent,
+          LATE: stats.attendance.status.late,
+          PERMISSION: stats.attendance.status.permission,
+        }}
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <DashboardStats dark={true} link="/admin/dashboard/shifts" title="Total Users"
           value={`${totalUsers} Users`} valueColor="text-yellow-400"
@@ -99,6 +114,36 @@ export default async function AdminDashboardPage() {
           title="Evening Shifts" value={`${String(eveningEmployees)} users`}
           icon={<Moon strokeWidth={2} />} badges={eveningStats}
           color="bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <DashboardStats
+          title="Active Users"
+          icon={<Users strokeWidth={2} />}
+          color="bg-gradient-to-br from-teal-100 to-teal-50 text-teal-600"
+          value={`${stats.users.active} Active`}
+        />
+
+        <DashboardStats
+          title="Inactive Users"
+          icon={<Users strokeWidth={2} />}
+          color="bg-gradient-to-br from-red-100 to-red-50 text-red-600"
+          value={`${stats.users.inactive} Inactive`}
+        />
+
+        <DashboardStats
+          title="Total Shifts"
+          icon={<Clock strokeWidth={2} />}
+          color="bg-gradient-to-br from-sky-100 to-sky-50 text-sky-600"
+          value={`${stats.master.shifts} Shifts`}
+        />
+
+        <DashboardStats
+          title="Total Schedules"
+          icon={<Clock strokeWidth={2} />}
+          color="bg-gradient-to-br from-teal-100 to-teal-50 text-teal-600"
+          value={`${stats.master.schedules} Schedules`}
         />
       </div>
 
