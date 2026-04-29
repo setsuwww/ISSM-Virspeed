@@ -12,16 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/_components/ui/Tooltip"
-
-const getShiftStyle = (type) => {
-  switch (type?.toUpperCase()) {
-    case 'MORNING': return 'bg-blue-100 text-blue-800 border-blue-200'
-    case 'AFTERNOON': return 'bg-orange-100 text-orange-800 border-orange-200'
-    case 'EVENING': return 'bg-purple-100 text-purple-800 border-purple-200'
-    case 'OFF': return 'bg-gray-100 text-gray-800 border-gray-200'
-    default: return 'bg-slate-100 text-slate-800 border-slate-200'
-  }
-}
+import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 
 const formatTime = (minutes) => {
   if (minutes == null) return null;
@@ -33,7 +24,7 @@ const formatTime = (minutes) => {
 export default function ShiftScheduleClient({ assignments, selectedMonth }) {
   const router = useRouter()
   const [viewMode, setViewMode] = useState("calendar") // "calendar" or "list"
-  
+
   const currentDate = parseISO(selectedMonth + "-01")
   const start = startOfMonth(currentDate)
   const end = endOfMonth(currentDate)
@@ -60,17 +51,17 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
             <CalendarIcon className="w-5 h-5 text-slate-500" />
             My Shift Schedule
           </CardTitle>
-          
+
           <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-lg">
-              <button 
+              <button
                 onClick={() => setViewMode("calendar")}
                 className={`p-1.5 rounded-md transition-colors ${viewMode === 'calendar' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Calendar View"
               >
                 <CalendarIcon className="w-4 h-4" />
               </button>
-              <button 
+              <button
                 onClick={() => setViewMode("list")}
                 className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
                 title="List View"
@@ -78,7 +69,7 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
                 <ListIcon className="w-4 h-4" />
               </button>
             </div>
-            
+
             <div className="flex items-center gap-2 border border-slate-200 rounded-lg p-1 bg-white">
               <button onClick={handlePrevMonth} className="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
@@ -92,7 +83,7 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-4 sm:p-6 bg-white">
           {viewMode === "calendar" ? (
             <div>
@@ -115,11 +106,11 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
                 {daysInMonth.map(day => {
                   const dateStr = format(day, "yyyy-MM-dd")
                   const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
-                  
+
                   const isTodayDate = isToday(day)
-                  
+
                   let containerClass = "min-h-[90px] sm:min-h-[120px] p-2 sm:p-3 rounded-lg border transition-all flex flex-col gap-1 relative group "
-                  
+
                   if (isTodayDate) {
                     containerClass += "bg-blue-50/30 border-blue-400 shadow-sm"
                   } else {
@@ -141,7 +132,7 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
                                 </span>
                               )}
                             </div>
-                            
+
                             {shiftForDay ? (
                               <div className={`mt-auto border rounded p-1.5 sm:p-2 flex flex-col items-center justify-center text-center ${getShiftStyle(shiftForDay.shift?.type)}`}>
                                 <span className="font-semibold text-xs sm:text-sm truncate w-full">{shiftForDay.shift?.type || 'OFF'}</span>

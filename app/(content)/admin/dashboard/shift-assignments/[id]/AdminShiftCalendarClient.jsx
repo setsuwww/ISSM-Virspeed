@@ -2,30 +2,31 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, addMonths, subMonths, parseISO, formatISO } from "date-fns"
-import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, Loader2, Plus, Trash2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
-import { Badge } from "@/_components/ui/Badge"
-import { createOrUpdateShiftAssignment, deleteShiftAssignment, bulkAssignShift } from "@/_servers/admin-services/shift_assignment_action"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, addMonths, subMonths, parseISO } from "date-fns"
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Loader2, Plus, Trash2 } from "lucide-react"
 
-const getShiftStyle = (type) => {
-  switch (type?.toUpperCase()) {
-    case 'MORNING': return 'bg-blue-100 text-blue-800 border-blue-200'
-    case 'AFTERNOON': return 'bg-orange-100 text-orange-800 border-orange-200'
-    case 'EVENING': return 'bg-purple-100 text-purple-800 border-purple-200'
-    case 'OFF': return 'bg-gray-100 text-gray-800 border-gray-200'
-    default: return 'bg-slate-100 text-slate-800 border-slate-200'
-  }
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
+import { Button } from "@/_components/ui/Button"
+import { Input } from "@/_components/ui/Input"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from "@/_components/ui/Dialog"
+
+import { createOrUpdateShiftAssignment, deleteShiftAssignment, bulkAssignShift } from "@/_servers/admin-services/shift_assignment_action"
+import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 
 const formatTime = (minutes) => {
-  if (minutes == null) return null;
+  if (minutes == null) return "--:--";
   const h = Math.floor(minutes / 60).toString().padStart(2, '0')
   const m = (minutes % 60).toString().padStart(2, '0')
   return `${h}:${m}`
 }
 
-export default function AdminShiftCalendarClient({ user, assignments, shifts, selectedMonth }) {
+export default function AdminShiftCalendarClient({ user, assignments = [], shifts = [], selectedMonth }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [loadingAction, setLoadingAction] = useState(false)
@@ -42,7 +43,15 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
   const [bulkEndDate, setBulkEndDate] = useState("")
   const [bulkPattern, setBulkPattern] = useState([""])
 
-  const currentDate = parseISO(selectedMonth + "-01")
+  // Safe parsing of current date
+  let currentDate
+  try {
+    currentDate = selectedMonth ? parseISO(selectedMonth + "-01") : new Date()
+    if (isNaN(currentDate.getTime())) currentDate = new Date()
+  } catch (e) {
+    currentDate = new Date()
+  }
+
   const start = startOfMonth(currentDate)
   const end = endOfMonth(currentDate)
   const daysInMonth = eachDayOfInterval({ start, end })
@@ -62,7 +71,8 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
 
   const openSingleModal = (day) => {
     const dateStr = format(day, "yyyy-MM-dd")
-    const assignment = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+    const assignment = assignments.find(a => a?.date && format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+
     setSelectedDate(day)
     setExistingAssignment(assignment || null)
     setFormShiftId(assignment?.shiftId?.toString() || "")
@@ -74,30 +84,30 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
     setLoadingAction(true)
 
     const res = await createOrUpdateShiftAssignment({
-      userId: user.id,
-      date: selectedDate.toISOString(),
+      userId: user?.id,
+      date: selectedDate?.toISOString(),
       shiftId: parseInt(formShiftId),
       isManualOverride: true
     })
 
-    if (res.success) {
+    if (res?.success) {
       setSingleModalOpen(false)
     } else {
-      alert(res.error)
+      alert(res?.error || "Failed to save assignment")
     }
     setLoadingAction(false)
   }
 
   const handleDeleteSingle = async () => {
-    if (!existingAssignment) return
+    if (!existingAssignment?.id) return
     if (!confirm("Are you sure you want to remove this shift assignment?")) return
 
     setLoadingAction(true)
-    const res = await deleteShiftAssignment(existingAssignment.id, user.id)
-    if (res.success) {
+    const res = await deleteShiftAssignment(existingAssignment.id, user?.id)
+    if (res?.success) {
       setSingleModalOpen(false)
     } else {
-      alert(res.error)
+      alert(res?.error || "Failed to delete assignment")
     }
     setLoadingAction(false)
   }
@@ -109,17 +119,17 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
 
     setLoadingAction(true)
     const res = await bulkAssignShift({
-      userId: user.id,
+      userId: user?.id,
       startDate: new Date(bulkStartDate).toISOString(),
       endDate: new Date(bulkEndDate).toISOString(),
       shiftPattern: validPattern.map(id => parseInt(id))
     })
 
-    if (res.success) {
+    if (res?.success) {
       setBulkModalOpen(false)
       alert(`Successfully assigned ${res.count} shifts`)
     } else {
-      alert(res.error)
+      alert(res?.error || "Failed to bulk assign shifts")
     }
     setLoadingAction(false)
   }
@@ -148,13 +158,14 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
             </div>
           </div>
 
-          <button
+          <Button
             onClick={() => setBulkModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+            variant="primary"
+            className="flex items-center gap-2"
           >
             <CalendarIcon className="w-4 h-4" />
             Bulk Assign
-          </button>
+          </Button>
         </CardHeader>
 
         <CardContent className="p-4 sm:p-6 bg-white">
@@ -176,17 +187,22 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
             ))}
             {daysInMonth.map(day => {
               const dateStr = format(day, "yyyy-MM-dd")
-              const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+              const shiftAssignmentForDay = assignments.find(a => a?.date && format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+
+              // Safe nested checks
+              const shiftData = shiftAssignmentForDay?.shift
               const isTodayDate = isToday(day)
+              const hasShift = !!shiftData
+              const shiftType = shiftData?.type || 'OFF'
 
               let containerClass = "min-h-[90px] sm:min-h-[120px] p-2 sm:p-3 rounded-lg border transition-all flex flex-col gap-1 relative cursor-pointer hover:shadow-md hover:-translate-y-0.5 group "
 
               if (isTodayDate) {
                 containerClass += "bg-blue-50/20 border-blue-400 shadow-sm"
-              } else if (shiftForDay) {
-                containerClass += "bg-white border-slate-200"
+              } else if (hasShift) {
+                containerClass += "bg-white border-slate-300"
               } else {
-                containerClass += "bg-slate-50 border-slate-200 border-dashed hover:border-blue-300 hover:bg-blue-50/30"
+                containerClass += "bg-slate-50 border-slate-400 border-dashed hover:border-blue-300 hover:bg-blue-50/30"
               }
 
               return (
@@ -202,12 +218,14 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
                     )}
                   </div>
 
-                  {shiftForDay ? (
-                    <div className={`mt-auto border rounded p-1.5 sm:p-2 flex flex-col items-center justify-center text-center ${getShiftStyle(shiftForDay.shift?.type)}`}>
-                      <span className="font-semibold text-xs sm:text-sm truncate w-full">{shiftForDay.shift?.type || 'OFF'}</span>
-                      {shiftForDay?.shift && shiftForDay.shift.type !== 'OFF' && (
+                  {hasShift ? (
+                    <div className={`mt-auto border rounded p-1.5 sm:p-2 flex flex-col items-center justify-center text-center ${getShiftStyle(shiftType)}`}>
+                      <span className="font-semibold text-xs sm:text-sm truncate w-full">
+                        {shiftType}
+                      </span>
+                      {shiftType !== 'OFF' && (
                         <span className="text-[10px] sm:text-xs opacity-80 mt-0.5 hidden sm:inline-block truncate w-full">
-                          {formatTime(shiftForDay.shift.startTime)} - {formatTime(shiftForDay.shift.endTime)}
+                          {formatTime(shiftData?.startTime)} - {formatTime(shiftData?.endTime)}
                         </span>
                       )}
                     </div>
@@ -224,146 +242,155 @@ export default function AdminShiftCalendarClient({ user, assignments, shifts, se
       </Card>
 
       {/* Single Edit Modal */}
-      {singleModalOpen && selectedDate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="font-semibold text-slate-800 text-lg">
-                {existingAssignment ? 'Edit Assignment' : 'New Assignment'}
-              </h3>
-              <div className="text-sm font-medium text-slate-500 bg-white px-3 py-1 rounded-md border border-slate-200">
-                {format(selectedDate, "dd MMM yyyy")}
-              </div>
+      <Dialog open={singleModalOpen} onOpenChange={setSingleModalOpen}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white" showCloseButton={false}>
+          <DialogHeader className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex flex-row items-center justify-between">
+            <DialogTitle className="text-lg">
+              {existingAssignment ? 'Edit Assignment' : 'New Assignment'}
+            </DialogTitle>
+            <div className="text-sm font-medium text-slate-500 bg-white px-3 py-1 rounded-md border border-slate-200">
+              {selectedDate ? format(selectedDate, "dd MMM yyyy") : ""}
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Select Shift</label>
-                <select
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formShiftId}
-                  onChange={(e) => setFormShiftId(e.target.value)}
-                >
-                  <option value="">-- Choose Shift --</option>
-                  {shifts.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between">
-              {existingAssignment ? (
-                <button
-                  onClick={handleDeleteSingle}
-                  className="px-4 py-2 text-rose-600 hover:bg-rose-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete
-                </button>
-              ) : <div></div>}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setSingleModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveSingle}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  Save Shift
-                </button>
-              </div>
+          </DialogHeader>
+
+          <div className="p-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Select Shift</label>
+              <select
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                value={formShiftId}
+                onChange={(e) => setFormShiftId(e.target.value)}
+              >
+                <option value="">-- Choose Shift --</option>
+                {shifts?.map(s => (
+                  <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
+                ))}
+              </select>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Bulk Assign Modal */}
-      {bulkModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50">
-              <h3 className="font-semibold text-slate-800 text-lg">Bulk Shift Assignment</h3>
-              <p className="text-sm text-slate-500">Apply a repeating rotation pattern over a date range.</p>
-            </div>
-            <div className="p-6 space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
-                  <input
-                    type="date"
-                    value={bulkStartDate}
-                    onChange={(e) => setBulkStartDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
-                  <input
-                    type="date"
-                    value={bulkEndDate}
-                    onChange={(e) => setBulkEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
+          <DialogFooter className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex sm:justify-between items-center gap-2">
+            {existingAssignment ? (
+              <Button
+                variant="destructive"
+                onClick={handleDeleteSingle}
+                className="w-full sm:w-auto"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete
+              </Button>
+            ) : <div className="hidden sm:block"></div>}
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Shift Rotation Pattern</label>
-                <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                  {bulkPattern.map((patternVal, idx) => (
-                    <div key={idx} className="flex gap-2 items-center">
-                      <span className="text-xs font-semibold text-slate-400 w-12 uppercase">Day {idx + 1}</span>
-                      <select
-                        className="flex-1 px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                        value={patternVal}
-                        onChange={(e) => {
-                          const newPat = [...bulkPattern]
-                          newPat[idx] = e.target.value
-                          setBulkPattern(newPat)
-                        }}
-                      >
-                        <option value="">-- Choose Shift --</option>
-                        {shifts.map(s => (
-                          <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
-                        ))}
-                      </select>
-                      {bulkPattern.length > 1 && (
-                        <button
-                          onClick={() => setBulkPattern(bulkPattern.filter((_, i) => i !== idx))}
-                          className="p-1.5 text-rose-500 hover:bg-rose-50 rounded"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => setBulkPattern([...bulkPattern, ""])}
-                    className="mt-2 text-sm text-blue-600 font-medium hover:underline flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Rotation Day
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-              <button
-                onClick={() => setBulkModalOpen(false)}
-                className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition-colors"
+            <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+              <Button
+                variant="outline"
+                onClick={() => setSingleModalOpen(false)}
+                className="w-full sm:w-auto bg-white"
               >
                 Cancel
-              </button>
-              <button
-                onClick={handleSaveBulk}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleSaveSingle}
+                className="w-full sm:w-auto"
               >
-                Apply Pattern
-              </button>
+                Save Shift
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Assign Modal */}
+      <Dialog open={bulkModalOpen} onOpenChange={setBulkModalOpen}>
+        <DialogContent className="sm:max-w-lg p-0 overflow-hidden bg-white">
+          <DialogHeader className="px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <DialogTitle className="text-lg">Bulk Shift Assignment</DialogTitle>
+            <p className="text-sm text-slate-500">Apply a repeating rotation pattern over a date range.</p>
+          </DialogHeader>
+
+          <div className="p-6 space-y-5 max-h-[60vh] overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
+                <Input
+                  type="date"
+                  typeDate={true}
+                  value={bulkStartDate}
+                  onChange={(e) => setBulkStartDate(e.target.value)}
+                  className="bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
+                <Input
+                  type="date"
+                  typeDate={true}
+                  value={bulkEndDate}
+                  onChange={(e) => setBulkEndDate(e.target.value)}
+                  className="bg-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Shift Rotation Pattern</label>
+              <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                {bulkPattern.map((patternVal, idx) => (
+                  <div key={idx} className="flex gap-2 items-center">
+                    <span className="text-xs font-semibold text-slate-400 w-12 uppercase">Day {idx + 1}</span>
+                    <select
+                      className="flex-1 px-3 py-1.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
+                      value={patternVal}
+                      onChange={(e) => {
+                        const newPat = [...bulkPattern]
+                        newPat[idx] = e.target.value
+                        setBulkPattern(newPat)
+                      }}
+                    >
+                      <option value="">-- Choose Shift --</option>
+                      {shifts?.map(s => (
+                        <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
+                      ))}
+                    </select>
+                    {bulkPattern.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        className="text-rose-500 hover:text-rose-700 hover:bg-rose-50 px-2"
+                        onClick={() => setBulkPattern(bulkPattern.filter((_, i) => i !== idx))}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  variant="link"
+                  onClick={() => setBulkPattern([...bulkPattern, ""])}
+                  className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 p-0 h-auto"
+                >
+                  <Plus className="w-3 h-3" /> Add Rotation Day
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+
+          <DialogFooter className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setBulkModalOpen(false)}
+              className="bg-white"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSaveBulk}
+            >
+              Apply Pattern
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -11,27 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/_components/ui/Tooltip"
-
-// Helper functions for calendar
-const getShiftStyle = (type) => {
-  switch (type?.toUpperCase()) {
-    case 'MORNING': return 'bg-blue-100 text-blue-800 border-blue-200'
-    case 'AFTERNOON': return 'bg-orange-100 text-orange-800 border-orange-200'
-    case 'EVENING': return 'bg-purple-100 text-purple-800 border-purple-200'
-    case 'OFF': return 'bg-gray-100 text-gray-800 border-gray-200'
-    default: return 'bg-slate-100 text-slate-800 border-slate-200'
-  }
-}
-
-const getShiftDot = (type) => {
-  switch (type?.toUpperCase()) {
-    case 'MORNING': return 'bg-blue-500'
-    case 'AFTERNOON': return 'bg-orange-500'
-    case 'EVENING': return 'bg-purple-500'
-    case 'OFF': return 'bg-gray-500'
-    default: return 'bg-slate-500'
-  }
-}
+import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 
 const formatTime = (minutes) => {
   if (minutes == null) return null;
@@ -42,10 +22,10 @@ const formatTime = (minutes) => {
 
 const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, children }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  
+
   return (
     <div className={`bg-white border border-slate-200 rounded-xl px-4 py-1 shadow-sm overflow-hidden transition-all ${isOpen ? colorClass : ''}`}>
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between py-3 hover:opacity-80 transition-opacity"
       >
@@ -64,14 +44,14 @@ const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, chil
   )
 }
 
-export default function DashboardClient({ 
+export default function DashboardClient({
 
-  assignments, 
-  attendanceHistory, 
-  earlyCheckouts, 
-  permissions, 
-  leaves, 
-  shiftChanges 
+  assignments,
+  attendanceHistory,
+  earlyCheckouts,
+  permissions,
+  leaves,
+  shiftChanges
 }) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
@@ -124,12 +104,12 @@ export default function DashboardClient({
               {daysInMonth.map(day => {
                 const dateStr = format(day, "yyyy-MM-dd")
                 const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
-                
+
                 const isTodayDate = isToday(day)
                 const isTomorrowDate = isTomorrow(day)
-                
+
                 let containerClass = "min-h-[80px] sm:min-h-[100px] p-2 rounded-lg border transition-all flex flex-col gap-1 relative group "
-                
+
                 if (isTodayDate) {
                   containerClass += "bg-blue-50/30 border-blue-400 shadow-sm"
                 } else if (isTomorrowDate) {
@@ -153,7 +133,7 @@ export default function DashboardClient({
                               </span>
                             )}
                           </div>
-                          
+
                           {shiftForDay ? (
                             <div className={`mt-auto text-xs border rounded p-1 flex flex-col items-center justify-center text-center ${getShiftStyle(shiftForDay.shift?.type)}`}>
                               <span className="font-semibold">{shiftForDay.shift?.type || 'OFF'}</span>
@@ -189,12 +169,12 @@ export default function DashboardClient({
           <FileText className="w-5 h-5 text-slate-500" />
           Recent Activity
         </h3>
-        
+
         <div className="w-full space-y-2">
           {/* Attendance History */}
-          <CollapsibleSection 
-            title="Attendance History" 
-            icon={<Clock className="w-4 h-4 text-blue-500" />} 
+          <CollapsibleSection
+            title="Attendance History"
+            icon={<Clock className="w-4 h-4 text-blue-500" />}
             colorClass="border-blue-300"
             defaultOpen={true}
           >
@@ -207,8 +187,8 @@ export default function DashboardClient({
                     <div className="flex flex-col">
                       <span className="font-medium text-slate-700">{format(new Date(att.date), "dd MMM yyyy")}</span>
                       <span className="text-xs text-slate-500">
-                        {att.checkInTime ? format(new Date(att.checkInTime), "HH:mm") : "-"} 
-                        {' → '} 
+                        {att.checkInTime ? format(new Date(att.checkInTime), "HH:mm") : "-"}
+                        {' → '}
                         {att.checkOutTime ? format(new Date(att.checkOutTime), "HH:mm") : "-"}
                       </span>
                     </div>
@@ -222,9 +202,9 @@ export default function DashboardClient({
           </CollapsibleSection>
 
           {/* Early Checkout */}
-          <CollapsibleSection 
-            title="Early Checkout" 
-            icon={<AlertCircle className="w-4 h-4 text-orange-500" />} 
+          <CollapsibleSection
+            title="Early Checkout"
+            icon={<AlertCircle className="w-4 h-4 text-orange-500" />}
             colorClass="border-orange-300"
           >
             {earlyCheckouts.length === 0 ? (
@@ -247,9 +227,9 @@ export default function DashboardClient({
           </CollapsibleSection>
 
           {/* Permission */}
-          <CollapsibleSection 
-            title="Permission" 
-            icon={<Info className="w-4 h-4 text-purple-500" />} 
+          <CollapsibleSection
+            title="Permission"
+            icon={<Info className="w-4 h-4 text-purple-500" />}
             colorClass="border-purple-300"
           >
             {permissions.length === 0 ? (
@@ -272,9 +252,9 @@ export default function DashboardClient({
           </CollapsibleSection>
 
           {/* Leave */}
-          <CollapsibleSection 
-            title="Leave" 
-            icon={<CalendarIcon className="w-4 h-4 text-green-500" />} 
+          <CollapsibleSection
+            title="Leave"
+            icon={<CalendarIcon className="w-4 h-4 text-green-500" />}
             colorClass="border-green-300"
           >
             {leaves.length === 0 ? (
@@ -299,9 +279,9 @@ export default function DashboardClient({
           </CollapsibleSection>
 
           {/* Shift Change */}
-          <CollapsibleSection 
-            title="Shift Change" 
-            icon={<RefreshCcw className="w-4 h-4 text-rose-500" />} 
+          <CollapsibleSection
+            title="Shift Change"
+            icon={<RefreshCcw className="w-4 h-4 text-rose-500" />}
             colorClass="border-rose-300"
           >
             {shiftChanges.length === 0 ? (
