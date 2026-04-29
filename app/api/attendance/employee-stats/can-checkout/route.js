@@ -24,15 +24,11 @@ export async function GET(req) {
                         location: true
                     }
                 },
-                user: {
-                    include: {
-                        location: true,
-                        shift: {
-                            include: {
-                                location: true
-                            }
-                        }
-                    }
+                shift: {
+                    include: { location: true }
+                },
+                assignment: {
+                    include: { shift: { include: { location: true } } }
                 }
             },
             orderBy: {
@@ -49,37 +45,16 @@ export async function GET(req) {
 
         let shiftData = null
 
-        // 🔥 PRIORITY 1: shift dari attendance
-        if (attendance.shift) {
-            shiftData = {
-                id: attendance.shift.id,
-                name: attendance.shift.name,
-                startTime: attendance.shift.startTime,
-                endTime: attendance.shift.endTime,
-                type: "SHIFT",
-            }
-        }
+        // 🔥 PRIORITY 1: shift dari assignment atau attendance
+        let activeShift = attendance.shift || attendance.assignment?.shift;
 
-        // 🔥 PRIORITY 2: shift dari user (default shift)
-        else if (attendance.user?.shift) {
+        if (activeShift) {
             shiftData = {
-                id: attendance.user.shift.id,
-                name: attendance.user.shift.name,
-                startTime: attendance.user.shift.startTime,
-                endTime: attendance.user.shift.endTime,
-                location: attendance.user.shift.location.name,
+                id: activeShift.id,
+                name: activeShift.name,
+                startTime: activeShift.startTime,
+                endTime: activeShift.endTime,
                 type: "SHIFT",
-            }
-        }
-
-        // 🔥 PRIORITY 3: fallback ke location (normal hours)
-        else if (attendance.user?.location) {
-            shiftData = {
-                id: null,
-                name: attendance.user.location.name || "Normal Hours",
-                startTime: attendance.user.location.startTime,
-                endTime: attendance.user.location.endTime,
-                type: "NORMAL",
             }
         }
 

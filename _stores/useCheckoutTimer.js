@@ -28,21 +28,28 @@ export function useCheckoutTimer(workStart, shiftStart, shiftEnd) {
         }
     }
 
-    const start = new Date(workStart).getTime()
-    const endDate = new Date(workStart)
+    const nowDate = new Date(now)
 
     const startShift = parseTimeInt(shiftStart)
     const endShift = parseTimeInt(shiftEnd)
 
+    const shiftStartDate = new Date(nowDate)
+    shiftStartDate.setHours(startShift.hour, startShift.minute, 0, 0)
+
+    const shiftEndDate = new Date(nowDate)
+    shiftEndDate.setHours(endShift.hour, endShift.minute, 0, 0)
+
+    // handle shift malam
     if (endShift.hour < startShift.hour) {
-        endDate.setDate(endDate.getDate() + 1)
+        shiftEndDate.setDate(shiftEndDate.getDate() + 1)
     }
 
-    endDate.setHours(endShift.hour, endShift.minute, 0, 0)
+    // elapsed dari check-in
+    const start = new Date(workStart).getTime()
 
     const elapsed = now - start
-    const remaining = endDate.getTime() - now
-    const total = endDate.getTime() - start
+    const remaining = shiftEndDate.getTime() - now
+    const total = shiftEndDate.getTime() - start
 
     const progress = total > 0
         ? Math.min((elapsed / total) * 100, 100)

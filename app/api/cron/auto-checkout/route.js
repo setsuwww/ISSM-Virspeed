@@ -21,51 +21,30 @@ export async function GET(req) {
                 return NextResponse.json({ error: "User not found" }, { status: 404 });
             }
 
-            const today = new Date();
-            const assignment = await prisma.shiftAssignment.findUnique({
-                where: {
-                    userId_date: {
-                        userId,
-                        date: new Date(today.setHours(0, 0, 0, 0))
-                    }
-                },
-                include: {
-                    shift: true
-                }
-            });
-
             const attendance = await prisma.attendance.findFirst({
                 where: {
                     userId,
                     checkOutTime: null,
                 },
+                include: {
+                    shift: true,
+                    assignment: {
+                        include: { shift: true }
+                    }
+                },
                 orderBy: { date: "desc" }
             });
 
             let shiftData = null;
-            if (assignment?.shift) {
+            let activeShift = attendance?.shift || attendance?.assignment?.shift;
+
+            if (activeShift) {
                 shiftData = {
-                    id: assignment.shift.id,
-                    name: assignment.shift.name,
-                    startTime: assignment.shift.startTime,
-                    endTime: assignment.shift.endTime,
+                    id: activeShift.id,
+                    name: activeShift.name,
+                    startTime: activeShift.startTime,
+                    endTime: activeShift.endTime,
                     type: "SHIFT_ASSIGNMENT"
-                };
-            } else if (user.shift) {
-                shiftData = {
-                    id: user.shift.id,
-                    name: user.shift.name,
-                    startTime: user.shift.startTime,
-                    endTime: user.shift.endTime,
-                    type: "SHIFT_USER"
-                };
-            } else if (user.location?.startTime != null) {
-                shiftData = {
-                    id: null,
-                    name: user.location.name || "Normal Hours",
-                    startTime: user.location.startTime,
-                    endTime: user.location.endTime,
-                    type: "NORMAL"
                 };
             }
 

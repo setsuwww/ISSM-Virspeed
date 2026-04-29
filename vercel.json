@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/auto-checkout",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/generate-shift",
+      "schedule": "0 23 * * *"
     }
   ]
 }

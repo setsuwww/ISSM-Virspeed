@@ -19,6 +19,7 @@ import { safeLog } from "@/_servers/admin-services/log_action"
 import { pusherServer } from "@/_lib/pusher"
 
 import { calculateWorkMinutes } from "@/_functions/helpers/calculateShift"
+import { getActiveShiftAssignment } from "@/_jobs/content/shift/shift_generator"
 
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
@@ -35,16 +36,6 @@ export async function userPrecheckCheckIn() {
   if (shift) {
     workHours = shift;
     location = shift.location;
-  } else {
-    // Fallback to User -> Location pattern (Normal User)
-    const userWithLocation = await prisma.user.findUnique({
-      where: { id: user.id },
-      include: { location: true }
-    });
-    if (userWithLocation?.location?.startTime != null && userWithLocation?.location?.endTime != null) {
-      workHours = userWithLocation.location;
-      location = userWithLocation.location;
-    }
   }
 
   if (!workHours) {
@@ -109,7 +100,11 @@ export async function userSendCheckIn(coords = null) {
   if (!user?.id) return { error: "Unauthorized" };
 
   const now = getNowJakarta();
-  const assignment = await getActiveAssignment(user.id);
+  const assignment = await getActiveShiftAssignment(user.id);
+
+  if (!assignment || !assignment.shiftId) {
+    return { error: "Hari ini OFF" }
+  }
 
   let shift = assignment?.shift;
   let workHours = null;
@@ -117,14 +112,6 @@ export async function userSendCheckIn(coords = null) {
 
   if (shift) {
     workHours = shift;
-  } else {
-    const userWithLocation = await prisma.user.findUnique({
-      where: { id: user.id },
-      include: { location: true }
-    });
-    if (userWithLocation?.location?.startTime != null && userWithLocation?.location?.endTime != null) {
-      workHours = userWithLocation.location;
-    }
   }
 
   if (!workHours) {
@@ -168,6 +155,7 @@ export async function userSendCheckIn(coords = null) {
   const attendance = await prisma.attendance.create({
     data: {
       userId: user.id,
+      assignmentId: assignment.id,
       shiftId: shift?.id,
       date: date,
       status,
@@ -205,6 +193,10 @@ export async function userSendCheckOut() {
       checkInTime: { not: null },
       checkOutTime: null,
     },
+    include: {
+      shift: { include: { location: true } },
+      assignment: { include: { shift: { include: { location: true } } } },
+    },
     orderBy: { date: "desc" },
   });
 
@@ -214,12 +206,7 @@ export async function userSendCheckOut() {
 
   const checkoutTime = now.toDate();
 
-  const userWithHours = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { shift: true, location: true },
-  });
-
-  let workHours = userWithHours?.shift || (userWithHours?.location?.startTime != null ? userWithHours.location : null);
+  let workHours = attendance.shift || attendance.assignment?.shift;
 
   if (!workHours) {
     return { error: "Jadwal kerja tidak ditemukan" };
@@ -269,23 +256,15 @@ export async function userForgotCheckout() {
       checkOutTime: null,
     },
     include: {
-      shift: true,
+      shift: { include: { location: true } },
+      assignment: { include: { shift: { include: { location: true } } } },
     },
     orderBy: { date: "desc" },
   });
 
   if (!attendance) return null;
 
-  let workHours = attendance.shift;
-  if (!workHours) {
-    const userWithLoc = await prisma.user.findUnique({
-      where: { id: user.id },
-      include: { location: true }
-    });
-    if (userWithLoc?.location?.startTime != null && userWithLoc?.location?.endTime != null) {
-      workHours = userWithLoc.location;
-    }
-  }
+  let workHours = attendance.shift || attendance.assignment?.shift;
 
   if (!workHours) return null;
 
@@ -306,7 +285,7 @@ export async function userForgotCheckout() {
 
 export async function userSendEarlyCheckout(reason) {
   const user = await getCurrentUser();
-  if (!user?.shiftId) return { error: "Unauthorized" };
+  if (!user?.id) return { error: "Unauthorized" };
   if (!reason?.trim()) return { error: "Reason is required" };
 
   const attendance = await prisma.attendance.findFirst({
