@@ -21,12 +21,16 @@ import { pusherServer } from "@/_lib/pusher"
 import { calculateWorkMinutes } from "@/_functions/helpers/calculateShift"
 import { getActiveShiftAssignment } from "@/_jobs/content/shift/shift_generator"
 
+const normalizeMinutes = (minutes) => {
+  return minutes === 1440 ? 0 : minutes;
+};
+
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
   if (!user?.id) return { error: "Unauthorized" }
 
   const now = getNowJakarta()
-  const assignment = await getActiveAssignment(user.id)
+  const assignment = await getActiveShiftAssignment(user.id)
 
   let shift = assignment?.shift;
   let workHours = null;
@@ -46,10 +50,36 @@ export async function userPrecheckCheckIn() {
     }
   }
 
-  const shiftStart = minutesToDateTime(date, workHours.startTime)
-  const shiftEnd = minutesToDateTime(date, workHours.endTime)
-  const isCrossDay = workHours.endTime < workHours.startTime
-  const finalEnd = isCrossDay ? shiftEnd.add(1, "day") : shiftEnd
+  const startMinutes = normalizeMinutes(workHours.startTime)
+  const endMinutes = normalizeMinutes(workHours.endTime)
+
+  let shiftStart = minutesToDateTime(date, startMinutes)
+  let shiftEnd = minutesToDateTime(date, endMinutes)
+
+  // handle lintas hari
+  if (endMinutes <= startMinutes) {
+    shiftEnd = shiftEnd.add(1, "day")
+  }
+
+  // 🔥 FIX KRITIS: kalau sekarang sebelum end tapi setelah midnight,
+  // berarti shiftStart harus mundur 1 hari
+  if (now.isBefore(shiftStart) && now.isBefore(shiftEnd)) {
+    const prevStart = shiftStart.subtract(1, "day")
+    const prevEnd = shiftEnd.subtract(1, "day")
+
+    if (now.isAfter(prevStart) && now.isBefore(prevEnd)) {
+      shiftStart = prevStart
+      shiftEnd = prevEnd
+    }
+  }
+
+  const isShiftEnded = now.isAfter(shiftEnd)
+
+  const diffStartMin = shiftStart.diff(now) / (60 * 1000)
+
+  // window checkin
+  const isCheckInOpen = now.isAfter(shiftStart.subtract(20, "minute")) && now.isBefore(shiftEnd)
+  const isShiny = now.isAfter(shiftStart.subtract(10, "minute")) && now.isBefore(shiftStart)
 
   // Check Attendance
   const attendance = await prisma.attendance.findFirst({
@@ -64,11 +94,6 @@ export async function userPrecheckCheckIn() {
 
   // Check Requests (Leave/Permission)
   const hasRequest = attendance?.status === "PERMISSION" || attendance?.status === "INACTIVE"
-
-  const diffStartMin = shiftStart.diff(now) / (60 * 1000)
-  const isShiftEnded = now.isAfter(finalEnd)
-  const isCheckInOpen = diffStartMin <= 20
-  const isShiny = diffStartMin <= 10 && diffStartMin > 0
 
   const hasEarlyCheckoutReq = attendance?.earlyCheckoutRequests?.some(r => r.status === "PENDING" || r.status === "APPROVED")
 

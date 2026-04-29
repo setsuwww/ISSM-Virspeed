@@ -1,8 +1,14 @@
-import { QrCode, Clock, RefreshCcw, Calendar, User } from "lucide-react"
+import { QrCode, Clock, RefreshCcw, Calendar, User, LayoutDashboard } from "lucide-react"
 
-export const iconMap = { QrCode, Clock, RefreshCcw, Calendar, User }
+export const iconMap = { QrCode, Clock, RefreshCcw, Calendar, User, LayoutDashboard }
 
 export const employeeMenu = (changeShiftCount, scheduleCount) => [
+  {
+    type: "link",
+    label: "Dashboard",
+    href: "/employee/dashboard",
+    icon: "LayoutDashboard"
+  },
   {
     type: "link",
     label: "Attendances",
@@ -10,17 +16,16 @@ export const employeeMenu = (changeShiftCount, scheduleCount) => [
     icon: "QrCode"
   },
   {
-    type: "link",
+    type: "group",
     label: "History",
-    href: "/employee/dashboard/attendance/history",
-    icon: "Clock"
-  },
-  {
-    type: "link",
-    label: "Change Shift",
-    href: "/employee/dashboard/attendance/change-shift",
-    icon: "RefreshCcw",
-    badge: changeShiftCount
+    icon: "Clock",
+    items: [
+      { label: "Attendance", href: "/employee/dashboard/attendance/history" },
+      { label: "Permission", href: "/employee/dashboard/attendance/history/permission" },
+      { label: "Leave", href: "/employee/dashboard/attendance/history/leave" },
+      { label: "Early Checkout", href: "/employee/dashboard/attendance/history/early-checkout" },
+      { label: "Change Shift", href: "/employee/dashboard/attendance/change-shift" },
+    ]
   },
   {
     type: "link",

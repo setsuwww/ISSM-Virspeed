@@ -37,6 +37,7 @@ export const adminMenu = [
     icon: "Clock",
     items: [
       { label: "Shifts", href: "/admin/dashboard/shifts" },
+      { label: "Shift Assignments", href: "/admin/dashboard/shift-assignments" },
       { label: "Schedules", href: "/admin/dashboard/schedules" }
     ]
   },

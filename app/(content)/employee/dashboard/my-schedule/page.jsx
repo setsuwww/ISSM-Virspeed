@@ -1,79 +1,57 @@
-import { getCurrentUser } from "@/_lib/auth"
-import { prisma } from "@/_lib/prisma"
-import ContentForm from "@/_components/common/ContentForm"
-import ScheduleList from "./ScheduleList"
-import { ContentInformation } from "@/_components/common/ContentInformation"
+import { redirect } from 'next/navigation'
+import { getCurrentUser } from '@/_lib/auth'
+import { prisma } from '@/_lib/prisma'
+import ShiftScheduleClient from './ShiftScheduleClient'
+import { startOfMonth, endOfMonth, parseISO, format } from 'date-fns'
 
-export const revalidate = 60
+export const revalidate = 0
 
-export default async function Page() {
+export default async function MySchedulePage(props) {
+  const searchParams = await props.searchParams;
   const user = await getCurrentUser()
-  if (!user) {
-    return <div className="p-6 text-slate-500">User not authenticated</div>
+  if (!user) redirect('/auth/signin')
+
+  // Parse selected month from searchParams or default to current month
+  const selectedMonth = searchParams?.month || format(new Date(), 'yyyy-MM')
+  
+  // Create a proper date from "yyyy-MM" to find the start and end of that month
+  // "yyyy-MM-01" is used to parse a valid Date
+  let targetDate
+  try {
+    targetDate = parseISO(`${selectedMonth}-01`)
+    if (isNaN(targetDate.getTime())) throw new Error()
+  } catch (e) {
+    targetDate = new Date()
   }
 
-  const schedules = await prisma.schedule.findMany({
+  const start = startOfMonth(targetDate)
+  const end = endOfMonth(targetDate)
+
+  const assignments = await prisma.shiftAssignment.findMany({
     where: {
-      users: {
-        some: { userId: user.id },
-      },
+      userId: user.id,
+      date: {
+        gte: start,
+        lte: end
+      }
     },
-    orderBy: { startDate: "asc" },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      frequency: true,
-      startDate: true,
-      startTime: true,
-      endDate: true,
-      endTime: true,
-
-      users: {
-        take: 5,
-        orderBy: { id: "asc" },
-        select: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      },
-
-      _count: {
-        select: {
-          users: true,
-        },
-      },
+    include: {
+      shift: true
     },
+    orderBy: { date: 'asc' }
   })
 
-  const normalizedSchedules = schedules.map((s) => ({
-    id: s.id,
-    title: s.title,
-    description: s.description,
-    frequency: s.frequency,
-    startDate: s.startDate,
-    startTime: s.startTime,
-    endDate: s.endDate,
-    endTime: s.endTime,
-
-    usersPreview: s.users.map((u) => u.user),
-    totalUsers: s._count.users,
-    hasMoreUsers: s._count.users > s.users.length,
-  }))
-
   return (
-    <ContentForm>
-      <ContentForm.Header>
-        <ContentInformation title="My Schedule" subtitle="List of my schedules" />
-      </ContentForm.Header>
-      <ContentForm.Body>
-        <ScheduleList schedules={normalizedSchedules} />
-      </ContentForm.Body>
-    </ContentForm>
+    <div className="flex flex-col h-full bg-slate-50/50">
+      <div className="px-4 sm:px-6 py-4 border-b border-slate-200 bg-white">
+        <h1 className="text-2xl font-bold text-slate-800">My Shift Schedule</h1>
+        <p className="text-sm text-slate-500 mt-1">View your shift assignments for the selected month.</p>
+      </div>
+      
+      <ShiftScheduleClient 
+        assignments={assignments} 
+        selectedMonth={format(targetDate, 'yyyy-MM')} 
+      />
+    </div>
   )
 }

@@ -1,4 +1,3 @@
-import HistoryAnotherTabs from "./HistoryAnotherTabs"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 
@@ -10,7 +9,6 @@ export default function HistoryLayout({ children }) {
           <ContentInformation title="Your Attendance History" subtitle="Review all your attendance records"
             autoMargin={false}
           />
-          <HistoryAnotherTabs />
         </div>
       </ContentForm.Header>
 
