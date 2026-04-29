@@ -3,7 +3,6 @@ export async function register() {
         const { initAttendanceCron } = await import("./_jobs/content/attendance/attendance_cron")
         initAttendanceCron()
 
-        // Also initialize shift rotation cron if it exists and is intended
         try {
             await import("./_jobs/content/shift/shift_cron")
             console.log("[CRON] Shift rotation cron initialized.")
