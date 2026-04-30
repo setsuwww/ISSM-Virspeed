@@ -147,16 +147,16 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
       )}
 
       <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden mb-6 bg-white !p-0">
-        <div className="bg-slate-50/50 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 px-6">
+        <div className="bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 px-6">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 border border-slate-200 rounded-lg p-1 bg-white">
-              <button onClick={handlePrevMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-md text-slate-600 transition-colors">
+            <div className="flex items-center gap-2 bg-white border border-slate-300 rounded-full p-1">
+              <button onClick={handlePrevMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="font-semibold text-red-600 min-w-[130px] text-center text-sm">
                 {format(currentDate, "MMMM yyyy")}
               </span>
-              <button onClick={handleNextMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">
+              <button onClick={handleNextMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -379,7 +379,7 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
                 <Button
                   variant="link"
                   onClick={() => setBulkPattern([...bulkPattern, ""])}
-                  className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 p-0 h-auto"
+                  className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 !p-0 !h-auto"
                 >
                   <Plus className="w-3 h-3" /> Add Rotation Day
                 </Button>
