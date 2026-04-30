@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isTomorrow, addMonths, subMonths } from "date-fns"
-import { ChevronLeft, ChevronRight, Clock, AlertCircle, FileText, RefreshCcw, Calendar as CalendarIcon, Info, ChevronDown } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
+import { useState, useMemo } from "react"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isTomorrow, addMonths, subMonths } from "date-fns"
+import { ChevronLeft, ChevronRight, Clock, AlertCircle, FileText, RefreshCcw, Calendar as CalendarIcon, Info, ChevronDown, LogIn, LogOut } from "lucide-react"
+import { Card, CardContent, CardTitle } from "@/_components/ui/Card"
 import { Badge } from "@/_components/ui/Badge"
 import {
   Tooltip,
@@ -45,23 +45,17 @@ const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, chil
 }
 
 export default function DashboardClient({
-
-  assignments,
-  attendanceHistory,
-  earlyCheckouts,
-  permissions,
-  leaves,
-  shiftChanges
+  calendarMap,
+  todayActivity,
+  historyData
 }) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
+  // Calendar Logic (Minimal on client)
   const start = startOfMonth(currentDate)
   const end = endOfMonth(currentDate)
   const daysInMonth = eachDayOfInterval({ start, end })
-
-  // Fill empty days for alignment
-  const firstDayOfMonth = start.getDay()
-  const emptyDays = Array(firstDayOfMonth).fill(null)
+  const emptyDays = Array(start.getDay()).fill(null)
 
   const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1))
   const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1))
@@ -70,40 +64,38 @@ export default function DashboardClient({
     <div className="flex flex-col lg:flex-row gap-6 p-4">
       {/* Shift Calendar Section */}
       <div className="lg:w-2/3 flex flex-col gap-4">
-        <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden">
-          <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between py-4">
-            <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-slate-500" />
-              My Shift Calendar
+        <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden !p-0">
+          <div className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between p-4">
+            <CardTitle className="ml-2 text-lg font-semibold text-slate-800 flex items-center gap-2">
+              Shift Calendar
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <button onClick={handlePrevMonth} className="p-1 hover:bg-slate-200 rounded text-slate-600 transition-colors">
+            <div className="flex items-center gap-2 bg-white border border-slate-300 p-1 rounded-full">
+              <button onClick={handlePrevMonth} className="p-1 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="font-medium text-slate-700 min-w-[120px] text-center">
+              <span className="font-medium text-sm text-red-600 min-w-[120px] text-center">
                 {format(currentDate, "MMMM yyyy")}
               </span>
-              <button onClick={handleNextMonth} className="p-1 hover:bg-slate-200 rounded text-slate-600 transition-colors">
+              <button onClick={handleNextMonth} className="p-1 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          </div>
+          <CardContent className="!p-0">
+            <div className="grid grid-cols-7 gap-1 mb-2 bg-slate-100 rounded-md mx-4">
+              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
                 <div key={day} className="text-center text-xs font-semibold text-slate-500 py-2">
                   {day}
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1 p-4">
               {emptyDays.map((_, i) => (
                 <div key={`empty-${i}`} className="min-h-[80px] sm:min-h-[100px] p-2 bg-slate-50/50 rounded-lg"></div>
               ))}
               {daysInMonth.map(day => {
                 const dateStr = format(day, "yyyy-MM-dd")
-                const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+                const shiftForDay = calendarMap[dateStr] // 🔥 O(1) Lookup
 
                 const isTodayDate = isToday(day)
                 const isTomorrowDate = isTomorrow(day)
@@ -111,15 +103,15 @@ export default function DashboardClient({
                 let containerClass = "min-h-[80px] sm:min-h-[100px] p-2 rounded-lg border transition-all flex flex-col gap-1 relative group "
 
                 if (isTodayDate) {
-                  containerClass += "bg-blue-50/30 border-blue-400 shadow-sm"
+                  containerClass += "bg-blue-50/20 border-blue-400"
                 } else if (isTomorrowDate) {
-                  containerClass += "bg-slate-50/80 border-slate-300"
+                  containerClass += "bg-slate-50 border-slate-300 border-dashed hover:border-blue-500 hover:bg-blue-50 "
                 } else {
-                  containerClass += "bg-white border-slate-100 hover:border-slate-300"
+                  containerClass += "bg-white border-slate-300"
                 }
 
                 return (
-                  <TooltipProvider key={day.toString()}>
+                  <TooltipProvider key={dateStr}>
                     <Tooltip delayDuration={300}>
                       <TooltipTrigger asChild>
                         <div className={containerClass}>
@@ -149,7 +141,7 @@ export default function DashboardClient({
                             <p className="font-semibold text-sm">{shiftForDay.shift.name}</p>
                             <p className="text-xs text-slate-300 flex items-center gap-1">
                               <Clock className="w-3 h-3" />
-                              {formatTime(shiftForDay.shift.startTime)} - {formatTime(shiftForDay.shift.endTime)}
+                              {shiftForDay.startTimeStr} - {shiftForDay.endTimeStr}
                             </p>
                           </div>
                         </TooltipContent>
@@ -163,149 +155,110 @@ export default function DashboardClient({
         </Card>
       </div>
 
-      {/* History Section (Collapsible) */}
-      <div className="lg:w-1/3 flex flex-col gap-4">
-        <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2 px-1">
-          <FileText className="w-5 h-5 text-slate-500" />
-          Recent Activity
-        </h3>
+      <div className="lg:w-1/3 flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+            <Clock className="w-5 h-5 text-blue-600" />
+            Recent Activity
+            <span className="text-xs font-normal text-slate-400 ml-auto bg-slate-100 px-2 py-1 rounded-full">Today</span>
+          </h3>
 
-        <div className="w-full space-y-2">
-          {/* Attendance History */}
-          <CollapsibleSection
-            title="Attendance History"
-            icon={<Clock className="w-4 h-4 text-blue-500" />}
-            colorClass="border-blue-300"
-            defaultOpen={true}
-          >
-            {attendanceHistory.length === 0 ? (
-              <p className="text-sm text-slate-500 italic text-center py-2">No recent attendance</p>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {attendanceHistory.map(att => (
-                  <div key={att.id} className="flex justify-between items-center text-sm p-2 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-slate-700">{format(new Date(att.date), "dd MMM yyyy")}</span>
-                      <span className="text-xs text-slate-500">
-                        {att.checkInTime ? format(new Date(att.checkInTime), "HH:mm") : "-"}
-                        {' → '}
-                        {att.checkOutTime ? format(new Date(att.checkOutTime), "HH:mm") : "-"}
-                      </span>
-                    </div>
-                    <Badge variant="outline" className="text-[10px] uppercase bg-white">
-                      {att.status || "-"}
-                    </Badge>
+          <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden bg-white">
+            <CardContent className="p-4">
+              {todayActivity.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-slate-400">
+                  <div className="bg-slate-50 p-3 rounded-full mb-2">
+                    <Clock className="w-6 h-6 opacity-20" />
                   </div>
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
+                  <p className="text-sm italic">No activity today</p>
+                </div>
+              ) : (
+                <div className="relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+                  {todayActivity.map((activity, idx) => {
+                    let icon = <Clock className="w-3 h-3" />
+                    let iconBg = "bg-slate-100 text-slate-500"
 
-          {/* Early Checkout */}
-          <CollapsibleSection
-            title="Early Checkout"
-            icon={<AlertCircle className="w-4 h-4 text-orange-500" />}
-            colorClass="border-orange-300"
-          >
-            {earlyCheckouts.length === 0 ? (
-              <p className="text-sm text-slate-500 italic text-center py-2">No early checkout requests</p>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {earlyCheckouts.map(req => (
-                  <div key={req.id} className="flex flex-col gap-1 text-sm p-2 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-slate-700">
-                        {req.attendance?.date ? format(new Date(req.attendance.date), "dd MMM yyyy") : "-"}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] uppercase bg-white">{req.status}</Badge>
-                    </div>
-                    <span className="text-xs text-slate-500 truncate" title={req.reason}>Reason: {req.reason || "-"}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
+                    if (activity.type === "LOGIN") {
+                      icon = <LogIn className="w-3 h-3" />
+                      iconBg = "bg-blue-100 text-blue-600"
+                    } else if (activity.type === "LOGOUT") {
+                      icon = <LogOut className="w-3 h-3" />
+                      iconBg = "bg-red-100 text-red-600"
+                    } else if (activity.type === "CHECK_IN") {
+                      icon = <LogIn className="w-3 h-3" />
+                      iconBg = "bg-green-100 text-green-600"
+                    } else if (activity.type === "CHECK_OUT") {
+                      icon = <LogOut className="w-3 h-3" />
+                      iconBg = "bg-orange-100 text-orange-600"
+                    } else if (activity.type === "EARLY_CHECKOUT_REQUEST") {
+                      icon = <AlertCircle className="w-3 h-3" />
+                      iconBg = "bg-red-100 text-red-600"
+                    } else if (activity.type === "LEAVE_REQUEST") {
+                      icon = <CalendarIcon className="w-3 h-3" />
+                      iconBg = "bg-purple-100 text-purple-600"
+                    } else if (activity.type === "PERMISSION_REQUEST") {
+                      icon = <Info className="w-3 h-3" />
+                      iconBg = "bg-amber-100 text-amber-600"
+                    } else if (activity.type === "SHIFT_CHANGE_REQUEST") {
+                      icon = <RefreshCcw className="w-3 h-3" />
+                      iconBg = "bg-indigo-100 text-indigo-600"
+                    }
 
-          {/* Permission */}
-          <CollapsibleSection
-            title="Permission"
-            icon={<Info className="w-4 h-4 text-purple-500" />}
-            colorClass="border-purple-300"
-          >
-            {permissions.length === 0 ? (
-              <p className="text-sm text-slate-500 italic text-center py-2">No permission requests</p>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {permissions.map(req => (
-                  <div key={req.id} className="flex flex-col gap-1 text-sm p-2 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-slate-700">
-                        {format(new Date(req.date), "dd MMM yyyy")}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] uppercase bg-white">{req.approval || "PENDING"}</Badge>
-                    </div>
-                    <span className="text-xs text-slate-500 truncate" title={req.reason}>Reason: {req.reason || "-"}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
+                    return (
+                      <div key={idx} className="relative group">
+                        <div className={`absolute -left-[25px] top-0 w-5 h-5 rounded-full flex items-center justify-center border-4 border-white z-10 transition-transform group-hover:scale-110 shadow-sm ${iconBg}`}>
+                          {icon}
+                        </div>
 
-          {/* Leave */}
-          <CollapsibleSection
-            title="Leave"
-            icon={<CalendarIcon className="w-4 h-4 text-green-500" />}
-            colorClass="border-green-300"
-          >
-            {leaves.length === 0 ? (
-              <p className="text-sm text-slate-500 italic text-center py-2">No leave requests</p>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {leaves.map(req => (
-                  <div key={req.id} className="flex flex-col gap-1 text-sm p-2 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-slate-700">
-                        {req.leaveType?.name || "-"}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] uppercase bg-white">{req.status}</Badge>
-                    </div>
-                    <span className="text-xs text-slate-500">
-                      {format(new Date(req.startDate), "dd MMM")} - {format(new Date(req.endDate), "dd MMM yyyy")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-400 tabular-nums">{activity.time}</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
+                            <span className="text-sm font-semibold text-slate-700">{activity.label}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Shift Change */}
-          <CollapsibleSection
-            title="Shift Change"
-            icon={<RefreshCcw className="w-4 h-4 text-rose-500" />}
-            colorClass="border-rose-300"
-          >
-            {shiftChanges.length === 0 ? (
-              <p className="text-sm text-slate-500 italic text-center py-2">No shift change requests</p>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {shiftChanges.map(req => (
-                  <div key={req.id} className="flex flex-col gap-2 text-sm p-2 bg-slate-50 rounded-lg border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-slate-700">
-                        {format(new Date(req.startDate), "dd MMM yyyy")}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] uppercase bg-white">{req.status}</Badge>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 px-1">
+            <FileText className="w-5 h-5 text-slate-500" />
+            History
+          </h3>
+
+          <div className="w-full space-y-2 pb-6">
+            <CollapsibleSection
+              title="Attendance History"
+              icon={<Clock className="w-4 h-4 text-blue-500" />}
+              colorClass="border-blue-100 bg-blue-50/10"
+            >
+              {historyData.attendance.length === 0 ? (
+                <p className="text-sm text-slate-500 italic text-center py-2">No past records</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {historyData.attendance.map(att => (
+                    <div key={att.id} className="flex justify-between items-center text-sm p-2.5 bg-white rounded-lg border border-slate-100 shadow-sm">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-700">{att.dateStr}</span>
+                        <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                          {att.checkInStr} <span className="text-slate-300">→</span> {att.checkOutStr}
+                        </span>
+                      </div>
+                      <Badge variant="outline" className="text-[9px] uppercase font-bold tracking-wider py-0 px-1.5">
+                        {att.status}
+                      </Badge>
                     </div>
-                    <div className="flex items-center justify-between text-xs bg-white p-1.5 rounded border border-slate-100">
-                      <div className="text-slate-500">{req.oldShift?.name || "-"}</div>
-                      <ChevronRight className="w-3 h-3 text-slate-400" />
-                      <div className="text-slate-700 font-medium">{req.targetShift?.name || "-"}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
+                  ))}
+                </div>
+              )}
+            </CollapsibleSection>
+          </div>
         </div>
       </div>
     </div>

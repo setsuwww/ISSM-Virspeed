@@ -46,7 +46,11 @@ export async function getActiveShiftAssignment(userId) {
             },
         },
         include: {
-            shift: true,
+            shift: {
+                include: {
+                    location: true,
+                },
+            },
         },
     })
 }

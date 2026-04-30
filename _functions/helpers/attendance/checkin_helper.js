@@ -123,7 +123,6 @@ export async function determineAttendanceStatus({ shiftId, locationId, assignmen
 
     // Status logic
     if (diffMin < 0) {
-        // Within 10 mins before start
         return "EARLY_CHECKIN";
     }
 
@@ -132,7 +131,6 @@ export async function determineAttendanceStatus({ shiftId, locationId, assignmen
     }
 
     if (diffMin <= ABSENT_THRESHOLD_MINUTES) {
-        // Between 0 and 20 mins after start
         return "LATE";
     }
 

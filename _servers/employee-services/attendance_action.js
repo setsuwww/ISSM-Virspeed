@@ -8,7 +8,6 @@ import {
   evaluateAttendancePolicy,
   processPermissionRequest,
   processLeaveRequest,
-  getActiveAssignment,
   getCheckoutWarning,
   determineAttendanceStatus,
   isForgotCheckoutEligible,
@@ -56,7 +55,6 @@ export async function userPrecheckCheckIn() {
   let shiftStart = minutesToDateTime(date, startMinutes)
   let shiftEnd = minutesToDateTime(date, endMinutes)
 
-  // handle lintas hari
   if (endMinutes <= startMinutes) {
     shiftEnd = shiftEnd.add(1, "day")
   }
@@ -77,7 +75,6 @@ export async function userPrecheckCheckIn() {
 
   const diffStartMin = shiftStart.diff(now) / (60 * 1000)
 
-  // window checkin
   const isCheckInOpen = now.isAfter(shiftStart.subtract(20, "minute")) && now.isBefore(shiftEnd)
   const isShiny = now.isAfter(shiftStart.subtract(10, "minute")) && now.isBefore(shiftStart)
 
@@ -86,13 +83,10 @@ export async function userPrecheckCheckIn() {
     where: {
       userId: user.id,
       date: date,
-      // If we use multiple shifts per day, we'd need more logic,
-      // but for Normal vs Shift, this protects duplicates.
     },
     include: { earlyCheckoutRequests: true }
   })
 
-  // Check Requests (Leave/Permission)
   const hasRequest = attendance?.status === "PERMISSION" || attendance?.status === "INACTIVE"
 
   const hasEarlyCheckoutReq = attendance?.earlyCheckoutRequests?.some(r => r.status === "PENDING" || r.status === "APPROVED")
@@ -110,7 +104,9 @@ export async function userPrecheckCheckIn() {
     reason: !attendance?.checkInTime ? "Not checked-in" : attendance?.checkOutTime ? "Already checked-out" : null
   }
 
-  const policy = await evaluateAttendancePolicy({ location })
+  const policy = await evaluateAttendancePolicy({
+    location: workHours?.location,
+  });
 
   return {
     requireLocation: policy.ignoreLocation !== true,
@@ -133,10 +129,12 @@ export async function userSendCheckIn(coords = null) {
 
   let shift = assignment?.shift;
   let workHours = null;
+  let location = null;
   let date = assignment?.date || getTodayStartJakarta().toDate();
 
   if (shift) {
     workHours = shift;
+    location = shift.location;
   }
 
   if (!workHours) {
@@ -145,7 +143,7 @@ export async function userSendCheckIn(coords = null) {
 
   // Policy Location & coordinates
   const policy = await evaluateAttendancePolicy({
-    location: workHours,
+    location: workHours?.location,
     currentCoords: coords,
   });
 
@@ -185,8 +183,8 @@ export async function userSendCheckIn(coords = null) {
       date: date,
       status,
       checkInTime: now.toDate(),
-      locationType: workHours.type,
-      locationStatus: workHours.status,
+      locationType: location.type,
+      locationStatus: location.status,
     },
   });
 
