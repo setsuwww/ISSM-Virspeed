@@ -22,9 +22,29 @@ export async function createOrUpdateShiftAssignment(data) {
     await requireAdmin()
     
     const { userId, date, shiftId, isLeave = false, isManualOverride = false } = data
-
+ 
     if (!userId || !date || shiftId === undefined || shiftId === null) {
       throw new Error("Missing required fields: userId, date, and shiftId are mandatory.")
+    }
+
+    // [STRICT LOCATION RULE]
+    // Fetch user and shift location to validate
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { locationId: true }
+    })
+
+    if (!targetUser) throw new Error("User not found.")
+
+    const targetShift = await prisma.shift.findUnique({
+      where: { id: shiftId },
+      select: { locationId: true }
+    })
+
+    if (!targetShift) throw new Error("Shift not found.")
+
+    if (targetUser.locationId !== targetShift.locationId) {
+      throw new Error("Shift tidak tersedia di lokasi user")
     }
 
     const targetDate = startOfDay(new Date(date))
@@ -91,6 +111,27 @@ export async function bulkAssignShift(data) {
 
     if (!userId || !startDate || !endDate || !shiftPattern || !shiftPattern.length) {
       throw new Error("Missing required fields or empty pattern.")
+    }
+
+    // [STRICT LOCATION RULE]
+    // Fetch user location
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { locationId: true }
+    })
+    if (!targetUser) throw new Error("User not found.")
+
+    // Fetch all shifts in the pattern to validate their locations
+    const uniqueShiftIds = [...new Set(shiftPattern.filter(id => id !== null && id !== undefined))]
+    const targetShifts = await prisma.shift.findMany({
+      where: { id: { in: uniqueShiftIds.map(id => parseInt(id)) } },
+      select: { id: true, locationId: true }
+    })
+
+    // Check if any shift belongs to a different location
+    const invalidShifts = targetShifts.filter(s => s.locationId !== targetUser.locationId)
+    if (invalidShifts.length > 0 || targetShifts.length < uniqueShiftIds.length) {
+      throw new Error("Shift tidak tersedia di lokasi user")
     }
 
     const start = startOfDay(new Date(startDate))

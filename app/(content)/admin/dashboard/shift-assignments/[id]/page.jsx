@@ -7,6 +7,7 @@ import { ChevronLeft } from "lucide-react"
 import { startOfMonth, endOfMonth, parseISO, format } from "date-fns"
 import AdminShiftCalendarClient from "./AdminShiftCalendarClient"
 import ContentForm from "@/_components/common/ContentForm"
+import { DashboardHeader } from "../../DashboardHeader"
 
 export const revalidate = 0
 
@@ -23,7 +24,7 @@ export default async function AdminUserShiftSchedulePage(props) {
   // Fetch the target user
   const targetUser = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, name: true, email: true, role: true }
+    select: { id: true, name: true, email: true, role: true, locationId: true }
   })
 
   if (!targetUser) {
@@ -66,31 +67,35 @@ export default async function AdminUserShiftSchedulePage(props) {
   })
 
   return (
-    <ContentForm>
-      <ContentForm.Header>
-        <div className="flex items-center gap-4 mb-2">
-          <Link
-            href="/admin/dashboard/shift-assignments"
-            className="p-2 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-lg transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Link>
-          <ContentInformation
-            title={`Schedule: ${targetUser.name}`}
-            subtitle={`Manage shift assignments for ${targetUser.email}`}
-            autoMargin={false}
-          />
-        </div>
-      </ContentForm.Header>
+    <section className="space-y-6">
+      <DashboardHeader title={`${targetUser.name}'s Shift schedule`} subtitle={`Manage shifts schedules data for ${targetUser.email}`} />
 
-      <ContentForm.Body>
-        <AdminShiftCalendarClient
-          user={targetUser}
-          assignments={assignments}
-          shifts={shifts}
-          selectedMonth={format(targetDate, 'yyyy-MM')}
-        />
-      </ContentForm.Body>
-    </ContentForm>
+      <ContentForm>
+        <ContentForm.Header>
+          <div className="flex items-center gap-4 mb-2">
+            <Link
+              href="/admin/dashboard/shift-assignments"
+              className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Link>
+            <ContentInformation
+              title={`Schedule : ${targetUser.name}`}
+              subtitle={`Manage shift assignments for ${targetUser.email}`}
+              autoMargin={false}
+            />
+          </div>
+        </ContentForm.Header>
+
+        <ContentForm.Body>
+          <AdminShiftCalendarClient
+            user={targetUser}
+            assignments={assignments}
+            shifts={shifts}
+            selectedMonth={format(targetDate, 'yyyy-MM')}
+          />
+        </ContentForm.Body>
+      </ContentForm>
+    </section>
   )
 }

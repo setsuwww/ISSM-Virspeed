@@ -65,6 +65,28 @@ export async function updateShift(id, payload) {
 
   const updateData = { ...result.data };
   delete updateData.id;
+ 
+  // [STRICT LOCATION RULE]
+  // If locationId is being updated, check for active assignments
+  if (updateData.locationId) {
+    const currentShift = await prisma.shift.findUnique({
+      where: { id },
+      select: { locationId: true }
+    })
+
+    if (currentShift && currentShift.locationId !== updateData.locationId) {
+      const futureAssignmentsCount = await prisma.shiftAssignment.count({
+        where: {
+          shiftId: id,
+          date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+        }
+      })
+
+      if (futureAssignmentsCount > 0) {
+        return { error: "Shift tidak bisa pindah lokasi karena masih memiliki penugasan aktif di masa depan." }
+      }
+    }
+  }
 
   await prisma.shift.update({
     where: { id },
