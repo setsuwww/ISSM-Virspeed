@@ -18,6 +18,7 @@ import {
 
 import { createOrUpdateShiftAssignment, deleteShiftAssignment, bulkAssignShift } from "@/_servers/admin-services/shift_assignment_action"
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
+import { Label } from "@/_components/ui/Label"
 
 const formatTime = (minutes) => {
   if (minutes == null) return "--:--";
@@ -318,7 +319,7 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
           <div className="p-6 space-y-5 max-h-[60vh] overflow-y-auto">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
+                <Label className="block text-sm font-medium text-slate-700 mb-1">Start Date</Label>
                 <Input
                   type="date"
                   typeDate={true}
@@ -328,7 +329,7 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
+                <Label className="block text-sm font-medium text-slate-700 mb-1">End Date</Label>
                 <Input
                   type="date"
                   typeDate={true}
@@ -339,8 +340,17 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Shift Rotation Pattern</label>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between mb-2">
+                <Label className="block text-sm font-medium text-slate-700">Shift Rotation Pattern</Label>
+                <Button
+                  variant="link"
+                  onClick={() => setBulkPattern([...bulkPattern, ""])}
+                  className="text-sm text-blue-600 font-medium flex items-center gap-1 !p-0 !h-auto"
+                >
+                  <Plus className="w-3 h-3" /> Add Rotation Day
+                </Button>
+              </div>
               <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
                 {bulkPattern.map((patternVal, idx) => (
                   <div key={idx} className="flex gap-2 items-center">
@@ -376,13 +386,6 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
                     )}
                   </div>
                 ))}
-                <Button
-                  variant="link"
-                  onClick={() => setBulkPattern([...bulkPattern, ""])}
-                  className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 !p-0 !h-auto"
-                >
-                  <Plus className="w-3 h-3" /> Add Rotation Day
-                </Button>
               </div>
             </div>
           </div>

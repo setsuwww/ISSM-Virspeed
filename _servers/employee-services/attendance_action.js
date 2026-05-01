@@ -97,6 +97,13 @@ export async function userPrecheckCheckIn() {
     reason: isShiftEnded ? "Shift ended" : !isCheckInOpen ? "Not opened" : attendance?.checkInTime ? "Already checked-in" : null
   }
 
+  console.log({
+    now: now.format(),
+    shiftStart: shiftStart.format(),
+    shiftEnd: shiftEnd.format(),
+    isCheckInOpen,
+  })
+
   const checkOutState = {
     disabled: isShiftEnded || !attendance?.checkInTime || !!attendance?.checkOutTime || hasEarlyCheckoutReq || hasRequest || user.isActive === false,
     isForgot: isForgotCheckoutEligible(attendance, workHours) && !isShiftEnded,
