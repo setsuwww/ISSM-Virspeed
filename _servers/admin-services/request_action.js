@@ -18,7 +18,10 @@ export async function updatePermissionRequestStatus(id, newStatus, adminReason =
   if (newStatus === "APPROVED") {
     await prisma.user.update({
       where: { id: attendance.userId },
-      data: { isActive: false },
+      data: {
+        isActive: false,
+        inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
+      },
     });
   }
 
@@ -89,7 +92,10 @@ export async function updateLeaveRequestStatus(id, newStatus, adminReason = null
       }
       await prisma.user.update({
         where: { id: req.userId },
-        data: { isActive: false },
+        data: {
+          isActive: false,
+          inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
+        },
       });
     }
 
@@ -147,6 +153,14 @@ export async function updateEarlyCheckoutRequestStatus(id, newStatus, adminReaso
           checkOutTime: now,
           workMinutes,
         },
+      });
+
+      await tx.user.update({
+        where: { id: request.userId },
+        data: {
+          isActive: false,
+          inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
+        }
       });
     }
   });

@@ -7,7 +7,7 @@ import { ChevronLeft } from "lucide-react"
 import { startOfMonth, endOfMonth, parseISO, format } from "date-fns"
 import AdminShiftCalendarClient from "./AdminShiftCalendarClient"
 import ContentForm from "@/_components/common/ContentForm"
-import { DashboardHeader } from "../../DashboardHeader"
+import { DashboardHeader } from "../../../DashboardHeader"
 
 export const revalidate = 0
 

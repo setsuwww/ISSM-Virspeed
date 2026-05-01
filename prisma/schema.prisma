@@ -159,6 +159,7 @@ model User {
   isLocked         Boolean   @default(false)
   isFlagged        Boolean   @default(false)
   isActive         Boolean   @default(true)
+  inactiveUntil    DateTime?
   tokenVersion     Int       @default(0)
   rotationIndex    Int       @default(0)
   lastRotationDate DateTime?

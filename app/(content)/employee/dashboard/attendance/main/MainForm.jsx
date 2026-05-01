@@ -43,7 +43,7 @@ export default function CheckinForm() {
   })
 
   const { isPending,
-    checkIn, checkOut, earlyCheckout, permission, leave,
+    checkIn, checkOut, earlyCheckout, permission, leave, manualActivate
   } = useUserSendAttendance()
 
   useEffect(() => {
@@ -152,6 +152,14 @@ export default function CheckinForm() {
     catch (err) { alert(err) }
   }, [leave, closeModal])
 
+  const handleManualActivate = useCallback(async () => {
+    try {
+      await manualActivate()
+      window.location.reload()
+    }
+    catch (err) { alert(err) }
+  }, [manualActivate])
+
   if (loading) return <LoadingStates />
 
   return (
@@ -177,7 +185,17 @@ export default function CheckinForm() {
         <CardContent className="space-y-5">
           <ContentInformation title="Your Presence" subtitle="Click once at cards below to send your status" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MainActionCard
+              icon={<CheckCircle2 />}
+              title="Activate Now"
+              description={user?.isActive ? "Your account is active" : "Re-activate your account now"}
+              color={user?.isActive ? "slate" : "gowsh-blue"}
+              onClick={handleManualActivate}
+              disabled={user?.isActive}
+              loading={isPending}
+            />
+
             <MainActionCard icon={<LogIn />} title="Check In" description={precheck.checkIn?.reason || "Start your working time"}
               color="teal"
               onClick={handleCheckIn}

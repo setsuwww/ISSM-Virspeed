@@ -197,7 +197,10 @@ export async function userSendCheckIn(coords = null) {
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { isActive: true }
+    data: {
+      isActive: true,
+      inactiveUntil: null
+    }
   });
 
   await safeLog({
@@ -267,7 +270,10 @@ export async function userSendCheckOut() {
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { isActive: false }
+    data: {
+      isActive: false,
+      inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
+    }
   });
 
   return { success: true, warning };
@@ -359,7 +365,10 @@ export async function userSendEarlyCheckout(reason) {
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { isActive: false }
+    data: {
+      isActive: false,
+      inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
+    }
   });
 
   await safeLog({
@@ -437,3 +446,24 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
     return { error: err.message };
   }
 }
+
+export async function userManualActivate() {
+  const user = await getCurrentUser()
+  if (!user?.id) return { error: "Unauthorized" }
+
+  if (user.isActive) {
+    return { error: "User is already active" }
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      isActive: true,
+      inactiveUntil: null
+    }
+  })
+
+  revalidatePath("/")
+  return { success: true }
+}
+

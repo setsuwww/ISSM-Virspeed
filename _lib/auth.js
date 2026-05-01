@@ -45,8 +45,25 @@ export const getCurrentUser = cache(async () => {
   const decoded = await getUserFromCookie()
   if (!decoded?.id) return null
 
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: decoded.id },
     include: { shift: true, location: true },
   })
+
+  if (!user) return null
+
+  // Lazy Activation Check
+  if (!user.isActive && user.inactiveUntil && new Date() > user.inactiveUntil) {
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isActive: true,
+        inactiveUntil: null,
+      },
+      include: { shift: true, location: true },
+    })
+    return updatedUser
+  }
+
+  return user
 })

@@ -5,7 +5,7 @@ import Link from "next/link"
 import ContentForm from "@/_components/common/ContentForm"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { Calendar } from "lucide-react"
-import { DashboardHeader } from "../DashboardHeader"
+import { DashboardHeader } from "../../DashboardHeader"
 
 export const revalidate = 0
 

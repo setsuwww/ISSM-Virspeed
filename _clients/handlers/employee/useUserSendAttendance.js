@@ -11,6 +11,7 @@ import {
   userSendEarlyCheckout,
   userSendPermissionRequest,
   userSendLeaveRequest,
+  userManualActivate,
 } from "@/_servers/employee-services/attendance_action";
 
 export function useUserSendAttendance() {
@@ -109,14 +110,23 @@ export function useUserSendAttendance() {
       )
     );
 
-  const leave = (payload) =>
+  const leave = (data) =>
     run(() =>
       withTry(
-        () => userSendLeaveRequest(payload),
+        () => userSendLeaveRequest(data),
         "Leave request sent",
         "Leave request failed to send"
       )
     );
 
-  return { isPending, checkIn, checkOut, earlyCheckout, permission, leave };
+  const manualActivate = () =>
+    run(() =>
+      withTry(
+        () => userManualActivate(),
+        "Account activated successfully",
+        "Failed to activate account"
+      )
+    );
+
+  return { isPending, checkIn, checkOut, earlyCheckout, permission, leave, manualActivate };
 }
