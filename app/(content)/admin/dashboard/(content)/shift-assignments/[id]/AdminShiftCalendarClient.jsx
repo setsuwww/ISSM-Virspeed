@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, addMonths, subMonths, parseISO } from "date-fns"
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Loader2, Plus, Trash2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, Plus, Trash2, CalendarPlus } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
 import { Button } from "@/_components/ui/Button"
@@ -150,11 +150,11 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
       <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden mb-6 bg-white !p-0">
         <div className="bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 px-6">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-white border border-slate-300 rounded-full p-1">
+            <div className="flex items-center gap-2 bg-white border border-slate-300 shadow-xs rounded-full p-1">
               <button onClick={handlePrevMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-semibold text-red-600 min-w-[130px] text-center text-sm">
+              <span className="font-semibold text-red-600 min-w-[100px] text-center text-sm">
                 {format(currentDate, "MMMM yyyy")}
               </span>
               <button onClick={handleNextMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors">
@@ -168,7 +168,7 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
             variant="primary"
             className="flex items-center gap-2"
           >
-            <CalendarIcon className="w-4 h-4" />
+            <CalendarPlus className="w-4 h-4" />
             Bulk Assign
           </Button>
         </div>
@@ -203,7 +203,7 @@ export default function AdminShiftCalendarClient({ user, assignments = [], shift
               let containerClass = "min-h-[90px] sm:min-h-[120px] p-2 sm:p-3 rounded-lg border transition-all flex flex-col gap-1 relative cursor-pointer hover:-translate-y-0.5 group "
 
               if (isTodayDate) { containerClass += "bg-blue-50/20 border-blue-400" }
-              else if (hasShift) { containerClass += "bg-white border-slate-300" }
+              else if (hasShift) { containerClass += "bg-white border-slate-400" }
               else { containerClass += "bg-slate-50 border-slate-300 border-dashed hover:border-blue-500 hover:bg-blue-50" }
 
               return (

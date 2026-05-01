@@ -69,11 +69,11 @@ export default function DashboardClient({
             <CardTitle className="ml-2 text-lg font-semibold text-slate-800 flex items-center gap-2">
               Shift Calendar
             </CardTitle>
-            <div className="flex items-center gap-2 bg-white border border-slate-300 p-1 rounded-full">
+            <div className="flex items-center gap-2 bg-white border border-slate-200 p-1 rounded-full shadow-xs">
               <button onClick={handlePrevMonth} className="p-1 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="font-medium text-sm text-red-600 min-w-[120px] text-center">
+              <span className="font-medium text-sm text-red-600 min-w-[100px] text-center">
                 {format(currentDate, "MMMM yyyy")}
               </span>
               <button onClick={handleNextMonth} className="p-1 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
@@ -84,7 +84,7 @@ export default function DashboardClient({
           <CardContent className="!p-0">
             <div className="grid grid-cols-7 gap-1 mb-2 bg-slate-100 rounded-md mx-4">
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                <div key={day} className="text-center text-xs font-semibold text-slate-500 py-2">
+                <div key={day} className="text-center text-sm font-semibold text-slate-500 py-2">
                   {day}
                 </div>
               ))}
