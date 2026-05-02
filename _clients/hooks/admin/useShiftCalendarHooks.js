@@ -2,8 +2,21 @@
 
 import { useState, useTransition, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { format, addDays, eachDayOfInterval, startOfMonth, endOfMonth, addMonths, subMonths, parseISO, min, max } from "date-fns"
-import { createOrUpdateShiftAssignment, deleteShiftAssignment, bulkAssignShift, bulkAssignPreset, deleteMultipleShiftAssignments, deleteAllAssignments } from "@/_servers/admin-services/shift_assignment_action"
+import { 
+  getNowJakarta, 
+  getJakartaMonthDetails, 
+  formatJakarta, 
+  parseJakarta 
+} from "@/_lib/time"
+import { min, max } from "date-fns"
+import { 
+  createOrUpdateShiftAssignment, 
+  deleteShiftAssignment, 
+  bulkAssignShift, 
+  bulkAssignPreset, 
+  deleteMultipleShiftAssignments, 
+  deleteAllAssignments 
+} from "@/_servers/admin-services/shift_assignment_action"
 import { useConfirmStore } from "@/_stores/common/useConfirmStore"
 
 /**
@@ -16,7 +29,7 @@ export const calculateDuration = (dates) => {
   const weeks = Math.floor(totalDays / 7)
   const remainingDays = totalDays % 7
   
-  const dateObjs = dates.map(d => new Date(d))
+  const dateObjs = dates.map(d => parseJakarta(d).toDate())
   const start = min(dateObjs)
   const end = max(dateObjs)
   
@@ -26,7 +39,7 @@ export const calculateDuration = (dates) => {
     remainingDays,
     start,
     end,
-    formattedRange: `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`,
+    formattedRange: `${formatJakarta(start, "DD MMM YYYY")} - ${formatJakarta(end, "DD MMM YYYY")}`,
     breakdown: `${totalDays} days${weeks > 0 ? ` = ${weeks} week${weeks > 1 ? 's' : ''}${remainingDays > 0 ? ` ${remainingDays} day${remainingDays > 1 ? 's' : ''}` : ''}` : ''}`
   }
 }
@@ -41,7 +54,7 @@ export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], sel
     const map = {}
     assignments.forEach(a => {
       if (a?.date) {
-        const dateStr = format(new Date(a.date), "yyyy-MM-dd")
+        const dateStr = formatJakarta(a.date, "YYYY-MM-DD")
         map[dateStr] = a
       }
     })
@@ -64,28 +77,29 @@ export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], sel
   const [bulkEndDate, setBulkEndDate] = useState("")
   const [bulkPattern, setBulkPattern] = useState([""])
 
-  let currentDate
-  try {
-    currentDate = selectedMonth ? parseISO(selectedMonth + "-01") : new Date()
-    if (isNaN(currentDate.getTime())) currentDate = new Date()
-  } catch (e) {
-    currentDate = new Date()
-  }
+  const currentDate = useMemo(() => {
+    try {
+      const d = selectedMonth ? parseJakarta(selectedMonth + "-01") : getNowJakarta()
+      return d.isValid() ? d : getNowJakarta()
+    } catch (e) {
+      return getNowJakarta()
+    }
+  }, [selectedMonth])
 
-  const start = startOfMonth(currentDate)
-  const end = endOfMonth(currentDate)
-  const daysInMonth = useMemo(() => eachDayOfInterval({ start, end }), [start, end])
-  const firstDayOfMonth = start.getDay()
-  const emptyDays = Array(firstDayOfMonth).fill(null)
+  const { days: daysInMonth, firstDayOfWeek } = useMemo(() => 
+    getJakartaMonthDetails(currentDate), 
+    [currentDate]
+  )
+  const emptyDays = Array(firstDayOfWeek).fill(null)
 
   const handlePrevMonth = () => {
-    const prev = subMonths(currentDate, 1)
-    router.push(`?month=${format(prev, "yyyy-MM")}`)
+    const prev = currentDate.clone().subtract(1, "month")
+    router.push(`?month=${formatJakarta(prev, "YYYY-MM")}`)
   }
 
   const handleNextMonth = () => {
-    const next = addMonths(currentDate, 1)
-    router.push(`?month=${format(next, "yyyy-MM")}`)
+    const next = currentDate.clone().add(1, "month")
+    router.push(`?month=${formatJakarta(next, "YYYY-MM")}`)
   }
 
   const openSingleModal = (day) => {
@@ -318,16 +332,26 @@ export const useBulkPreset = (userId, daysInMonth, assignmentMap) => {
     if (!presetShiftId) return alert("Please select a shift first")
 
     let targetDates = []
-    const today = new Date()
+    const todayJakarta = getNowJakarta()
 
     if (presetMode === "WEEK") {
-      const end = addDays(today, 6)
-      targetDates = eachDayOfInterval({ start: today, end }).map(d => format(d, "yyyy-MM-dd"))
+      const end = todayJakarta.clone().add(6, "day")
+      
+      let curr = todayJakarta.clone()
+      while (curr.isBefore(end) || curr.isSame(end, 'day')) {
+        targetDates.push(curr.format("YYYY-MM-DD"))
+        curr = curr.add(1, "day")
+      }
     } else {
       // Remaining days in current month from today
-      const end = endOfMonth(today)
-      if (today > end) return alert("Month already ended")
-      targetDates = eachDayOfInterval({ start: today, end }).map(d => format(d, "yyyy-MM-dd"))
+      const end = todayJakarta.clone().endOf("month")
+      if (todayJakarta.isAfter(end)) return alert("Month already ended")
+      
+      let curr = todayJakarta.clone()
+      while (curr.isBefore(end) || curr.isSame(end, 'day')) {
+        targetDates.push(curr.format("YYYY-MM-DD"))
+        curr = curr.add(1, "day")
+      }
     }
 
     // Filter based on actionType

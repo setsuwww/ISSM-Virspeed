@@ -37,21 +37,29 @@ const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, chil
   )
 }
 
+import {
+  getNowJakarta,
+  getJakartaMonthDetails,
+  formatJakarta,
+  parseJakarta
+} from "@/_lib/time"
+
 export default function Calendar({
   calendarMap,
   todayActivity,
   historyData
 }) {
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState(getNowJakarta())
 
-  // Calendar Logic (Minimal on client)
-  const start = startOfMonth(currentDate)
-  const end = endOfMonth(currentDate)
-  const daysInMonth = eachDayOfInterval({ start, end })
-  const emptyDays = Array(start.getDay()).fill(null)
+  // Calendar Logic (Strictly Jakarta)
+  const { days, firstDayOfWeek } = useMemo(() =>
+    getJakartaMonthDetails(currentDate),
+    [currentDate]
+  )
+  const emptyDays = Array(firstDayOfWeek).fill(null)
 
-  const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1))
-  const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1))
+  const handlePrevMonth = () => setCurrentDate(prev => prev.clone().subtract(1, "month"))
+  const handleNextMonth = () => setCurrentDate(prev => prev.clone().add(1, "month"))
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 p-4">
@@ -67,7 +75,7 @@ export default function Calendar({
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <span className="font-medium text-sm text-red-600 min-w-[100px] text-center">
-                {format(currentDate, "MMMM yyyy")}
+                {formatJakarta(currentDate, "MMMM YYYY")}
               </span>
               <button onClick={handleNextMonth} className="p-1 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronRight className="w-5 h-5" />
@@ -75,9 +83,9 @@ export default function Calendar({
             </div>
           </div>
           <CardContent className="!p-0">
-            <div className="grid grid-cols-7 gap-1 mb-2 bg-red-500 rounded-md mx-4">
+            <div className="grid grid-cols-7 gap-1 mb-2 rounded-md mx-4">
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                <div key={day} className="text-center text-md font-semibold text-slate-500 py-2">
+                <div key={day} className="text-center bg-slate-200 rounded-md text-md font-semibold text-slate-500 py-2">
                   {day}
                 </div>
               ))}
@@ -86,11 +94,11 @@ export default function Calendar({
               {emptyDays.map((_, i) => (
                 <div key={`empty-${i}`} className="min-h-[80px] sm:min-h-[100px] p-2 bg-slate-200/60 rounded-lg"></div>
               ))}
-              {daysInMonth.map(day => {
-                const dateStr = format(day, "yyyy-MM-dd")
+              {days.map(day => {
+                const dateStr = formatJakarta(day, "YYYY-MM-DD")
                 const shiftForDay = calendarMap[dateStr] // 🔥 O(1) Lookup
 
-                const isTodayDate = isToday(day)
+                const isTodayDate = parseJakarta(day).isSame(getNowJakarta(), 'day')
 
                 const hasShift = !!shiftForDay
 
@@ -113,7 +121,7 @@ export default function Calendar({
                         <div className={containerClass}>
                           <div className="flex justify-between items-start">
                             <span className={`text-xs font-medium ${isTodayDate ? 'text-blue-700' : 'text-slate-600'}`}>
-                              {format(day, "d")}
+                              {formatJakarta(day, "D")}
                             </span>
                             {isTodayDate && (
                               <span className="text-[9px] font-bold uppercase text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded">

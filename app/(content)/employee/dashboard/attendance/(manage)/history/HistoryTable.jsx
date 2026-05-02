@@ -86,18 +86,31 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
               </TableCell>
 
               <TableCell>
-                <div className="flex gap-2">
-                  <Badge
-                    variant="outline"
-                    className={attendancesStyles[att.status]}
-                  >
-                    {att.status}
-                  </Badge>
-
-                  {att.approval && (
-                    <Badge className={attendancesStyles[att.approval]}>
-                      {att.approval}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex gap-2">
+                    <Badge
+                      variant="outline"
+                      className={attendancesStyles[att.status.replace("_", " ")]}
+                    >
+                      {att.status.replace("_", " ")}
                     </Badge>
+
+                    {att.approval && (
+                      <Badge className={attendancesStyles[att.approval.replace("_", " ")]}>
+                        {att.approval.replace("_", " ")}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {(att.checkInStatus || att.checkOutStatus) && (
+                    <div className="flex flex-col text-[10px] tracking-tight uppercase font-bold text-slate-400/80 leading-none space-y-0.5">
+                      {att.checkInStatus && (
+                        <span>Check-in: {att.checkInStatus.replace('_', ' ')}</span>
+                      )}
+                      {att.checkOutStatus && (
+                        <span>Check-out: {att.checkOutStatus.replace('_', ' ')}</span>
+                      )}
+                    </div>
                   )}
                 </div>
               </TableCell>

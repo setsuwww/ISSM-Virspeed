@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { format, startOfMonth, startOfWeek, endOfWeek, endOfMonth, eachDayOfInterval, isToday, addMonths, subMonths, parseISO } from "date-fns"
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, List as ListIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
 import { Badge } from "@/_components/ui/Badge"
@@ -15,34 +14,35 @@ import {
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 import { formatTime } from "@/_functions/globalFunction"
 
+import {
+  getNowJakarta,
+  getJakartaMonthDetails,
+  formatJakarta,
+  parseJakarta
+} from "@/_lib/time"
+
 export default function ShiftList({ assignments, selectedMonth }) {
   const router = useRouter()
   const [viewMode, setViewMode] = useState("calendar") // "calendar" or "list"
 
-  const currentDate = parseISO(selectedMonth + "-01")
-  const start = startOfMonth(currentDate)
-  const end = endOfMonth(currentDate)
+  const currentDate = useMemo(() => parseJakarta(selectedMonth + "-01"), [selectedMonth])
 
-  const firstDayOfMonth = start.getDay()
-  const emptyDays = Array(firstDayOfMonth).fill(null)
+  // Calendar Logic (Strictly Jakarta)
+  const { days, firstDayOfWeek } = useMemo(() =>
+    getJakartaMonthDetails(currentDate),
+    [currentDate]
+  )
+  const emptyDays = Array(firstDayOfWeek).fill(null)
 
   const handlePrevMonth = () => {
-    const prev = subMonths(currentDate, 1)
-    router.push(`?month=${format(prev, "yyyy-MM")}`)
+    const prev = currentDate.clone().subtract(1, "month")
+    router.push(`?month=${formatJakarta(prev, "YYYY-MM")}`)
   }
 
   const handleNextMonth = () => {
-    const next = addMonths(currentDate, 1)
-    router.push(`?month=${format(next, "yyyy-MM")}`)
+    const next = currentDate.clone().add(1, "month")
+    router.push(`?month=${formatJakarta(next, "YYYY-MM")}`)
   }
-
-  const calendarStart = startOfWeek(start, { weekStartsOn: 0 })
-  const calendarEnd = endOfWeek(end, { weekStartsOn: 0 })
-
-  const fullDays = eachDayOfInterval({
-    start: calendarStart,
-    end: calendarEnd,
-  })
 
   return (
     <div className="flex-1 w-full bg-slate-50/50">
@@ -76,7 +76,7 @@ export default function ShiftList({ assignments, selectedMonth }) {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="font-semibold text-red-600 min-w-[110px] text-center text-sm">
-                {format(currentDate, "MMMM yyyy")}
+                {formatJakarta(currentDate, "MMMM YYYY")}
               </span>
               <button onClick={handleNextMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronRight className="w-4 h-4" />
@@ -104,11 +104,11 @@ export default function ShiftList({ assignments, selectedMonth }) {
                 {emptyDays.map((_, i) => (
                   <div key={`empty-${i}`} className="min-h-[100px] p-2 bg-slate-200/50 border border-slate-200 rounded-lg hidden sm:block"></div>
                 ))}
-                {fullDays.map(day => {
-                  const dateStr = format(day, "yyyy-MM-dd")
-                  const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+                {days.map(day => {
+                  const dateStr = formatJakarta(day, "YYYY-MM-DD")
+                  const shiftForDay = assignments.find(a => formatJakarta(a.date, "YYYY-MM-DD") === dateStr)
 
-                  const isTodayDate = isToday(day)
+                  const isTodayDate = parseJakarta(day).isSame(getNowJakarta(), 'day')
 
                   let containerClass = "min-h-[90px] sm:min-h-[120px] p-2 sm:p-3 rounded-lg border transition-all flex flex-col gap-1 relative group "
 
@@ -127,7 +127,7 @@ export default function ShiftList({ assignments, selectedMonth }) {
                           <div className={containerClass}>
                             <div className="flex justify-between items-start">
                               <span className={`text-sm font-medium ${isTodayDate ? 'text-blue-700' : shiftForDay ? 'text-slate-700' : 'text-slate-400'}`}>
-                                {format(day, "d")}
+                                {formatJakarta(day, "D")}
                               </span>
                               {isTodayDate && (
                                 <span className="hidden sm:inline-block text-[9px] font-bold uppercase text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded">
@@ -187,11 +187,11 @@ export default function ShiftList({ assignments, selectedMonth }) {
                     </tr>
                   ) : (
                     assignments.map(a => {
-                      const isTodayDate = isToday(new Date(a.date))
+                      const isTodayDate = parseJakarta(a.date).isSame(getNowJakarta(), 'day')
                       return (
                         <tr key={a.id} className={`hover:bg-slate-50 ${isTodayDate ? 'bg-blue-50/20' : ''}`}>
                           <td className="px-4 py-3 font-medium text-slate-800 flex items-center gap-2">
-                            {format(new Date(a.date), "dd MMM yyyy")}
+                            {formatJakarta(a.date, "DD MMM YYYY")}
                             {isTodayDate && <Badge variant="outline" className="text-[10px] text-blue-600 border-blue-200 bg-blue-50 uppercase">Today</Badge>}
                           </td>
                           <td className="px-4 py-3">

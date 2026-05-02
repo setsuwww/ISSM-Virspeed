@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/_lib/auth'
 import { prisma } from '@/_lib/prisma'
-import { startOfMonth, endOfMonth, parseISO, format } from 'date-fns'
 import ContentForm from '@/_components/common/ContentForm'
 import { ContentInformation } from '@/_components/common/ContentInformation'
 import ScheduleToEvent from '../ScheduleToEvent'
@@ -9,23 +8,32 @@ import ShiftList from './ShiftList'
 
 export const revalidate = 0
 
+import {
+  getNowJakarta,
+  parseJakarta,
+  formatJakarta
+} from "@/_lib/time"
+
 export default async function MySchedulePage(props) {
   const searchParams = await props.searchParams;
   const user = await getCurrentUser()
   if (!user) redirect('/auth/signin')
 
-  const selectedMonth = searchParams?.month || format(new Date(), 'yyyy-MM')
+  const nowJakarta = getNowJakarta()
+  const selectedMonth = searchParams?.month || nowJakarta.format("YYYY-MM")
 
   let targetDate
   try {
-    targetDate = parseISO(`${selectedMonth}-01`)
-    if (isNaN(targetDate.getTime())) throw new Error()
+    targetDate = parseJakarta(selectedMonth + "-01")
+    if (!targetDate.isValid()) throw new Error()
   } catch (e) {
-    targetDate = new Date()
+    targetDate = nowJakarta
   }
 
-  const start = startOfMonth(targetDate)
-  const end = endOfMonth(targetDate)
+  const start = targetDate.clone().startOf("month").toDate()
+  const end = targetDate.clone().endOf("month").toDate()
+
+  console.log(`[DEBUG-MY-SCHEDULE] User ${user.id} Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
 
   const assignments = await prisma.shiftAssignment.findMany({
     where: {
@@ -54,7 +62,7 @@ export default async function MySchedulePage(props) {
         <ContentForm.Body>
           <ShiftList
             assignments={assignments}
-            selectedMonth={format(targetDate, 'yyyy-MM')}
+            selectedMonth={formatJakarta(targetDate, 'YYYY-MM')}
           />
         </ContentForm.Body>
       </ContentForm>

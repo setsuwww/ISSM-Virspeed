@@ -1,6 +1,10 @@
 "use client"
 
-import { format, isToday } from "date-fns"
+import { 
+  getNowJakarta, 
+  formatJakarta, 
+  parseJakarta 
+} from "@/_lib/time"
 import { Plus, CheckCircle2 } from "lucide-react"
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 import { formatTime } from "@/_functions/globalFunction"
@@ -37,12 +41,12 @@ export default function CalendarGrid({
         ))}
 
         {daysInMonth.map(day => {
-          const dateStr = format(day, "yyyy-MM-dd")
+          const dateStr = formatJakarta(day, "YYYY-MM-DD")
           const isSelected = selectedDates.includes(dateStr)
           const shiftAssignmentForDay = assignmentMap[dateStr]
 
           const shiftData = shiftAssignmentForDay?.shift
-          const isTodayDate = isToday(day)
+          const isTodayDate = parseJakarta(day).isSame(getNowJakarta(), 'day')
           const hasShift = !!shiftData
           const shiftType = shiftData?.type || 'OFF'
 
@@ -60,11 +64,13 @@ export default function CalendarGrid({
             containerClass += "bg-white border-slate-300 hover:border-blue-300 hover:bg-blue-50/30"
           }
 
+          console.log(`[DEBUG-ADMIN-CALENDAR] Day=${dateStr}, Weekday=${parseJakarta(day).format("dddd")}`)
+
           return (
             <div key={day.toString()} className={containerClass} onClick={() => onDayClick(day)}>
               <div className="flex justify-between items-start">
                 <span className={`text-sm font-semibold ${isSelected && isSelectMode ? 'text-green-700' : (isTodayDate ? 'text-blue-600' : 'text-slate-400')}`}>
-                  {format(day, "d")}
+                  {formatJakarta(day, "D")}
                 </span>
 
                 {isSelectMode && isSelected && (

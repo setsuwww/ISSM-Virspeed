@@ -43,6 +43,12 @@ export function useUserSendAttendance() {
         throw new Error(precheck.error);
       }
 
+      if (precheck?.checkIn?.disabled) {
+        const reason = precheck.checkIn.reason || "Check-in tidak tersedia saat ini";
+        toast.error(reason);
+        throw new Error(reason);
+      }
+
       if (precheck?.requireLocation === false) {
         const result = await userSendCheckIn({ skipLocation: true });
         if (result?.error) {

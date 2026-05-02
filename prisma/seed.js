@@ -205,33 +205,6 @@ async function main() {
     (await prisma.shift.findMany()).map(s => [s.id, s])
   )
 
-  // =============================
-  // ATTENDANCE
-  // =============================
-  const baseDate = startOfDay(new Date())
-
-  for (const user of users.filter(u => u.role !== Role.ADMIN)) {
-    const shift = shiftMap[user.shiftId]
-
-    for (let i = 0; i < 5; i++) {
-      const date = addDays(baseDate, -i)
-
-      await prisma.attendance.create({
-        data: {
-          userId: user.id,
-          shiftId: shift.id,
-          date,
-          status: AttendanceStatus.PRESENT,
-          checkInTime: new Date(date.getTime() + shift.startTime * 60000),
-          checkOutTime: new Date(date.getTime() + shift.endTime * 60000),
-          workMinutes: shift.endTime - shift.startTime,
-          locationType: LocationType.WFO,
-          locationStatus: LocationStatus.ACTIVE,
-        },
-      })
-    }
-  }
-
   console.log("SEED SUCCESS")
 }
 

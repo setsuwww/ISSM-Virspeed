@@ -10,6 +10,12 @@ import ShiftCalendar from "./ShiftCalendar"
 
 export const revalidate = 0
 
+import { 
+  getNowJakarta, 
+  parseJakarta, 
+  formatJakarta 
+} from "@/_lib/time"
+
 export default async function AdminUserShiftSchedulePage(props) {
   const params = await props.params;
   const searchParams = await props.searchParams;
@@ -24,17 +30,20 @@ export default async function AdminUserShiftSchedulePage(props) {
     redirect("/admin/dashboard/shift-assignments")
   }
 
-  const selectedMonth = searchParams?.month || format(new Date(), 'yyyy-MM')
+  const nowJakarta = getNowJakarta()
+  const selectedMonth = searchParams?.month || nowJakarta.format("YYYY-MM")
 
   let targetDate
   try {
-    targetDate = parseISO(`${selectedMonth}-01`)
-    if (isNaN(targetDate.getTime())) throw new Error()
+    targetDate = parseJakarta(selectedMonth + "-01")
+    if (!targetDate.isValid()) throw new Error()
   }
-  catch (e) { targetDate = new Date() }
+  catch (e) { targetDate = nowJakarta }
 
-  const start = startOfMonth(targetDate)
-  const end = endOfMonth(targetDate)
+  const start = targetDate.clone().startOf("month").toDate()
+  const end = targetDate.clone().endOf("month").toDate()
+
+  console.log(`[DEBUG-ADMIN] User ${userId} Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
 
   const assignments = await prisma.shiftAssignment.findMany({
     where: { userId, date: { gte: start, lte: end } },
@@ -72,7 +81,7 @@ export default async function AdminUserShiftSchedulePage(props) {
             user={targetUser}
             assignments={assignments}
             shifts={shifts}
-            selectedMonth={format(targetDate, 'yyyy-MM')}
+            selectedMonth={formatJakarta(targetDate, 'YYYY-MM')}
           />
         </ContentForm.Body>
       </ContentForm>

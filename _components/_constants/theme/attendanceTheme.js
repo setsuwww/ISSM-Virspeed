@@ -1,9 +1,15 @@
 export const attendancesStyles = {
   PRESENT: "text-emerald-600 bg-emerald-100/50 border-emerald-300/50",
+  EARLY_CHECKIN: "text-lime-600 bg-lime-100/50 border-lime-300/50",
   LATE: "text-yellow-600 bg-yellow-100/50 border-yellow-300/50",
   PERMISSION: "text-blue-600 bg-blue-100/50 border-blue-300/50",
+  LEAVE: "text-violet-600 bg-violet-100/50 border-violet-300/50",
   ABSENT: "text-red-600 bg-red-100/50 border-red-300/50",
+  EARLY_CHECKOUT: "text-orange-600 bg-orange-100/50 border-orange-300/50",
+  FORGOT_CHECKOUT: "text-pink-600 bg-pink-100/50 border-pink-300/50",
+  OVERTIME: "text-purple-600 bg-purple-100/50 border-purple-300/50",
   ALPHA: "text-slate-600 bg-slate-100/50 border-slate-300/50",
+  INACTIVE: "text-slate-400 bg-slate-50 border-slate-200",
 
   APPROVED: "text-white bg-emerald-500 border-emerald-500",
   REJECTED: "text-white bg-red-500 border-red-500",

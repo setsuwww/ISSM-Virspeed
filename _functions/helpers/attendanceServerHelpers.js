@@ -29,6 +29,12 @@ export {
 } from "./attendance/assignment_helper";
 
 export {
+  resolveCheckInStatus,
+  resolveCheckOutStatus,
+  getAttendanceLabel,
+} from "./attendance/status_resolver";
+
+export {
   processPermissionRequest,
   processLeaveRequest,
 } from "./attendance/request_helper";

@@ -91,10 +91,29 @@ enum AttendanceStatus {
   EARLY_CHECKIN
   ABSENT
   LATE
+  EARLY_CHECKOUT
   FORGOT_CHECKOUT
   PERMISSION
+  LEAVE
   ALPHA
+  OVERTIME
   INACTIVE
+}
+
+enum CheckInStatus {
+  EARLY_CHECKIN
+  PRESENT
+  LATE
+  ABSENT
+  LEAVE
+  PERMISSION
+}
+
+enum CheckOutStatus {
+  NORMAL
+  EARLY_CHECKOUT
+  FORGOT_CHECKOUT
+  OVERTIME
 }
 
 model ActivityLog {
@@ -347,6 +366,8 @@ model Attendance {
   workStart      DateTime?
   workEnd        DateTime?
   status         AttendanceStatus @default(ABSENT)
+  checkInStatus  CheckInStatus?
+  checkOutStatus CheckOutStatus?
   reason         String?
   approval       ApprovalStatus?
   checkInTime    DateTime?

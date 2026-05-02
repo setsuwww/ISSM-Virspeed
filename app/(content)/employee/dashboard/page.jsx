@@ -7,13 +7,22 @@ import { format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns
 import { formatTime } from '@/_functions/globalFunction'
 import { getShiftStyle } from '@/_components/_constants/shiftConstants'
 
+import { 
+  getNowJakarta, 
+  getTodayStartJakarta, 
+  parseJakarta, 
+  formatJakarta 
+} from '@/_lib/time'
+
 export default async function EmployeeDashboardPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/signin')
 
-  const now = new Date()
-  const start = startOfMonth(subMonths(now, 1))
-  const end = endOfMonth(addMonths(now, 1))
+  const nowJakarta = getNowJakarta()
+  const start = nowJakarta.clone().subtract(1, "month").startOf("month").toDate()
+  const end = nowJakarta.clone().add(1, "month").endOf("month").toDate()
+
+  console.log(`[DEBUG-EMPLOYEE] DB Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
 
   const [
     assignments,
@@ -94,12 +103,17 @@ export default async function EmployeeDashboardPage() {
     })
   ])
 
-  const todayStr = format(now, "yyyy-MM-dd")
+  const todayStr = nowJakarta.format("YYYY-MM-DD")
 
   // 1. Calendar Map (O(1) lookup)
   const calendarMap = assignments.reduce((acc, assignment) => {
-    const key = format(new Date(assignment.date), "yyyy-MM-dd")
-    acc[key] = {
+    // RAW date from DB
+    const rawDate = assignment.date
+    const dateStr = formatJakarta(rawDate, "YYYY-MM-DD")
+    
+    console.log(`[DEBUG-EMPLOYEE] Assignment: Raw=${rawDate.toISOString()}, Local=${dateStr}`)
+
+    acc[dateStr] = {
       ...assignment,
       shiftStyle: getShiftStyle(assignment.shift?.type),
       startTimeStr: formatTime(assignment.shift?.startTime),
@@ -112,25 +126,25 @@ export default async function EmployeeDashboardPage() {
   const todayActivity = [
     // Security Logs (Login/Logout)
     ...securityLogs.map(log => ({
-      time: format(new Date(log.createdAt), "HH:mm"),
-      rawTime: new Date(log.createdAt),
+      time: formatJakarta(log.createdAt, "HH:mm"),
+      rawTime: parseJakarta(log.createdAt).toDate(),
       type: log.action === "LOGOUT" ? "LOGOUT" : "LOGIN",
       label: log.action === "LOGOUT" ? "Logout" : "Login"
     })),
     // Attendance (Today)
     ...attendanceHistory
-      .filter(att => format(new Date(att.date), "yyyy-MM-dd") === todayStr)
+      .filter(att => formatJakarta(att.date, "YYYY-MM-DD") === todayStr)
       .flatMap(att => {
         const events = []
         if (att.checkInTime) events.push({
-          time: format(new Date(att.checkInTime), "HH:mm"),
-          rawTime: new Date(att.checkInTime),
+          time: formatJakarta(att.checkInTime, "HH:mm"),
+          rawTime: parseJakarta(att.checkInTime).toDate(),
           type: "CHECK_IN",
           label: "Check-in"
         })
         if (att.checkOutTime) events.push({
-          time: format(new Date(att.checkOutTime), "HH:mm"),
-          rawTime: new Date(att.checkOutTime),
+          time: formatJakarta(att.checkOutTime, "HH:mm"),
+          rawTime: parseJakarta(att.checkOutTime).toDate(),
           type: "CHECK_OUT",
           label: "Check-out"
         })
@@ -138,45 +152,45 @@ export default async function EmployeeDashboardPage() {
       }),
     // Early Checkout Requests (Today)
     ...earlyCheckouts
-      .filter(req => format(new Date(req.requestedAt), "yyyy-MM-dd") === todayStr)
+      .filter(req => formatJakarta(req.requestedAt, "YYYY-MM-DD") === todayStr)
       .map(req => ({
-        time: format(new Date(req.requestedAt), "HH:mm"),
-        rawTime: new Date(req.requestedAt),
+        time: formatJakarta(req.requestedAt, "HH:mm"),
+        rawTime: parseJakarta(req.requestedAt).toDate(),
         type: "EARLY_CHECKOUT_REQUEST",
         label: "Early Checkout Request"
       })),
     // Permission Requests (Today)
     ...permissions
-      .filter(req => format(new Date(req.date), "yyyy-MM-dd") === todayStr)
+      .filter(req => formatJakarta(req.date, "YYYY-MM-DD") === todayStr)
       .map(req => ({
-        time: req.checkInTime ? format(new Date(req.checkInTime), "HH:mm") : "00:00",
-        rawTime: req.checkInTime ? new Date(req.checkInTime) : new Date(req.date),
+        time: req.checkInTime ? formatJakarta(req.checkInTime, "HH:mm") : "00:00",
+        rawTime: req.checkInTime ? parseJakarta(req.checkInTime).toDate() : parseJakarta(req.date).toDate(),
         type: "PERMISSION_REQUEST",
         label: "Permission Request"
       })),
     // Leaves (Ongoing Today)
     ...leaves
       .filter(req => {
-        const start = format(new Date(req.startDate), "yyyy-MM-dd")
-        const end = format(new Date(req.endDate), "yyyy-MM-dd")
+        const start = formatJakarta(req.startDate, "YYYY-MM-DD")
+        const end = formatJakarta(req.endDate, "YYYY-MM-DD")
         return todayStr >= start && todayStr <= end
       })
       .map(req => ({
         time: "All Day",
-        rawTime: new Date(req.startDate),
+        rawTime: parseJakarta(req.startDate).toDate(),
         type: "LEAVE_REQUEST",
         label: `Leave: ${req.leaveType?.name || "Request"}`
       })),
     // Shift Changes (Ongoing Today)
     ...shiftChanges
       .filter(req => {
-        const start = format(new Date(req.startDate), "yyyy-MM-dd")
-        const end = req.endDate ? format(new Date(req.endDate), "yyyy-MM-dd") : todayStr
+        const start = formatJakarta(req.startDate, "YYYY-MM-DD")
+        const end = req.endDate ? formatJakarta(req.endDate, "YYYY-MM-DD") : todayStr
         return todayStr >= start && todayStr <= end
       })
       .map(req => ({
         time: "All Day",
-        rawTime: new Date(req.startDate),
+        rawTime: parseJakarta(req.startDate).toDate(),
         type: "SHIFT_CHANGE_REQUEST",
         label: "Shift Change Request"
       }))
@@ -189,43 +203,43 @@ export default async function EmployeeDashboardPage() {
   // 3. History Data (Grouped & Filtered)
   const historyData = {
     attendance: attendanceHistory
-      .filter(att => format(new Date(att.date), "yyyy-MM-dd") < todayStr)
+      .filter(att => formatJakarta(att.date, "YYYY-MM-DD") < todayStr)
       .map(att => ({
         id: att.id,
-        dateStr: format(new Date(att.date), "dd MMM yyyy"),
-        checkInStr: att.checkInTime ? format(new Date(att.checkInTime), "HH:mm") : "-",
-        checkOutStr: att.checkOutTime ? format(new Date(att.checkOutTime), "HH:mm") : "-",
+        dateStr: formatJakarta(att.date, "DD MMM YYYY"),
+        checkInStr: att.checkInTime ? formatJakarta(att.checkInTime, "HH:mm") : "-",
+        checkOutStr: att.checkOutTime ? formatJakarta(att.checkOutTime, "HH:mm") : "-",
         status: att.status || "-"
       })),
     earlyCheckouts: earlyCheckouts
-      .filter(req => format(new Date(req.requestedAt), "yyyy-MM-dd") < todayStr)
+      .filter(req => formatJakarta(req.requestedAt, "YYYY-MM-DD") < todayStr)
       .map(req => ({
         id: req.id,
-        dateStr: req.attendance?.date ? format(new Date(req.attendance.date), "dd MMM yyyy") : "-",
+        dateStr: req.attendance?.date ? formatJakarta(req.attendance.date, "DD MMM YYYY") : "-",
         status: req.status,
         reason: req.reason ? (req.reason.length > 50 ? req.reason.substring(0, 50) + "..." : req.reason) : "-"
       })),
     permissions: permissions
-      .filter(req => format(new Date(req.date), "yyyy-MM-dd") < todayStr)
+      .filter(req => formatJakarta(req.date, "YYYY-MM-DD") < todayStr)
       .map(req => ({
         id: req.id,
-        dateStr: format(new Date(req.date), "dd MMM yyyy"),
+        dateStr: formatJakarta(req.date, "DD MMM YYYY"),
         status: req.approval || "PENDING",
         reason: req.reason ? (req.reason.length > 50 ? req.reason.substring(0, 50) + "..." : req.reason) : "-"
       })),
     leaves: leaves
-      .filter(req => format(new Date(req.endDate), "yyyy-MM-dd") < todayStr)
+      .filter(req => formatJakarta(req.endDate, "YYYY-MM-DD") < todayStr)
       .map(req => ({
         id: req.id,
         type: req.leaveType?.name || "-",
         status: req.status,
-        range: `${format(new Date(req.startDate), "dd MMM")} - ${format(new Date(req.endDate), "dd MMM yyyy")}`
+        range: `${formatJakarta(req.startDate, "DD MMM")} - ${formatJakarta(req.endDate, "DD MMM YYYY")}`
       })),
     shiftChanges: shiftChanges
-      .filter(req => format(new Date(req.startDate), "yyyy-MM-dd") < todayStr)
+      .filter(req => formatJakarta(req.startDate, "YYYY-MM-DD") < todayStr)
       .map(req => ({
         id: req.id,
-        dateStr: format(new Date(req.startDate), "dd MMM yyyy"),
+        dateStr: formatJakarta(req.startDate, "DD MMM YYYY"),
         status: req.status,
         oldShift: req.oldShift?.name || "-",
         targetShift: req.targetShift?.name || "-"

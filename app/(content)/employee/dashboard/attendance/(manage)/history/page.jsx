@@ -5,8 +5,18 @@ import { format } from "date-fns"
 import HistoryTable from "./HistoryTable"
 import HistoryLayout from "./HistoryLayout"
 import { minutesToTime } from "@/_functions/globalFunction"
+import { 
+  getAttendanceLabel 
+} from "@/_functions/helpers/attendanceServerHelpers"
 
 export const revalidate = 60
+
+import { 
+  getNowJakarta, 
+  getTodayStartJakarta, 
+  parseJakarta, 
+  formatJakarta 
+} from "@/_lib/time"
 
 export default async function Page({ searchParams }) {
   const user = await getCurrentUser()
@@ -29,37 +39,42 @@ export default async function Page({ searchParams }) {
     },
   })
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const todayStart = getTodayStartJakarta()
 
   const tableData = attendance.map(a => {
-    const attDate = new Date(a.date)
-    attDate.setHours(0, 0, 0, 0)
+    const rawDate = a.date
+    const attDate = parseJakarta(rawDate).startOf("day")
+    const isToday = attDate.isSame(todayStart, 'day')
 
-    const isToday = attDate.getTime() === today.getTime()
+    console.log(`[DEBUG-HISTORY] Attendance ID ${a.id}: Raw=${rawDate.toISOString()}, Local=${formatJakarta(rawDate, "YYYY-MM-DD")}, isToday=${isToday}`)
+
+    // Map combined status label
+    const combinedStatus = getAttendanceLabel(a.checkInStatus, a.checkOutStatus)
 
     return {
       id: a.id,
       isToday,
 
-      dateValue: a.date.getTime(),
+      dateValue: parseJakarta(a.date).valueOf(),
 
-      dateLabel: format(a.date, "dd MMMM"),
-      dateFull: format(a.date, "EEEE, dd MMMM yyyy"),
+      dateLabel: formatJakarta(a.date, "DD MMMM"),
+      dateFull: formatJakarta(a.date, "dddd, DD MMMM YYYY"),
 
       shiftType: a.shift?.type ?? "OFF",
       shiftName: a.shift?.name ?? "—",
       shiftStartTime: minutesToTime(a.shift?.startTime),
       shiftEndTime: minutesToTime(a.shift?.endTime),
 
-      status: a.status,
+      status: combinedStatus,
+      checkInStatus: a.checkInStatus,
+      checkOutStatus: a.checkOutStatus,
       approval: a.approval ?? null,
 
       reason: a.reason ?? "None",
       adminNote: a.adminReason ?? "None",
 
-      checkInTime: a.checkInTime ? format(a.checkInTime, "HH:mm") : null,
-      checkOutTime: a.checkOutTime ? format(a.checkOutTime, "HH:mm") : null,
+      checkInTime: a.checkInTime ? formatJakarta(a.checkInTime, "HH:mm") : null,
+      checkOutTime: a.checkOutTime ? formatJakarta(a.checkOutTime, "HH:mm") : null,
     }
   })
 

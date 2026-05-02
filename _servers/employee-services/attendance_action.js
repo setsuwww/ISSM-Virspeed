@@ -11,6 +11,9 @@ import {
   getCheckoutWarning,
   determineAttendanceStatus,
   isForgotCheckoutEligible,
+  resolveCheckInStatus,
+  resolveCheckOutStatus,
+  getAttendanceLabel,
 } from "@/_functions/helpers/attendanceServerHelpers"
 
 import { getNowJakarta, getTodayStartJakarta, minutesToDateTime } from "@/_lib/time"
@@ -25,9 +28,122 @@ const normalizeMinutes = (minutes) => {
   return minutes === 1440 ? 0 : minutes;
 };
 
+export async function handleForgotCheckoutAuto(userId) {
+  if (!userId) return null;
+
+  const now = getNowJakarta();
+
+  // Find latest attendance that hasn't checked out
+  const attendance = await prisma.attendance.findFirst({
+    where: {
+      userId: userId,
+      checkInTime: { not: null },
+      checkOutTime: null,
+    },
+    include: {
+      shift: true,
+      assignment: { include: { shift: true } },
+    },
+    orderBy: { date: "desc" },
+  });
+
+  if (!attendance) return null;
+
+  const workHours = attendance.shift || attendance.assignment?.shift;
+  if (!workHours) return null;
+
+  const shiftEnd = minutesToDateTime(attendance.date, workHours.endTime);
+  const isCrossDay = workHours.endTime < workHours.startTime;
+  const finalEnd = isCrossDay ? shiftEnd.add(1, "day") : shiftEnd;
+
+  // Tolerance 20 minutes after shift end
+  const toleranceLimit = finalEnd.clone().add(20, "minutes");
+
+  if (now.isAfter(toleranceLimit)) {
+    const autoCheckoutTime = toleranceLimit.toDate();
+    const workMinutes = calculateWorkMinutes(attendance.checkInTime, autoCheckoutTime);
+
+    // Resolve combined status for compatibility
+    const checkOutStatus = "FORGOT_CHECKOUT";
+    const finalStatus = "FORGOT_CHECKOUT";
+
+    const updated = await prisma.attendance.update({
+      where: { id: attendance.id },
+      data: {
+        checkOutTime: autoCheckoutTime,
+        status: finalStatus,
+        checkOutStatus: checkOutStatus,
+        workMinutes: workMinutes || 0,
+      },
+    });
+
+    console.log(`[Auto-Checkout] User ${userId} handled for attendance ${attendance.id}`);
+    return updated;
+  }
+
+  return null;
+}
+
+export async function handleAutoAbsent(userId) {
+  if (!userId) return null;
+
+  const now = getNowJakarta();
+  const assignment = await getActiveShiftAssignment(userId);
+  if (!assignment || !assignment.shiftId) return null;
+
+  const workHours = assignment.shift;
+  const startMinutes = normalizeMinutes(workHours.startTime);
+  const shiftStart = minutesToDateTime(assignment.date, startMinutes);
+
+  // ABSENT threshold: 30 minutes after start
+  const absentLimit = shiftStart.clone().add(30, "minutes");
+
+  if (now.isAfter(absentLimit)) {
+    const attendance = await prisma.attendance.findFirst({
+      where: {
+        userId,
+        date: assignment.date,
+      }
+    });
+
+    if (!attendance) {
+      // If no attendance record at all, check for leave/permission
+      // If assignment.isLeave is true, it might already be handled by another system
+      // but here we ensure consistency
+      const status = assignment.isLeave ? "LEAVE" : "ABSENT";
+      const checkInStatus = assignment.isLeave ? "LEAVE" : "ABSENT";
+
+      await prisma.attendance.create({
+        data: {
+          userId,
+          assignmentId: assignment.id,
+          shiftId: assignment.shiftId,
+          date: assignment.date,
+          status,
+          checkInStatus,
+        }
+      });
+      console.log(`[Auto-Absent] User ${userId} marked as ${status} for ${assignment.date}`);
+    } else if (!attendance.checkInTime && attendance.status !== "ABSENT" && attendance.status !== "LEAVE" && attendance.status !== "PERMISSION") {
+      await prisma.attendance.update({
+        where: { id: attendance.id },
+        data: {
+          status: "ABSENT",
+          checkInStatus: "ABSENT"
+        }
+      });
+      console.log(`[Auto-Absent] User ${userId} updated to ABSENT for ${assignment.date}`);
+    }
+  }
+}
+
 export async function userPrecheckCheckIn() {
   const user = await getCurrentUser()
   if (!user?.id) return { error: "Unauthorized" }
+
+  // 1. Auto-handle forgotten checkouts and absents
+  await handleAutoAbsent(user.id);
+  await handleForgotCheckoutAuto(user.id);
 
   const now = getNowJakarta()
   const assignment = await getActiveShiftAssignment(user.id)
@@ -88,7 +204,7 @@ export async function userPrecheckCheckIn() {
     include: { earlyCheckoutRequests: true }
   })
 
-  const hasRequest = attendance?.status === "PERMISSION" || attendance?.status === "INACTIVE"
+  const hasRequest = attendance?.status === "PERMISSION" || attendance?.status === "LEAVE" || attendance?.status === "INACTIVE"
 
   const hasEarlyCheckoutReq = attendance?.earlyCheckoutRequests?.some(r => r.status === "PENDING" || r.status === "APPROVED")
 
@@ -157,7 +273,6 @@ export async function userSendCheckIn(coords = null) {
     where: {
       userId: user.id,
       date: date,
-      // Protect duplicate checkin for same day
     },
   });
 
@@ -165,24 +280,63 @@ export async function userSendCheckIn(coords = null) {
     return { error: "Sudah check-in" };
   }
 
-  let status;
-  try {
-    status = await determineAttendanceStatus({
-      shiftId: shift?.id,
-      locationId: workHours.id,
-      assignmentDate: date
-    });
-  } catch (err) {
-    return { error: err.message };
+  const startMinutes = normalizeMinutes(workHours.startTime);
+  const endMinutes = normalizeMinutes(workHours.endTime);
+
+  let shiftStart = minutesToDateTime(date, startMinutes);
+  let shiftEnd = minutesToDateTime(date, endMinutes);
+
+  if (endMinutes <= startMinutes) {
+    shiftEnd = shiftEnd.add(1, "day");
   }
 
-  const attendance = await prisma.attendance.create({
-    data: {
+  // 🔥 FIX KRITIS: handle overnight shift when checking in after midnight
+  if (now.isBefore(shiftStart) && now.isBefore(shiftEnd)) {
+    const prevStart = shiftStart.subtract(1, "day");
+    const prevEnd = shiftEnd.subtract(1, "day");
+
+    if (now.isAfter(prevStart) && now.isBefore(prevEnd)) {
+      shiftStart = prevStart;
+      shiftEnd = prevEnd;
+    }
+  }
+
+  const checkInStatus = resolveCheckInStatus(now.toDate(), shiftStart.toDate(), shiftEnd.toDate());
+
+  if (!checkInStatus && now.isBefore(shiftStart)) {
+    return { error: "Terlalu awal untuk check-in. (Batas: 20 menit sebelum shift)" };
+  }
+
+  if (now.isAfter(shiftEnd)) {
+    return { error: "Shift untuk hari ini sudah berakhir." };
+  }
+  
+  // Status mapping for backward compatibility
+  let status = checkInStatus;
+  if (!user.isActive) status = "INACTIVE";
+
+  const attendance = await prisma.attendance.upsert({
+    where: {
+      userId_shiftId_date: {
+        userId: user.id,
+        shiftId: shift?.id,
+        date: date
+      }
+    },
+    update: {
+      status,
+      checkInStatus,
+      checkInTime: now.toDate(),
+      locationType: location.type,
+      locationStatus: location.status,
+    },
+    create: {
       userId: user.id,
       assignmentId: assignment.id,
       shiftId: shift?.id,
       date: date,
       status,
+      checkInStatus,
       checkInTime: now.toDate(),
       locationType: location.type,
       locationStatus: location.status,
@@ -202,7 +356,7 @@ export async function userSendCheckIn(coords = null) {
     url: "/employee/attendance/check-in",
     action: LogAction.SUBMIT,
     method: LogMethod.POST,
-    data: { attendanceId: attendance.id, status },
+    data: { attendanceId: attendance.id, status, checkInStatus },
   });
 
   revalidatePath("/employee/dashboard/attendance/main")
@@ -225,6 +379,9 @@ export async function userSendCheckOut() {
     include: {
       shift: { include: { location: true } },
       assignment: { include: { shift: { include: { location: true } } } },
+      earlyCheckoutRequests: {
+        where: { status: "APPROVED" }
+      }
     },
     orderBy: { date: "desc" },
   });
@@ -241,8 +398,12 @@ export async function userSendCheckOut() {
     return { error: "Jadwal kerja tidak ditemukan" };
   }
 
-  const shiftEnd = minutesToDateTime(attendance.date, workHours.endTime);
-  const isCrossDay = workHours.endTime < workHours.startTime;
+  const startMinutes = normalizeMinutes(workHours.startTime);
+  const endMinutes = normalizeMinutes(workHours.endTime);
+
+  const shiftStart = minutesToDateTime(attendance.date, startMinutes);
+  const shiftEnd = minutesToDateTime(attendance.date, endMinutes);
+  const isCrossDay = endMinutes < startMinutes;
   const finalEnd = isCrossDay ? shiftEnd.add(1, "day") : shiftEnd;
 
   const warning = getCheckoutWarning(finalEnd, now);
@@ -256,20 +417,23 @@ export async function userSendCheckOut() {
     return { error: "Invalid checkout" };
   }
 
+  const hasEarlyRequest = attendance.earlyCheckoutRequests.length > 0;
+  const checkOutStatus = resolveCheckOutStatus(checkoutTime, finalEnd.toDate(), hasEarlyRequest);
+  
+  // Combined status for compatibility
+  let status = attendance.status;
+  if (checkOutStatus === "EARLY_CHECKOUT") status = "EARLY_CHECKOUT";
+  else if (checkOutStatus === "FORGOT_CHECKOUT") status = "FORGOT_CHECKOUT";
+  else if (checkOutStatus === "OVERTIME") status = "OVERTIME";
+
   await prisma.attendance.update({
     where: { id: attendance.id },
     data: {
       checkOutTime: checkoutTime,
       workMinutes,
+      checkOutStatus,
+      status
     },
-  });
-
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      isActive: false,
-      inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
-    }
   });
 
   revalidatePath("/employee/dashboard/attendance/main")
@@ -358,15 +522,10 @@ export async function userSendEarlyCheckout(reason) {
     where: { id: attendance.id },
     data: {
       workMinutes,
+      checkOutStatus: "EARLY_CHECKOUT",
+      status: "EARLY_CHECKOUT",
+      checkOutTime: now.toDate(),
     },
-  });
-
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      isActive: false,
-      inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
-    }
   });
 
   await safeLog({
