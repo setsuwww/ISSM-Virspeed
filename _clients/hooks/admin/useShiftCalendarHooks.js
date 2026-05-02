@@ -1,33 +1,69 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { format, addDays, eachDayOfInterval, startOfMonth, endOfMonth, addMonths, subMonths, parseISO } from "date-fns"
+import { format, addDays, eachDayOfInterval, startOfMonth, endOfMonth, addMonths, subMonths, parseISO, min, max } from "date-fns"
 import { createOrUpdateShiftAssignment, deleteShiftAssignment, bulkAssignShift, bulkAssignPreset, deleteMultipleShiftAssignments, deleteAllAssignments } from "@/_servers/admin-services/shift_assignment_action"
 import { useConfirmStore } from "@/_stores/common/useConfirmStore"
 
-export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth }) => {
+/**
+ * Helper to calculate duration breakdown
+ */
+export const calculateDuration = (dates) => {
+  if (!dates || dates.length === 0) return null
+  
+  const totalDays = dates.length
+  const weeks = Math.floor(totalDays / 7)
+  const remainingDays = totalDays % 7
+  
+  const dateObjs = dates.map(d => new Date(d))
+  const start = min(dateObjs)
+  const end = max(dateObjs)
+  
+  return {
+    totalDays,
+    weeks,
+    remainingDays,
+    start,
+    end,
+    formattedRange: `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`,
+    breakdown: `${totalDays} days${weeks > 0 ? ` = ${weeks} week${weeks > 1 ? 's' : ''}${remainingDays > 0 ? ` ${remainingDays} day${remainingDays > 1 ? 's' : ''}` : ''}` : ''}`
+  }
+}
+
+export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], selectedMonth }) => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [loadingAction, setLoadingAction] = useState(false)
 
-  // Filter available shifts for the user's location
-  const availableShifts = (shifts || []).filter(s => s.locationId === user.locationId)
+  // O(1) Lookup Map
+  const assignmentMap = useMemo(() => {
+    const map = {}
+    assignments.forEach(a => {
+      if (a?.date) {
+        const dateStr = format(new Date(a.date), "yyyy-MM-dd")
+        map[dateStr] = a
+      }
+    })
+    return map
+  }, [assignments])
+
+  const availableShifts = useMemo(() => 
+    (shifts || []).filter(s => s.locationId === user.locationId),
+    [shifts, user.locationId]
+  )
   const hasAvailableShifts = availableShifts.length > 0
 
-  // Single Modal State
   const [singleModalOpen, setSingleModalOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(null)
   const [existingAssignment, setExistingAssignment] = useState(null)
   const [formShiftId, setFormShiftId] = useState("")
 
-  // Bulk Modal State
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [bulkStartDate, setBulkStartDate] = useState("")
   const [bulkEndDate, setBulkEndDate] = useState("")
   const [bulkPattern, setBulkPattern] = useState([""])
 
-  // Date Calculations
   let currentDate
   try {
     currentDate = selectedMonth ? parseISO(selectedMonth + "-01") : new Date()
@@ -38,11 +74,10 @@ export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth
 
   const start = startOfMonth(currentDate)
   const end = endOfMonth(currentDate)
-  const daysInMonth = eachDayOfInterval({ start, end })
+  const daysInMonth = useMemo(() => eachDayOfInterval({ start, end }), [start, end])
   const firstDayOfMonth = start.getDay()
   const emptyDays = Array(firstDayOfMonth).fill(null)
 
-  // Handlers
   const handlePrevMonth = () => {
     const prev = subMonths(currentDate, 1)
     router.push(`?month=${format(prev, "yyyy-MM")}`)
@@ -55,7 +90,7 @@ export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth
 
   const openSingleModal = (day) => {
     const dateStr = format(day, "yyyy-MM-dd")
-    const assignment = assignments.find(a => a?.date && format(new Date(a.date), "yyyy-MM-dd") === dateStr)
+    const assignment = assignmentMap[dateStr]
 
     setSelectedDate(day)
     setExistingAssignment(assignment || null)
@@ -141,7 +176,7 @@ export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth
   }
 
   return {
-    // States
+    assignmentMap,
     isPending,
     loadingAction,
     availableShifts,
@@ -163,8 +198,6 @@ export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth
     currentDate,
     daysInMonth,
     emptyDays,
-
-    // Actions
     handlePrevMonth,
     handleNextMonth,
     openSingleModal,
@@ -175,10 +208,13 @@ export const useShiftCalendarHooks = ({ user, assignments, shifts, selectedMonth
   }
 }
 
-export const useShiftSelection = (userId) => {
+export const useShiftSelection = (userId, assignmentMap) => {
   const [isSelectMode, setIsSelectMode] = useState(false)
   const [selectedDates, setSelectedDates] = useState([]) // format: yyyy-MM-dd
   const [loading, setLoading] = useState(false)
+
+  const [assignModalOpen, setAssignModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
 
   const toggleSelectMode = () => {
     setIsSelectMode(!isSelectMode)
@@ -199,23 +235,58 @@ export const useShiftSelection = (userId) => {
     setSelectedDates(allDates)
   }
 
+  const filledDates = selectedDates.filter(dateStr => !!assignmentMap[dateStr])
+  const emptyDates = selectedDates.filter(dateStr => !assignmentMap[dateStr])
+
   const handleBulkDelete = async () => {
-    if (selectedDates.length === 0) return
+    if (filledDates.length === 0) return
 
     const confirm = await useConfirmStore.getState().ask(
-      `Are you sure you want to delete ${selectedDates.length} shift assignments?`,
+      `Are you sure you want to delete ${filledDates.length} shift assignments?`,
       "danger"
     )
     if (!confirm) return
 
-    setLoading(false)
     setLoading(true)
-    const res = await deleteMultipleShiftAssignments(selectedDates, userId)
+    const res = await deleteMultipleShiftAssignments(filledDates, userId)
     if (res?.success) {
+      setSelectedDates(prev => prev.filter(d => !filledDates.includes(d)))
+      if (selectedDates.length === filledDates.length) setIsSelectMode(false)
+    } else {
+      alert(res?.error || "Failed to delete assignments")
+    }
+    setLoading(false)
+  }
+
+  // individualValues: { [dateStr]: shiftId }
+  const handleBulkSubmit = async (individualValues, modalType) => {
+    setLoading(true)
+    
+    // We can use bulkAssignPreset by grouping dates by shiftId
+    const groups = {}
+    Object.entries(individualValues).forEach(([date, shiftId]) => {
+      if (!groups[shiftId]) groups[shiftId] = []
+      groups[shiftId].push(date)
+    })
+
+    const promises = Object.entries(groups).map(([shiftId, dates]) => 
+      bulkAssignPreset({
+        userId,
+        dates,
+        shiftId: parseInt(shiftId)
+      })
+    )
+
+    const results = await Promise.all(promises)
+    const allSuccess = results.every(r => r.success)
+
+    if (allSuccess) {
+      if (modalType === 'assign') setAssignModalOpen(false)
+      else setEditModalOpen(false)
       setSelectedDates([])
       setIsSelectMode(false)
     } else {
-      alert(res?.error || "Failed to delete assignments")
+      alert("Some assignments failed to save")
     }
     setLoading(false)
   }
@@ -227,34 +298,50 @@ export const useShiftSelection = (userId) => {
     toggleDateSelection,
     selectAll,
     handleBulkDelete,
+    filledDates,
+    emptyDates,
+    assignModalOpen,
+    setAssignModalOpen,
+    editModalOpen,
+    setEditModalOpen,
+    handleBulkSubmit,
     loading
   }
 }
 
-export const useBulkPreset = (userId) => {
+export const useBulkPreset = (userId, daysInMonth, assignmentMap) => {
   const [presetMode, setPresetMode] = useState("WEEK") // WEEK or MONTH
   const [presetShiftId, setPresetShiftId] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const handleApplyPreset = async (currentDate) => {
+  const handleApplyPreset = async (actionType) => {
     if (!presetShiftId) return alert("Please select a shift first")
 
-    let dates = []
+    let targetDates = []
     const today = new Date()
 
     if (presetMode === "WEEK") {
       const end = addDays(today, 6)
-      dates = eachDayOfInterval({ start: today, end }).map(d => format(d, "yyyy-MM-dd"))
+      targetDates = eachDayOfInterval({ start: today, end }).map(d => format(d, "yyyy-MM-dd"))
     } else {
-      const start = startOfMonth(currentDate)
-      const end = endOfMonth(currentDate)
-      dates = eachDayOfInterval({ start, end }).map(d => format(d, "yyyy-MM-dd"))
+      // Remaining days in current month from today
+      const end = endOfMonth(today)
+      if (today > end) return alert("Month already ended")
+      targetDates = eachDayOfInterval({ start: today, end }).map(d => format(d, "yyyy-MM-dd"))
     }
+
+    // Filter based on actionType
+    if (actionType === 'assign') {
+      targetDates = targetDates.filter(d => !assignmentMap[d])
+    }
+    // If edit, we take all targetDates as override
+
+    if (targetDates.length === 0) return alert("No dates to apply this preset to")
 
     setLoading(true)
     const res = await bulkAssignPreset({
       userId,
-      dates,
+      dates: targetDates,
       shiftId: parseInt(presetShiftId)
     })
 
@@ -276,4 +363,3 @@ export const useBulkPreset = (userId) => {
     loading
   }
 }
-

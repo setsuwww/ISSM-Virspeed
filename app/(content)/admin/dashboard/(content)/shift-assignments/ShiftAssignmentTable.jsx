@@ -29,7 +29,7 @@ export default function ShiftAssignmentTable({
     const isAllSelected = users.length > 0 && users.every(u => selectedSet.has(u.id))
 
     return (
-        <div className="bg-white border border-slate-200 overflow-hidden rounded-xl">
+        <div className="bg-white border border-slate-200 overflow-hidden rounded-md">
             <Table>
                 <TableHeader>
                     <TableRow>

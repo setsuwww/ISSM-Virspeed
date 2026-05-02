@@ -5,18 +5,18 @@ import { Card, CardContent } from "@/_components/ui/Card"
 import { useShiftCalendarHooks, useShiftSelection, useBulkPreset } from "@/_clients/hooks/admin/useShiftCalendarHooks"
 
 // Modular Components
-import CalendarHeader from "./CalendarHeader"
+import ShiftCalendarActionBar from "./ShiftCalendarActionBar"
 import CalendarGrid from "./CalendarGrid"
-import CalendarSingleCreateModal from "./CalendarSingleCreateModal"
-import CalendarBulkCreateModal from "./CalendarBulkCreateModal"
-import CalendarSmartAssign from "./CalendarSmartAssign"
+import CalendarSingleCreateModal from "../modal/CalendarSingleCreateModal"
+import CalendarBulkCreateModal from "../modal/CalendarBulkCreateModal"
+import AssignModal from "../modal/AssignModal"
+import EditModal from "../modal/EditModal"
 
 export default function ShiftCalendar({ user, assignments = [], shifts = [], selectedMonth }) {
   const mainHooks = useShiftCalendarHooks({ user, assignments, shifts, selectedMonth })
-  const selectionHooks = useShiftSelection(user?.id)
-  const presetHooks = useBulkPreset(user?.id)
 
   const {
+    assignmentMap,
     isPending, loadingAction,
     availableShifts, hasAvailableShifts,
     singleModalOpen, setSingleModalOpen,
@@ -32,8 +32,14 @@ export default function ShiftCalendar({ user, assignments = [], shifts = [], sel
     handleSaveSingle, handleDeleteSingle, handleSaveBulk, handleDeleteAll
   } = mainHooks
 
+  const selectionHooks = useShiftSelection(user?.id, assignmentMap)
+  const presetHooks = useBulkPreset(user?.id, daysInMonth, assignmentMap)
+
   const {
-    isSelectMode, selectedDates, toggleSelectMode, toggleDateSelection, selectAll, handleBulkDelete, loading: selectionLoading
+    isSelectMode, selectedDates, toggleSelectMode, toggleDateSelection, selectAll,
+    handleBulkDelete, filledDates, emptyDates,
+    assignModalOpen, setAssignModalOpen, editModalOpen, setEditModalOpen,
+    handleBulkSubmit, loading: selectionLoading
   } = selectionHooks
 
   const {
@@ -51,42 +57,46 @@ export default function ShiftCalendar({ user, assignments = [], shifts = [], sel
   const isLoading = isPending || loadingAction || selectionLoading || presetLoading
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative border border-slate-300 rounded-xl">
       {isLoading && (
-        <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-20 flex items-center justify-center rounded-xl">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-50 flex items-center justify-center rounded-2xl">
+          <div className="bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3">
+            <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
+            <span className="text-sm font-bold text-slate-700 uppercase tracking-widest">Processing...</span>
+          </div>
         </div>
       )}
 
-      <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden mb-6 bg-white !p-0">
-        <CalendarHeader
+      <Card className="rounded-2xl border-slate-100 overflow-hidden mb-12 !p-0 border">
+        <ShiftCalendarActionBar
           currentDate={currentDate}
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
-          onBulkAssign={() => setBulkModalOpen(true)}
           isSelectMode={isSelectMode}
           toggleSelectMode={toggleSelectMode}
-          selectedCount={selectedDates.length}
+          filledCount={filledDates.length}
+          emptyCount={emptyDates.length}
           onBulkDelete={handleBulkDelete}
+          onBulkEdit={() => setEditModalOpen(true)}
+          onBulkAssign={() => setAssignModalOpen(true)}
           onDeleteAll={handleDeleteAll}
           onSelectAll={() => selectAll(daysInMonth)}
-        />
 
-        <CalendarSmartAssign
+          // Presets
           presetMode={presetMode}
           setPresetMode={setPresetMode}
           presetShiftId={presetShiftId}
           setPresetShiftId={setPresetShiftId}
+          onApplyPreset={handleApplyPreset}
           availableShifts={availableShifts}
-          onApply={() => handleApplyPreset(currentDate)}
-          loading={presetLoading}
+          loading={isLoading}
         />
 
-        <CardContent className="p-4 !pt-0 sm:p-6 bg-white">
+        <CardContent className="p-6 bg-white">
           <CalendarGrid
             daysInMonth={daysInMonth}
             emptyDays={emptyDays}
-            assignments={assignments}
+            assignmentMap={assignmentMap}
             onDayClick={handleDayClick}
             isSelectMode={isSelectMode}
             selectedDates={selectedDates}
@@ -111,6 +121,26 @@ export default function ShiftCalendar({ user, assignments = [], shifts = [], sel
         bulkPattern={bulkPattern} setBulkPattern={setBulkPattern}
         availableShifts={availableShifts} hasAvailableShifts={hasAvailableShifts}
         onSave={handleSaveBulk}
+      />
+
+      <AssignModal
+        isOpen={assignModalOpen}
+        onOpenChange={setAssignModalOpen}
+        selectedDates={emptyDates}
+        availableShifts={availableShifts}
+        assignmentMap={assignmentMap}
+        onConfirm={handleBulkSubmit}
+        loading={selectionLoading}
+      />
+
+      <EditModal
+        isOpen={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        selectedDates={filledDates}
+        availableShifts={availableShifts}
+        assignmentMap={assignmentMap}
+        onConfirm={handleBulkSubmit}
+        loading={selectionLoading}
       />
     </div>
   )
