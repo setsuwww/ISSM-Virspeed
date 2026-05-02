@@ -14,7 +14,9 @@ export async function updateProfile(data) {
       data: { name, email, locationId, shiftId },
       include: { shift: true, location: true },
     })
-    revalidatePath("/admin/profiles")
+    revalidatePath("/admin/dashboard/profile")
+    revalidatePath("/supervisor/dashboard/profile")
+    revalidatePath("/employee/dashboard/profile")
     return { success: true, user: updated }
   } catch (err) {
     console.error("updateProfile error:", err)
@@ -30,7 +32,9 @@ export async function updateShiftTime(data) {
       where: { id: id },
       data: { startTime, endTime },
     })
-    revalidatePath("/admin/profiles")
+    revalidatePath("/admin/dashboard/profile")
+    revalidatePath("/supervisor/dashboard/profile")
+    revalidatePath("/employee/dashboard/profile")
     return { success: true, shift: updated }
   } catch (err) {
     console.error("updateShiftTime error:", err)
@@ -78,7 +82,9 @@ export async function updateChangePassword(data) {
       data: { password: hashedPassword },
     })
 
-    revalidatePath("/admin/profiles")
+    revalidatePath("/admin/dashboard/profile")
+    revalidatePath("/supervisor/dashboard/profile")
+    revalidatePath("/employee/dashboard/profile")
 
     return { success: true, message: "Password berhasil diperbarui." }
 

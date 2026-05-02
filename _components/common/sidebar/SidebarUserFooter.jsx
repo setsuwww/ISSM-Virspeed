@@ -19,7 +19,7 @@ export default function SidebarUserFooter({ user, minimized }) {
         minimized && "flex justify-center"
       )}
       onClick={() =>
-        router.push(`/${user?.role?.toLowerCase()}/dashboard/profiles`)
+        router.push(`/${user?.role?.toLowerCase()}/dashboard/profile`)
       }
     >
       <div

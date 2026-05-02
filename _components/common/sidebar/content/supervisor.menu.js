@@ -27,7 +27,7 @@ export const adminMenu = [
     {
         type: "link",
         label: "Profile",
-        href: "/supervisor/dashboard/profiles",
+        href: "/supervisor/dashboard/profile",
         icon: "User"
     },
 ]

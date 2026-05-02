@@ -6,9 +6,9 @@ import Link from "next/link"
 import { cn } from "@/_lib/utils"
 
 const tabs = [
-  { label: "Profile", href: "/admin/dashboard/profiles", icon: User  },
-  { label: "Log Activity", href: "/admin/dashboard/profiles/log", icon: FileText },
-  { label: "Log Security", href: "/admin/dashboard/profiles/security", icon: Shield },
+  { label: "Profile", href: "/admin/dashboard/profile", icon: User },
+  { label: "Log Activity", href: "/admin/dashboard/profile/log", icon: FileText },
+  { label: "Log Security", href: "/admin/dashboard/profile/security", icon: Shield },
 ]
 
 export default function ProfileTabs() {

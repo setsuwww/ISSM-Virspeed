@@ -127,7 +127,7 @@ export async function clearUserSession(userId) {
 
 export async function clearAllSecurityLogs() {
   await prisma.securityLog.deleteMany({})
-  revalidatePath("/admin/dashboard/profiles/security")
+  revalidatePath("/admin/dashboard/profile/security")
 }
 
 

@@ -44,7 +44,7 @@ export const adminMenu = [
   {
     type: "link",
     label: "Profile",
-    href: "/admin/dashboard/profiles",
+    href: "/admin/dashboard/profile",
     icon: "User"
   },
 ]

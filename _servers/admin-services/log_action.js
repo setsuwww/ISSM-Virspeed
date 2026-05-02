@@ -29,7 +29,7 @@ export async function logQuery({ page = 1, limit = 20, userId, action }) {
       data: true,
       ipAddress: true, userAgent: true,
       createdAt: true,
-      user: { select: { id: true, name: true, email: true, role: true }},
+      user: { select: { id: true, name: true, email: true, role: true } },
     },
   })
 
@@ -60,14 +60,15 @@ export async function logActivity({ userId, url, action, data, method }) {
 
 export async function clearAllActivityLogs() {
   await prisma.activityLog.deleteMany({})
-  revalidatePath("/admin/dashboard/profiles/security")
+  revalidatePath("/admin/dashboard/profile/security")
 }
 
 export async function safeLog(payload) {
-  try { await logActivity(payload)
+  try {
+    await logActivity(payload)
     console.log("LOG ACTIVITY:", payload)
   }
-  catch (err) { console.error("LOG ACTIVITY FAILED:", err)}
+  catch (err) { console.error("LOG ACTIVITY FAILED:", err) }
 }
 
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isTomorrow, addMonths, subMonths } from "date-fns"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isPast, isToday, isTomorrow, addMonths, subMonths } from "date-fns"
 import { ChevronLeft, ChevronRight, Clock, AlertCircle, FileText, RefreshCcw, Calendar as CalendarIcon, Info, ChevronDown, LogIn, LogOut } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@/_components/ui/Card"
 import { Badge } from "@/_components/ui/Badge"
@@ -84,23 +84,26 @@ export default function Calendar({
             </div>
             <div className="grid grid-cols-7 gap-1 p-4">
               {emptyDays.map((_, i) => (
-                <div key={`empty-${i}`} className="min-h-[80px] sm:min-h-[100px] p-2 bg-slate-50/50 rounded-lg"></div>
+                <div key={`empty-${i}`} className="min-h-[80px] sm:min-h-[100px] p-2 bg-slate-200/60 rounded-lg"></div>
               ))}
               {daysInMonth.map(day => {
                 const dateStr = format(day, "yyyy-MM-dd")
                 const shiftForDay = calendarMap[dateStr] // 🔥 O(1) Lookup
 
                 const isTodayDate = isToday(day)
-                const isTomorrowDate = isTomorrow(day)
 
-                let containerClass = "min-h-[80px] sm:min-h-[100px] p-2 rounded-lg border transition-all flex flex-col gap-1 relative group "
+                const hasShift = !!shiftForDay
+
+                let containerClass = `min-h-[80px] sm:min-h-[100px] p-2 rounded-lg border transition-all flex flex-col gap-1 relative group`
 
                 if (isTodayDate) {
-                  containerClass += "bg-blue-50/20 border-blue-400"
-                } else if (isTomorrowDate) {
-                  containerClass += "bg-slate-50 border-slate-300 border-dashed hover:border-blue-500 hover:bg-blue-50 "
-                } else {
-                  containerClass += "bg-white border-slate-300"
+                  containerClass += " bg-blue-50 border-blue-400"
+                }
+                else if (hasShift) {
+                  containerClass += " bg-white border-slate-300 hover:border-slate-400"
+                }
+                else {
+                  containerClass += " bg-slate-100/60 border-slate-300 border-dashed"
                 }
 
                 return (
