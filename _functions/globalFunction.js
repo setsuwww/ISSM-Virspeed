@@ -18,6 +18,14 @@ export const safeToISOString = (v) => {
   return d && !isNaN(d) ? d.toISOString() : null;
 };
 
+// Untuk memperjelas UI/UX pada halaman Dashboard (Employee)
+export const formatTime = (minutes, statement = null) => {
+  if (minutes == null) return statement;
+  const h = Math.floor(minutes / 60).toString().padStart(2, '0')
+  const m = (minutes % 60).toString().padStart(2, '0')
+  return `${h}:${m}`
+}
+
 // Untuk normalisasi createdAt dan updatedAt
 export const safeFormat = (v, fmt) => {
   const d = v ? new Date(v) : null;

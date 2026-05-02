@@ -26,8 +26,9 @@ function generateDefaultPassword(name) {
 // MANAGE
 // ------------------------
 
-export async function getUsers(page, limit) {
+export async function getUsers(page, limit, where = {}) {
   return prisma.user.findMany({
+    where,
     skip: (page - 1) * limit,
     take: limit,
     orderBy: { createdAt: "desc" },
@@ -58,6 +59,7 @@ export async function getUsers(page, limit) {
               name: true,
               startTime: true,
               endTime: true,
+              type: true,
             },
           },
         },
@@ -66,8 +68,10 @@ export async function getUsers(page, limit) {
   })
 }
 
-export async function getUserCount() {
-  return prisma.user.count()
+export async function getUserCount(where = {}) {
+  return prisma.user.count({
+    where,
+  })
 }
 
 export async function bulkCreateUser(rows) {
@@ -289,7 +293,17 @@ export async function getShiftEmployeeCount() {
   });
 }
 
-export async function getSEFilterData() {
+export async function getShiftEmployeeLocations() {
+  return prisma.location.findMany({
+    where: { status: "ACTIVE" },
+    select: { id: true, name: true, type: true },
+    orderBy: {
+      name: "asc",
+    },
+  });
+}
+
+export async function getShiftEmployeeFilterData() {
   const [locations, shifts] = await Promise.all([
     prisma.location.findMany({
       select: { id: true, name: true, type: true },
@@ -331,16 +345,6 @@ export async function getNormalEmployeeCount() {
         startTime: { not: null },
         endTime: { not: null },
       },
-    },
-  });
-}
-
-export async function getShiftEmployeeLocations() {
-  return prisma.location.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true, name: true, type: true },
-    orderBy: {
-      name: "asc",
     },
   });
 }

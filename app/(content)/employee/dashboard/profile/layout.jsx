@@ -1,6 +1,6 @@
 import '@/_styles/utilities.css'
 
-export const metadata ={
+export const metadata = {
   title: "Employee | Profiles",
   description: "Employee's personal profile",
 };
@@ -9,7 +9,7 @@ export const metadata ={
 export default async function DashboardLayout({ children }) {
   return (
     <div>
-        {children}
+      {children}
     </div>
   );
 }

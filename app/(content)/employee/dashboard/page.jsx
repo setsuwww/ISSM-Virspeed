@@ -1,8 +1,11 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/_lib/auth'
 import { prisma } from '@/_lib/prisma'
-import DashboardClient from './DashboardClient'
+
+import Calendar from './Calendar'
 import { format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns'
+import { formatTime } from '@/_functions/globalFunction'
+import { getShiftStyle } from '@/_components/_constants/shiftConstants'
 
 export default async function EmployeeDashboardPage() {
   const user = await getCurrentUser()
@@ -232,7 +235,7 @@ export default async function EmployeeDashboardPage() {
   return (
     <div className="flex-1 w-full flex flex-col">
       <div className="flex-1 bg-slate-50/50">
-        <DashboardClient
+        <Calendar
           calendarMap={calendarMap}
           todayActivity={todayActivity}
           historyData={historyData}
@@ -240,22 +243,4 @@ export default async function EmployeeDashboardPage() {
       </div>
     </div>
   )
-}
-
-// Helpers
-function formatTime(minutes) {
-  if (minutes == null) return null
-  const h = Math.floor(minutes / 60).toString().padStart(2, '0')
-  const m = (minutes % 60).toString().padStart(2, '0')
-  return `${h}:${m}`
-}
-
-function getShiftStyle(type) {
-  switch (type) {
-    case 'MORNING': return 'bg-blue-50 text-blue-700 border-blue-200'
-    case 'AFTERNOON': return 'bg-orange-50 text-orange-700 border-orange-200'
-    case 'EVENING': return 'bg-purple-50 text-purple-700 border-purple-200'
-    case 'OFF': return 'bg-slate-50 text-slate-500 border-slate-200'
-    default: return 'bg-slate-50 text-slate-500 border-slate-200'
-  }
 }

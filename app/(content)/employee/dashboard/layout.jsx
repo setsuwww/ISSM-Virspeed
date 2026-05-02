@@ -5,8 +5,6 @@ export const metadata = {
   description: "Employee content"
 };
 
-import { Toaster } from "sonner"
-
 import SidebarBase from "@/_components/common/sidebar/SidebarBase";
 import { employeeMenu } from "@/_components/common/sidebar/content/employee.menu";
 
@@ -14,6 +12,8 @@ import { getCurrentUser } from "@/_lib/auth";
 import { getScheduleCount } from "@/_jobs/partials/getScheduleCount";
 import { getChangeShiftCount } from '@/_jobs/partials/getChangeShiftCount';
 import DashboardHeader from './DashboardHeader';
+import { ToastProvider } from '@/_clients/_contexts/Toast-Provider';
+import { ConfirmDialog } from '@/_components/ui/Confirm';
 
 export default async function DashboardLayout({ children }) {
 
@@ -26,15 +26,12 @@ export default async function DashboardLayout({ children }) {
       <SidebarBase menu={employeeMenu(csCount, scheduleCount)} user={user} />
 
       <div className="flex-1 flex flex-col">
-        <Toaster position="top-right" richColors expand duration={3000} closeButton toastOptions={{
-          className: "rounded-lg shadow-lg border border-slate-200",
-          style: { fontSize: "14px", padding: "12px 16px" },
-        }}
-        />
-        <DashboardHeader />
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-100">
-          {children}
-        </main>
+        <ToastProvider><ConfirmDialog />
+          <DashboardHeader />
+          <main className="flex-1 overflow-y-auto p-6 bg-slate-100">
+            {children}
+          </main>
+        </ToastProvider>
       </div>
     </div>
   )

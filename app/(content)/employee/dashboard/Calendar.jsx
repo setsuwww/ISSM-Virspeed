@@ -13,13 +13,6 @@ import {
 } from "@/_components/ui/Tooltip"
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 
-const formatTime = (minutes) => {
-  if (minutes == null) return null;
-  const h = Math.floor(minutes / 60).toString().padStart(2, '0')
-  const m = (minutes % 60).toString().padStart(2, '0')
-  return `${h}:${m}`
-}
-
 const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, children }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
@@ -44,7 +37,7 @@ const CollapsibleSection = ({ title, icon, colorClass, defaultOpen = false, chil
   )
 }
 
-export default function DashboardClient({
+export default function Calendar({
   calendarMap,
   todayActivity,
   historyData

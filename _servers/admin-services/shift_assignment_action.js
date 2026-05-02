@@ -186,3 +186,107 @@ export async function bulkAssignShift(data) {
     return { success: false, error: error.message || "Failed to bulk assign shifts" }
   }
 }
+
+/**
+ * Delete multiple shift assignments by dates
+ */
+export async function deleteMultipleShiftAssignments(dates, userId) {
+  try {
+    await requireAdmin()
+    if (!userId || !dates || !dates.length) {
+      throw new Error("Missing required fields: userId and dates.")
+    }
+
+    const targetDates = dates.map(d => startOfDay(new Date(d)))
+
+    await prisma.shiftAssignment.deleteMany({
+      where: {
+        userId,
+        date: { in: targetDates }
+      }
+    })
+
+    revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting multiple shift assignments:", error)
+    return { success: false, error: error.message || "Failed to delete shifts" }
+  }
+}
+
+/**
+ * Delete all shift assignments for a user
+ */
+export async function deleteAllAssignments(userId) {
+  try {
+    await requireAdmin()
+    if (!userId) throw new Error("User ID is required.")
+
+    await prisma.shiftAssignment.deleteMany({
+      where: { userId }
+    })
+
+    revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting all assignments:", error)
+    return { success: false, error: error.message || "Failed to delete all assignments" }
+  }
+}
+
+/**
+ * Bulk assign shifts using a preset (list of dates)
+ */
+export async function bulkAssignPreset({ userId, dates, shiftId }) {
+  try {
+    await requireAdmin()
+    if (!userId || !dates || !dates.length || !shiftId) {
+      throw new Error("Missing required fields.")
+    }
+
+    // [STRICT LOCATION RULE]
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { locationId: true }
+    })
+    if (!targetUser) throw new Error("User not found.")
+
+    const targetShift = await prisma.shift.findUnique({
+      where: { id: shiftId },
+      select: { locationId: true }
+    })
+    if (!targetShift || targetShift.locationId !== targetUser.locationId) {
+      throw new Error("Shift tidak tersedia di lokasi user")
+    }
+
+    const operations = dates.map(dateStr => {
+      const targetDate = startOfDay(new Date(dateStr))
+      return prisma.shiftAssignment.upsert({
+        where: {
+          userId_date: {
+            userId,
+            date: targetDate
+          }
+        },
+        update: {
+          shiftId,
+          isManualOverride: true
+        },
+        create: {
+          userId,
+          date: targetDate,
+          shiftId,
+          isManualOverride: true
+        }
+      })
+    })
+
+    await prisma.$transaction(operations)
+
+    revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    return { success: true, count: operations.length }
+  } catch (error) {
+    console.error("Error bulk assigning preset:", error)
+    return { success: false, error: error.message || "Failed to assign preset" }
+  }
+}

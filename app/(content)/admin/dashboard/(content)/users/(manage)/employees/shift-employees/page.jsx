@@ -5,7 +5,7 @@ import { DashboardHeader } from "@/app/(content)/admin/dashboard/DashboardHeader
 import { Pagination } from "@/app/(content)/admin/dashboard/Pagination";
 import { minutesToTime } from "@/_functions/globalFunction";
 import EmployeesTableButton from "../EmployeesTableButton";
-import { getShiftEmployees, getShiftEmployeeCount, getSEFilterData } from "@/_servers/admin-services/user_action";
+import { getShiftEmployees, getShiftEmployeeCount, getShiftEmployeeFilterData } from "@/_servers/admin-services/user_action";
 
 export const revalidate = 60;
 
@@ -20,7 +20,7 @@ export default async function Page({ searchParams }) {
 
   const [[users, total], { locations, shifts }] = await Promise.all([
     Promise.all([getShiftEmployees({ page, limit }), getShiftEmployeeCount()]),
-    getSEFilterData(),
+    getShiftEmployeeFilterData(),
   ]);
 
   const serializedUsers = users.map((u) => ({

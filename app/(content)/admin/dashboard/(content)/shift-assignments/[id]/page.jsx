@@ -4,9 +4,9 @@ import Link from "next/link"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ChevronLeft } from "lucide-react"
 import { startOfMonth, endOfMonth, parseISO, format } from "date-fns"
-import AdminShiftCalendarClient from "./AdminShiftCalendarClient"
 import ContentForm from "@/_components/common/ContentForm"
 import { DashboardHeader } from "../../../DashboardHeader"
+import ShiftCalendar from "./ShiftCalendar"
 
 export const revalidate = 0
 
@@ -68,7 +68,7 @@ export default async function AdminUserShiftSchedulePage(props) {
         </ContentForm.Header>
 
         <ContentForm.Body>
-          <AdminShiftCalendarClient
+          <ShiftCalendar
             user={targetUser}
             assignments={assignments}
             shifts={shifts}
