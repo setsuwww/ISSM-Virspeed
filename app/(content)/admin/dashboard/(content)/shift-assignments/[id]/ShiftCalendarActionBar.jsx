@@ -32,14 +32,14 @@ export default function ShiftCalendarActionBar({
     <div className="bg-slate-100 p-4 space-y-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-full p-1">
+          <div className="flex items-center gap-2 bg-slate-50/70 border border-slate-400/70 rounded-full p-1">
             <button
               onClick={onPrevMonth}
               className="p-1.5 bg-slate-200 hover:bg-slate-300 rounded-full text-slate-600 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="font-bold text-red-600 min-w-[120px] text-center text-sm">
+            <span className="font-semibold text-red-600 min-w-[120px] text-center text-sm">
               {format(currentDate, "MMMM yyyy")}
             </span>
             <button
@@ -56,7 +56,7 @@ export default function ShiftCalendarActionBar({
             onClick={onDeleteAll}
             variant="outline"
             size="sm"
-            className="text-rose-600 border-rose-200 hover:bg-rose-50 hover:text-rose-700 bg-white h-9 rounded-md"
+            className="text-red-600 border-slate-300 hover:text-red-700 bg-white h-9 rounded-md"
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Delete All
@@ -95,7 +95,8 @@ export default function ShiftCalendarActionBar({
               <Button variant="ghost" size="sm" onClick={onSelectAll} className="h-9 text-slate-600 hover:bg-slate-100">
                 Select All
               </Button>
-              <div className="h-6 w-px bg-slate-200 mx-1"></div>
+
+              <div className="h-7 w-px bg-slate-300 mx-1"></div>
 
               <Button
                 variant="outline"
@@ -160,8 +161,8 @@ export default function ShiftCalendarActionBar({
           </div>
 
           <Select value={presetShiftId} onValueChange={setPresetShiftId}>
-            <SelectTrigger className="w-[140px] !h-8 text-xs bg-white rounded-md">
-              <SelectValue placeholder="Shift" />
+            <SelectTrigger className="w-[160px] !h-8 text-xs bg-white rounded-md">
+              <SelectValue placeholder="Shift Assignments ..." />
             </SelectTrigger>
             <SelectContent>
               {availableShifts.map(s => (

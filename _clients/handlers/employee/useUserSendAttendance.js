@@ -13,11 +13,13 @@ import {
   userSendLeaveRequest,
   userManualActivate,
 } from "@/_servers/employee-services/attendance_action";
+import { useRouter } from "next/navigation";
 
 export function useUserSendAttendance() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const toast = useToast();
   const { withTry } = useActionHelper();
+  const toast = useToast();
 
   // ✅ helper biar bisa await
   const run = (fn) =>
@@ -73,6 +75,8 @@ export function useUserSendAttendance() {
       if (result?.error) {
         toast.error(result.error);
         throw new Error(result.error);
+      } else {
+        router.refresh()
       }
 
       toast.success("Checked in successfully");

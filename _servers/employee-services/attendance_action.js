@@ -19,6 +19,7 @@ import { pusherServer } from "@/_lib/pusher"
 
 import { calculateWorkMinutes } from "@/_functions/helpers/calculateShift"
 import { getActiveShiftAssignment } from "@/_jobs/content/shift/shift_generator"
+import { revalidatePath } from "next/cache"
 
 const normalizeMinutes = (minutes) => {
   return minutes === 1440 ? 0 : minutes;
@@ -96,13 +97,6 @@ export async function userPrecheckCheckIn() {
     isShiny: isShiny && !attendance?.checkInTime,
     reason: isShiftEnded ? "Shift ended" : !isCheckInOpen ? "Not opened" : attendance?.checkInTime ? "Already checked-in" : null
   }
-
-  console.log({
-    now: now.format(),
-    shiftStart: shiftStart.format(),
-    shiftEnd: shiftEnd.format(),
-    isCheckInOpen,
-  })
 
   const checkOutState = {
     disabled: isShiftEnded || !attendance?.checkInTime || !!attendance?.checkOutTime || hasEarlyCheckoutReq || hasRequest || user.isActive === false,
@@ -211,6 +205,8 @@ export async function userSendCheckIn(coords = null) {
     data: { attendanceId: attendance.id, status },
   });
 
+  revalidatePath("/employee/dashboard/attendance/main")
+
   return { success: true, attendance };
 }
 
@@ -275,6 +271,8 @@ export async function userSendCheckOut() {
       inactiveUntil: new Date(Date.now() + 40 * 60 * 1000)
     }
   });
+
+  revalidatePath("/employee/dashboard/attendance/main")
 
   return { success: true, warning };
 }
@@ -384,6 +382,8 @@ export async function userSendEarlyCheckout(reason) {
     },
   });
 
+  revalidatePath("/employee/dashboard/attendance/main")
+
   return { success: true };
 }
 
@@ -408,6 +408,8 @@ export async function userSendPermissionRequest({ reason, startDate, isLong }) {
       method: LogMethod.POST,
       data: { reason, date: today, isLong },
     })
+
+    revalidatePath("/employee/dashboard/attendance/main")
 
     return { success: true }
   } catch (err) {
@@ -441,6 +443,8 @@ export async function userSendLeaveRequest({ type, startDate, reason }) {
       },
     })
 
+    revalidatePath("/employee/dashboard/attendance/main")
+
     return { success: true }
   } catch (err) {
     return { error: err.message };
@@ -463,7 +467,8 @@ export async function userManualActivate() {
     }
   })
 
-  revalidatePath("/")
+  revalidatePath("/employee/dashboard/attendance/main")
+
   return { success: true }
 }
 

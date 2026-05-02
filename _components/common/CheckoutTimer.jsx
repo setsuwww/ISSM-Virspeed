@@ -48,11 +48,6 @@ export function CheckoutTimer({ attendance }) {
             attendance.shift.endTime
         )
 
-    console.log({
-        attendance,
-        shift: attendance?.shift,
-    })
-
     return (
         <div className="p-6 rounded-xl border-b-4 border-slate-300 shadow-xs ring-1 ring-slate-200 bg-white space-y-3">
 
@@ -77,13 +72,11 @@ export function CheckoutTimer({ attendance }) {
                 }
             </div>
 
-            <div className="w-1/2 h-3 bg-slate-200 rounded-[3px] overflow-hidden">
-                <div className="w-1/2 h-3 bg-slate-200 rounded-[3px] overflow-hidden">
-                    <div
-                        className={`h-full transition-all ${getProgressColor(progress)}`}
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
+            <div className="w-full h-3 bg-slate-200 rounded overflow-hidden">
+                <div
+                    className={`h-full ${getProgressColor(progress)}`}
+                    style={{ width: `${progress}%` }}
+                />
             </div>
 
             <div className="text-xs text-slate-400">
