@@ -1,5 +1,4 @@
 import { prisma } from "@/_lib/prisma"
-import { getCurrentUser } from "@/_lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { ContentInformation } from "@/_components/common/ContentInformation"
@@ -16,12 +15,6 @@ export default async function AdminUserShiftSchedulePage(props) {
   const searchParams = await props.searchParams;
   const userId = params.id
 
-  const admin = await getCurrentUser()
-  if (!admin || (admin.role !== "ADMIN" && admin.role !== "SUPERVISOR")) {
-    redirect("/auth/signin")
-  }
-
-  // Fetch the target user
   const targetUser = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, name: true, email: true, role: true, locationId: true }
@@ -31,36 +24,23 @@ export default async function AdminUserShiftSchedulePage(props) {
     redirect("/admin/dashboard/shift-assignments")
   }
 
-  // Parse selected month from searchParams or default to current month
   const selectedMonth = searchParams?.month || format(new Date(), 'yyyy-MM')
 
   let targetDate
   try {
     targetDate = parseISO(`${selectedMonth}-01`)
     if (isNaN(targetDate.getTime())) throw new Error()
-  } catch (e) {
-    targetDate = new Date()
   }
+  catch (e) { targetDate = new Date() }
 
   const start = startOfMonth(targetDate)
   const end = endOfMonth(targetDate)
 
-  // Fetch Assignments for this user for the month
   const assignments = await prisma.shiftAssignment.findMany({
-    where: {
-      userId,
-      date: {
-        gte: start,
-        lte: end
-      }
-    },
-    include: {
-      shift: true
-    },
+    where: { userId, date: { gte: start, lte: end } },
+    include: { shift: true },
     orderBy: { date: 'asc' }
   })
-
-  // Fetch all active shifts for the Dropdown/Modal
   const shifts = await prisma.shift.findMany({
     where: { isActive: true },
     orderBy: { name: 'asc' }

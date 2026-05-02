@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, } from "react";
 import { useHandleUsers } from "../../handlers/admin/useHandleUsers";
 
 export function useUsersHooks(initialData) {

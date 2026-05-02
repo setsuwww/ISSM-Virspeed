@@ -19,18 +19,20 @@ export default function UsersActionHeader({
     <div className="flex items-center justify-between gap-2 flex-wrap pb-2">
 
       <div className="flex items-center gap-2">
-        <Select value={roleFilter} onValueChange={onRoleFilterChange}>
-          <SelectTrigger className="w-auto px-3 whitespace-nowrap">
-            <span className="font-semibold text-slate-600 mr-1">Role:</span>
-            <SelectValue placeholder="All" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="EMPLOYEE">Employee</SelectItem>
-            <SelectItem value="USER">User</SelectItem>
-          </SelectContent>
-        </Select>
+        {roleFilter && onRoleFilterChange && (
+          <Select value={roleFilter} onValueChange={onRoleFilterChange}>
+            <SelectTrigger className="w-auto px-3 whitespace-nowrap">
+              <span className="font-semibold text-slate-600 mr-1">Role:</span>
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="ADMIN">Admin</SelectItem>
+              <SelectItem value="EMPLOYEE">Employee</SelectItem>
+              <SelectItem value="USER">User</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
 
         <Select value={shiftFilter} onValueChange={onShiftFilterChange}>
           <SelectTrigger className="w-auto px-3 whitespace-nowrap">
