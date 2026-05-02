@@ -75,9 +75,9 @@ export default function Calendar({
             </div>
           </div>
           <CardContent className="!p-0">
-            <div className="grid grid-cols-7 gap-1 mb-2 bg-slate-100 rounded-md mx-4">
+            <div className="grid grid-cols-7 gap-1 mb-2 bg-red-500 rounded-md mx-4">
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                <div key={day} className="text-center text-sm font-semibold text-slate-500 py-2">
+                <div key={day} className="text-center text-md font-semibold text-slate-500 py-2">
                   {day}
                 </div>
               ))}

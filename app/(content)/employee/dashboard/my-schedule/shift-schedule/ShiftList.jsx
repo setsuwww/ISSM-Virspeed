@@ -90,7 +90,7 @@ export default function ShiftList({ assignments, selectedMonth }) {
             <div>
               <div className="grid grid-cols-7 gap-2 mb-2">
                 {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                  <div key={day} className="text-center text-xs font-semibold text-slate-500 py-2 hidden sm:block">
+                  <div key={day} className="text-center text-sm font-semibold bg-slate-200 rounded-md text-slate-600 py-2 hidden sm:block">
                     {day}
                   </div>
                 ))}
