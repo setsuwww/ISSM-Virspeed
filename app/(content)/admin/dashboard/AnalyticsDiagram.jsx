@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChartNoAxesCombined } from "lucide-react";
+import { ChartNoAxesCombined, Filter } from "lucide-react";
 import { parseISO, subDays, isWithinInterval, addDays, format } from "date-fns";
 
 import { DashboardDiagram } from "./DashboardDiagram";
@@ -107,6 +107,7 @@ export default function AnalyticsDiagram({ attendanceRaw = [] }) {
         </div>
 
         <div className="flex items-center space-x-2">
+          <Filter strokeWidth={2} className="text-slate-400 w-4 h-4" />
           <span className="text-sm font-semibold text-slate-400">Filter Last : </span>
           <div className="flex items-center gap-2">
             {Object.keys(PRESET_RANGES).map((k) => (

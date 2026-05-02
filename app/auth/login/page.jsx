@@ -19,21 +19,21 @@ const LoginPage = () => {
   })
 
   return (
-    <div className="flex min-h-[600px] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-xl">
+    <div className="flex min-h-[600px] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-300">
 
       {/* SECTION KIRI: Branding & Info */}
-      <div className="hidden w-1/2 flex-col justify-between bg-violet-600 p-10 text-white lg:flex">
+      <div className="hidden w-1/2 flex-col justify-between bg-violet-800 p-10 text-white lg:flex">
         <div>
-          <div className="flex items-center gap-2 mb-8">
+          <div className="flex items-center gap-2 mb-8 text-yellow-400">
             <Rocket className="h-8 w-8" />
             <span className="text-2xl font-bold tracking-tight">Virspeed</span>
           </div>
 
           <div className="space-y-4">
             <h1 className="text-3xl font-bold leading-tight">
-              Information System Shift Management
+              Information System Shift Management.
             </h1>
-            <p className="text-violet-100 leading-relaxed">
+            <p className="text-violet-300 leading-relaxed">
               Virspeed is an Shift and Attendance management system. designed to help efficiency workflow and real-time performance monitoring.
             </p>
           </div>
