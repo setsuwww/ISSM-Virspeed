@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { format } from "date-fns"
 import HistoryTable from "./HistoryTable"
 import HistoryLayout from "./HistoryLayout"
+import { minutesToTime } from "@/_functions/globalFunction"
 
 export const revalidate = 60
 
@@ -21,6 +22,8 @@ export default async function Page({ searchParams }) {
         select: {
           type: true,
           name: true,
+          startTime: true,
+          endTime: true,
         },
       },
     },
@@ -46,6 +49,8 @@ export default async function Page({ searchParams }) {
 
       shiftType: a.shift?.type ?? "OFF",
       shiftName: a.shift?.name ?? "—",
+      shiftStartTime: minutesToTime(a.shift?.startTime),
+      shiftEndTime: minutesToTime(a.shift?.endTime),
 
       status: a.status,
       approval: a.approval ?? null,

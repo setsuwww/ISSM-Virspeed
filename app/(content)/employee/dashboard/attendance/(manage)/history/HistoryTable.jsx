@@ -7,8 +7,9 @@ import { Badge } from "@/_components/ui/Badge"
 
 import HistoryActionHeader from "./HistoryActionHeader"
 import { attendancesStyles } from "@/_components/_constants/theme/attendanceTheme"
-import { shiftStyles } from "@/_components/_constants/shiftConstants"
+import { shiftDots, shiftStyles } from "@/_components/_constants/shiftConstants"
 import { cn } from "@/_lib/utils"
+import { capitalize } from "@/_functions/globalFunction"
 
 export default function HistoryTable({ data, initialOrder = "desc" }) {
   const [order, setOrder] = useState(initialOrder)
@@ -69,11 +70,19 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
               </TableCell>
 
               <TableCell>
-                <span
-                  className={`flex items-center gap-x-2 !bg-white !border-slate-200 ${shiftStyles[att.shiftType]}`}
-                >
-                  <span>{att.shiftType}</span>
-                </span>
+                <div className="flex items-center space-x-3">
+                  {shiftDots[att.shiftType]}
+
+                  <div className="flex flex-col text-sm text-slate-600">
+                    <p className="font-semibold">
+                      {capitalize(att.shiftType)}
+                    </p>
+
+                    <p className="text-xs text-slate-400">
+                      {att.shiftStartTime} - {att.shiftEndTime}
+                    </p>
+                  </div>
+                </div>
               </TableCell>
 
               <TableCell>
