@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
 import { prisma } from "./prisma"
 import { cache } from "react"
+import { getTodayStartJakarta } from "./time"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined")
@@ -45,25 +46,31 @@ export const getCurrentUser = cache(async () => {
   const decoded = await getUserFromCookie()
   if (!decoded?.id) return null
 
+  const today = getTodayStartJakarta().toDate()
+
   const user = await prisma.user.findUnique({
     where: { id: decoded.id },
-    include: { shift: true, location: true },
+    include: {
+      shift: true,
+      location: true,
+      shiftAssignments: {
+        where: {
+          date: today,
+        },
+        include: {
+          shift: true,
+        },
+        take: 1,
+      },
+    },
   })
 
   if (!user) return null
 
-  // Lazy Activation Check
-  if (!user.isActive && user.inactiveUntil && new Date() > user.inactiveUntil) {
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        isActive: true,
-        inactiveUntil: null,
-      },
-      include: { shift: true, location: true },
-    })
-    return updatedUser
-  }
+  const todayAssignment = user.shiftAssignments?.[0]
 
-  return user
+  return {
+    ...user,
+    todayShift: todayAssignment?.shift || user.shift || null,
+  }
 })

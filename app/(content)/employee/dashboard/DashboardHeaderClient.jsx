@@ -22,6 +22,8 @@ export default function DashboardHeaderClient({ user }) {
     })
   }
 
+  const shift = user?.todayShift
+
   return (
     <header className="w-full flex items-center justify-between border-b border-slate-200 px-6 py-6.5 bg-white">
       <div>
@@ -33,9 +35,13 @@ export default function DashboardHeaderClient({ user }) {
           <div className="flex flex-col">
             <h1 className="text-md md:text-lg font-semibold flex items-center space-x-1">
               <span><span className="text-sky-700">{capitalize(user?.name ?? "User")}’s</span> Dashboard</span>
-              <Badge className={shiftStyles[user.shift?.type]}>{capitalize(user.shift?.type)}</Badge>
+              <Badge className={shiftStyles[shift?.type]}>
+                {capitalize(shift?.type)}
+              </Badge>
             </h1>
-            <span className="text-xs text-slate-400">{minutesToTime(user.shift?.startTime)} - {minutesToTime(user.shift?.endTime)}</span>
+            <span className="text-xs text-slate-400">
+              {minutesToTime(shift?.startTime)} - {minutesToTime(shift?.endTime)}
+            </span>
           </div>
         </div>
       </div>
