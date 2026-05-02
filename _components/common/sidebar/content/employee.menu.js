@@ -28,10 +28,13 @@ export const employeeMenu = (changeShiftCount, scheduleCount) => [
     ]
   },
   {
-    type: "link",
+    type: "group",
     label: "Schedule",
-    href: "/employee/dashboard/my-schedule",
     icon: "Calendar",
+    items: [
+      { label: "Shift Schedule", href: "/employee/dashboard/my-schedule/shift-schedule" },
+      { label: "Event Schedule", href: "/employee/dashboard/my-schedule/event-schedule" },
+    ],
     badge: scheduleCount
   },
   {

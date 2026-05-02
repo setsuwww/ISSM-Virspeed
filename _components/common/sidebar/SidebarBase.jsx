@@ -64,7 +64,7 @@ export default function SidebarBase({ menu, user }) {
             if (item.type === "link") {
               return (
                 <motion.div key={item.href} custom={idx} initial="initial" animate="animate" whileHover="hover" variants={linkVariants}>
-                  <SidebarLink href={item.href} icon={Icon} badge={item.badge} minimized={minimized}>
+                  <SidebarLink href={item.href} icon={Icon} minimized={minimized}>
                     {item.label}
                   </SidebarLink>
                 </motion.div>
@@ -74,7 +74,7 @@ export default function SidebarBase({ menu, user }) {
             if (item.type === "group") {
               return (
                 <motion.div key={item.label} custom={idx} initial="initial" animate="animate" whileHover="hover" variants={linkVariants}>
-                  <SidebarCollapsible title={item.label} icon={Icon} items={item.items} minimized={minimized}/>
+                  <SidebarCollapsible title={item.label} icon={Icon} badge={item.badge} items={item.items} minimized={minimized} />
                 </motion.div>
               )
             }

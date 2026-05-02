@@ -1,8 +1,11 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/_lib/auth'
 import { prisma } from '@/_lib/prisma'
-import ShiftScheduleClient from './ShiftScheduleClient'
 import { startOfMonth, endOfMonth, parseISO, format } from 'date-fns'
+import ContentForm from '@/_components/common/ContentForm'
+import { ContentInformation } from '@/_components/common/ContentInformation'
+import ScheduleToEvent from '../ScheduleToEvent'
+import ShiftList from './ShiftList'
 
 export const revalidate = 0
 
@@ -11,11 +14,8 @@ export default async function MySchedulePage(props) {
   const user = await getCurrentUser()
   if (!user) redirect('/auth/signin')
 
-  // Parse selected month from searchParams or default to current month
   const selectedMonth = searchParams?.month || format(new Date(), 'yyyy-MM')
-  
-  // Create a proper date from "yyyy-MM" to find the start and end of that month
-  // "yyyy-MM-01" is used to parse a valid Date
+
   let targetDate
   try {
     targetDate = parseISO(`${selectedMonth}-01`)
@@ -42,16 +42,22 @@ export default async function MySchedulePage(props) {
   })
 
   return (
-    <div className="flex flex-col h-full bg-slate-50/50">
-      <div className="px-4 sm:px-6 py-4 border-b border-slate-200 bg-white">
-        <h1 className="text-2xl font-bold text-slate-800">My Shift Schedule</h1>
-        <p className="text-sm text-slate-500 mt-1">View your shift assignments for the selected month.</p>
-      </div>
-      
-      <ShiftScheduleClient 
-        assignments={assignments} 
-        selectedMonth={format(targetDate, 'yyyy-MM')} 
-      />
-    </div>
+    <section>
+      <ContentForm>
+        <ContentForm.Header>
+          <div className="flex items-center justify-between">
+            <ContentInformation title="Shift Schedules" subtitle="Manage your shift schedules" />
+            <ScheduleToEvent />
+          </div>
+        </ContentForm.Header>
+
+        <ContentForm.Body>
+          <ShiftList
+            assignments={assignments}
+            selectedMonth={format(targetDate, 'yyyy-MM')}
+          />
+        </ContentForm.Body>
+      </ContentForm>
+    </section>
   )
 }

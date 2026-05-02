@@ -7,7 +7,7 @@ import clsx from "clsx"
 import { ChevronDown } from "lucide-react"
 import { SidebarSubLink } from "./SidebarSubLink"
 
-export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
+export function SidebarCollapsible({ title, items, icon: Icon, minimized, badge = 0 }) {
   const router = useRouter()
   const pathname = usePathname()
   const isParentActive = items.some((item) => pathname === item.href)
@@ -41,8 +41,15 @@ export function SidebarCollapsible({ title, items, icon: Icon, minimized }) {
           </div>
           {!minimized && <span className="text-sm">{title}</span>}
         </div>
+
+        {badge > 0 && !minimized && (
+          <span className="ml-auto mr-1 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-semibold">
+            {badge}
+          </span>
+        )}
+
         {!minimized && (
-          <ChevronDown size={18} className={`text-slate-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}/>
+          <ChevronDown size={18} className={`text-slate-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
         )}
       </button>
 

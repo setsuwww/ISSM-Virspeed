@@ -8,10 +8,10 @@ import { format } from "date-fns"
 import { Badge } from "@/_components/ui/Badge"
 
 import { frequencyStyles } from "@/_components/_constants/theme/scheduleTheme"
-import { capitalize, getInitial } from "@/_functions/globalFunction"
+import { getInitial } from "@/_functions/globalFunction"
 import { createReminder, deleteSchedule } from "@/_servers/employee-services/schedule_action"
 
-export default function ScheduleList({ schedules }) {
+export default function EventList({ schedules }) {
   const router = useRouter()
 
   const handleRemember = async (id) => {
@@ -29,6 +29,8 @@ export default function ScheduleList({ schedules }) {
   return (
     <div className="flex flex-col gap-y-4">
       {schedules.map((item) => {
+
+        const usersPreview = item.usersPreview ?? []
         const date = item.startDate ? new Date(item.startDate) : null
         const day = date ? format(date, "d") : "-"
         const weekday = date ? format(date, "EEE") : "-"
@@ -79,7 +81,7 @@ export default function ScheduleList({ schedules }) {
               </span>
 
               <div className="flex items-center mt-1">
-                {item.usersPreview.slice(0, 5).map((user, index) => (
+                {usersPreview.slice(0, 5).map((user, index) => (
                   <div key={user.id}
                     className={`w-7 h-7 rounded-full flex items-center justify-center bg-slate-200 text-slate-600 text-[10px] font-semibold border-2 border-white
                       ${index !== 0 ? "-ml-2" : ""}
@@ -93,10 +95,10 @@ export default function ScheduleList({ schedules }) {
                 {item.totalUsers > 5 && (
                   <div
                     className="
-          w-7 h-7 rounded-full flex items-center justify-center
-          bg-slate-200 text-slate-500 text-[10px] font-semibold
-          border-2 border-white -ml-2
-        "
+                      w-7 h-7 rounded-full flex items-center justify-center
+                      bg-slate-200 text-slate-500 text-[10px] font-semibold
+                      border-2 border-white -ml-2
+                    "
                   >
                     +{item.totalUsers - 5}
                   </div>

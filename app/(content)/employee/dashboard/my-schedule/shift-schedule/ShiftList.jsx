@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, addMonths, subMonths, parseISO } from "date-fns"
+import { useRouter } from "next/navigation"
+import { format, startOfMonth, startOfWeek, endOfWeek, endOfMonth, eachDayOfInterval, isToday, addMonths, subMonths, parseISO } from "date-fns"
 import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, List as ListIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
 import { Badge } from "@/_components/ui/Badge"
@@ -15,14 +15,13 @@ import {
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 import { formatTime } from "@/_functions/globalFunction"
 
-export default function ShiftScheduleClient({ assignments, selectedMonth }) {
+export default function ShiftList({ assignments, selectedMonth }) {
   const router = useRouter()
   const [viewMode, setViewMode] = useState("calendar") // "calendar" or "list"
 
   const currentDate = parseISO(selectedMonth + "-01")
   const start = startOfMonth(currentDate)
   const end = endOfMonth(currentDate)
-  const daysInMonth = eachDayOfInterval({ start, end })
 
   const firstDayOfMonth = start.getDay()
   const emptyDays = Array(firstDayOfMonth).fill(null)
@@ -37,17 +36,25 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
     router.push(`?month=${format(next, "yyyy-MM")}`)
   }
 
+  const calendarStart = startOfWeek(start, { weekStartsOn: 0 })
+  const calendarEnd = endOfWeek(end, { weekStartsOn: 0 })
+
+  const fullDays = eachDayOfInterval({
+    start: calendarStart,
+    end: calendarEnd,
+  })
+
   return (
-    <div className="flex-1 w-full p-4 sm:p-6 bg-slate-50/50">
+    <div className="flex-1 w-full bg-slate-50/50">
       <Card className="shadow-sm rounded-xl border-slate-200 overflow-hidden mb-6">
         <CardHeader className="bg-white border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
-          <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <CalendarIcon className="w-5 h-5 text-slate-500" />
+          <CardTitle className="text-xl font-bold text-slate-600 flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-blue-600" />
             My Shift Schedule
           </CardTitle>
 
           <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-lg">
+            <div className="flex items-center gap-2 bg-slate-100 border border-slate-300 p-1 rounded-lg">
               <button
                 onClick={() => setViewMode("calendar")}
                 className={`p-1.5 rounded-md transition-colors ${viewMode === 'calendar' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
@@ -64,14 +71,14 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 border border-slate-200 rounded-lg p-1 bg-white">
-              <button onClick={handlePrevMonth} className="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition-colors">
+            <div className="flex items-center gap-2 border border-slate-300 rounded-full p-1 bg-white">
+              <button onClick={handlePrevMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-semibold text-slate-700 min-w-[130px] text-center text-sm">
+              <span className="font-semibold text-red-600 min-w-[110px] text-center text-sm">
                 {format(currentDate, "MMMM yyyy")}
               </span>
-              <button onClick={handleNextMonth} className="p-1.5 hover:bg-slate-100 rounded text-slate-600 transition-colors">
+              <button onClick={handleNextMonth} className="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -95,9 +102,9 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
               </div>
               <div className="grid grid-cols-7 gap-2">
                 {emptyDays.map((_, i) => (
-                  <div key={`empty-${i}`} className="min-h-[100px] p-2 bg-slate-50/50 rounded-lg hidden sm:block"></div>
+                  <div key={`empty-${i}`} className="min-h-[100px] p-2 bg-slate-200/50 border border-slate-200 rounded-lg hidden sm:block"></div>
                 ))}
-                {daysInMonth.map(day => {
+                {fullDays.map(day => {
                   const dateStr = format(day, "yyyy-MM-dd")
                   const shiftForDay = assignments.find(a => format(new Date(a.date), "yyyy-MM-dd") === dateStr)
 
@@ -107,8 +114,10 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
 
                   if (isTodayDate) {
                     containerClass += "bg-blue-50/30 border-blue-400 shadow-sm"
+                  } else if (shiftForDay) {
+                    containerClass += "bg-slate-50/30 border-slate-400 shadow-sm"
                   } else {
-                    containerClass += "bg-white border-slate-100 hover:border-slate-300"
+                    containerClass += "bg-slate-50 border-slate-300 hover:border-slate-300"
                   }
 
                   return (
@@ -117,7 +126,7 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
                         <TooltipTrigger asChild>
                           <div className={containerClass}>
                             <div className="flex justify-between items-start">
-                              <span className={`text-sm font-medium ${isTodayDate ? 'text-blue-700' : 'text-slate-600'}`}>
+                              <span className={`text-sm font-medium ${isTodayDate ? 'text-blue-700' : shiftForDay ? 'text-slate-700' : 'text-slate-400'}`}>
                                 {format(day, "d")}
                               </span>
                               {isTodayDate && (
@@ -137,7 +146,7 @@ export default function ShiftScheduleClient({ assignments, selectedMonth }) {
                                 )}
                               </div>
                             ) : (
-                              <div className="mt-auto text-xs text-slate-400 text-center">-</div>
+                              <div className="mt-auto text-xs text-slate-400 text-center"></div>
                             )}
                           </div>
                         </TooltipTrigger>
