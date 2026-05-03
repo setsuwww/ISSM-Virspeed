@@ -90,25 +90,25 @@ export default function HistoryTable({ data, initialOrder = "desc" }) {
                   <div className="flex gap-2">
                     <Badge
                       variant="outline"
-                      className={attendancesStyles[att.status.replace("_", " ")]}
+                      className={`text-md capitalize !p-0 !bg-transparent !border-none ${attendancesStyles[att.status.replace("_", " ")]}`}
                     >
                       {att.status.replace("_", " ")}
                     </Badge>
 
                     {att.approval && (
-                      <Badge className={attendancesStyles[att.approval.replace("_", " ")]}>
+                      <Badge className={`text-md capitalize !p-0 !bg-transparent ${attendancesStyles[att.approval.replace("_", " ")]}`}>
                         {att.approval.replace("_", " ")}
                       </Badge>
                     )}
                   </div>
 
                   {(att.checkInStatus || att.checkOutStatus) && (
-                    <div className="flex flex-col text-[10px] tracking-tight uppercase font-bold text-slate-400/80 leading-none space-y-0.5">
+                    <div className="flex flex-col text-[10px] tracking-tight capitalize font-semibold text-slate-400/80 leading-none space-y-1">
                       {att.checkInStatus && (
-                        <span>Check-in: {att.checkInStatus.replace('_', ' ')}</span>
+                        <div>Check-in : <span className={`!p-0 !bg-transparent !border-none tracking-wider ${attendancesStyles[att.checkInStatus.replace('_', ' ')]}`}>{att.checkInStatus.replace('_', ' ')}</span></div>
                       )}
                       {att.checkOutStatus && (
-                        <span>Check-out: {att.checkOutStatus.replace('_', ' ')}</span>
+                        <div>Check-out : <span className={`!p-0 !bg-transparent !border-none tracking-wider ${attendancesStyles[att.checkOutStatus]}`}> {att.checkOutStatus.replace('_', ' ')}</span></div>
                       )}
                     </div>
                   )}
