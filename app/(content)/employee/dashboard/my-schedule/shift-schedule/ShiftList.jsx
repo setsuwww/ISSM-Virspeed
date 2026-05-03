@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, List as ListIcon } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, List as ListIcon, CalendarDays } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/Card"
 import { Badge } from "@/_components/ui/Badge"
 import {
@@ -11,8 +11,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/_components/ui/Tooltip"
-import { getShiftStyle } from "@/_components/_constants/shiftConstants"
-import { formatTime } from "@/_functions/globalFunction"
+import { getShiftStyle, shiftDots } from "@/_components/_constants/shiftConstants"
+import { capitalize, formatTime } from "@/_functions/globalFunction"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/_components/ui/Table"
 
 import {
   getNowJakarta,
@@ -20,6 +28,7 @@ import {
   formatJakarta,
   parseJakarta
 } from "@/_lib/time"
+import { format } from "date-fns"
 
 export default function ShiftList({ assignments, selectedMonth }) {
   const router = useRouter()
@@ -54,17 +63,17 @@ export default function ShiftList({ assignments, selectedMonth }) {
           </CardTitle>
 
           <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-            <div className="flex items-center gap-2 bg-slate-100 border border-slate-300 p-1 rounded-lg">
+            <div className="flex items-center gap-2 bg-slate-100/50 border border-slate-300/60 p-1 rounded-lg">
               <button
                 onClick={() => setViewMode("calendar")}
-                className={`p-1.5 rounded-md transition-colors ${viewMode === 'calendar' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-1.5 rounded-sm transition-colors ${viewMode === 'calendar' ? 'bg-white border border-slate-200 shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Calendar View"
               >
                 <CalendarIcon className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-1.5 rounded-sm transition-colors ${viewMode === 'list' ? 'bg-white border border-slate-200 shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
                 title="List View"
               >
                 <ListIcon className="w-4 h-4" />
@@ -115,9 +124,9 @@ export default function ShiftList({ assignments, selectedMonth }) {
                   if (isTodayDate) {
                     containerClass += "bg-blue-50/30 border-blue-400 shadow-sm"
                   } else if (shiftForDay) {
-                    containerClass += "bg-slate-50/30 border-slate-400 shadow-sm"
+                    containerClass += "bg-white border-slate-300 shadow-sm"
                   } else {
-                    containerClass += "bg-slate-50 border-slate-300 hover:border-slate-300"
+                    containerClass += "bg-slate-50 border-slate-200/60 hover:border-slate-300"
                   }
 
                   return (
@@ -168,49 +177,65 @@ export default function ShiftList({ assignments, selectedMonth }) {
               </div>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
-              <table className="w-full text-left text-sm text-slate-600">
-                <thead className="bg-slate-50 text-slate-700 uppercase font-semibold text-xs border-b border-slate-200">
-                  <tr>
-                    <th className="px-4 py-3">Date</th>
-                    <th className="px-4 py-3">Shift Name</th>
-                    <th className="px-4 py-3">Start Time</th>
-                    <th className="px-4 py-3">End Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
+            <div className="overflow-hidden rounded-lg border border-slate-200">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4 py-3">Date</TableHead>
+                    <TableHead className="px-4 py-3">Day</TableHead>
+                    <TableHead className="px-4 py-3">Shift Name</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-slate-100">
                   {assignments.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="px-4 py-8 text-center text-slate-500 italic">
+                    <TableRow>
+                      <TableCell colSpan={4} className="px-4 py-8 text-center text-slate-500 italic">
                         No shifts assigned for this month.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : (
                     assignments.map(a => {
                       const isTodayDate = parseJakarta(a.date).isSame(getNowJakarta(), 'day')
                       return (
-                        <tr key={a.id} className={`hover:bg-slate-50 ${isTodayDate ? 'bg-blue-50/20' : ''}`}>
-                          <td className="px-4 py-3 font-medium text-slate-800 flex items-center gap-2">
-                            {formatJakarta(a.date, "DD MMM YYYY")}
-                            {isTodayDate && <Badge variant="outline" className="text-[10px] text-blue-600 border-blue-200 bg-blue-50 uppercase">Today</Badge>}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={`px-2 py-1 rounded text-xs font-semibold ${getShiftStyle(a.shift?.type)}`}>
-                              {a.shift?.name || 'OFF'}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            {a.shift?.type !== 'OFF' ? formatTime(a.shift?.startTime) : '-'}
-                          </td>
-                          <td className="px-4 py-3">
-                            {a.shift?.type !== 'OFF' ? formatTime(a.shift?.endTime) : '-'}
-                          </td>
-                        </tr>
+                        <TableRow key={a.id} className={`${isTodayDate ? 'bg-blue-50/20' : ''}`}>
+                          <TableCell className="px-4 py-3 font-medium text-slate-800 flex items-center gap-2">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-slate-200 p-2 rounded-full">
+                                <CalendarDays className="w-5 h-5 text-slate-600" />
+                              </div>
+                              <div>
+                                <p className="font-semibold">{formatJakarta(a.date, "DD MMM YYYY")}</p>
+                                <p className="text-xs text-slate-400">
+                                  {formatJakarta(a.date, "DD MMMM")}
+                                </p>
+                              </div>
+                              {isTodayDate && <Badge variant="outline" className="text-[10px] text-blue-600 border-blue-200 bg-blue-50 uppercase">Today</Badge>}
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-medium text-slate-600 gap-2">
+                            <p className={`${isTodayDate ? 'text-blue-500 font-bold' : ''} flex items-center gap-2`}>{format(a.date, "EEEE")}</p>
+                          </TableCell>
+                          <TableCell className="px-4 py-3">
+                            <div className="flex items-center space-x-3">
+                              {shiftDots[a.shift?.type]}
+
+                              <div className="flex flex-col text-sm text-slate-600">
+                                <p className="font-semibold">
+                                  {capitalize(a.shift?.type)}
+                                </p>
+
+                                <p className="text-xs text-slate-400">
+                                  {formatTime(a.shift?.startTime)} - {formatTime(a.shift?.endTime)}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
                       )
                     })
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>

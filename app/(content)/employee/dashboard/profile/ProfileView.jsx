@@ -14,14 +14,16 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/_components/ui/Card
 import { Input } from "@/_components/ui/Input"
 import { Button } from "@/_components/ui/Button"
 import { Label } from "@/_components/ui/Label"
+import { Badge } from "@/_components/ui/Badge"
 
 import { profilesRoleStyles, roleStyles } from "@/_components/_constants/theme/userTheme"
 import { capitalize, minutesToTime, safeFormat } from "@/_functions/globalFunction"
 import { format } from "date-fns"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import Link from "next/link"
+import { shiftStyles } from "@/_components/_constants/shiftConstants"
 
-export function ProfileView({ user }) {
+export function ProfileView({ user, todayAssignment }) {
   const router = useRouter()
   const { setUser } = useUserStore()
 
@@ -127,7 +129,7 @@ export function ProfileView({ user }) {
                 {user.name}
               </h2>
               <div className="text-sm text-slate-500">{user.email}</div>
-              <div className={`mt-1 w-fit ${roleStyles[user.role] ?? ""}`}>
+              <div className={`mt-1 w-fit px-2 rounded-md py-0.5 text-xs ${roleStyles[user.role] ?? ""}`}>
                 {user.role}
               </div>
             </div>
@@ -258,7 +260,7 @@ export function ProfileView({ user }) {
             </DialogContent>
           </Dialog>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
             <Info label="Location" icon={Building2}>
               {user.location?.name ?? "-"}
             </Info>
@@ -280,33 +282,54 @@ export function ProfileView({ user }) {
             </Info>
           </div>
 
-          {user.shift && (
-            <div className="bg-gray-200/40 rounded-lg p-4">
-              <ContentInformation
-                title="Shift Information"
-                subtitle="See your shift information here"
-              />
-
-              <p className="text-sm text-slate-500 mt-4">
-                Shift : {user.shift.name} ({user.shift.type})
-              </p>
-
-              <p className="text-sm mt-1 text-slate-900">
-                <span className="font-medium">
-                  Time In : {minutesToTime(user.shift.startTime)}
-                </span>{" "}
-                –{" "}
-                <span className="font-medium">
-                  Time Out : {minutesToTime(user.shift.endTime)}
-                </span>
-              </p>
-
-              <p className="text-sm mt-4">
-                Assigned At :{" "}
-                {safeFormat(user.createdAt, "dd MMMM yyyy")}
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Default Shift Card */}
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-slate-200 p-1.5 rounded-md">
+                  <Clock className="w-4 h-4 text-slate-800" />
+                </div>
+                <h3 className="font-semibold text-slate-800">Default Shift</h3>
+              </div>
+              {user.shift ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">{user.shift.name}</p>
+                  <p className="text-xs text-slate-500">
+                    Start Time : {minutesToTime(user.shift.startTime)} - End Time : {minutesToTime(user.shift.endTime)}
+                  </p>
+                  <Badge className={shiftStyles[user.shift.type]}>{user.shift.type}</Badge>
+                </div>
+              ) : (
+                <p className="text-sm text-slate-500 italic">No default shift assigned</p>
+              )}
             </div>
-          )}
+
+            {/* Today's Assignment Card */}
+            <div className={`${todayAssignment ? 'bg-blue-50/30 border-blue-300 shadow-xs' : 'bg-slate-50 border-slate-200'} rounded-lg p-4 border transition-all duration-300`}>
+              <div className="flex items-center gap-2 mb-4">
+                <div className={`${todayAssignment ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'} p-1.5 rounded-md`}>
+                  <CalendarDays className="w-4 h-4" />
+                </div>
+                <h3 className="font-semibold text-slate-800">Today's Assignment</h3>
+              </div>
+              {todayAssignment ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">{todayAssignment.shift?.name || 'No Shift Name'}</p>
+                  <p className="text-xs text-slate-500">
+                    Start Time : {todayAssignment.shift ? `${minutesToTime(todayAssignment.shift.startTime)}` : '-'} - End Time : {todayAssignment.shift ? `${minutesToTime(todayAssignment.shift.endTime)}` : '-'}
+                  </p>
+                  {todayAssignment.shift && (
+                    <Badge className={shiftStyles[todayAssignment.shift.type]}>{todayAssignment.shift.type}</Badge>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p className="text-sm text-slate-500 italic">No assignment for today</p>
+                  <p className="text-[10px] text-slate-400">System will use your default shift if applicable</p>
+                </div>
+              )}
+            </div>
+          </div>
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t px-6 py-4">
