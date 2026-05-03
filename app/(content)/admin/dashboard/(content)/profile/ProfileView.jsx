@@ -127,7 +127,7 @@ export function ProfileView({ user }) {
                 {user.name}
               </h2>
               <div className="text-sm text-slate-500">{user.email}</div>
-              <div className={`mt-1 w-fit ${roleStyles[user.role] ?? ""}`}>
+              <div className={`mt-1 w-fit px-2 rounded-md py-0.5 text-xs ${roleStyles[user.role] ?? ""}`}>
                 {user.role}
               </div>
             </div>
@@ -258,7 +258,7 @@ export function ProfileView({ user }) {
             </DialogContent>
           </Dialog>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
             <Info label="Location" icon={Building2}>
               {user.location?.name ?? "-"}
             </Info>
