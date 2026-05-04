@@ -33,8 +33,6 @@ export default async function MySchedulePage(props) {
   const start = targetDate.clone().startOf("month").toDate()
   const end = targetDate.clone().endOf("month").toDate()
 
-  console.log(`[DEBUG-MY-SCHEDULE] User ${user.id} Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
-
   const assignments = await prisma.shiftAssignment.findMany({
     where: {
       userId: user.id,

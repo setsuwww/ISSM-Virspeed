@@ -8,14 +8,9 @@ export async function GET(request) {
   const simulatedToday = testDate ? dayjs(testDate) : dayjs()
 
   try {
-    console.log("========== AUTO SHIFT CHANGE ==========")
-    console.log("Simulated date:", simulatedToday.format("YYYY-MM-DD"))
-
     const started = await startingShiftUpdate(simulatedToday)
-    console.log("✅ startingShiftUpdate result:", started)
 
     const expired = await resetExpiredShiftChanges(simulatedToday)
-    console.log("✅ resetExpiredShiftChanges result:", expired)
 
     return Response.json({
       success: true,

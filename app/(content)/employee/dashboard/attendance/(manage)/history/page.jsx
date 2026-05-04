@@ -5,17 +5,17 @@ import { format } from "date-fns"
 import HistoryTable from "./HistoryTable"
 import HistoryLayout from "./HistoryLayout"
 import { minutesToTime } from "@/_functions/globalFunction"
-import { 
-  getAttendanceLabel 
+import {
+  getAttendanceLabel
 } from "@/_functions/helpers/attendanceServerHelpers"
 
 export const revalidate = 60
 
-import { 
-  getNowJakarta, 
-  getTodayStartJakarta, 
-  parseJakarta, 
-  formatJakarta 
+import {
+  getNowJakarta,
+  getTodayStartJakarta,
+  parseJakarta,
+  formatJakarta
 } from "@/_lib/time"
 
 export default async function Page({ searchParams }) {
@@ -46,9 +46,6 @@ export default async function Page({ searchParams }) {
     const attDate = parseJakarta(rawDate).startOf("day")
     const isToday = attDate.isSame(todayStart, 'day')
 
-    console.log(`[DEBUG-HISTORY] Attendance ID ${a.id}: Raw=${rawDate.toISOString()}, Local=${formatJakarta(rawDate, "YYYY-MM-DD")}, isToday=${isToday}`)
-
-    // Map combined status label
     const combinedStatus = getAttendanceLabel(a.checkInStatus, a.checkOutStatus)
 
     return {

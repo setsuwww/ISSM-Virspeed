@@ -1,89 +1,44 @@
 "use client"
 
+import React, { useMemo } from "react"
 import { format } from "date-fns"
-import { ChevronLeft, ChevronRight, CalendarPlus, Trash2, CheckSquare, Square, Zap, SquarePlus, SquarePen } from "lucide-react"
+import { CheckSquare, Square, Zap, Loader2 } from "lucide-react"
 import { Button } from "@/_components/ui/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/_components/ui/Select"
+import CalendarNavigationAction from "../_components/CalendarNavigationAction"
+import AssignEditDelete from "../_components/AssignEditDelete"
 
 export default function ShiftCalendarActionBar({
-  currentDate,
-  onPrevMonth,
-  onNextMonth,
-  isSelectMode,
-  toggleSelectMode,
-  filledCount,
-  emptyCount,
-  onBulkDelete,
-  onBulkEdit,
-  onBulkAssign,
-  onDeleteAll,
-  onSelectAll,
+  currentDate, onPrevMonth, onNextMonth,
+  isSelectMode, toggleSelectMode,
+  filledCount, emptyCount,
+  onBulkDelete, onBulkEdit, onBulkAssign, onDeleteAll, onSelectAll,
 
-  // Preset props
-  presetMode,
-  setPresetMode,
-  presetShiftId,
-  setPresetShiftId,
+  presetType, setPresetType,
+  startShiftId, setStartShiftId,
+  rotationIndex, setRotationIndex,
+  rotationOptions,
   onApplyPreset,
+  onHoverPreset,
   availableShifts,
   loading
 }) {
+  const formattedMonth = useMemo(() => format(currentDate, "MMMM yyyy"), [currentDate])
+
   return (
     <div className="bg-slate-100 p-4 space-y-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-slate-50/70 border border-slate-400/70 rounded-full p-1">
-            <button
-              onClick={onPrevMonth}
-              className="p-1.5 bg-slate-200 hover:bg-slate-300 rounded-full text-slate-600 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="font-semibold text-red-600 min-w-[120px] text-center text-sm">
-              {format(currentDate, "MMMM yyyy")}
-            </span>
-            <button
-              onClick={onNextMonth}
-              className="p-1.5 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={onDeleteAll}
-            variant="outline"
-            size="sm"
-            className="text-red-600 border-slate-300 hover:text-red-700 bg-white h-9 rounded-md"
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Delete All
-          </Button>
-
-          <Button
-            variant="primary"
-            size="sm"
-            className="h-9 gap-2 rounded-md"
-            onClick={() => { }} // Placeholder for existing bulk rotation modal
-          >
-            <CalendarPlus className="w-4 h-4" />
-            Rotation Pattern
-          </Button>
-        </div>
-      </div>
+      <CalendarNavigationAction
+        onPrevMonth={onPrevMonth}
+        onNextMonth={onNextMonth}
+        formattedMonth={formattedMonth}
+        onDeleteAll={onDeleteAll}
+      />
 
       <hr className="border-slate-400" />
 
-      {/* Bottom Row: Selection and Presets (Inline) */}
-      <div className="bg-white py-2 px-4 flex flex-wrap items-center gap-4 rounded-lg">
-        {/* Selection Controls */}
+      <div className="bg-white py-2 px-4 flex flex-wrap items-center gap-4 rounded-lg shadow-sm border border-slate-200">
         <div className="flex items-center gap-2">
-          <Button
-            variant={isSelectMode ? "default" : "outline"}
-            size="sm"
-            onClick={toggleSelectMode}
+          <Button variant={isSelectMode ? "default" : "outline"} size="sm" onClick={toggleSelectMode}
             className="gap-2 h-9 rounded-md"
           >
             {isSelectMode ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
@@ -91,106 +46,85 @@ export default function ShiftCalendarActionBar({
           </Button>
 
           {isSelectMode && (
-            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2">
-              <Button variant="ghost" size="sm" onClick={onSelectAll} className="h-9 text-slate-600 hover:bg-slate-100">
-                Select All
-              </Button>
-
-              <div className="h-7 w-px bg-slate-300 mx-1"></div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onBulkEdit}
-                disabled={filledCount === 0 || loading}
-                className={`h-9 gap-2 border-slate-200 text-slate-700 hover:bg-slate-50 ${filledCount === 0 ? "" : "bg-slate-50 text-amber-600 hover:text-amber-800"}`}
-              >
-                <SquarePen className="w-4 h-4" />
-                Edit ({filledCount})
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onBulkAssign}
-                disabled={emptyCount === 0 || loading}
-                className={`h-9 gap-2 border-slate-200 text-slate-700 hover:bg-slate-50 ${emptyCount === 0 ? "" : "bg-slate-50 text-blue-600 hover:text-blue-800"}`}
-              >
-                <SquarePlus className="w-4 h-4" />
-                Assign ({emptyCount})
-              </Button>
-
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={onBulkDelete}
-                disabled={filledCount === 0 || loading}
-                className="h-9 gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </Button>
-            </div>
+            <AssignEditDelete
+              isSelectMode={isSelectMode}
+              onSelectAll={onSelectAll}
+              onBulkEdit={onBulkEdit}
+              onBulkAssign={onBulkAssign}
+              onBulkDelete={onBulkDelete}
+              filledCount={filledCount}
+              emptyCount={emptyCount}
+              loading={loading}
+            />
           )}
         </div>
 
         <div className="h-6 w-px bg-slate-200 hidden lg:block mx-2"></div>
 
-        {/* Preset Controls */}
-        <div className="flex flex-wrap items-center gap-3 p-2 rounded-2xl border border-slate-100">
+        <div className="flex flex-wrap items-center gap-3 p-1.5 rounded-xl border border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-1.5 px-2">
             <Zap className="w-3.5 h-3.5 text-blue-600" />
-            <span className="text-xs font-semibold text-slate-500 uppercase">Presets</span>
+            <span className="text-[10px] font-black text-slate-500 tracking-tighter">Presets</span>
           </div>
 
-          <div className="flex items-center bg-white border border-slate-300 rounded-md p-1">
-            <button
-              onClick={() => setPresetMode("WEEK")}
-              className={`px-3 py-1 text-xs font-semibold rounded-sm transition-all ${presetMode === "WEEK" ? "bg-blue-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-100"
-                }`}
-            >
-              Week
-            </button>
-            <button
-              onClick={() => setPresetMode("MONTH")}
-              className={`px-3 py-1 text-xs font-semibold rounded-sm transition-all ${presetMode === "MONTH" ? "bg-blue-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-100"
-                }`}
-            >
-              Month
-            </button>
-          </div>
-
-          <Select value={presetShiftId} onValueChange={setPresetShiftId}>
-            <SelectTrigger className="w-[160px] !h-8 text-xs bg-white rounded-md">
-              <SelectValue placeholder="Shift Assignments ..." />
-            </SelectTrigger>
-            <SelectContent>
-              {availableShifts.map(s => (
-                <SelectItem key={s.id} value={String(s.id)}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
+          {/* 1. Initializing Shift */}
           <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onApplyPreset('assign')}
-              disabled={!presetShiftId || loading}
-              className="h-8 text-xs font-semibold bg-white border-slate-200 text-blue-600"
+            <span className="text-[10px] font-semibold text-slate-400 ml-1">1. From</span>
+            <Select value={startShiftId} onValueChange={setStartShiftId}>
+              <SelectTrigger className="w-[150px] !h-8 text-xs bg-white rounded-md border-slate-300">
+                <SelectValue placeholder="Shift..." />
+              </SelectTrigger>
+              <SelectContent>
+                {availableShifts.map(s => (
+                  <SelectItem key={s.id} value={String(s.id)}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 2. Pattern */}
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-semibold text-slate-400 ml-1">2. Pattern</span>
+            <div className="flex items-center bg-white border border-slate-300 rounded-md p-0.5 h-8">
+              {[{ id: 'SAME', label: 'SAME' }, { id: 'BY_TURNS', label: 'BY TURNS' }].map(type => (
+                <button key={type.id} onClick={() => setPresetType(type.id)}
+                  className={`px-3 py-1 text-[9px] font-black rounded-sm transition-all h-full whitespace-nowrap ${presetType === type.id ? "bg-blue-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-100"}`}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Rotation Pattern */}
+          {presetType === "BY_TURNS" && rotationOptions.length > 0 && (
+            <div className="flex items-center gap-1 animate-in fade-in slide-in-from-left-2">
+              <span className="text-[10px] font-semibold text-slate-400 ml-1">3. Rotation Pattern</span>
+              <div className="flex items-center bg-white border border-slate-300 rounded-md p-0.5 h-8">
+                {rotationOptions.map((v, i) => {
+                  const label = v.map(id => {
+                    const s = availableShifts.find(sh => String(sh.id) === String(id))
+                    return s?.type?.[0] || '?'
+                  }).join('-')
+
+                  return (
+                    <button key={i} onClick={() => setRotationIndex(i)} className={`px-2 py-1 text-[9px] font-black rounded-sm transition-all h-full ${rotationIndex === i ? "bg-slate-800 text-white shadow-sm" : "text-slate-500 hover:bg-slate-100"}`}>
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 self-end mb-0.5 ml-2">
+            <Button variant="primary" size="sm" onMouseEnter={() => onHoverPreset(true)} onMouseLeave={() => onHoverPreset(false)} onClick={onApplyPreset} disabled={!startShiftId || loading}
+              className="h-8 text-[10px] font-black px-4 rounded-md shadow-blue-100 shadow-lg hover:shadow-xl transition-all uppercase tracking-widest"
             >
-              Assign
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onApplyPreset('edit')}
-              disabled={!presetShiftId || loading}
-              className="h-8 text-xs font-semibold bg-white border-slate-200 text-amber-600"
-            >
-              Override
+              {loading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Zap className="w-3 h-3 mr-2" />}
+              Apply Preset
             </Button>
           </div>
         </div>

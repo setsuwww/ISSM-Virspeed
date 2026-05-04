@@ -7,11 +7,11 @@ import { format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns
 import { formatTime } from '@/_functions/globalFunction'
 import { getShiftStyle } from '@/_components/_constants/shiftConstants'
 
-import { 
-  getNowJakarta, 
-  getTodayStartJakarta, 
-  parseJakarta, 
-  formatJakarta 
+import {
+  getNowJakarta,
+  getTodayStartJakarta,
+  parseJakarta,
+  formatJakarta
 } from '@/_lib/time'
 
 export default async function EmployeeDashboardPage() {
@@ -21,8 +21,6 @@ export default async function EmployeeDashboardPage() {
   const nowJakarta = getNowJakarta()
   const start = nowJakarta.clone().subtract(1, "month").startOf("month").toDate()
   const end = nowJakarta.clone().add(1, "month").endOf("month").toDate()
-
-  console.log(`[DEBUG-EMPLOYEE] DB Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
 
   const [
     assignments,
@@ -110,8 +108,6 @@ export default async function EmployeeDashboardPage() {
     // RAW date from DB
     const rawDate = assignment.date
     const dateStr = formatJakarta(rawDate, "YYYY-MM-DD")
-    
-    console.log(`[DEBUG-EMPLOYEE] Assignment: Raw=${rawDate.toISOString()}, Local=${dateStr}`)
 
     acc[dateStr] = {
       ...assignment,

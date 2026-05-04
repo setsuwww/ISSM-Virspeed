@@ -3,18 +3,13 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { ContentInformation } from "@/_components/common/ContentInformation"
 import { ChevronLeft } from "lucide-react"
-import { startOfMonth, endOfMonth, parseISO, format } from "date-fns"
 import ContentForm from "@/_components/common/ContentForm"
 import { DashboardHeader } from "../../../DashboardHeader"
 import ShiftCalendar from "./ShiftCalendar"
 
 export const revalidate = 0
 
-import { 
-  getNowJakarta, 
-  parseJakarta, 
-  formatJakarta 
-} from "@/_lib/time"
+import { getNowJakarta, parseJakarta, formatJakarta } from "@/_lib/time"
 
 export default async function AdminUserShiftSchedulePage(props) {
   const params = await props.params;

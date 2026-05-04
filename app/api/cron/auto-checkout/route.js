@@ -59,10 +59,8 @@ export async function GET(req) {
             });
         }
 
-        // Jika tidak ada userId, maka jalankan batch auto-checkout
-        console.log("[CRON] Running batch auto-checkout...");
         const result = await batchAutoCheckout();
-        
+
         return NextResponse.json({
             success: true,
             message: "Batch auto-checkout completed",

@@ -66,7 +66,6 @@ export async function clearAllActivityLogs() {
 export async function safeLog(payload) {
   try {
     await logActivity(payload)
-    console.log("LOG ACTIVITY:", payload)
   }
   catch (err) { console.error("LOG ACTIVITY FAILED:", err) }
 }

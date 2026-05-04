@@ -77,7 +77,6 @@ export async function handleForgotCheckoutAuto(userId) {
       },
     });
 
-    console.log(`[Auto-Checkout] User ${userId} handled for attendance ${attendance.id}`);
     return updated;
   }
 
@@ -107,9 +106,6 @@ export async function handleAutoAbsent(userId) {
     });
 
     if (!attendance) {
-      // If no attendance record at all, check for leave/permission
-      // If assignment.isLeave is true, it might already be handled by another system
-      // but here we ensure consistency
       const status = assignment.isLeave ? "LEAVE" : "ABSENT";
       const checkInStatus = assignment.isLeave ? "LEAVE" : "ABSENT";
 
@@ -123,7 +119,6 @@ export async function handleAutoAbsent(userId) {
           checkInStatus,
         }
       });
-      console.log(`[Auto-Absent] User ${userId} marked as ${status} for ${assignment.date}`);
     } else if (!attendance.checkInTime && attendance.status !== "ABSENT" && attendance.status !== "LEAVE" && attendance.status !== "PERMISSION") {
       await prisma.attendance.update({
         where: { id: attendance.id },
@@ -132,7 +127,6 @@ export async function handleAutoAbsent(userId) {
           checkInStatus: "ABSENT"
         }
       });
-      console.log(`[Auto-Absent] User ${userId} updated to ABSENT for ${assignment.date}`);
     }
   }
 }
@@ -310,7 +304,7 @@ export async function userSendCheckIn(coords = null) {
   if (now.isAfter(shiftEnd)) {
     return { error: "Shift untuk hari ini sudah berakhir." };
   }
-  
+
   // Status mapping for backward compatibility
   let status = checkInStatus;
   if (!user.isActive) status = "INACTIVE";
@@ -419,7 +413,7 @@ export async function userSendCheckOut() {
 
   const hasEarlyRequest = attendance.earlyCheckoutRequests.length > 0;
   const checkOutStatus = resolveCheckOutStatus(checkoutTime, finalEnd.toDate(), hasEarlyRequest);
-  
+
   // Combined status for compatibility
   let status = attendance.status;
   if (checkOutStatus === "EARLY_CHECKOUT") status = "EARLY_CHECKOUT";
