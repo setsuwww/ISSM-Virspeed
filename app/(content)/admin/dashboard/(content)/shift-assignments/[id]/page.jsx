@@ -38,8 +38,6 @@ export default async function AdminUserShiftSchedulePage(props) {
   const start = targetDate.clone().startOf("month").toDate()
   const end = targetDate.clone().endOf("month").toDate()
 
-  console.log(`[DEBUG-ADMIN] User ${userId} Fetch Range: ${start.toISOString()} to ${end.toISOString()}`)
-
   const assignments = await prisma.shiftAssignment.findMany({
     where: { userId, date: { gte: start, lte: end } },
     include: { shift: true },
