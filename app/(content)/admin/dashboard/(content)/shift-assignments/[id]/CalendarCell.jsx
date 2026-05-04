@@ -6,21 +6,9 @@ import { formatJakarta, parseJakarta, getNowJakarta } from "@/_lib/time"
 import { getShiftStyle } from "@/_components/_constants/shiftConstants"
 import { formatTime } from "@/_functions/globalFunction"
 
-/**
- * Optimized individual calendar cell using React.memo
- */
-const CalendarCell = ({
-  day,
-  isSelected,
-  assignment,
-  previewShift,
-  isSelectMode,
-  onInteraction,
-  onMouseEnter
-}) => {
-  const dateStr = formatJakarta(day, "YYYY-MM-DD")
+const CalendarCell = ({ day, isSelected, assignment, previewShift, isSelectMode, onInteraction, onMouseEnter }) => {
   const isTodayDate = parseJakarta(day).isSame(getNowJakarta(), 'day')
-  
+
   const shiftData = assignment?.shift
   const hasShift = !!shiftData
   const isPreview = !!previewShift
@@ -28,28 +16,16 @@ const CalendarCell = ({
 
   let containerClass = "min-h-[100px] sm:min-h-[130px] p-3 rounded-lg border transition-all flex flex-col gap-1 relative cursor-pointer group "
 
-  if (isSelectMode && isSelected) {
-    containerClass += "border-green-500 ring ring-green-100 shadow-sm transform scale-[1.02] z-10 "
-  } else if (isSelected && hasShift) {
-    containerClass += "border-red-500 ring ring-red-100 shadow-sm transform scale-[1.02] z-10 "
-  } else if (hasShift) {
-    containerClass += "bg-white border-slate-400 hover:border-slate-300 hover:shadow-sm "
-  } else if (isTodayDate) {
-    containerClass += "bg-blue-50/30 border-blue-200 shadow-xs "
-  } else {
-    containerClass += "bg-white border-slate-300 hover:border-blue-300 hover:bg-blue-50/30 "
-  }
+  if (isSelectMode && isSelected) { containerClass += "border-green-500 ring ring-green-100 shadow-sm transform scale-[1.02] z-10 " }
+  else if (isSelected && hasShift) { containerClass += "border-red-500 ring ring-red-100 shadow-sm transform scale-[1.02] z-10 " }
+  else if (hasShift) { containerClass += "bg-white border-slate-400 hover:border-slate-300 hover:shadow-sm " }
+  else if (isTodayDate) { containerClass += "bg-blue-50/30 border-blue-200 shadow-xs " }
+  else { containerClass += "bg-white border-slate-300 hover:border-blue-300 hover:bg-blue-50/30 " }
 
-  if (isPreview) {
-    containerClass += "ring-2 ring-blue-400 ring-offset-2 z-20 "
-  }
+  if (isPreview) { containerClass += "ring-2 ring-blue-400 ring-offset-2 z-20 " }
 
   return (
-    <div 
-      className={containerClass} 
-      onPointerDown={onInteraction}
-      onMouseEnter={onMouseEnter}
-    >
+    <div className={containerClass} onPointerDown={onInteraction} onMouseEnter={onMouseEnter}>
       <div className="flex justify-between items-start">
         <span className={`text-sm font-semibold ${isSelected && isSelectMode ? 'text-green-700' : (isTodayDate ? 'text-blue-600' : 'text-slate-400')}`}>
           {formatJakarta(day, "D")}
@@ -83,7 +59,7 @@ const CalendarCell = ({
           )}
         </div>
       ) : (
-        <div className={`mt-auto text-[10px] font-black uppercase tracking-widest text-center opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 py-2 rounded-md bg-slate-50 border border-slate-100 ${isSelected && isSelectMode ? 'text-red-500 bg-red-50/50 border-red-100' : 'text-slate-400'}`}>
+        <div className={`mt-auto text-[10px] font-semibold uppercase tracking-wide text-center opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 py-2 rounded-md bg-slate-50 border border-slate-100 ${isSelected && isSelectMode ? 'text-red-500 bg-red-50/50 border-red-100' : 'text-slate-400'}`}>
           {isSelectMode ? (isSelected ? 'Deselect' : 'Select') : (
             <><Plus className="w-3 h-3" /> Assign</>
           )}
