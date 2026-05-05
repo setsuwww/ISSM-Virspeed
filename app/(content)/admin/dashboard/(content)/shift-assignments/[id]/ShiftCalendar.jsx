@@ -2,9 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/_components/ui/Card"
-import { useShiftCalendarHooks } from "@/_clients/hooks/admin/useShiftCalendarHooks"
-import { useShiftSelection } from "@/_clients/hooks/admin/useShiftSelection"
-import { useShiftPreset } from "@/_clients/hooks/admin/useShiftPreset"
+import { useShiftCalendarHooks, useShiftSelection, useShiftPreset } from "@/_clients/hooks/admin/useShiftCalendarHooks"
 
 import ShiftCalendarActionBar from "./ShiftCalendarActionBar"
 import CalendarGrid from "./CalendarGrid"

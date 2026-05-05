@@ -1,31 +1,36 @@
 "use client"
 
-import { useState, useTransition, useMemo } from "react"
+import { useState, useRef, useTransition, useMemo, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { formatJakarta, parseJakarta, getNowJakarta, getJakartaMonthDetails } from "@/_lib/time"
 import { min, max, format } from "date-fns"
-import { 
-  createOrUpdateShiftAssignment, 
-  deleteShiftAssignment, 
-  bulkAssignShift, 
-  deleteAllAssignments 
+import {
+  createOrUpdateShiftAssignment,
+  deleteShiftAssignment,
+  bulkAssignShift,
+  deleteMultipleShiftAssignments,
+  deleteAllAssignments,
+  bulkAssignPreset
 } from "@/_servers/admin-services/shift_assignment_action"
 import { useConfirmStore } from "@/_stores/common/useConfirmStore"
+import {
+  generateSamePattern,
+  generateSortPattern,
+  generateRotationPattern,
+  getRotationVariations
+} from "@/_lib/shiftPatternHelpers"
 
-/**
- * Helper to calculate duration breakdown
- */
 export const calculateDuration = (dates) => {
   if (!dates || dates.length === 0) return null
-  
+
   const totalDays = dates.length
   const weeks = Math.floor(totalDays / 7)
   const remainingDays = totalDays % 7
-  
+
   const dateObjs = dates.map(d => parseJakarta(d).toDate())
   const start = min(dateObjs)
   const end = max(dateObjs)
-  
+
   return {
     totalDays,
     weeks,
@@ -54,7 +59,7 @@ export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], sel
     return map
   }, [assignments])
 
-  const availableShifts = useMemo(() => 
+  const availableShifts = useMemo(() =>
     (shifts || []).filter(s => s.locationId === user.locationId),
     [shifts, user.locationId]
   )
@@ -79,8 +84,8 @@ export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], sel
     }
   }, [selectedMonth])
 
-  const { days: daysInMonth, firstDayOfWeek } = useMemo(() => 
-    getJakartaMonthDetails(currentDate), 
+  const { days: daysInMonth, firstDayOfWeek } = useMemo(() =>
+    getJakartaMonthDetails(currentDate),
     [currentDate]
   )
   const emptyDays = Array(firstDayOfWeek).fill(null)
@@ -214,3 +219,238 @@ export const useShiftCalendarHooks = ({ user, assignments = [], shifts = [], sel
     handleDeleteAll
   }
 }
+
+export const useShiftSelection = (userId, assignmentMap, daysInMonth) => {
+  const [isSelectMode, setIsSelectMode] = useState(false)
+  const [selectedDates, setSelectedDates] = useState([]) // YYYY-MM-DD strings
+  const [loading, setLoading] = useState(false)
+  const [assignModalOpen, setAssignModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+
+  const lastSelectedIndexRef = useRef(-1)
+  const isDraggingRef = useRef(false)
+
+  // Map dates to indices for O(1) range calculation
+  const dateToIndexMap = useMemo(() => {
+    const map = {}
+    daysInMonth.forEach((day, i) => {
+      map[formatJakarta(day, "YYYY-MM-DD")] = i
+    })
+    return map
+  }, [daysInMonth])
+
+  const toggleSelectMode = useCallback(() => {
+    setIsSelectMode(prev => !prev)
+    setSelectedDates([])
+    lastSelectedIndexRef.current = -1
+  }, [])
+
+  const calculateRange = useCallback((startIdx, endIdx) => {
+    const from = Math.min(startIdx, endIdx)
+    const to = Math.max(startIdx, endIdx)
+    const range = []
+    for (let i = from; i <= to; i++) {
+      range.push(formatJakarta(daysInMonth[i], "YYYY-MM-DD"))
+    }
+    return range
+  }, [daysInMonth])
+
+  const toggleDateSelection = useCallback((date, isShiftKey = false) => {
+    const dateStr = formatJakarta(date, "YYYY-MM-DD")
+    const currentIdx = dateToIndexMap[dateStr]
+
+    if (isShiftKey && lastSelectedIndexRef.current !== -1) {
+      const range = calculateRange(lastSelectedIndexRef.current, currentIdx)
+      setSelectedDates(prev => [...new Set([...prev, ...range])])
+    } else {
+      setSelectedDates(prev =>
+        prev.includes(dateStr)
+          ? prev.filter(d => d !== dateStr)
+          : [...prev, dateStr]
+      )
+      lastSelectedIndexRef.current = currentIdx
+    }
+  }, [calculateRange, dateToIndexMap])
+
+  const selectAll = useCallback(() => {
+    const all = daysInMonth.map(d => formatJakarta(d, "YYYY-MM-DD"))
+    setSelectedDates(all)
+  }, [daysInMonth])
+
+  const handleDragStart = useCallback((date) => {
+    if (!isSelectMode) return
+    isDraggingRef.current = true
+    const dateStr = formatJakarta(date, "YYYY-MM-DD")
+    lastSelectedIndexRef.current = dateToIndexMap[dateStr]
+    setSelectedDates(prev => prev.includes(dateStr) ? prev : [...prev, dateStr])
+  }, [isSelectMode, dateToIndexMap])
+
+  const handleDragEnter = useCallback((date) => {
+    if (!isDraggingRef.current || lastSelectedIndexRef.current === -1) return
+    const dateStr = formatJakarta(date, "YYYY-MM-DD")
+    const currentIdx = dateToIndexMap[dateStr]
+    const range = calculateRange(lastSelectedIndexRef.current, currentIdx)
+    setSelectedDates(prev => [...new Set([...prev, ...range])])
+  }, [calculateRange, dateToIndexMap])
+
+  const handleDragEnd = useCallback(() => {
+    isDraggingRef.current = false
+  }, [])
+
+  const filledDates = useMemo(() =>
+    selectedDates.filter(d => !!assignmentMap[d]),
+    [selectedDates, assignmentMap]
+  )
+
+  const emptyDates = useMemo(() =>
+    selectedDates.filter(d => !assignmentMap[d]),
+    [selectedDates, assignmentMap]
+  )
+
+  const handleBulkDelete = useCallback(async () => {
+    if (filledDates.length === 0) return
+    const confirm = await useConfirmStore.getState().ask(
+      `Delete ${filledDates.length} assignments?`, "danger"
+    )
+    if (!confirm) return
+
+    setLoading(true)
+    const res = await deleteMultipleShiftAssignments(filledDates, userId)
+    if (res?.success) {
+      setSelectedDates(prev => prev.filter(d => !filledDates.includes(d)))
+    } else {
+      alert(res?.error || "Error")
+    }
+    setLoading(false)
+  }, [filledDates, userId])
+
+  const handleBulkSubmit = useCallback(async (values, type) => {
+    setLoading(true)
+    const groups = {}
+    Object.entries(values).forEach(([date, shiftId]) => {
+      if (shiftId) {
+        if (!groups[shiftId]) groups[shiftId] = []
+        groups[shiftId].push(date)
+      }
+    })
+
+    const results = await Promise.all(
+      Object.entries(groups).map(([shiftId, dates]) =>
+        bulkAssignPreset({ userId, dates, shiftId: parseInt(shiftId) })
+      )
+    )
+
+    if (results.every(r => r.success)) {
+      setSelectedDates([])
+      setIsSelectMode(false)
+      if (type === 'assign') setAssignModalOpen(false)
+      else setEditModalOpen(false)
+    }
+    setLoading(false)
+  }, [userId])
+
+  return {
+    isSelectMode, selectedDates, setSelectedDates, toggleSelectMode, toggleDateSelection, selectAll,
+    handleDragStart, handleDragEnter, handleDragEnd,
+    handleBulkDelete, filledDates, emptyDates,
+    assignModalOpen, setAssignModalOpen, editModalOpen, setEditModalOpen,
+    handleBulkSubmit, loading
+  }
+}
+
+export const useShiftPreset = (userId, availableShifts, selectedDates, setSelectedDates) => {
+  const [presetType, setPresetType] = useState("SAME") // SAME, BY_TURNS
+  const [startShiftId, setStartShiftId] = useState("")
+  const [rotationIndex, setRotationIndex] = useState(0) // 0 for Sequential, >0 for Variations
+  const [previewMap, setPreviewMap] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  // Memoized rotation variations + Sequential option
+  const rotationOptions = useMemo(() => {
+    if (!startShiftId) return []
+    const variations = getRotationVariations(startShiftId, availableShifts)
+
+    // The "Sequential" (BY_TURNS default) is essentially M-A-E or A-E-M etc.
+    // I will prepend a "Sequential" logic to the options
+    return variations
+  }, [startShiftId, availableShifts])
+
+  const currentPattern = useMemo(() => {
+    if (!startShiftId) return null
+    const len = selectedDates.length || 31
+
+    if (presetType === "SAME") {
+      return generateSamePattern(startShiftId, len)
+    }
+
+    if (presetType === "BY_TURNS") {
+      const base = rotationOptions[rotationIndex]
+      if (rotationIndex === 0 && !base) {
+        // Fallback to sequential if variations not ready
+        return generateSortPattern(startShiftId, availableShifts, len)
+      }
+      return generateRotationPattern(base, len)
+    }
+
+    return null
+  }, [presetType, startShiftId, rotationIndex, rotationOptions, availableShifts, selectedDates.length])
+
+  const handleHoverPreset = useCallback((isHovering) => {
+    if (!isHovering || !currentPattern || selectedDates.length === 0) {
+      setPreviewMap(null)
+      return
+    }
+
+    const preview = {}
+    const sortedDates = [...selectedDates].sort()
+    sortedDates.forEach((date, i) => {
+      const shiftId = currentPattern[i]
+      if (shiftId) {
+        preview[date] = availableShifts.find(s => String(s.id) === String(shiftId))
+      }
+    })
+    setPreviewMap(preview)
+  }, [currentPattern, selectedDates, availableShifts])
+
+  const handleApplyPreset = useCallback(async () => {
+    if (!startShiftId || selectedDates.length === 0) return
+
+    const sortedDates = [...selectedDates].sort()
+    const individualValues = {}
+    sortedDates.forEach((date, i) => {
+      const shiftId = currentPattern[i]
+      if (shiftId) individualValues[date] = shiftId
+    })
+
+    setLoading(true)
+    const groups = {}
+    Object.entries(individualValues).forEach(([date, shiftId]) => {
+      if (!groups[shiftId]) groups[shiftId] = []
+      groups[shiftId].push(date)
+    })
+
+    const results = await Promise.all(
+      Object.entries(groups).map(([shiftId, dates]) =>
+        bulkAssignPreset({ userId, dates, shiftId: parseInt(shiftId) })
+      )
+    )
+
+    if (results.every(r => r.success)) {
+      setSelectedDates([])
+      setPreviewMap(null)
+    }
+    setLoading(false)
+  }, [currentPattern, selectedDates, startShiftId, userId, setSelectedDates])
+
+  return {
+    presetType, setPresetType,
+    startShiftId, setStartShiftId,
+    rotationIndex, setRotationIndex,
+    rotationOptions,
+    previewMap,
+    handleHoverPreset,
+    handleApplyPreset,
+    loading
+  }
+}
+
