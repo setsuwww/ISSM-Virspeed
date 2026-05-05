@@ -13,6 +13,7 @@ import { shiftStyles, shiftIcons } from "@/_components/_constants/shiftConstants
 
 import ShiftsActionHeader from "./ShiftsActionHeader";
 import { useHandleShifts } from "@/_clients/handlers/admin/useHandleShifts";
+import { Building2 } from "lucide-react";
 
 export function ShiftsTable({ data }) {
 
@@ -49,7 +50,6 @@ export function ShiftsTable({ data }) {
             </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Time</TableHead>
             <TableHead>Location</TableHead>
             <TableHead>Users</TableHead>
             <TableHead>Actions</TableHead>
@@ -67,11 +67,16 @@ export function ShiftsTable({ data }) {
                 />
               </TableCell>
 
-              <TableCell className="font-semibold flex items-center gap-2">
+              <TableCell className="flex items-center gap-3">
                 <div className={`p-2 rounded-full border ${shiftStyles[shift.type]}`}>
                   {shiftIcons[shift.type]}
                 </div>
-                {shift.name}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-slate-600">{shift.name}</p>
+                  </div>
+                  <p className="text-xs text-slate-400">{shift.timeRange}</p>
+                </div>
               </TableCell>
 
               <TableCell>
@@ -80,8 +85,12 @@ export function ShiftsTable({ data }) {
                 </Badge>
               </TableCell>
 
-              <TableCell>{shift.timeRange}</TableCell>
-              <TableCell>{shift.location}</TableCell>
+              <TableCell>
+                <Badge className="bg-blue-50 text-blue-700 border-sky-100">
+                  <Building2 className="mr-1" size={16} />
+                  {shift.location}
+                </Badge>
+              </TableCell>
 
               <TableCell>
                 <Link href={`/admin/dashboard/shifts/${shift.id}/list-users`} className="flex items-center gap-1 text-sky-500">
