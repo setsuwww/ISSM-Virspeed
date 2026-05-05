@@ -41,8 +41,8 @@ export default function ShiftAssignmentTable({
                         </TableHead>
                         <TableHead className="pl-10">Employees</TableHead>
                         <TableHead>Role</TableHead>
-                        <TableHead>Location</TableHead>
                         <TableHead>Default Shift</TableHead>
+                        <TableHead>Location</TableHead>
                         <TableHead className="pr-10 text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -103,14 +103,6 @@ export default function ShiftAssignmentTable({
                                     </Badge>
                                 </TableCell>
 
-                                {/* LOCATION */}
-                                <TableCell>
-                                    <Badge className="bg-blue-50 text-blue-700 border-sky-100">
-                                        <Building2 className="mr-1" size={16} />
-                                        {user.location?.name}
-                                    </Badge>
-                                </TableCell>
-
                                 {/* SHIFT */}
                                 <TableCell>
                                     <div className="flex items-center space-x-3">
@@ -129,11 +121,19 @@ export default function ShiftAssignmentTable({
                                     </div>
                                 </TableCell>
 
+                                {/* LOCATION */}
+                                <TableCell>
+                                    <Badge className="bg-blue-50 text-blue-700 border-sky-100">
+                                        <Building2 className="mr-1" size={16} />
+                                        {user.location?.name}
+                                    </Badge>
+                                </TableCell>
+
                                 {/* ACTION */}
                                 <TableCell className="pr-10 text-right">
                                     <Link
                                         href={`/admin/dashboard/shift-assignments/${user.id}`}
-                                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-700 rounded-lg text-sm font-medium transition-colors"
                                     >
                                         <Calendar className="w-4 h-4" />
                                         View Schedule

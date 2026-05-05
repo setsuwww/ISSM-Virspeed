@@ -7,7 +7,7 @@ import { Button } from "@/_components/ui/Button"
 import { Checkbox } from "@/_components/ui/Checkbox"
 import AuthLink from "../AuthLink"
 import { AuthAction } from "../../../_servers/auth_action"
-import { Loader, Rocket, MapPin } from "lucide-react"
+import { Loader, Rocket, MapPin, LogIn } from "lucide-react"
 
 const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false)
@@ -22,7 +22,7 @@ const LoginPage = () => {
     <div className="flex min-h-[600px] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-300">
 
       {/* SECTION KIRI: Branding & Info */}
-      <div className="hidden w-1/2 flex-col justify-between bg-violet-800 p-10 text-white lg:flex">
+      <div className="hidden w-1/2 flex-col justify-between bg-gradient-to-r from-violet-950 to-violet-800 p-10 text-white lg:flex rounded-2xl`">
         <div>
           <div className="flex items-center gap-2 mb-8 text-yellow-400">
             <Rocket className="h-8 w-8" />
@@ -47,11 +47,16 @@ const LoginPage = () => {
 
       <div className="flex w-full flex-col justify-center p-8 lg:w-1/2">
         <div className="mx-auto w-full max-w-sm space-y-6">
-          <div className="space-y-2 text-center lg:text-left">
-            <h2 className="text-2xl font-semibold tracking-tight">Login</h2>
-            <p className="text-sm text-muted-foreground">
-              Masukkan email dan password Anda untuk masuk.
-            </p>
+          <div className="space-y-3">
+            <div className="bg-violet-100 text-violet-600 rounded-lg w-fit p-2">
+              <LogIn />
+            </div>
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight">Login</h1>
+              <p className="text-sm text-muted-foreground">
+                Fill the form below to login.
+              </p>
+            </div>
           </div>
 
           <form
