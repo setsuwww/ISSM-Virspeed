@@ -45,7 +45,7 @@ const CalendarCell = ({ day, isSelected, assignment, previewShift, isSelectMode,
       </div>
 
       {(hasShift || isPreview) ? (
-        <div className={`mt-auto border rounded-md p-2 flex flex-col items-center justify-center text-center shadow-xs transition-opacity ${isPreview ? 'opacity-70 animate-pulse border-blue-400' : ''} ${getShiftStyle(shiftType)}`}>
+        <div className={`mt-auto border rounded-md p-2 flex flex-col items-center justify-center text-center transition-opacity ${isPreview ? 'opacity-70 animate-pulse border-blue-400' : ''} ${getShiftStyle(shiftType)}`}>
           <span className="font-bold text-sm sm:text-xs truncate w-full uppercase tracking-tight">
             {shiftType}
           </span>

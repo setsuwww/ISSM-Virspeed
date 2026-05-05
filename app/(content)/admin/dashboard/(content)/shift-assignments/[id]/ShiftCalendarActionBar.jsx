@@ -26,7 +26,7 @@ export default function ShiftCalendarActionBar({
   const formattedMonth = useMemo(() => format(currentDate, "MMMM yyyy"), [currentDate])
 
   return (
-    <div className="bg-slate-100 p-4 space-y-4">
+    <div className="bg-slate-100 px-6 py-4 space-y-4">
       <CalendarNavigationAction
         onPrevMonth={onPrevMonth} onNextMonth={onNextMonth}
         formattedMonth={formattedMonth} onDeleteAll={onDeleteAll}
@@ -38,8 +38,8 @@ export default function ShiftCalendarActionBar({
 
         {/* 🔝 TOP: Selection Mode */}
         <div className="flex items-center gap-3">
-          <Button variant={isSelectMode ? "default" : "outline"} size="sm" onClick={toggleSelectMode} className="gap-2 h-9 rounded-md">
-            {isSelectMode ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+          <Button variant="outline" size="sm" onClick={toggleSelectMode} className={isSelectMode ? "group bg-green-100 text-green-600 border-green-300 focus:ring-green-400/20" : ""}>
+            {isSelectMode ? <CheckSquare className="group-hover:text-red-500 w-4 h-4" /> : <Square className="w-4 h-4" />}
             {isSelectMode ? "Selection Active" : "Select Mode"}
           </Button>
 
