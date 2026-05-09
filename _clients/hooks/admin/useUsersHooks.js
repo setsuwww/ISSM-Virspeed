@@ -7,6 +7,7 @@ export function useUsersHooks(initialData) {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [shiftFilter, setShiftFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedIds, setSelectedIds] = useState([]);
 
   const selectedIdsSet = useMemo(() => new Set(selectedIds), [selectedIds]);
@@ -19,8 +20,9 @@ export function useUsersHooks(initialData) {
 
       const matchSearch = name.includes(search.toLowerCase()) || email.includes(search.toLowerCase());
       const matchRole = roleFilter === "all" || role === roleFilter.toUpperCase();
-      const shiftType = user.shiftType?.toLowerCase() || "none";
-      const matchShift = shiftFilter === "all" || shiftType === shiftFilter.toLowerCase();
+      
+      const userShiftType = user.shift?.type || user.shiftType || "none";
+      const matchShift = shiftFilter === "all" || userShiftType.toLowerCase() === shiftFilter.toLowerCase();
 
       return matchSearch && matchRole && matchShift;
     });
@@ -29,6 +31,7 @@ export function useUsersHooks(initialData) {
   const handleSearchChange = (v) => setSearch(v);
   const handleRoleFilterChange = (v) => setRoleFilter(v);
   const handleShiftFilterChange = (v) => setShiftFilter(v);
+  const handleStatusFilterChange = (v) => setStatusFilter(v);
 
   const {
     toggleSelect, selectAll,
@@ -37,10 +40,11 @@ export function useUsersHooks(initialData) {
   } = useHandleUsers({ filteredData, selectedIds, setSelectedIds })
 
   return {
-    search, roleFilter, shiftFilter,
+    search, roleFilter, shiftFilter, statusFilter,
     selectedIds, selectedIdsSet, filteredData,
-    handleSearchChange, handleRoleFilterChange, handleShiftFilterChange,
+    handleSearchChange, handleRoleFilterChange, handleShiftFilterChange, handleStatusFilterChange,
     toggleSelect, selectAll, deleteSelected, deleteAll,
     handleEditUser, handleDeleteUser,
   };
 }
+

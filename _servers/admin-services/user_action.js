@@ -26,9 +26,17 @@ function generateDefaultPassword(name) {
 // MANAGE
 // ------------------------
 
-export async function getUsers(page, limit, where = {}) {
-  return prisma.user.findMany({
-    where,
+export async function getUsers(page, limit, where = {}, scheduleStatus = "all") {
+  const finalWhere = { ...where };
+
+  if (scheduleStatus === "scheduled") {
+    finalWhere.shiftAssignments = { some: {} };
+  } else if (scheduleStatus === "unscheduled") {
+    finalWhere.shiftAssignments = { none: {} };
+  }
+
+  const users = await prisma.user.findMany({
+    where: finalWhere,
     skip: (page - 1) * limit,
     take: limit,
     orderBy: { createdAt: "desc" },
@@ -64,15 +72,66 @@ export async function getUsers(page, limit, where = {}) {
           },
         },
       },
+      shiftAssignments: {
+        select: {
+          date: true,
+        },
+      },
     },
+  })
+
+  return users.map((user) => {
+    // Calculate unique months
+    const uniqueMonthMap = new Map()
+    user.shiftAssignments?.forEach((assignment) => {
+      const d = new Date(assignment.date)
+      // Use year-month as key to ensure uniqueness
+      const key = `${d.getFullYear()}-${d.getMonth()}`
+      if (!uniqueMonthMap.has(key)) {
+        // Format for display: "May 2026"
+        uniqueMonthMap.set(
+          key,
+          d.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+        )
+      }
+    })
+
+    const monthList = Array.from(uniqueMonthMap.values()).sort((a, b) => {
+      return new Date(a) - new Date(b)
+    })
+
+    const totalMonths = monthList.length
+
+    return {
+      ...user,
+      schedulingInfo: {
+        totalMonths,
+        months: monthList,
+        status:
+          totalMonths === 0
+            ? "UNSCHEDULED"
+            : totalMonths === 1
+              ? "1 MONTH SCHEDULED"
+              : `${totalMonths} MONTHS SCHEDULED`,
+      },
+    }
   })
 }
 
-export async function getUserCount(where = {}) {
+export async function getUserCount(where = {}, scheduleStatus = "all") {
+  const finalWhere = { ...where }
+
+  if (scheduleStatus === "scheduled") {
+    finalWhere.shiftAssignments = { some: {} }
+  } else if (scheduleStatus === "unscheduled") {
+    finalWhere.shiftAssignments = { none: {} }
+  }
+
   return prisma.user.count({
-    where,
+    where: finalWhere,
   })
 }
+
 
 export async function bulkCreateUser(rows) {
   if (!Array.isArray(rows) || rows.length === 0) {

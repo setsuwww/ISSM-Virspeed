@@ -18,11 +18,12 @@ export default async function AdminShiftAssignmentsPage({ searchParams }) {
   const allowedLimits = [10, 20, 30]
   const limit = allowedLimits.includes(Number(params?.limit)) ? Number(params?.limit) : 10
 
+  const scheduleStatus = params?.status || "all"
   const where = { role: "EMPLOYEE" }
 
   const [users, total] = await Promise.all([
-    getUsers(page, limit, where),
-    getUserCount(where),
+    getUsers(page, limit, where, scheduleStatus),
+    getUserCount(where, scheduleStatus),
   ])
 
   const totalPages = Math.max(1, Math.ceil(total / limit))

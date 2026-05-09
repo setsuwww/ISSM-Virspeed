@@ -3,9 +3,8 @@
 import { prisma } from "@/_lib/prisma"
 import { getCurrentUser } from "@/_lib/auth"
 import { revalidatePath } from "next/cache"
-import { parseISO, startOfDay, addDays } from "date-fns"
+import { startOfDay, addDays } from "date-fns"
 
-// Helper to check admin
 async function requireAdmin() {
   const user = await getCurrentUser()
   if (!user || (user.role !== "ADMIN" && user.role !== "SUPERVISOR")) {
@@ -14,21 +13,16 @@ async function requireAdmin() {
   return user
 }
 
-/**
- * Create or Update a single shift assignment
- */
 export async function createOrUpdateShiftAssignment(data) {
   try {
     await requireAdmin()
-    
+
     const { userId, date, shiftId, isLeave = false, isManualOverride = false } = data
- 
+
     if (!userId || !date || shiftId === undefined || shiftId === null) {
       throw new Error("Missing required fields: userId, date, and shiftId are mandatory.")
     }
 
-    // [STRICT LOCATION RULE]
-    // Fetch user and shift location to validate
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { locationId: true }
@@ -49,7 +43,6 @@ export async function createOrUpdateShiftAssignment(data) {
 
     const targetDate = startOfDay(new Date(date))
 
-    // Use upsert to handle the unique [userId, date] constraint automatically
     const assignment = await prisma.shiftAssignment.upsert({
       where: {
         userId_date: {
@@ -72,6 +65,7 @@ export async function createOrUpdateShiftAssignment(data) {
     })
 
     revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    revalidatePath("/admin/dashboard/shift-assignments")
     return { success: true, data: assignment }
   } catch (error) {
     console.error("Error saving shift assignment:", error)
@@ -79,9 +73,6 @@ export async function createOrUpdateShiftAssignment(data) {
   }
 }
 
-/**
- * Delete a single shift assignment
- */
 export async function deleteShiftAssignment(assignmentId, userId) {
   try {
     await requireAdmin()
@@ -92,6 +83,7 @@ export async function deleteShiftAssignment(assignmentId, userId) {
 
     if (userId) {
       revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+      revalidatePath("/admin/dashboard/shift-assignments")
     }
     return { success: true }
   } catch (error) {
@@ -100,9 +92,6 @@ export async function deleteShiftAssignment(assignmentId, userId) {
   }
 }
 
-/**
- * Bulk assign shifts using a rotation pattern over a date range
- */
 export async function bulkAssignShift(data) {
   try {
     await requireAdmin()
@@ -113,22 +102,18 @@ export async function bulkAssignShift(data) {
       throw new Error("Missing required fields or empty pattern.")
     }
 
-    // [STRICT LOCATION RULE]
-    // Fetch user location
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { locationId: true }
     })
     if (!targetUser) throw new Error("User not found.")
 
-    // Fetch all shifts in the pattern to validate their locations
     const uniqueShiftIds = [...new Set(shiftPattern.filter(id => id !== null && id !== undefined))]
     const targetShifts = await prisma.shift.findMany({
       where: { id: { in: uniqueShiftIds.map(id => parseInt(id)) } },
       select: { id: true, locationId: true }
     })
 
-    // Check if any shift belongs to a different location
     const invalidShifts = targetShifts.filter(s => s.locationId !== targetUser.locationId)
     if (invalidShifts.length > 0 || targetShifts.length < uniqueShiftIds.length) {
       throw new Error("Shift tidak tersedia di lokasi user")
@@ -141,9 +126,8 @@ export async function bulkAssignShift(data) {
       throw new Error("Start date must be before or equal to End date.")
     }
 
-    // We will do this in a transaction
     const operations = []
-    
+
     let currentDate = start
     let patternIndex = 0
 
@@ -180,6 +164,7 @@ export async function bulkAssignShift(data) {
     await prisma.$transaction(operations)
 
     revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    revalidatePath("/admin/dashboard/shift-assignments")
     return { success: true, count: operations.length }
   } catch (error) {
     console.error("Error bulk assigning shifts:", error)
@@ -187,9 +172,6 @@ export async function bulkAssignShift(data) {
   }
 }
 
-/**
- * Delete multiple shift assignments by dates
- */
 export async function deleteMultipleShiftAssignments(dates, userId) {
   try {
     await requireAdmin()
@@ -207,6 +189,7 @@ export async function deleteMultipleShiftAssignments(dates, userId) {
     })
 
     revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    revalidatePath("/admin/dashboard/shift-assignments")
     return { success: true }
   } catch (error) {
     console.error("Error deleting multiple shift assignments:", error)
@@ -214,9 +197,6 @@ export async function deleteMultipleShiftAssignments(dates, userId) {
   }
 }
 
-/**
- * Delete all shift assignments for a user
- */
 export async function deleteAllAssignments(userId) {
   try {
     await requireAdmin()
@@ -227,6 +207,7 @@ export async function deleteAllAssignments(userId) {
     })
 
     revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    revalidatePath("/admin/dashboard/shift-assignments")
     return { success: true }
   } catch (error) {
     console.error("Error deleting all assignments:", error)
@@ -234,9 +215,6 @@ export async function deleteAllAssignments(userId) {
   }
 }
 
-/**
- * Bulk assign shifts using a preset (list of dates)
- */
 export async function bulkAssignPreset({ userId, dates, shiftId }) {
   try {
     await requireAdmin()
@@ -244,7 +222,6 @@ export async function bulkAssignPreset({ userId, dates, shiftId }) {
       throw new Error("Missing required fields.")
     }
 
-    // [STRICT LOCATION RULE]
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { locationId: true }
@@ -284,6 +261,7 @@ export async function bulkAssignPreset({ userId, dates, shiftId }) {
     await prisma.$transaction(operations)
 
     revalidatePath(`/admin/dashboard/shift-assignments/${userId}`)
+    revalidatePath("/admin/dashboard/shift-assignments")
     return { success: true, count: operations.length }
   } catch (error) {
     console.error("Error bulk assigning preset:", error)

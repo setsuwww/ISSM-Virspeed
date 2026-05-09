@@ -12,6 +12,7 @@ export default function UsersActionHeader({
   search, onSearchChange,
   roleFilter, onRoleFilterChange,
   shiftFilter, onShiftFilterChange,
+  statusFilter, onStatusFilterChange,
   selectedCount, onDeleteSelected, onDeleteAll,
   filteredData, searchInputRef,
 }) {
@@ -46,6 +47,20 @@ export default function UsersActionHeader({
             <SelectItem value="EVENING">Evening</SelectItem>
           </SelectContent>
         </Select>
+
+        {onStatusFilterChange && (
+          <Select value={statusFilter} onValueChange={onStatusFilterChange}>
+            <SelectTrigger className="w-auto px-3 whitespace-nowrap">
+              <span className="font-semibold text-slate-600 mr-1">Status:</span>
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Show All</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="unscheduled">Unscheduled</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
 
         <Input ref={searchInputRef} value={search} onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search users..." className="w-full sm:w-64 py-2" typeSearch

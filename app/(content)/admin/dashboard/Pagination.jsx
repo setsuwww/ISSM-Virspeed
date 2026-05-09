@@ -50,6 +50,13 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
     router.push(`${basePath}?${params.toString()}`);
   }
 
+  const createPageLink = (pageNumber) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", pageNumber);
+    params.set("limit", limit);
+    return `${basePath}?${params.toString()}`;
+  };
+
   return (
     <div className="flex items-center justify-between mt-4 px-1">
       <SelectEntriesPagination
@@ -63,7 +70,7 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
               <ChevronLeft size={18} />
             </span>
           ) : (
-            <Link href={`${basePath}?page=${page - 1}&limit=${limit}`} className="flex items-center text-xs p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
+            <Link href={createPageLink(page - 1)} className="flex items-center text-xs p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
               <ChevronLeft size={18} />
             </Link>
           )}
@@ -72,7 +79,7 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
             p === "…" ? (
               <span key={i} className="px-3 text-slate-400">…</span>
             ) : (
-              <Link key={i} href={`${basePath}?page=${p}&limit=${limit}`} className={`pagination-btn ${p === page ? "active" : ""}`}>
+              <Link key={i} href={createPageLink(p)} className={`pagination-btn ${p === page ? "active" : ""}`}>
                 {p}
               </Link>
             )
@@ -83,7 +90,7 @@ export const Pagination = React.memo(function ({ page, totalPages, basePath = "/
               <ChevronRight size={18} />
             </span>
           ) : (
-            <Link href={`${basePath}?page=${page + 1}&limit=${limit}`} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
+            <Link href={createPageLink(page + 1)} className="p-2 text-slate-600 hover:text-slate-800 hover:scale-125 transition-transform">
               <ChevronRight size={18} />
             </Link>
           )}
