@@ -2,110 +2,15 @@
 
 import Link from "next/link"
 import { Building2, Calendar, CircleUserRound } from "lucide-react"
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 
-import {
-	Table,
-	TableHeader,
-	TableBody,
-	TableHead,
-	TableRow,
-	TableCell,
-} from "@/_components/ui/Table"
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/_components/ui/Table"
 
 import { Badge } from "@/_components/ui/Badge"
 import { roleStyles } from "@/_components/_constants/theme/userTheme"
 import { shiftDots } from "@/_components/_constants/shiftConstants"
 import { capitalize, minutesToTime } from "@/_functions/globalFunction"
 import { Checkbox } from "@/_components/ui/Checkbox"
-import { cn } from "@/_lib/utils"
-
-function ScheduleStatusBadge({ info, userName }) {
-	const [isHovered, setIsHovered] = useState(false)
-
-	const getBadgeStyles = (totalMonths) => {
-		if (totalMonths === 0) {
-			return "bg-red-50 text-red-600 border-red-100 hover:bg-red-100"
-		}
-		if (totalMonths === 1) {
-			return "bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100"
-		}
-		return "bg-lime-50 text-lime-600 border-lime-100 hover:bg-lime-100"
-	}
-
-	return (
-		<div
-			className="relative inline-block"
-			onMouseEnter={() => setIsHovered(true)}
-			onMouseLeave={() => setIsHovered(false)}
-		>
-			<Badge
-				variant="outline"
-				className={cn(
-					"cursor-help transition-all duration-300 font-bold px-2.5 py-1 text-[10px] tracking-wide",
-					getBadgeStyles(info.totalMonths)
-				)}
-			>
-				{info.status}
-			</Badge>
-
-			<AnimatePresence>
-				{isHovered && (
-					<motion.div
-						initial={{ opacity: 0, scale: 0.95, y: 10, x: "-50%" }}
-						animate={{ opacity: 1, scale: 1, y: 0, x: "-50%" }}
-						exit={{ opacity: 0, scale: 0.95, y: 10, x: "-50%" }}
-						transition={{ type: "spring", stiffness: 300, damping: 25 }}
-						className="absolute z-50 bottom-full left-1/2 mb-3 w-64 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-5 pointer-events-none"
-					>
-						<div className="space-y-4">
-							<div className="border-b border-slate-50">
-								<h4 className="font-semibold text-slate-800 text-sm leading-tight">
-									{userName}
-								</h4>
-								<p className="text-[10px] text-slate-400 mt-0.5 font-base tracking-wide">
-									Scheduling Statistics
-								</p>
-							</div>
-
-							<div className="flex items-center gap-3 py-2.5 px-4 bg-slate-50/80 rounded-lg border border-slate-100/50">
-								<div className="bg-white p-1.5 rounded-sm shadow-sm">
-									<Calendar className="w-3.5 h-3.5 text-blue-500" />
-								</div>
-								<div className="flex flex-col">
-									<span className="text-xs font-bold text-slate-700">
-										{info.totalMonths} {info.totalMonths === 1 ? "Month" : "Months"}
-									</span>
-									<span className="text-[10px] text-slate-400 font-medium">Total Scheduled</span>
-								</div>
-							</div>
-
-							{info.months.length > 0 && (
-								<div className="space-y-2">
-									<p className="text-[10px] font-base text-slate-500 tracking-wide pl-1">
-										Active Schedule at:
-									</p>
-									<div className="flex flex-wrap gap-2">
-										{info.months.map((month) => (
-											<span
-												key={month}
-												className="text-[10px] px-2.5 py-1 bg-white border border-slate-200 text-red-600 rounded-sm font-medium shadow-xs"
-											>
-												{month}
-											</span>
-										))}
-									</div>
-								</div>
-							)}
-						</div>
-
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</div>
-	)
-}
+import AssignedAtModal from "./_components/AssignedAtModal"
 
 export default function ShiftAssignmentTable({
 	users = [],
@@ -117,7 +22,7 @@ export default function ShiftAssignmentTable({
 	const isAllSelected = users.length > 0 && users.every((u) => selectedSet.has(u.id))
 
 	return (
-		<div className="bg-white border border-slate-200 overflow-hidden rounded-md">
+		<div className="bg-white border border-slate-200 overflow-visible rounded-md">
 			<Table>
 				<TableHeader>
 					<TableRow>
@@ -182,12 +87,12 @@ export default function ShiftAssignmentTable({
 
 								{/* ROLE */}
 								<TableCell>
-									<Badge className={roleStyles[user.role]}>{user.role}</Badge>
+									<Badge className={`${roleStyles[user.role]} text-[10px]`}>{user.role}</Badge>
 								</TableCell>
 
 								{/* SCHEDULE STATUS */}
 								<TableCell>
-									<ScheduleStatusBadge info={user.schedulingInfo} userName={user.name} />
+									<AssignedAtModal info={user.schedulingInfo} userName={user.name} />
 								</TableCell>
 
 								{/* SHIFT */}
@@ -208,7 +113,7 @@ export default function ShiftAssignmentTable({
 
 								{/* LOCATION */}
 								<TableCell>
-									<Badge className="bg-blue-50 text-blue-700 border-sky-100">
+									<Badge className="bg-blue-50 text-[12px] text-blue-700 border-sky-100">
 										<Building2 className="mr-1" size={16} />
 										{user.location?.name}
 									</Badge>
