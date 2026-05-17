@@ -38,7 +38,8 @@ export const adminMenu = [
     items: [
       { label: "Shifts", href: "/admin/dashboard/shifts" },
       { label: "Shift Assignments", href: "/admin/dashboard/shift-assignments" },
-      { label: "Schedules", href: "/admin/dashboard/schedules" }
+      { label: "Schedules", href: "/admin/dashboard/schedules" },
+      { label: "Monthly Report", href: "/admin/dashboard/shifts/monthly-report" }
     ]
   },
   {

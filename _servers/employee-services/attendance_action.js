@@ -9,11 +9,9 @@ import {
   processPermissionRequest,
   processLeaveRequest,
   getCheckoutWarning,
-  determineAttendanceStatus,
   isForgotCheckoutEligible,
   resolveCheckInStatus,
   resolveCheckOutStatus,
-  getAttendanceLabel,
 } from "@/_functions/helpers/attendanceServerHelpers"
 
 import { getNowJakarta, getTodayStartJakarta, minutesToDateTime } from "@/_lib/time"
