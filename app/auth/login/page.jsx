@@ -124,7 +124,7 @@ const LoginPage = () => {
               {pending ? (
                 <div className="flex items-center gap-2">
                   <Loader className="h-4 w-4 animate-spin" />
-                  Prosesing...
+                  Processing...
                 </div>
               ) : (
                 "Sign In"
