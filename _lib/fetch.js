@@ -4,8 +4,6 @@ import { toast } from "sonner";
 const cache = new Map();
 const CACHE_TTL = 1000 * 60;
 
-function isEqual(a, b) { return JSON.stringify(a) === JSON.stringify(b)}
-
 export async function apiFetchData({
   url, method = "get", data,
   onSuccess, onError, successMessage, errorMessage,
@@ -28,7 +26,7 @@ export async function apiFetchData({
     if (onSuccess) onSuccess(response.data);
 
     return response.data;
-  } 
+  }
   catch (err) { console.error("❌ apiFetchData error:", err);
     if (errorMessage) toast.error(errorMessage);
     if (onError) onError(err);
